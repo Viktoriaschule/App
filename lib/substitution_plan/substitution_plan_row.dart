@@ -29,7 +29,9 @@ class SubstitutionPlanRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final infoText = [];
-    if ((substitution.original.subjectID != substitution.changed.subjectID && substitution.changed.subjectID.isNotEmpty) || substitution.type == 0) {
+    if ((substitution.original.subjectID != substitution.changed.subjectID &&
+            substitution.changed.subjectID.isNotEmpty) ||
+        substitution.type == 0) {
       infoText
           .add(Static.subjects.data.getSubject(substitution.changed.subjectID));
     }
@@ -91,20 +93,20 @@ class SubstitutionPlanRow extends StatelessWidget {
                       fontSize: 16,
                     ),
                   ),
-                  if (substitution.original.teacherID !=
-                      substitution.changed.teacherID)
-                    Text(
-                      substitution.original.teacherID != null
-                          ? substitution.original.teacherID.toUpperCase()
-                          : '',
-                      style: GoogleFonts.ubuntuMono(
-                        fontSize: 16,
-                        textStyle: TextStyle(
-                          color: Colors.black54,
-                          decoration: TextDecoration.lineThrough,
-                        ),
+                  Text(
+                    substitution.original.teacherID != null &&
+                            substitution.original.teacherID !=
+                                substitution.changed.teacherID
+                        ? substitution.original.teacherID.toUpperCase()
+                        : '',
+                    style: GoogleFonts.ubuntuMono(
+                      fontSize: 16,
+                      textStyle: TextStyle(
+                        color: Colors.black54,
+                        decoration: TextDecoration.lineThrough,
                       ),
                     ),
+                  ),
                 ],
               ),
             ),
@@ -122,20 +124,20 @@ class SubstitutionPlanRow extends StatelessWidget {
                       fontSize: 16,
                     ),
                   ),
-                  if (substitution.original.roomID !=
-                      substitution.changed.roomID)
-                    Text(
-                      substitution.original.roomID != null
-                          ? substitution.original.roomID.toUpperCase()
-                          : '',
-                      style: GoogleFonts.ubuntuMono(
-                        fontSize: 16,
-                        textStyle: TextStyle(
-                          color: Colors.black54,
-                          decoration: TextDecoration.lineThrough,
-                        ),
+                  Text(
+                    substitution.original.roomID != null &&
+                            substitution.original.roomID !=
+                                substitution.changed.roomID
+                        ? substitution.original.roomID.toUpperCase()
+                        : '',
+                    style: GoogleFonts.ubuntuMono(
+                      fontSize: 16,
+                      textStyle: TextStyle(
+                        color: Colors.black54,
+                        decoration: TextDecoration.lineThrough,
                       ),
                     ),
+                  ),
                 ],
               ),
             ),
