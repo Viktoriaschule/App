@@ -1,0 +1,30 @@
+{
+  "short_name": "Ginko",
+  "name": "Ginko",
+  "description": "Eine App für die Viktoriaschule",
+  "start_url": "/",
+  "scope": "/",
+  "background_color": "white",
+  "theme_color": "#FAFAFA",
+  "display": "standalone",
+  "gcm_sender_id": "103953800507",
+  "icons": [
+    {
+      "src": "/assets/images/logo_green.png",
+      "type": "image/png",
+      "sizes": "1024x1024"
+    },
+    {
+      "src": "/assets/images/logo_green_192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=de.ginko",
+      "id": "de.ginko"
+    }
+  ]
+}

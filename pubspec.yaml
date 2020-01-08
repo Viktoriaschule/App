@@ -1,0 +1,46 @@
+name: ginko
+description: The Ginko app
+version: 2.0.6+22
+author: jld3103
+
+environment:
+  sdk: ">=2.3.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  http:
+  crypto:
+  intl:
+  firebase_messaging:
+  shared_preferences:
+  material_design_icons_flutter:
+  cached_network_image: ^2.0.0-rc
+  flutter_html:
+  url_launcher:
+  share:
+  transparent_image:
+  after_layout:
+  path_provider:
+  timeago:
+  dio:
+  version:
+  encrypt:
+  js:
+  google_fonts:
+    git:
+      url: git://github.com/jld3103/google-fonts-flutter
+      ref: fix-mixed-content
+  add_2_calendar:
+
+dev_dependencies:
+  flutter_launcher_icons:
+
+flutter:
+  uses-material-design: true
+  assets:
+    - images/logo_green.png
+    - images/logo_green_192x192.png
+    - pubspec.yaml

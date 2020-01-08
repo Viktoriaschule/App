@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Categories=
+Name=Ginko
+Icon=/usr/lib/ginko/assets/icon.png
+Exec=/usr/lib/ginko/ginko
