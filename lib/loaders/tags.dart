@@ -32,17 +32,19 @@ class TagsLoader extends Loader<Tags> {
         .split(':')[1]
         .trim();
     final String os = Platform().platformName;
-    final Device device = Device(
-        firebaseId: id,
-        appVersion: appVersion.isEmpty ? null : appVersion,
-        os: os,
-        name: '-',
-        deviceSettings: DeviceSettings(
-          spNotifications:
-              Static.storage.getBool(Keys.substitutionPlanNotifications) ??
-                  true,
-        ));
-    await sendTags({'device': device.toMap()});
+    if (id != null) {
+      final Device device = Device(
+          firebaseId: id,
+          appVersion: appVersion.isEmpty ? null : appVersion,
+          os: os,
+          name: '-',
+          deviceSettings: DeviceSettings(
+            spNotifications:
+                Static.storage.getBool(Keys.substitutionPlanNotifications) ??
+                    true,
+          ));
+      await sendTags({'device': device.toMap()});
+    }
   }
 
   /// Synchronize local data with server tags
