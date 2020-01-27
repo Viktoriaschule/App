@@ -42,6 +42,7 @@ class TimetableRow extends StatelessWidget {
             (times[1].inMinutes % 60).toString();
     final timeStr = '$startHour:$startMinute - $endHour:$endMinute';
     return CustomRow(
+      splitColor: Colors.transparent,
       showSplit:
           !(subject.subjectID == 'Mittagspause' ||
                   subject.subjectID == 'none') &&
