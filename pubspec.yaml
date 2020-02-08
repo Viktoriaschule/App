@@ -1,7 +1,7 @@
 name: ginko
 description: The Ginko app
 version: 2.0.6+22
-author: jld3103
+author: jld3103 + fingeg
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
