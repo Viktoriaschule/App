@@ -171,11 +171,15 @@ class HomePage extends StatelessWidget {
                   ..sort((a, b) => a.date.compareTo(b.date)))
             .toList()
         : [];
+    final bool loggedIn = Static.storage.getString(Keys.cafetoriaId) != null &&
+        Static.storage.getString(Keys.cafetoriaPassword) != null;
     final cafetoriaView = Column(
       children: [
         if (Static.cafetoria.hasLoadedData)
           ListGroupHeader(
-            title: 'Cafétoria',
+            title: !loggedIn
+                ? 'Cafétoria'
+                : 'Cafétoria (${Static.cafetoria.data.saldo}€)',
             counter: days.length - 2,
             onTap: () {
               Navigator.of(context).pushNamed('/${Keys.cafetoria}');

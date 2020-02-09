@@ -89,7 +89,9 @@ class _AppPageState extends State<AppPage>
           }
         }
         if (storedUpdates.cafetoria != fetchedUpdates.cafetoria ||
-            !Static.cafetoria.hasLoadedData) {
+            !Static.cafetoria.hasLoadedData ||
+            (Static.storage.getString(Keys.cafetoriaId) != null &&
+                Static.storage.getString(Keys.cafetoriaPassword) != null)) {
           if (await Static.cafetoria.loadOnline(context) ==
               StatusCodes.success) {
             Static.updates.data.cafetoria = fetchedUpdates.cafetoria;

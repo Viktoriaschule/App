@@ -13,6 +13,14 @@ abstract class Loader<LoaderType> {
   // ignore: public_member_api_docs
   final String key;
 
+  /// Sets if all request should be posts
+  ///
+  /// If this is activated, the [postBody] function must be overrode to set the post body
+  bool alwaysPost = false;
+
+  /// Defines the post body in case that [alwaysPost] is true
+  dynamic get postBody => null;
+
   // ignore: public_member_api_docs
   LoaderType parsedData;
 
@@ -61,10 +69,10 @@ abstract class Loader<LoaderType> {
           receiveTimeout: 20000,
         );
       Response response;
-      if (post) {
+      if (alwaysPost || post) {
         response = await dio.post(
           '$baseUrl/$key',
-          data: body,
+          data: body ?? postBody,
         );
       } else {
         response = await dio.get(
