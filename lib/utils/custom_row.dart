@@ -62,7 +62,7 @@ class CustomRow extends StatelessWidget {
               margin: EdgeInsets.only(
                 right: 5,
               ),
-              color: splitColor ?? Theme.of(context).primaryColor,
+              color: splitColor ?? Colors.transparent,
             ),
           Expanded(
             flex: 1,

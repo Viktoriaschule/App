@@ -40,6 +40,16 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: Ubuntu
+      fonts:
+        - asset: fonts/Ubuntu-Regular.ttf
+        - asset: fonts/Ubuntu-Italic.ttf
+          style: italic
+        - asset: fonts/Ubuntu-Light.ttf
+          weight: 100
+        - asset: fonts/Ubuntu-Bold.ttf
+          weight: 700
   assets:
     - images/logo_green.png
     - images/logo_green_192x192.png

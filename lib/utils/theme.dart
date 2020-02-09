@@ -6,7 +6,5 @@ ThemeData get theme => ThemeData(
       brightness: Brightness.light,
       primaryColor: Color(0xFFFAFAFA),
       accentColor: Color(0xFF74B451),
-      textTheme: GoogleFonts.ubuntuTextTheme(),
-      accentTextTheme: GoogleFonts.ubuntuTextTheme(),
-      primaryTextTheme: GoogleFonts.ubuntuTextTheme(),
+      fontFamily: 'Ubuntu',
     );

@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:ginko/plugins/platform/platform.dart';
-import 'package:ginko/utils/screen_sizes.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 // ignore: public_member_api_docs
 class ListGroupHeader extends StatelessWidget {
@@ -31,52 +28,68 @@ class ListGroupHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) => InkWell(
         onTap: onTap,
-        child: Container(
-          height: TabBar(
-                tabs: const [],
-              ).preferredSize.height +
-              1,
-          decoration: getScreenSize(MediaQuery.of(context).size.width) !=
-                  ScreenSize.small
-              ? BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      width: 1,
-                      color: Colors.black38,
-                    ),
-                  ),
-                )
-              : null,
-          child: AppBar(
-            title: Text(
-              title,
-              style: TextStyle(
-                fontSize: 18,
-              ),
-            ),
-            automaticallyImplyLeading: false,
-            elevation: getScreenSize(MediaQuery.of(context).size.width) ==
-                    ScreenSize.small
-                ? (Platform().isWeb ? 1 : 3)
-                : 0,
-            actions: [
-              if (counter > 0)
-                Center(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Stack(
+              children: <Widget>[
+                Positioned(
+                  bottom: 10,
                   child: Container(
-                    margin: EdgeInsets.only(right: 9),
-                    child: Text(
-                      '+${counter >= 10 ? counter : '$counter '}',
-                      style: GoogleFonts.ubuntuMono(
-                        fontSize: 20,
-                        textStyle: TextStyle(
-                          color: Colors.black54,
-                        ),
-                      ),
-                    ),
+                    width: constraints.maxWidth,
+                    height: 10,
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 10,
+                            offset: Offset(0, -5)
+                          )
+                        ]),
+                    child: Container(),
                   ),
                 ),
-            ],
-          ),
+                Container(
+                  height: 50,
+                  color: Theme.of(context).primaryColor,
+                  margin: EdgeInsets.only(bottom: 10),
+                  padding: EdgeInsets.only(left: 20, right: 10),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 85,
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w100,
+                            color: Colors.black87,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                      if (counter > 0)
+                        Expanded(
+                          flex: 15,
+                          child: Center(
+                            child: Container(
+                              margin: EdgeInsets.only(right: 9),
+                              child: Text(
+                                '+${counter >= 10 ? counter : '$counter'}',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w100,
+                                  color: Colors.black87,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       );
 }
