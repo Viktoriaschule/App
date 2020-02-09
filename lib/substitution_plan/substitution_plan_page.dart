@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ginko/substitution_plan/substitution_plan_row.dart';
+import 'package:ginko/utils/empty_list.dart';
 import 'package:ginko/utils/icons_texts.dart';
 import 'package:ginko/utils/list_group_header.dart';
 import 'package:ginko/utils/screen_sizes.dart';
@@ -60,10 +61,7 @@ class _SubstitutionPlanPageState extends State<SubstitutionPlanPage>
                 title: 'Meine Vertretungen',
               ),
               if (myChanges.isEmpty)
-                Container(
-                  height: 60,
-                  color: Colors.transparent,
-                )
+                EmptyList(title: 'Keine Änderungen')
               else
                 ...myChanges
                     .map((substitution) => SizeLimit(
@@ -87,10 +85,12 @@ class _SubstitutionPlanPageState extends State<SubstitutionPlanPage>
                           child: Text(unparsed),
                         ))
                     .toList()
-              ],
+              ], 
               ListGroupHeader(
                 title: 'Weitere Vertretungen',
               ),
+              if (notMyChanges.isEmpty)
+                EmptyList(title: 'Keine Änderungen'),
               ...notMyChanges
                   .map((substitution) => SizeLimit(
                         child: Container(
