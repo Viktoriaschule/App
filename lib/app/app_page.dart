@@ -377,7 +377,14 @@ class _AppPageState extends State<AppPage>
     );
     return Scaffold(
       appBar: AppBar(
-        title: Text(pages[_currentTab].title),
+        title: Text(
+          pages[_currentTab].title,
+          style: TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.w100,
+            fontSize: 22,
+          ),
+        ),
         automaticallyImplyLeading: false,
         actions: pages[_currentTab].actions,
         elevation: 0,

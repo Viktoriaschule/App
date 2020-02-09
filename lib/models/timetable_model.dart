@@ -215,7 +215,7 @@ class TimetableSubject {
       TimetableSubject(
         unit: json['unit'],
         id: json['id'],
-        teacherID: json['teacherID'],
+        teacherID: json['teacherID'].replaceAll('+', '\n'),
         subjectID: json['subjectID'],
         roomID: json['roomID'],
         courseID: json['courseID'],

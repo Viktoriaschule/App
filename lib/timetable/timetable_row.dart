@@ -43,16 +43,18 @@ class TimetableRow extends StatelessWidget {
     final timeStr = '$startHour:$startMinute - $endHour:$endMinute';
     return CustomRow(
       splitColor: Colors.transparent,
-      showSplit:
-          !(subject.subjectID == 'Mittagspause' ||
-                  subject.subjectID == 'none') &&
-              showSplit,
+      showSplit: !(subject.subjectID == 'Mittagspause' ||
+              subject.subjectID == 'none') &&
+          showSplit,
       leading: showUnit && unit != 5
-          ? Center(
+          ? Align(
+              alignment: Alignment(0.3, 0),
               child: Text(
                 (unit + 1).toString(),
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 25,
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w100,
                 ),
               ),
             )
@@ -75,16 +77,15 @@ class TimetableRow extends StatelessWidget {
       subtitle: subject.subjectID != 'Mittagspause'
           ? Text(
               timeStr,
-              style: TextStyle(
-                color: Colors.black54,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w100),
             )
           : null,
       last: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (subject.subjectID != 'Mittagspause')
             Container(
-              width: 24,
+              width: 30,
               margin: EdgeInsets.only(right: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -92,25 +93,23 @@ class TimetableRow extends StatelessWidget {
                   if (subject.teacherID != null)
                     Text(
                       '${subject.teacherID.toUpperCase()}\n',
-                      style: GoogleFonts.ubuntuMono(
-                        fontSize: 16,
-                      ),
+                      style:
+                          TextStyle(fontSize: 13, fontWeight: FontWeight.w100),
                     ),
                 ],
               ),
             ),
           if (subject.subjectID != 'Mittagspause')
             Container(
-              width: 24,
+              width: 30,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (subject.roomID != null)
                     Text(
                       '${subject.roomID.toUpperCase()}\n',
-                      style: GoogleFonts.ubuntuMono(
-                        fontSize: 16,
-                      ),
+                      style:
+                          TextStyle(fontSize: 13, fontWeight: FontWeight.w100),
                     ),
                 ],
               ),

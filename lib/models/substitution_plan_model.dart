@@ -273,7 +273,7 @@ class SubstitutionDetails {
   /// Creates a substitution details from json
   factory SubstitutionDetails.fromJson(Map<String, dynamic> json) =>
       SubstitutionDetails(
-        teacherID: json['teacherID'],
+        teacherID: json['teacherID'].replaceAll('+', '\n'),
         roomID: json['roomID'],
         subjectID: json['subjectID'],
       );

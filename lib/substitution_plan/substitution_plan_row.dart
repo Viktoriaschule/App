@@ -54,11 +54,14 @@ class SubstitutionPlanRow extends StatelessWidget {
           ? Theme.of(context).accentColor
           : (substitution.type == 2 ? Colors.red : Colors.orange),
       leading: showUnit
-          ? Center(
+          ? Align(
+              alignment: Alignment(0.3, 0),
               child: Text(
                 (substitution.unit + 1).toString(),
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 25,
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w100,
                 ),
               ),
             )
@@ -71,16 +74,16 @@ class SubstitutionPlanRow extends StatelessWidget {
           ? Text(
               Static.subjects.data.getSubject(substitution.original.subjectID),
               style: TextStyle(
-                decoration: TextDecoration.lineThrough,
-                color: Colors.black54,
-              ),
+                  decoration: TextDecoration.lineThrough,
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w100),
             )
           : null,
       last: Row(
         children: [
           if (substitution.type != 1)
             Container(
-              width: 24,
+              width: 30,
               margin: EdgeInsets.only(right: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -89,8 +92,9 @@ class SubstitutionPlanRow extends StatelessWidget {
                     substitution.changed.teacherID != null
                         ? substitution.changed.teacherID.toUpperCase()
                         : '',
-                    style: GoogleFonts.ubuntuMono(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w100,
                     ),
                   ),
                   Text(
@@ -99,20 +103,19 @@ class SubstitutionPlanRow extends StatelessWidget {
                                 substitution.changed.teacherID
                         ? substitution.original.teacherID.toUpperCase()
                         : '',
-                    style: GoogleFonts.ubuntuMono(
-                      fontSize: 16,
-                      textStyle: TextStyle(
-                        color: Colors.black54,
-                        decoration: TextDecoration.lineThrough,
-                      ),
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w100,
+                      color: Colors.black54,
+                      decoration: TextDecoration.lineThrough,
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
           if (substitution.type != 1)
             Container(
-              width: 24,
+              width: 30,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -120,8 +123,9 @@ class SubstitutionPlanRow extends StatelessWidget {
                     substitution.changed.roomID != null
                         ? substitution.changed.roomID.toUpperCase()
                         : '',
-                    style: GoogleFonts.ubuntuMono(
-                      fontSize: 16,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w100,
                     ),
                   ),
                   Text(
@@ -130,13 +134,11 @@ class SubstitutionPlanRow extends StatelessWidget {
                                 substitution.changed.roomID
                         ? substitution.original.roomID.toUpperCase()
                         : '',
-                    style: GoogleFonts.ubuntuMono(
-                      fontSize: 16,
-                      textStyle: TextStyle(
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w100,
                         color: Colors.black54,
-                        decoration: TextDecoration.lineThrough,
-                      ),
-                    ),
+                        decoration: TextDecoration.lineThrough),
                   ),
                 ],
               ),
