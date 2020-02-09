@@ -127,7 +127,6 @@ class _TimetablePageState extends State<TimetablePage>
                                           child: CafetoriaRow(
                                             day: day,
                                             menu: menu,
-                                            showDate: false,
                                           ),
                                         ),
                                       )

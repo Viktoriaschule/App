@@ -24,7 +24,6 @@ class CafetoriaPage extends StatelessWidget {
                               child: CafetoriaRow(
                                 day: day,
                                 menu: menu,
-                                showDate: true,
                               ),
                             ),
                           )

@@ -73,11 +73,12 @@ class CustomRow extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: titleFontWeight ?? FontWeight.bold,
+                      fontSize: 17,
+                      fontWeight: titleFontWeight,
                       color: titleColor ?? Theme.of(context).accentColor,
                     ),
-                    overflow: TextOverflow.ellipsis,
+                   overflow: TextOverflow.ellipsis,
+                   maxLines: 1,
                   ),
                 if (subtitle != null) subtitle,
               ],

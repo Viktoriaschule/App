@@ -156,7 +156,8 @@ class HomePage extends StatelessWidget {
                   ))
               .toList()
               .cast<Widget>(),
-        if (Static.aiXformation.hasLoadedData && Static.aiXformation.data.posts.isEmpty)
+        if (Static.aiXformation.hasLoadedData &&
+            Static.aiXformation.data.posts.isEmpty)
           EmptyList(title: 'Keine Artikel')
       ],
     );
@@ -168,6 +169,7 @@ class HomePage extends StatelessWidget {
                   ..sort((a, b) => a.date.compareTo(b.date)))
             .toList()
         : [];
+    final cafetoriaWeekday = days.isNotEmpty ? weekdays[days[0].date.weekday - 1] : '';
     final bool loggedIn = Static.storage.getString(Keys.cafetoriaId) != null &&
         Static.storage.getString(Keys.cafetoriaPassword) != null;
     final cafetoriaView = Column(
@@ -175,9 +177,11 @@ class HomePage extends StatelessWidget {
         if (Static.cafetoria.hasLoadedData)
           ListGroupHeader(
             title: !loggedIn
-                ? 'Cafétoria'
-                : 'Cafétoria (${Static.cafetoria.data.saldo}€)',
-            counter: days.length - 2,
+                ? days.isEmpty ? 'Cafétoria' : 'Cafétoria - $cafetoriaWeekday'
+                : days.isEmpty
+                    ? 'Cafétoria (${Static.cafetoria.data.saldo}€)'
+                    : 'Cafétoria - $cafetoriaWeekday (${Static.cafetoria.data.saldo}€) ',
+            counter: days.isNotEmpty ? days[0].menus.length - 3 : 0,
             onTap: () {
               Navigator.of(context).pushNamed('/${Keys.cafetoria}');
             },
@@ -187,27 +191,18 @@ class HomePage extends StatelessWidget {
         else
           SizeLimit(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ...(days.length > 2 ? days.sublist(0, 2) : days)
-                    .map((day) => Column(
-                          children: day.menus
-                              .map(
-                                (menu) => Container(
-                                  margin: EdgeInsets.all(10),
-                                  child: CafetoriaRow(
-                                    day: day,
-                                    menu: menu,
-                                    showDate: true,
-                                  ),
-                                ),
-                              )
-                              .toList()
-                              .cast<Widget>(),
-                        ))
-                    .toList()
-                    .cast<Widget>(),
-              ],
+              children: (days[0].menus.length > 3 ? days[0].menus.sublist(0, 3) : days[0].menus)
+                  .map(
+                    (menu) => Container(
+                      margin: EdgeInsets.all(10),
+                      child: CafetoriaRow(
+                        day: days[0],
+                        menu: menu,
+                      ),
+                    ),
+                  )
+                  .toList()
+                  .cast<Widget>(),
             ),
           ),
       ],

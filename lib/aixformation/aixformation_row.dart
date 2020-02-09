@@ -50,7 +50,7 @@ class AiXformationRow extends StatelessWidget {
                 ),
           title: post.title,
           titleFontWeight: FontWeight.w500,
-          titleColor: Colors.black87,
+          titleColor: Color.fromARGB(180, 0, 0, 0),
           subtitle: IconsTexts(
             icons: [
               Icons.event,

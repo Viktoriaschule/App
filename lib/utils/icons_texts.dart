@@ -46,8 +46,8 @@ class IconsTexts extends StatelessWidget {
               Text(
                 text,
                 style: TextStyle(
-                  color: Colors.black54,
                   fontSize: 14,
+                  fontWeight: FontWeight.w100
                 ),
               ),
               if (i != icons.length - 1)

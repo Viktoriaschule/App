@@ -13,7 +13,6 @@ class CafetoriaRow extends StatefulWidget {
   const CafetoriaRow({
     @required this.day,
     @required this.menu,
-    this.showDate = false,
     this.showSplit = true,
   });
 
@@ -22,9 +21,6 @@ class CafetoriaRow extends StatefulWidget {
 
   // ignore: public_member_api_docs
   final CafetoriaMenu menu;
-
-  // ignore: public_member_api_docs
-  final bool showDate;
 
   // ignore: public_member_api_docs
   final bool showSplit;
@@ -53,9 +49,9 @@ class _CafetoriaRowState extends State<CafetoriaRow>
     return CustomRow(
       leading: Icon(
         Icons.restaurant,
+        color: Colors.black54,
       ),
-      title:
-          '${widget.menu.name}${widget.showDate ? "(${weekdays[widget.day.date.weekday - 1]} ${outputDateFormat.format(widget.day.date)})" : ''}',
+      title: '${widget.menu.name}',
       subtitle: IconsTexts(
         icons: [
           MdiIcons.currencyEur,
@@ -63,8 +59,7 @@ class _CafetoriaRowState extends State<CafetoriaRow>
         ],
         texts: [
           widget.menu.price.toString().replaceAll('.', ','),
-          if (widget.menu.time.isNotEmpty)
-            widget.menu.time,
+          if (widget.menu.time.isNotEmpty) widget.menu.time,
         ],
       ),
     );

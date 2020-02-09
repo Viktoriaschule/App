@@ -47,12 +47,13 @@ class _CalendarRowState extends State<CalendarRow>
           showSplit: widget.showSplit,
           leading: Icon(
             Icons.calendar_today,
+            color: Colors.black54,
           ),
           title: '${widget.event.name}',
           subtitle: Text(
             widget.event.dateString,
             style: TextStyle(
-              color: Colors.black54,
+              fontWeight: FontWeight.w100
             ),
           ),
           last: Platform().isMobile
@@ -76,7 +77,7 @@ class _CalendarRowState extends State<CalendarRow>
                       allDay: startDate != endDate,
                     ));
                   },
-                  icon: Icon(Icons.add),
+                  icon: Icon(Icons.add, color: Colors.black54,),
                 )
               : null,
         );
