@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ginko/utils/custom_row.dart';
 import 'package:ginko/utils/static.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:ginko/models/models.dart';
 
 // ignore: public_member_api_docs

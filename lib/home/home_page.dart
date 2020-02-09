@@ -8,7 +8,7 @@ import 'package:ginko/calendar/calendar_row.dart';
 import 'package:ginko/substitution_plan/substitution_plan_row.dart';
 import 'package:ginko/timetable/timetable_row.dart';
 import 'package:ginko/utils/empty_list.dart';
-import 'package:ginko/utils/list_group_header.dart';
+import 'package:ginko/utils/list_group.dart';
 import 'package:ginko/utils/screen_sizes.dart';
 import 'package:ginko/utils/size_limit.dart';
 import 'package:ginko/utils/static.dart';
@@ -47,7 +47,7 @@ class HomePage extends StatelessWidget {
     final timetableView = Column(
       children: [
         if (Static.timetable.hasLoadedData && Static.selection.isSet())
-          ListGroupHeader(
+          ListGroup(
             title: 'Nächste Stunden - ${weekdays[weekday]}',
             counter: subjects.length > 3 ? subjects.length - 3 : 0,
             onTap: () {
@@ -59,18 +59,21 @@ class HomePage extends StatelessWidget {
                 ),
               ));
             },
-          ),
-        SizeLimit(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (subjects.isEmpty ||
-                  !Static.timetable.hasLoadedData ||
-                  !Static.selection.isSet())
-                EmptyList(title: 'Kein Stundenplan')
-              else
-                ...(subjects.length > 3 ? subjects.sublist(0, 3) : subjects)
-                    .map((subject) => Container(
+            children: <Widget>[
+              SizeLimit(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (subjects.isEmpty ||
+                        !Static.timetable.hasLoadedData ||
+                        !Static.selection.isSet())
+                      EmptyList(title: 'Kein Stundenplan')
+                    else
+                      ...(subjects.length > 3
+                              ? subjects.sublist(0, 3)
+                              : subjects)
+                          .map(
+                        (subject) => Container(
                           margin: EdgeInsets.all(10),
                           child: Column(
                             children: [
@@ -89,16 +92,19 @@ class HomePage extends StatelessWidget {
                                   .cast<Widget>(),
                             ],
                           ),
-                        )),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
             ],
           ),
-        ),
       ],
     );
     final substitutionPlanView = Column(
       children: [
         if (Static.timetable.hasLoadedData && Static.selection.isSet())
-          ListGroupHeader(
+          ListGroup(
             title:
                 'Nächste Vertretungen - ${weekdays[Static.timetable.data.initialDay(DateTime.now()).weekday - 1]}',
             counter: changes.length > 3 ? changes.length - 3 : 0,
@@ -111,54 +117,60 @@ class HomePage extends StatelessWidget {
                 ),
               ));
             },
-          ),
-        if (changes.isEmpty)
-          EmptyList(title: 'Keine Änderungen')
-        else
-          SizeLimit(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (Static.substitutionPlan.hasLoadedData)
-                  ...(changes.length > 3 ? changes.sublist(0, 3) : changes)
-                      .map((substitution) => Container(
-                            margin: EdgeInsets.all(10),
-                            child: SubstitutionPlanRow(
-                              substitution: substitution,
-                            ),
-                          ))
-                      .toList()
-                      .cast<Widget>()
-              ],
-            ),
+            children: <Widget>[
+              if (changes.isEmpty)
+                EmptyList(title: 'Keine Änderungen')
+              else
+                SizeLimit(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (Static.substitutionPlan.hasLoadedData)
+                        ...(changes.length > 3
+                                ? changes.sublist(0, 3)
+                                : changes)
+                            .map((substitution) => Container(
+                                  margin: EdgeInsets.all(10),
+                                  child: SubstitutionPlanRow(
+                                    substitution: substitution,
+                                  ),
+                                ))
+                            .toList()
+                            .cast<Widget>()
+                    ],
+                  ),
+                ),
+            ],
           ),
       ],
     );
     final aiXformationView = Column(
       children: [
         if (Static.aiXformation.hasLoadedData)
-          ListGroupHeader(
+          ListGroup(
             title: 'AiXformation',
             counter: Static.aiXformation.data.posts.length -
                 (size == ScreenSize.small ? 2 : 3),
             onTap: () {
               Navigator.of(context).pushNamed('/${Keys.aiXformation}');
             },
+            children: <Widget>[
+              if (Static.aiXformation.hasLoadedData)
+                ...Static.aiXformation.data.posts
+                    .sublist(0, size == ScreenSize.small ? 2 : 3)
+                    .map((post) => Container(
+                          margin: EdgeInsets.all(10),
+                          child: AiXformationRow(
+                            post: post,
+                          ),
+                        ))
+                    .toList()
+                    .cast<Widget>(),
+              if (Static.aiXformation.hasLoadedData &&
+                  Static.aiXformation.data.posts.isEmpty)
+                EmptyList(title: 'Keine Artikel')
+            ],
           ),
-        if (Static.aiXformation.hasLoadedData)
-          ...Static.aiXformation.data.posts
-              .sublist(0, size == ScreenSize.small ? 2 : 3)
-              .map((post) => Container(
-                    margin: EdgeInsets.all(10),
-                    child: AiXformationRow(
-                      post: post,
-                    ),
-                  ))
-              .toList()
-              .cast<Widget>(),
-        if (Static.aiXformation.hasLoadedData &&
-            Static.aiXformation.data.posts.isEmpty)
-          EmptyList(title: 'Keine Artikel')
       ],
     );
     final days = Static.cafetoria.hasLoadedData
@@ -169,13 +181,14 @@ class HomePage extends StatelessWidget {
                   ..sort((a, b) => a.date.compareTo(b.date)))
             .toList()
         : [];
-    final cafetoriaWeekday = days.isNotEmpty ? weekdays[days[0].date.weekday - 1] : '';
+    final cafetoriaWeekday =
+        days.isNotEmpty ? weekdays[days[0].date.weekday - 1] : '';
     final bool loggedIn = Static.storage.getString(Keys.cafetoriaId) != null &&
         Static.storage.getString(Keys.cafetoriaPassword) != null;
     final cafetoriaView = Column(
       children: [
         if (Static.cafetoria.hasLoadedData)
-          ListGroupHeader(
+          ListGroup(
             title: !loggedIn
                 ? days.isEmpty ? 'Cafétoria' : 'Cafétoria - $cafetoriaWeekday'
                 : days.isEmpty
@@ -185,25 +198,29 @@ class HomePage extends StatelessWidget {
             onTap: () {
               Navigator.of(context).pushNamed('/${Keys.cafetoria}');
             },
-          ),
-        if (!Static.cafetoria.hasLoadedData || days.isEmpty)
-          EmptyList(title: 'Keine Menüs')
-        else
-          SizeLimit(
-            child: Column(
-              children: (days[0].menus.length > 3 ? days[0].menus.sublist(0, 3) : days[0].menus)
-                  .map(
-                    (menu) => Container(
-                      margin: EdgeInsets.all(10),
-                      child: CafetoriaRow(
-                        day: days[0],
-                        menu: menu,
-                      ),
-                    ),
-                  )
-                  .toList()
-                  .cast<Widget>(),
-            ),
+            children: <Widget>[
+              if (!Static.cafetoria.hasLoadedData || days.isEmpty)
+                EmptyList(title: 'Keine Menüs')
+              else
+                SizeLimit(
+                  child: Column(
+                    children: (days[0].menus.length > 3
+                            ? days[0].menus.sublist(0, 3)
+                            : days[0].menus)
+                        .map(
+                          (menu) => Container(
+                            margin: EdgeInsets.all(10),
+                            child: CafetoriaRow(
+                              day: days[0],
+                              menu: menu,
+                            ),
+                          ),
+                        )
+                        .toList()
+                        .cast<Widget>(),
+                  ),
+                ),
+            ],
           ),
       ],
     );
@@ -216,30 +233,32 @@ class HomePage extends StatelessWidget {
     final calendarView = Column(
       children: [
         if (Static.calendar.hasLoadedData)
-          ListGroupHeader(
+          ListGroup(
             title: 'Kalender',
             counter: events.length - 3,
             onTap: () {
               Navigator.of(context).pushNamed('/${Keys.calendar}');
             },
-          ),
-        if (!Static.calendar.hasLoadedData || events.isEmpty)
-          EmptyList(title: 'Keine Termine')
-        else
-          SizeLimit(
-            child: Column(
-              children: [
-                ...(events.length > 3 ? events.sublist(0, 3) : events)
-                    .map((event) => Container(
-                          margin: EdgeInsets.all(10),
-                          child: CalendarRow(
-                            event: event,
-                          ),
-                        ))
-                    .toList()
-                    .cast<Widget>(),
-              ],
-            ),
+            children: <Widget>[
+              if (!Static.calendar.hasLoadedData || events.isEmpty)
+                EmptyList(title: 'Keine Termine')
+              else
+                SizeLimit(
+                  child: Column(
+                    children: [
+                      ...(events.length > 3 ? events.sublist(0, 3) : events)
+                          .map((event) => Container(
+                                margin: EdgeInsets.all(10),
+                                child: CalendarRow(
+                                  event: event,
+                                ),
+                              ))
+                          .toList()
+                          .cast<Widget>(),
+                    ],
+                  ),
+                ),
+            ],
           ),
       ],
     );

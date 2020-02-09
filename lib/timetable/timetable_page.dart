@@ -6,7 +6,7 @@ import 'package:ginko/calendar/calendar_row.dart';
 import 'package:ginko/substitution_plan/substitution_plan_row.dart';
 import 'package:ginko/timetable/timetable_row.dart';
 import 'package:ginko/timetable/timetable_select_dialog.dart';
-import 'package:ginko/utils/list_group_header.dart';
+import 'package:ginko/utils/list_group.dart';
 import 'package:ginko/utils/screen_sizes.dart';
 import 'package:ginko/utils/size_limit.dart';
 import 'package:ginko/utils/static.dart';
@@ -61,32 +61,34 @@ class _TimetablePageState extends State<TimetablePage>
             final calendarView = Column(
               children: [
                 if (Static.calendar.hasLoadedData)
-                  ListGroupHeader(
+                  ListGroup(
                     title: 'Termine',
                     onTap: () {
                       Navigator.of(context).pushNamed('/${Keys.calendar}');
                     },
-                  ),
-                if (!Static.calendar.hasLoadedData || events.isEmpty)
-                  Container(
-                    height: 60,
-                    color: Colors.transparent,
-                  )
-                else
-                  SizeLimit(
-                    child: Column(
-                      children: [
-                        ...events
-                            .map((event) => Container(
-                                  margin: EdgeInsets.all(10),
-                                  child: CalendarRow(
-                                    event: event,
-                                  ),
-                                ))
-                            .toList()
-                            .cast<Widget>(),
-                      ],
-                    ),
+                    children: <Widget>[
+                      if (!Static.calendar.hasLoadedData || events.isEmpty)
+                        Container(
+                          height: 60,
+                          color: Colors.transparent,
+                        )
+                      else
+                        SizeLimit(
+                          child: Column(
+                            children: [
+                              ...events
+                                  .map((event) => Container(
+                                        margin: EdgeInsets.all(10),
+                                        child: CalendarRow(
+                                          event: event,
+                                        ),
+                                      ))
+                                  .toList()
+                                  .cast<Widget>(),
+                            ],
+                          ),
+                        ),
+                    ],
                   ),
               ],
             );
@@ -102,41 +104,43 @@ class _TimetablePageState extends State<TimetablePage>
             final cafetoriaView = Column(
               children: [
                 if (Static.cafetoria.hasLoadedData)
-                  ListGroupHeader(
+                  ListGroup(
                     title: 'Cafétoria',
                     onTap: () {
                       Navigator.of(context).pushNamed('/${Keys.cafetoria}');
                     },
-                  ),
-                if (!Static.cafetoria.hasLoadedData || days.isEmpty)
-                  Container(
-                    height: 60,
-                    color: Colors.transparent,
-                  )
-                else
-                  SizeLimit(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ...days
-                            .map((day) => Column(
-                                  children: day.menus
-                                      .map(
-                                        (menu) => Container(
-                                          margin: EdgeInsets.all(10),
-                                          child: CafetoriaRow(
-                                            day: day,
-                                            menu: menu,
-                                          ),
-                                        ),
-                                      )
-                                      .toList()
-                                      .cast<Widget>(),
-                                ))
-                            .toList()
-                            .cast<Widget>(),
-                      ],
-                    ),
+                    children: <Widget>[
+                      if (!Static.cafetoria.hasLoadedData || days.isEmpty)
+                        Container(
+                          height: 60,
+                          color: Colors.transparent,
+                        )
+                      else
+                        SizeLimit(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ...days
+                                  .map((day) => Column(
+                                        children: day.menus
+                                            .map(
+                                              (menu) => Container(
+                                                margin: EdgeInsets.all(10),
+                                                child: CafetoriaRow(
+                                                  day: day,
+                                                  menu: menu,
+                                                ),
+                                              ),
+                                            )
+                                            .toList()
+                                            .cast<Widget>(),
+                                      ))
+                                  .toList()
+                                  .cast<Widget>(),
+                            ],
+                          ),
+                        ),
+                    ],
                   ),
               ],
             );

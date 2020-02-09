@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ginko/substitution_plan/substitution_plan_row.dart';
 import 'package:ginko/utils/empty_list.dart';
 import 'package:ginko/utils/icons_texts.dart';
-import 'package:ginko/utils/list_group_header.dart';
+import 'package:ginko/utils/list_group.dart';
 import 'package:ginko/utils/screen_sizes.dart';
 import 'package:ginko/utils/size_limit.dart';
 import 'package:ginko/utils/static.dart';
@@ -57,51 +57,57 @@ class _SubstitutionPlanPageState extends State<SubstitutionPlanPage>
             }
 
             final items = [
-              ListGroupHeader(
+              ListGroup(
                 title: 'Meine Vertretungen',
+                children: <Widget>[
+                  if (myChanges.isEmpty)
+                    EmptyList(title: 'Keine Änderungen')
+                  else
+                    ...myChanges
+                        .map((substitution) => SizeLimit(
+                              child: Container(
+                                margin: EdgeInsets.all(10),
+                                child: SubstitutionPlanRow(
+                                  substitution: substitution,
+                                ),
+                              ),
+                            ))
+                        .toList()
+                        .cast<Widget>(),
+                ],
               ),
-              if (myChanges.isEmpty)
-                EmptyList(title: 'Keine Änderungen')
-              else
-                ...myChanges
-                    .map((substitution) => SizeLimit(
-                          child: Container(
-                            margin: EdgeInsets.all(10),
-                            child: SubstitutionPlanRow(
-                              substitution: substitution,
-                            ),
-                          ),
-                        ))
-                    .toList()
-                    .cast<Widget>(),
               if (Static
                   .substitutionPlan.data.days[index].myUnparsed.isNotEmpty) ...[
-                ListGroupHeader(
+                ListGroup(
                   title: 'Nicht erkannt',
+                  children: <Widget>[
+                    ...Static.substitutionPlan.data.days[index].myUnparsed
+                        .map((unparsed) => Padding(
+                              padding: EdgeInsets.all(20),
+                              child: Text(unparsed),
+                            ))
+                        .toList()
+                  ],
                 ),
-                ...Static.substitutionPlan.data.days[index].myUnparsed
-                    .map((unparsed) => Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Text(unparsed),
-                        ))
-                    .toList()
-              ], 
-              ListGroupHeader(
+              ],
+              ListGroup(
                 title: 'Weitere Vertretungen',
+                children: <Widget>[
+                  if (notMyChanges.isEmpty)
+                    EmptyList(title: 'Keine Änderungen'),
+                  ...notMyChanges
+                      .map((substitution) => SizeLimit(
+                            child: Container(
+                              margin: EdgeInsets.all(10),
+                              child: SubstitutionPlanRow(
+                                substitution: substitution,
+                              ),
+                            ),
+                          ))
+                      .toList()
+                      .cast<Widget>(),
+                ],
               ),
-              if (notMyChanges.isEmpty)
-                EmptyList(title: 'Keine Änderungen'),
-              ...notMyChanges
-                  .map((substitution) => SizeLimit(
-                        child: Container(
-                          margin: EdgeInsets.all(10),
-                          child: SubstitutionPlanRow(
-                            substitution: substitution,
-                          ),
-                        ),
-                      ))
-                  .toList()
-                  .cast<Widget>(),
             ];
             return Scrollbar(
               child: ListView(
