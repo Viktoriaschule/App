@@ -20,11 +20,11 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     _substitutionPlanNotifications =
-        Static.storage.getBool(Keys.substitutionPlanNotifications) || true;
+        Static.storage.getBool(Keys.substitutionPlanNotifications) ?? true;
     _aiXformationNotifications =
-        Static.storage.getBool(Keys.aiXformationNotifications) || true;
+        Static.storage.getBool(Keys.aiXformationNotifications) ?? true;
     _cafetoriaNotifications =
-        Static.storage.getBool(Keys.cafetoriaNotifications) || true;
+        Static.storage.getBool(Keys.cafetoriaNotifications) ?? true;
     super.initState();
   }
 
