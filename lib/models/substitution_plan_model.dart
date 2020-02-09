@@ -50,6 +50,7 @@ class SubstitutionPlanDay {
     if (isEmpty) {
       return;
     }
+    sort();
     insertInTimetable();
     filterSubstitutions();
     filterUnparsed();
@@ -104,6 +105,14 @@ class SubstitutionPlanDay {
 
   /// The current user grade
   String filteredGrade;
+
+  /// Sorts all substitutions by the unit
+  void sort() {
+    data.forEach((grade, substitutions) {
+      substitutions.sort(
+          (s1, s2) => s1.unit < s2.unit ? -1 : s1.unit == s2.unit ? 0 : 1);
+    });
+  }
 
   /// Insert the substitutions into the timetable
   void insertInTimetable() {
