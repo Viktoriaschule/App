@@ -87,18 +87,31 @@ class Device {
 /// Describes all settings to sync for this device
 class DeviceSettings {
   // ignore: public_member_api_docs
-  const DeviceSettings({this.spNotifications});
+  const DeviceSettings(
+      {this.spNotifications, this.axfNotifications, this.cafNotifications});
 
   // ignore: public_member_api_docs
   factory DeviceSettings.fromJson(Map<String, dynamic> json) => DeviceSettings(
         spNotifications: json['spNotifications'],
+        axfNotifications: json['axfNotifications'],
+        cafNotifications: json['cafNotifications'],
       );
 
-  /// Getting substitution plan notifications
+  /// Receiving substitution plan notifications
   final bool spNotifications;
 
+  /// Receiving aixformation notifications
+  final bool axfNotifications;
+
+  /// Receiving cafetoria notifications
+  final bool cafNotifications;
+
   /// Converts the device settings to a json map
-  Map<String, dynamic> toMap() => {'spNotifications': spNotifications};
+  Map<String, dynamic> toMap() => {
+        'spNotifications': spNotifications,
+        'axfNotifications': axfNotifications,
+        'cafNotifications': cafNotifications,
+      };
 }
 
 /// Describes the cafetoria tags

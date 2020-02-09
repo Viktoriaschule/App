@@ -42,6 +42,10 @@ class TagsLoader extends Loader<Tags> {
             spNotifications:
                 Static.storage.getBool(Keys.substitutionPlanNotifications) ??
                     true,
+            cafNotifications:
+                Static.storage.getBool(Keys.cafetoriaNotifications) ?? true,
+            axfNotifications:
+                Static.storage.getBool(Keys.aiXformationNotifications) ?? true,
           ));
       await sendTags({'device': device.toMap()});
     }
