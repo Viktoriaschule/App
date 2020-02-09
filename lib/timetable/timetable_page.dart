@@ -189,27 +189,38 @@ class _TimetablePageState extends State<TimetablePage>
                             margin: EdgeInsets.all(10),
                             child: Column(
                               children: [
-                                TimetableRow(
-                                  subject: subject ??
-                                      TimetableSubject(
-                                        unit: unit.unit,
-                                        subjectID: 'none',
-                                        teacherID: null,
-                                        roomID: null,
-                                        courseID: '',
-                                        id: '',
-                                        day: weekday,
-                                        block: '',
-                                      ),
-                                  showUnit: getScreenSize(
-                                          MediaQuery.of(context).size.width) !=
-                                      ScreenSize.big,
-                                ),
+                                if (substitutions.isEmpty)
+                                  TimetableRow(
+                                    subject: subject ??
+                                        TimetableSubject(
+                                          unit: unit.unit,
+                                          subjectID: 'none',
+                                          teacherID: null,
+                                          roomID: null,
+                                          courseID: '',
+                                          id: '',
+                                          day: weekday,
+                                          block: '',
+                                        ),
+                                    showUnit: getScreenSize(
+                                            MediaQuery.of(context)
+                                                .size
+                                                .width) !=
+                                        ScreenSize.big,
+                                  ),
                                 ...substitutions
                                     .map((substitution) => SubstitutionPlanRow(
                                           substitution: substitution,
-                                          showUnit: false,
-                                          keepPadding: true,
+                                          showUnit: getScreenSize(
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .width) !=
+                                              ScreenSize.big,
+                                          keepPadding: getScreenSize(
+                                            MediaQuery.of(context)
+                                                .size
+                                                .width) !=
+                                        ScreenSize.big,
                                         ))
                                     .toList()
                                     .cast<Widget>(),

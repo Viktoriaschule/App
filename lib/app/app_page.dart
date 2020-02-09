@@ -80,6 +80,9 @@ class _AppPageState extends State<AppPage>
           }
         }
         await Static.tags.syncTags(context);
+        if (mounted) {
+          setState(() {});
+        }
         if (storedUpdates.substitutionPlan != fetchedUpdates.substitutionPlan ||
             !Static.substitutionPlan.hasLoadedData) {
           if (await Static.substitutionPlan.loadOnline(context) ==
@@ -88,14 +91,8 @@ class _AppPageState extends State<AppPage>
                 fetchedUpdates.substitutionPlan;
           }
         }
-        if (storedUpdates.cafetoria != fetchedUpdates.cafetoria ||
-            !Static.cafetoria.hasLoadedData ||
-            (Static.storage.getString(Keys.cafetoriaId) != null &&
-                Static.storage.getString(Keys.cafetoriaPassword) != null)) {
-          if (await Static.cafetoria.loadOnline(context) ==
-              StatusCodes.success) {
-            Static.updates.data.cafetoria = fetchedUpdates.cafetoria;
-          }
+        if (mounted) {
+          setState(() {});
         }
         if (storedUpdates.calendar != fetchedUpdates.calendar ||
             !Static.calendar.hasLoadedData) {
@@ -104,11 +101,28 @@ class _AppPageState extends State<AppPage>
             Static.updates.data.calendar = fetchedUpdates.calendar;
           }
         }
+        await Static.tags.syncTags(context);
+        if (mounted) {
+          setState(() {});
+        }
         if (storedUpdates.aixformation != fetchedUpdates.aixformation ||
             !Static.aiXformation.hasLoadedData) {
           if (await Static.aiXformation.loadOnline(context) ==
               StatusCodes.success) {
             Static.updates.data.aixformation = fetchedUpdates.aixformation;
+          }
+        }
+        await Static.tags.syncTags(context);
+        if (mounted) {
+          setState(() {});
+        }
+        if (storedUpdates.cafetoria != fetchedUpdates.cafetoria ||
+            !Static.cafetoria.hasLoadedData ||
+            (Static.storage.getString(Keys.cafetoriaId) != null &&
+                Static.storage.getString(Keys.cafetoriaPassword) != null)) {
+          if (await Static.cafetoria.loadOnline(context) ==
+              StatusCodes.success) {
+            Static.updates.data.cafetoria = fetchedUpdates.cafetoria;
           }
         }
         if (mounted) {
@@ -404,6 +418,8 @@ class _AppPageState extends State<AppPage>
             tabBar,
           Expanded(
             child: Scaffold(
+              backgroundColor:
+                  Platform().isWeb ? Color.fromARGB(200, 0, 0, 0) : null,
               body: Stack(
                 children: [
                   IndexedStack(

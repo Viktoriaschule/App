@@ -57,7 +57,6 @@ class _TabProxyState extends State<TabProxy> {
                         Container(
                           margin: EdgeInsets.only(top: 20, bottom: 10),
                           alignment: Alignment.topCenter,
-                          color: Colors.blue,
                           child: Text(
                             widget.weekdays[widget.tabs.indexOf(tab)],
                             style: TextStyle(

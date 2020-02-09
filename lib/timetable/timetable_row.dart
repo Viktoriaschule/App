@@ -67,7 +67,7 @@ class TimetableRow extends StatelessWidget {
           : null,
       titleFontWeight:
           subject.subjectID == 'Mittagspause' || subject.subjectID == 'none'
-              ? FontWeight.normal
+              ? FontWeight.w100
               : null,
       titleColor:
           subject.subjectID == 'Mittagspause' || subject.subjectID == 'none'
