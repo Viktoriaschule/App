@@ -11,6 +11,7 @@ class Updates {
       @required this.cafetoria,
       @required this.calendar,
       @required this.workgroups,
+      @required this.aixformation,
       @required this.minAppLevel,
       @required this.subjects,
       @required this.grade});
@@ -22,6 +23,7 @@ class Updates {
         cafetoria: json['cafetoria'],
         calendar: json['calendar'],
         workgroups: json['workgroups'],
+        aixformation: json['aixformation'],
         minAppLevel: json['minAppLevel'],
         subjects: json['subjects'],
         grade: json['grade'],
@@ -42,20 +44,7 @@ class Updates {
   // ignore: public_member_api_docs
   final int minAppLevel;
   // ignore: public_member_api_docs
+  String aixformation;
+  // ignore: public_member_api_docs
   String grade;
-
-  /// Converts updates to json string
-  String toJson() => json.encode(toMap());
-
-  /// Converts updates to json map
-  Map<String, dynamic> toMap() => {
-        'timetable': timetable,
-        'substitutionPlan': substitutionPlan,
-        'cafetoria': cafetoria,
-        'calendar': calendar,
-        'workgroups': workgroups,
-        'minAppLevel': minAppLevel,
-        'subjects': subjects,
-        'grade': grade
-      };
 }

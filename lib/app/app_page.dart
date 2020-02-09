@@ -102,6 +102,13 @@ class _AppPageState extends State<AppPage>
             Static.updates.data.calendar = fetchedUpdates.calendar;
           }
         }
+        if (storedUpdates.aixformation != fetchedUpdates.aixformation ||
+            !Static.aiXformation.hasLoadedData) {
+          if (await Static.aiXformation.loadOnline(context) ==
+              StatusCodes.success) {
+            Static.updates.data.aixformation = fetchedUpdates.aixformation;
+          }
+        }
         if (mounted) {
           setState(() {
             _loading = false;
