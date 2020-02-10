@@ -350,12 +350,21 @@ class _AppPageState extends State<AppPage>
     return Scaffold(
       body: CustomScrollView(slivers: [
         SliverAppBar(
-          title: Text(
-            home.title,
-            style: TextStyle(
-              color: Colors.black87,
-              fontWeight: FontWeight.w100,
-              fontSize: 22,
+          title: Hero(
+            tag: 'title',
+            child: Material(
+              type: MaterialType.transparency,
+              child: Container(
+                width: 200,
+                child: Text(
+                  home.title,
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w100,
+                    fontSize: 22,
+                  ),
+                ),
+              ),
             ),
           ),
           actions: home.actions,

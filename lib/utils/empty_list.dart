@@ -12,28 +12,22 @@ class EmptyList extends StatelessWidget {
   final String title;
 
   @override
-  Widget build(BuildContext context) => Hero(
-        tag: 'placeholder-$title',
-        child: Material(
-          type: MaterialType.transparency,
-          child: Container(
-            height: 100,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.assignment_ind,
-                    size: 30,
-                    color: Colors.black54,
-                  ),
-                  Text(
-                    title,
-                    style: TextStyle(color: Colors.black54),
-                  ),
-                ],
+  Widget build(BuildContext context) => Container(
+        height: 100,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.assignment_ind,
+                size: 30,
+                color: Colors.black54,
               ),
-            ),
+              Text(
+                title,
+                style: TextStyle(color: Colors.black54),
+              ),
+            ],
           ),
         ),
       );

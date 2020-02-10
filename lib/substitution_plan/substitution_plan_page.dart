@@ -109,36 +109,61 @@ class _SubstitutionPlanPageState extends State<SubstitutionPlanPage>
                 ],
               ),
             ];
-            return Scrollbar(
-              child: ListView(
-                shrinkWrap: true,
-                children: [
-                  if (Static.substitutionPlan.hasLoadedData)
-                    Column(
+            return Column(
+              children: <Widget>[
+                Expanded(
+                  child: Scrollbar(
+                    child: ListView(
+                      shrinkWrap: true,
                       children: [
-                        Container(
-                          margin: EdgeInsets.all(10),
-                          child: IconsTexts(
-                            icons: [
-                              Icons.timer,
-                              Icons.event,
-                            ],
-                            texts: [
-                              timeago.format(
-                                Static
-                                    .substitutionPlan.data.days[index].updated,
-                                locale: 'de',
+                        if (Static.substitutionPlan.hasLoadedData)
+                          Column(
+                            children: [
+                              Card(
+                                shape: BeveledRectangleBorder(
+                                  borderRadius: BorderRadius.circular(0),
+                                ),
+                                elevation: 5,
+                                margin: EdgeInsets.all(10),
+                                child: Container(
+                                  margin: EdgeInsets.all(10),
+                                  child: IconsTexts(
+                                    icons: [
+                                      Icons.timer,
+                                      Icons.event,
+                                    ],
+                                    texts: [
+                                      timeago.format(
+                                        Static.substitutionPlan.data.days[index]
+                                            .updated,
+                                        locale: 'de',
+                                      ),
+                                      outputDateFormat.format(Static
+                                          .substitutionPlan
+                                          .data
+                                          .days[index]
+                                          .date),
+                                    ],
+                                  ),
+                                ),
                               ),
-                              outputDateFormat.format(Static
-                                  .substitutionPlan.data.days[index].date),
+                              Hero(
+                                tag: 'substitutionPlan',
+                                child: Material(
+                                  type: MaterialType.transparency,
+                                  child: Column(
+                                    children: items,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
-                        ),
-                        ...items,
                       ],
                     ),
-                ],
-              ),
+                  ),
+                ),
+                Container()
+              ],
             );
           },
         ),

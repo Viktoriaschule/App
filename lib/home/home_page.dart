@@ -8,6 +8,7 @@ import 'package:ginko/calendar/calendar_row.dart';
 import 'package:ginko/substitution_plan/substitution_plan_row.dart';
 import 'package:ginko/timetable/timetable_page.dart';
 import 'package:ginko/timetable/timetable_row.dart';
+import 'package:ginko/utils/bottom_navigation.dart';
 import 'package:ginko/utils/empty_list.dart';
 import 'package:ginko/utils/list_group.dart';
 import 'package:ginko/utils/screen_sizes.dart';
@@ -58,34 +59,42 @@ class HomePage extends StatelessWidget {
             title: 'Nächste Stunden - ${weekdays[weekday]}',
             counter: subjects.length > 3 ? subjects.length - 3 : 0,
             heroId: 'timetable',
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (context) => Scaffold(
-                    appBar: AppBar(
-                      title: Hero(
-                        tag: 'timetable-title',
-                        child: Material(
-                          type: MaterialType.transparency,
-                          child: Text(
-                            pages['timetable'].title,
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontWeight: FontWeight.w100,
-                              fontSize: 22,
+            actions: [
+              NavigationAction(
+                Icons.expand_more,
+                () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => Scaffold(
+                        appBar: AppBar(
+                          title: Hero(
+                            tag: 'title',
+                            child: Material(
+                              type: MaterialType.transparency,
+                              child: Container(
+                                width: 200,
+                                child: Text(
+                                  pages['timetable'].title,
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w100,
+                                    fontSize: 22,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
+                          actions: pages['timetable'].actions,
+                          automaticallyImplyLeading: false,
+                          elevation: 0,
                         ),
+                        body: pages['timetable'].content,
                       ),
-                      actions: pages['timetable'].actions,
-                      automaticallyImplyLeading: false,
-                      elevation: 0,
                     ),
-                    body: pages['timetable'].content,
-                  ),
-                ),
-              );
-            },
+                  );
+                },
+              ),
+            ],
             children: <Widget>[
               SizeLimit(
                 child: Column(
@@ -136,34 +145,39 @@ class HomePage extends StatelessWidget {
             title:
                 'Nächste Vertretungen - ${weekdays[Static.timetable.data.initialDay(DateTime.now()).weekday - 1]}',
             counter: changes.length > 3 ? changes.length - 3 : 0,
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (context) => Scaffold(
-                    appBar: AppBar(
-                      title: Hero(
-                        tag: 'substitutionPlan-title',
-                        child: Material(
-                          type: MaterialType.transparency,
-                          child: Text(
-                            pages['substitutionPlan'].title,
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontWeight: FontWeight.w100,
-                              fontSize: 22,
+            actions: [
+              NavigationAction(Icons.expand_more, () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => Scaffold(
+                      appBar: AppBar(
+                        title: Hero(
+                          tag: 'title',
+                          child: Material(
+                            type: MaterialType.transparency,
+                            child: Container(
+                              width: 200,
+                              child: Text(
+                                pages['substitutionPlan'].title,
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w100,
+                                  fontSize: 22,
+                                ),
+                              ),
                             ),
                           ),
                         ),
+                        actions: pages['substitutionPlan'].actions,
+                        automaticallyImplyLeading: false,
+                        elevation: 0,
                       ),
-                      actions: pages['substitutionPlan'].actions,
-                      automaticallyImplyLeading: false,
-                      elevation: 0,
+                      body: pages['substitutionPlan'].content,
                     ),
-                    body: pages['substitutionPlan'].content,
                   ),
-                ),
-              );
-            },
+                );
+              }),
+            ],
             children: <Widget>[
               if (changes.isEmpty)
                 EmptyList(title: 'Keine Änderungen')
@@ -196,12 +210,14 @@ class HomePage extends StatelessWidget {
         if (Static.aiXformation.hasLoadedData)
           ListGroup(
             heroId: 'aixformation',
+            actions: [
+              NavigationAction(Icons.expand_more, () {
+                Navigator.of(context).pushNamed('/${Keys.aiXformation}');
+              }),
+            ],
             title: 'AiXformation',
             counter: Static.aiXformation.data.posts.length -
                 (size == ScreenSize.small ? 2 : 3),
-            onTap: () {
-              Navigator.of(context).pushNamed('/${Keys.aiXformation}');
-            },
             children: <Widget>[
               if (Static.aiXformation.hasLoadedData)
                 ...Static.aiXformation.data.posts
@@ -238,6 +254,10 @@ class HomePage extends StatelessWidget {
         if (Static.cafetoria.hasLoadedData)
           ListGroup(
             heroId: 'cafetoria',
+            actions: [
+              NavigationAction(Icons.list, () {}),
+              NavigationAction(Icons.credit_card, () {}),
+            ],
             title: !loggedIn
                 ? days.isEmpty ? 'Cafétoria' : 'Cafétoria - $cafetoriaWeekday'
                 : days.isEmpty
@@ -284,6 +304,10 @@ class HomePage extends StatelessWidget {
         if (Static.calendar.hasLoadedData)
           ListGroup(
             title: 'Kalender',
+            actions: [
+              NavigationAction(Icons.list, () {}),
+              NavigationAction(Icons.calendar_today, () {}),
+            ],
             counter: events.length - 3,
             onTap: () {
               Navigator.of(context).pushNamed('/${Keys.calendar}');

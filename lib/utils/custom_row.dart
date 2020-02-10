@@ -93,15 +93,6 @@ class CustomRow extends StatelessWidget {
       ],
     );
 
-    if (heroTag != null) {
-      return Hero(
-        tag: heroTag,
-        child: Material(
-          type: MaterialType.transparency,
-          child: row,
-        ),
-      );
-    }
     return row;
   }
 }

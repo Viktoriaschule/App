@@ -145,99 +145,108 @@ class _TimetablePageState extends State<TimetablePage>
               ],
             );
             return Scrollbar(
-              child: ListView(
-                shrinkWrap: true,
-                padding: EdgeInsets.only(top: 10, bottom: 10),
-                children: [
-                  if (Static.timetable.hasLoadedData &&
-                      Static.substitutionPlan.hasLoadedData)
-                    ...Static.timetable.data.days[weekday].units.map((unit) {
-                      final subject =
-                          Static.selection.getSelectedSubject(unit.subjects);
-                      // ignore: omit_local_variable_types
-                      final List<Substitution> substitutions =
-                          subject.substitutions;
-                      return SizeLimit(
-                        child: InkWell(
-                          onTap: () async {
-                            if (unit.subjects.length > 1) {
-                              // ignore: omit_local_variable_types
-                              final TimetableSubject selection =
-                                  await showDialog(
-                                context: context,
-                                builder: (context) => TimetableSelectDialog(
-                                  weekday: weekday,
-                                  unit: unit,
-                                ),
-                              );
-                              if (selection == null) {
-                                return;
-                              }
-                              Static.selection.setSelectedSubject(selection);
-                              setState(() {});
-
-                              try {
-                                await Static.selection.save(context);
-                                if (mounted) {
+              child: Hero(
+                tag: 'timetable',
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: ListView(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.only(top: 10, bottom: 10),
+                    children: [
+                      if (Static.timetable.hasLoadedData &&
+                          Static.substitutionPlan.hasLoadedData)
+                        ...Static.timetable.data.days[weekday].units
+                            .map((unit) {
+                          final subject = Static.selection
+                              .getSelectedSubject(unit.subjects);
+                          // ignore: omit_local_variable_types
+                          final List<Substitution> substitutions =
+                              subject.substitutions;
+                          return SizeLimit(
+                            child: InkWell(
+                              onTap: () async {
+                                if (unit.subjects.length > 1) {
+                                  // ignore: omit_local_variable_types
+                                  final TimetableSubject selection =
+                                      await showDialog(
+                                    context: context,
+                                    builder: (context) => TimetableSelectDialog(
+                                      weekday: weekday,
+                                      unit: unit,
+                                    ),
+                                  );
+                                  if (selection == null) {
+                                    return;
+                                  }
+                                  Static.selection
+                                      .setSelectedSubject(selection);
                                   setState(() {});
+
+                                  try {
+                                    await Static.selection.save(context);
+                                    if (mounted) {
+                                      setState(() {});
+                                    }
+                                    // ignore: empty_catches
+                                  } on DioError {}
                                 }
-                                // ignore: empty_catches
-                              } on DioError {}
-                            }
-                          },
-                          child: Container(
-                            margin: EdgeInsets.all(10),
-                            child: Column(
-                              children: [
-                                if (substitutions.isEmpty)
-                                  TimetableRow(
-                                    subject: subject ??
-                                        TimetableSubject(
-                                          unit: unit.unit,
-                                          subjectID: 'none',
-                                          teacherID: null,
-                                          roomID: null,
-                                          courseID: '',
-                                          id: '',
-                                          day: weekday,
-                                          block: '',
-                                        ),
-                                    showUnit: getScreenSize(
-                                            MediaQuery.of(context)
-                                                .size
-                                                .width) !=
-                                        ScreenSize.big,
-                                  ),
-                                ...substitutions
-                                    .map((substitution) => SubstitutionPlanRow(
-                                          substitution: substitution,
-                                          showUnit: getScreenSize(
-                                                  MediaQuery.of(context)
-                                                      .size
-                                                      .width) !=
-                                              ScreenSize.big,
-                                          keepPadding: getScreenSize(
-                                                  MediaQuery.of(context)
-                                                      .size
-                                                      .width) !=
-                                              ScreenSize.big,
-                                        ))
-                                    .toList()
-                                    .cast<Widget>(),
-                              ],
+                              },
+                              child: Container(
+                                margin: EdgeInsets.all(10),
+                                child: Column(
+                                  children: [
+                                    if (substitutions.isEmpty)
+                                      TimetableRow(
+                                        subject: subject ??
+                                            TimetableSubject(
+                                              unit: unit.unit,
+                                              subjectID: 'none',
+                                              teacherID: null,
+                                              roomID: null,
+                                              courseID: '',
+                                              id: '',
+                                              day: weekday,
+                                              block: '',
+                                            ),
+                                        showUnit: getScreenSize(
+                                                MediaQuery.of(context)
+                                                    .size
+                                                    .width) !=
+                                            ScreenSize.big,
+                                      ),
+                                    ...substitutions
+                                        .map((substitution) =>
+                                            SubstitutionPlanRow(
+                                              substitution: substitution,
+                                              showUnit: getScreenSize(
+                                                      MediaQuery.of(context)
+                                                          .size
+                                                          .width) !=
+                                                  ScreenSize.big,
+                                              keepPadding: getScreenSize(
+                                                      MediaQuery.of(context)
+                                                          .size
+                                                          .width) !=
+                                                  ScreenSize.big,
+                                            ))
+                                        .toList()
+                                        .cast<Widget>(),
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
+                          );
+                        }),
+                      if (events.isNotEmpty || days.isNotEmpty)
+                        Container(
+                          height: 46,
+                          color: Colors.transparent,
                         ),
-                      );
-                    }),
-                  if (events.isNotEmpty || days.isNotEmpty)
-                    Container(
-                      height: 46,
-                      color: Colors.transparent,
-                    ),
-                  if (events.isNotEmpty) calendarView,
-                  if (days.isNotEmpty) cafetoriaView,
-                ],
+                      if (events.isNotEmpty) calendarView,
+                      if (days.isNotEmpty) cafetoriaView,
+                    ],
+                  ),
+                ),
               ),
             );
           },
