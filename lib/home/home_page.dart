@@ -335,6 +335,7 @@ class HomePage extends StatelessWidget {
           ),
       ],
     );
+    //TODO: Use a grid and show no data if there is nothing to show
     return Column(
       children: [
         if (size == ScreenSize.small)

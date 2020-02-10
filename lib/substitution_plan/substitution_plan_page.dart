@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ginko/substitution_plan/substitution_plan_row.dart';
+import 'package:ginko/utils/bottom_navigation.dart';
 import 'package:ginko/utils/empty_list.dart';
 import 'package:ginko/utils/icons_texts.dart';
 import 'package:ginko/utils/list_group.dart';
@@ -162,7 +163,19 @@ class _SubstitutionPlanPageState extends State<SubstitutionPlanPage>
                     ),
                   ),
                 ),
-                Container()
+                Hero(
+                  tag: 'substitutionPlan-navigation',
+                                  child: Material(
+                    type: MaterialType.transparency,
+                    child: BottomNavigation(
+                      actions: [
+                        NavigationAction(Icons.expand_less, () {
+                          Navigator.pop(context);
+                        }),
+                      ],
+                    ),
+                  ),
+                )
               ],
             );
           },

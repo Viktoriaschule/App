@@ -41,7 +41,54 @@ class ListGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final actions = this.actions ?? [];
-    final card = Card(
+    final content = Container(
+      child: Column(
+        children: [
+          Container(
+            height: 40,
+            margin: EdgeInsets.only(bottom: 10),
+            padding: EdgeInsets.only(left: 20, right: 10),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  flex: 85,
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w100,
+                      color: Colors.black87,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                if (counter > 0)
+                  Expanded(
+                    flex: 15,
+                    child: Center(
+                      child: Container(
+                        margin: EdgeInsets.only(right: 9),
+                        child: Text(
+                          '+${counter >= 10 ? counter : '$counter'}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w100,
+                            color: Colors.black87,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          ...children,
+          Container(
+            height: 10,
+          ),
+        ],
+      ),
+    );
+    return Card(
       shape: BeveledRectangleBorder(
         borderRadius: BorderRadius.circular(0),
       ),
@@ -51,51 +98,16 @@ class ListGroup extends StatelessWidget {
         children: <Widget>[
           Stack(
             children: <Widget>[
-              Column(
-                children: [
-                  Container(
-                    height: 40,
-                    margin: EdgeInsets.only(bottom: 10),
-                    padding: EdgeInsets.only(left: 20, right: 10),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          flex: 85,
-                          child: Text(
-                            title,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w100,
-                              color: Colors.black87,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                        if (counter > 0)
-                          Expanded(
-                            flex: 15,
-                            child: Center(
-                              child: Container(
-                                margin: EdgeInsets.only(right: 9),
-                                child: Text(
-                                  '+${counter >= 10 ? counter : '$counter'}',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w100,
-                                    color: Colors.black87,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
+              if (heroId != null)
+                Hero(
+                  tag: heroId ?? this,
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: content,
                   ),
-                  ...children,
-                  Container(
-                    height: 10,
-                  ),
-                ],
-              ),
+                )
+              else
+                content,
               Positioned.fill(
                 child: InkWell(
                   onTap:
@@ -105,21 +117,18 @@ class ListGroup extends StatelessWidget {
               ),
             ],
           ),
-          if (actions.isNotEmpty)
-            BottomNavigation(actions: actions)
+          if (actions.isNotEmpty && heroId != null)
+            Hero(
+              tag: '$heroId-navigation',
+              child: Material(
+                type: MaterialType.transparency,
+                child: BottomNavigation(actions: actions),
+              ),
+            )
+          else if (actions.isNotEmpty)
+            BottomNavigation(actions: actions),
         ],
       ),
     );
-
-    if (heroId != null) {
-      return Hero(
-        tag: heroId ?? this,
-        child: Material(
-          type: MaterialType.transparency,
-          child: card,
-        ),
-      );
-    }
-    return card;
   }
 }
