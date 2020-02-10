@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ginko/app/app_page.dart';
 import 'package:ginko/cafetoria/cafetoria_row.dart';
 import 'package:ginko/calendar/calendar_row.dart';
 import 'package:ginko/substitution_plan/substitution_plan_row.dart';
@@ -35,122 +36,128 @@ class _TimetablePageState extends State<TimetablePage>
   }
 
   @override
-  Widget build(BuildContext context) => TabProxy(
-        controller: _tabController,
-        threshold: ScreenSize.big,
-        weekdays: weekdays.values
-            .toList()
-            .sublist(0, 5)
-            .map((weekday) =>
-                getScreenSize(MediaQuery.of(context).size.width) ==
-                        ScreenSize.small
-                    ? weekday.substring(0, 2).toUpperCase()
-                    : weekday)
-            .toList(),
-        tabs: List.generate(
-          5,
-          (weekday) {
-            final events = Static.calendar.hasLoadedData
-                ? (Static.calendar.data.getEventsForTimeSpan(
-                        monday(DateTime.now()).add(Duration(days: weekday)),
-                        monday(DateTime.now())
-                            .add(Duration(days: weekday + 1))
-                            .subtract(Duration(seconds: 1)))
-                      ..sort((a, b) => a.start.compareTo(b.start)))
-                    .toList()
-                : [];
-            final calendarView = Column(
-              children: [
-                if (Static.calendar.hasLoadedData)
-                  ListGroup(
-                    title: 'Termine',
-                    onTap: () {
-                      Navigator.of(context).pushNamed('/${Keys.calendar}');
-                    },
-                    children: <Widget>[
-                      if (!Static.calendar.hasLoadedData || events.isEmpty)
-                        Container(
-                          height: 60,
-                          color: Colors.transparent,
-                        )
-                      else
-                        SizeLimit(
-                          child: Column(
-                            children: [
-                              ...events
-                                  .map((event) => Container(
-                                        margin: EdgeInsets.all(10),
-                                        child: CalendarRow(
-                                          event: event,
-                                        ),
-                                      ))
-                                  .toList()
-                                  .cast<Widget>(),
-                            ],
-                          ),
-                        ),
-                    ],
-                  ),
-              ],
-            );
-            final days = Static.cafetoria.hasLoadedData
-                ? (Static.cafetoria.data.days
-                        .where((d) =>
-                            d.date ==
-                            monday(DateTime.now()).add(Duration(days: weekday)))
-                        .toList()
-                          ..sort((a, b) => a.date.compareTo(b.date)))
-                    .toList()
-                : [];
-            final cafetoriaView = Column(
-              children: [
-                if (Static.cafetoria.hasLoadedData)
-                  ListGroup(
-                    title: 'Cafétoria',
-                    onTap: () {
-                      Navigator.of(context).pushNamed('/${Keys.cafetoria}');
-                    },
-                    children: <Widget>[
-                      if (!Static.cafetoria.hasLoadedData || days.isEmpty)
-                        Container(
-                          height: 60,
-                          color: Colors.transparent,
-                        )
-                      else
-                        SizeLimit(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ...days
-                                  .map((day) => Column(
-                                        children: day.menus
-                                            .map(
-                                              (menu) => Container(
-                                                margin: EdgeInsets.all(10),
-                                                child: CafetoriaRow(
-                                                  day: day,
-                                                  menu: menu,
-                                                ),
+  Widget build(BuildContext context) => Column(
+        children: <Widget>[
+          Expanded(
+            child: TabProxy(
+              controller: _tabController,
+              threshold: ScreenSize.big,
+              weekdays: weekdays.values
+                  .toList()
+                  .sublist(0, 5)
+                  .map((weekday) =>
+                      getScreenSize(MediaQuery.of(context).size.width) ==
+                              ScreenSize.small
+                          ? weekday.substring(0, 2).toUpperCase()
+                          : weekday)
+                  .toList(),
+              tabs: List.generate(
+                5,
+                (weekday) {
+                  final events = Static.calendar.hasLoadedData
+                      ? (Static.calendar.data.getEventsForTimeSpan(
+                              monday(DateTime.now())
+                                  .add(Duration(days: weekday)),
+                              monday(DateTime.now())
+                                  .add(Duration(days: weekday + 1))
+                                  .subtract(Duration(seconds: 1)))
+                            ..sort((a, b) => a.start.compareTo(b.start)))
+                          .toList()
+                      : [];
+                  final calendarView = Column(
+                    children: [
+                      if (Static.calendar.hasLoadedData)
+                        ListGroup(
+                          title: 'Termine',
+                          onTap: () {
+                            Navigator.of(context)
+                                .pushNamed('/${Keys.calendar}');
+                          },
+                          children: <Widget>[
+                            if (!Static.calendar.hasLoadedData ||
+                                events.isEmpty)
+                              Container(
+                                height: 60,
+                                color: Colors.transparent,
+                              )
+                            else
+                              SizeLimit(
+                                child: Column(
+                                  children: [
+                                    ...events
+                                        .map((event) => Container(
+                                              margin: EdgeInsets.all(10),
+                                              child: CalendarRow(
+                                                event: event,
                                               ),
-                                            )
-                                            .toList()
-                                            .cast<Widget>(),
-                                      ))
-                                  .toList()
-                                  .cast<Widget>(),
-                            ],
-                          ),
+                                            ))
+                                        .toList()
+                                        .cast<Widget>(),
+                                  ],
+                                ),
+                              ),
+                          ],
                         ),
                     ],
-                  ),
-              ],
-            );
-            return Column(
-              children: <Widget>[
-                Expanded(
-                  child: Scrollbar(
+                  );
+                  final days = Static.cafetoria.hasLoadedData
+                      ? (Static.cafetoria.data.days
+                              .where((d) =>
+                                  d.date ==
+                                  monday(DateTime.now())
+                                      .add(Duration(days: weekday)))
+                              .toList()
+                                ..sort((a, b) => a.date.compareTo(b.date)))
+                          .toList()
+                      : [];
+                  final cafetoriaView = Column(
+                    children: [
+                      if (Static.cafetoria.hasLoadedData)
+                        ListGroup(
+                          title: 'Cafétoria',
+                          onTap: () {
+                            Navigator.of(context)
+                                .pushNamed('/${Keys.cafetoria}');
+                          },
+                          children: <Widget>[
+                            if (!Static.cafetoria.hasLoadedData || days.isEmpty)
+                              Container(
+                                height: 60,
+                                color: Colors.transparent,
+                              )
+                            else
+                              SizeLimit(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ...days
+                                        .map((day) => Column(
+                                              children: day.menus
+                                                  .map(
+                                                    (menu) => Container(
+                                                      margin:
+                                                          EdgeInsets.all(10),
+                                                      child: CafetoriaRow(
+                                                        day: day,
+                                                        menu: menu,
+                                                      ),
+                                                    ),
+                                                  )
+                                                  .toList()
+                                                  .cast<Widget>(),
+                                            ))
+                                        .toList()
+                                        .cast<Widget>(),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                    ],
+                  );
+                  return Scrollbar(
                     child: Hero(
-                      tag: 'timetable',
+                      tag: Keys.timetable,
                       child: Material(
                         type: MaterialType.transparency,
                         child: ListView(
@@ -255,24 +262,24 @@ class _TimetablePageState extends State<TimetablePage>
                         ),
                       ),
                     ),
-                  ),
-                ),
-                Hero(
-                  tag: 'timetable-navigation',
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: BottomNavigation(
-                      actions: [
-                        NavigationAction(Icons.expand_less, () {
-                          Navigator.pop(context);
-                        }),
-                      ],
-                    ),
-                  ),
-                )
-              ],
-            );
-          },
-        ).toList().cast<Widget>(),
+                  );
+                },
+              ).toList().cast<Widget>(),
+            ),
+          ),
+          Hero(
+            tag: Keys.navigation(Keys.timetable),
+            child: Material(
+              type: MaterialType.transparency,
+              child: BottomNavigation(
+                actions: [
+                  NavigationAction(Icons.expand_less, () {
+                    Navigator.pop(context);
+                  }),
+                ],
+              ),
+            ),
+          )
+        ],
       );
 }

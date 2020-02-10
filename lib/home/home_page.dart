@@ -4,10 +4,13 @@ import 'package:flutter/rendering.dart';
 import 'package:ginko/aixformation/aixformation_row.dart';
 import 'package:ginko/app/app_page.dart';
 import 'package:ginko/cafetoria/cafetoria_row.dart';
+import 'package:ginko/calendar/calendar_list.dart';
+import 'package:ginko/calendar/calendar_page.dart';
 import 'package:ginko/calendar/calendar_row.dart';
 import 'package:ginko/substitution_plan/substitution_plan_row.dart';
 import 'package:ginko/timetable/timetable_page.dart';
 import 'package:ginko/timetable/timetable_row.dart';
+import 'package:ginko/utils/app_bar.dart';
 import 'package:ginko/utils/bottom_navigation.dart';
 import 'package:ginko/utils/empty_list.dart';
 import 'package:ginko/utils/list_group.dart';
@@ -58,7 +61,7 @@ class HomePage extends StatelessWidget {
           ListGroup(
             title: 'Nächste Stunden - ${weekdays[weekday]}',
             counter: subjects.length > 3 ? subjects.length - 3 : 0,
-            heroId: 'timetable',
+            heroId: Keys.timetable,
             actions: [
               NavigationAction(
                 Icons.expand_more,
@@ -66,29 +69,11 @@ class HomePage extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute<void>(
                       builder: (context) => Scaffold(
-                        appBar: AppBar(
-                          title: Hero(
-                            tag: 'title',
-                            child: Material(
-                              type: MaterialType.transparency,
-                              child: Container(
-                                width: 200,
-                                child: Text(
-                                  pages['timetable'].title,
-                                  style: TextStyle(
-                                    color: Colors.black87,
-                                    fontWeight: FontWeight.w100,
-                                    fontSize: 22,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          actions: pages['timetable'].actions,
-                          automaticallyImplyLeading: false,
-                          elevation: 0,
+                        appBar: CustomAppBar(
+                          title: pages[Keys.timetable].title,
+                          actions: pages[Keys.timetable].actions,
                         ),
-                        body: pages['timetable'].content,
+                        body: pages[Keys.timetable].content,
                       ),
                     ),
                   );
@@ -141,7 +126,7 @@ class HomePage extends StatelessWidget {
       children: [
         if (Static.timetable.hasLoadedData && Static.selection.isSet())
           ListGroup(
-            heroId: 'substitutionPlan',
+            heroId: Keys.substitutionPlan,
             title:
                 'Nächste Vertretungen - ${weekdays[Static.timetable.data.initialDay(DateTime.now()).weekday - 1]}',
             counter: changes.length > 3 ? changes.length - 3 : 0,
@@ -150,29 +135,11 @@ class HomePage extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder: (context) => Scaffold(
-                      appBar: AppBar(
-                        title: Hero(
-                          tag: 'title',
-                          child: Material(
-                            type: MaterialType.transparency,
-                            child: Container(
-                              width: 200,
-                              child: Text(
-                                pages['substitutionPlan'].title,
-                                style: TextStyle(
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.w100,
-                                  fontSize: 22,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        actions: pages['substitutionPlan'].actions,
-                        automaticallyImplyLeading: false,
-                        elevation: 0,
+                      appBar: CustomAppBar(
+                        title: pages[Keys.substitutionPlan].title,
+                        actions: pages[Keys.substitutionPlan].actions,
                       ),
-                      body: pages['substitutionPlan'].content,
+                      body: pages[Keys.substitutionPlan].content,
                     ),
                   ),
                 );
@@ -303,15 +270,36 @@ class HomePage extends StatelessWidget {
       children: [
         if (Static.calendar.hasLoadedData)
           ListGroup(
+            heroId: Keys.calendar,
             title: 'Kalender',
             actions: [
-              NavigationAction(Icons.list, () {}),
-              NavigationAction(Icons.calendar_today, () {}),
+              NavigationAction(
+                Icons.list,
+                () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => Scaffold(
+                        body: CalendarList(page: pages[Keys.calendar]),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              NavigationAction(Icons.calendar_today, () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => Scaffold(
+                      appBar: CustomAppBar(
+                        title: pages[Keys.calendar].title,
+                        actions: pages[Keys.calendar].actions,
+                      ),
+                      body: CalendarPage(page: pages[Keys.calendar]),
+                    ),
+                  ),
+                );
+              })
             ],
             counter: events.length - 3,
-            onTap: () {
-              Navigator.of(context).pushNamed('/${Keys.calendar}');
-            },
             children: <Widget>[
               if (!Static.calendar.hasLoadedData || events.isEmpty)
                 EmptyList(title: 'Keine Termine')

@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:ginko/app/app_page.dart';
 import 'package:ginko/calendar/calendar_grid_event.dart';
 import 'package:ginko/calendar/calendar_grid_item.dart';
-import 'package:ginko/utils/static.dart';
+import 'package:ginko/calendar/calendar_list.dart';
 import 'package:ginko/models/models.dart';
+import 'package:ginko/utils/app_bar.dart';
+import 'package:ginko/utils/bottom_navigation.dart';
+import 'package:ginko/utils/static.dart';
 
 // ignore: public_member_api_docs
 class CalendarPage extends StatefulWidget {
+  // ignore: public_member_api_docs
+  const CalendarPage({@required this.page});
+
+  // ignore: public_member_api_docs
+  final InlinePage page;
+
   @override
   _CalendarPageState createState() => _CalendarPageState();
 }
@@ -187,111 +197,146 @@ class _CalendarPageState extends State<CalendarPage>
 
   @override
   Widget build(BuildContext context) {
-    //TODO: Check the header height
-    const headerHeight = 36;
-    const otherPadding = 0.0;
-    final height =
-        MediaQuery.of(context).size.height - headerHeight - otherPadding - 81;
-    final width = MediaQuery.of(context).size.width - otherPadding * 2 - 1;
-
-    final tabs = [];
-    for (var i = 0;
-        i <
-            lastEvent.month -
-                firstEvent.month +
-                1 +
-                (lastEvent.year - firstEvent.year) * 12;
-        i++) {
-      final month = (i + firstEvent.month - 1) % 12;
-      final year = firstEvent.year + ((i + firstEvent.month - 1) ~/ 12);
-      final days = daysInMonth(month, year);
-      final firstDayInMonth = DateTime(year, month + 1, 1);
-      final items = [];
-      for (var j = 0; j < firstDayInMonth.weekday - 1; j++) {
-        final date = firstDayInMonth
-            .subtract(Duration(days: firstDayInMonth.weekday - 1 - j));
-        items.add(CalendarGridItem(date: date, main: false));
-      }
-      for (var k = 0; k < days; k++) {
-        final date = firstDayInMonth.add(Duration(days: k));
-        items.add(CalendarGridItem(date: date, main: true));
-      }
-      var l = 0;
-      while (items.length < 42) {
-        final date =
-            DateTime(firstDayInMonth.year, firstDayInMonth.month + 1, 1)
-                .add(Duration(days: l++));
-        items.add(CalendarGridItem(date: date, main: false));
-      }
-      final rows = [];
-      for (var m = 0; m < 6; m++) {
-        final column = [];
-        for (var n = 0; n < 7; n++) {
-          column.add(items[m * 7 + n]);
-        }
-        rows.add(column);
-      }
-      tabs.add(Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Container(
-            width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.all(10),
-            child: Center(
-              child: Text(
-                '${months[month]} $year',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(color: Colors.grey.shade500),
-                left: BorderSide(color: Colors.grey.shade500),
-              ),
-            ),
-            margin: EdgeInsets.only(
-              right: otherPadding,
-              bottom: otherPadding,
-              left: otherPadding,
-            ),
-            child: Column(
-              children: rows
-                  .map((row) => Stack(
-                        children: <Widget>[
-                          Row(
-                            children: row
-                                .map((item) => SizedBox(
-                                      width: width / 7,
-                                      height: height / 6,
-                                      child: item,
-                                    ))
-                                .toList()
-                                .cast<Widget>(),
+    return Column(
+      children: <Widget>[
+        Expanded(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              const otherPadding = 0.0;
+              const monthHeight = 40.0;
+              final height = constraints.maxHeight - otherPadding - monthHeight - 5;
+              final width = constraints.maxWidth - otherPadding * 2 - 1;
+              final tabs = [];
+              for (var i = 0;
+                  i <
+                      lastEvent.month -
+                          firstEvent.month +
+                          1 +
+                          (lastEvent.year - firstEvent.year) * 12;
+                  i++) {
+                final month = (i + firstEvent.month - 1) % 12;
+                final year =
+                    firstEvent.year + ((i + firstEvent.month - 1) ~/ 12);
+                final days = daysInMonth(month, year);
+                final firstDayInMonth = DateTime(year, month + 1, 1);
+                final items = [];
+                for (var j = 0; j < firstDayInMonth.weekday - 1; j++) {
+                  final date = firstDayInMonth.subtract(
+                      Duration(days: firstDayInMonth.weekday - 1 - j));
+                  items.add(CalendarGridItem(date: date, main: false));
+                }
+                for (var k = 0; k < days; k++) {
+                  final date = firstDayInMonth.add(Duration(days: k));
+                  items.add(CalendarGridItem(date: date, main: true));
+                }
+                var l = 0;
+                while (items.length < 42) {
+                  final date = DateTime(
+                          firstDayInMonth.year, firstDayInMonth.month + 1, 1)
+                      .add(Duration(days: l++));
+                  items.add(CalendarGridItem(date: date, main: false));
+                }
+                final rows = [];
+                for (var m = 0; m < 6; m++) {
+                  final column = [];
+                  for (var n = 0; n < 7; n++) {
+                    column.add(items[m * 7 + n]);
+                  }
+                  rows.add(column);
+                }
+                tabs.add(Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Container(
+                      height: monthHeight,
+                      width: constraints.maxWidth,
+                      padding: EdgeInsets.all(10),
+                      child: Center(
+                        child: Text(
+                          '${months[month]} $year',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
                           ),
-                          ...getEventViewsForWeek(
-                              row[0].date, row[6].date, width, height)
-                        ],
-                      ))
-                  .toList(),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          top: BorderSide(color: Colors.grey.shade500),
+                          left: BorderSide(color: Colors.grey.shade500),
+                        ),
+                      ),
+                      margin: EdgeInsets.only(
+                        right: otherPadding,
+                        bottom: otherPadding,
+                        left: otherPadding,
+                      ),
+                      child: Column(
+                        children: rows
+                            .map((row) => Stack(
+                                  children: <Widget>[
+                                    Row(
+                                      children: row
+                                          .map((item) => SizedBox(
+                                                width: width / 7,
+                                                height: height / 6,
+                                                child: item,
+                                              ))
+                                          .toList()
+                                          .cast<Widget>(),
+                                    ),
+                                    ...getEventViewsForWeek(
+                                        row[0].date, row[6].date, width, height)
+                                  ],
+                                ))
+                            .toList(),
+                      ),
+                    ),
+                  ],
+                ));
+              }
+              return Hero(
+                tag: this,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: TabBarView(
+                    controller: controller,
+                    children: tabs.cast<Widget>(),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        Hero(
+          tag: Keys.navigation(Keys.calendar),
+          child: Material(
+            type: MaterialType.transparency,
+            child: BottomNavigation(
+              actions: [
+                NavigationAction(
+                  Icons.list,
+                  () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute<void>(
+                        builder: (context) => Scaffold(
+                          body: CalendarList(page: widget.page),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                NavigationAction(Icons.expand_less, () {
+                  Navigator.pop(context);
+                }),
+              ],
             ),
           ),
-        ],
-      ));
-    }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Kalender'),
-      ),
-      body: TabBarView(
-        controller: controller,
-        children: tabs.cast<Widget>(),
-      ),
+        )
+      ],
     );
   }
 }

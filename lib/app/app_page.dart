@@ -1,11 +1,13 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:ginko/calendar/calendar_page.dart';
 import 'package:ginko/home/home_page.dart';
 import 'package:ginko/plugins/platform/platform.dart';
 import 'package:ginko/plugins/pwa/pwa.dart';
 import 'package:ginko/substitution_plan/substitution_plan_page.dart';
 import 'package:ginko/timetable/timetable_page.dart';
+import 'package:ginko/utils/app_bar.dart';
 import 'package:ginko/utils/notifications.dart';
 import 'package:ginko/utils/screen_sizes.dart';
 import 'package:ginko/utils/static.dart';
@@ -244,85 +246,74 @@ class _AppPageState extends State<AppPage>
           ),
         ),
     ];
-    final pages = {
-      'substitutionPlan': InlinePage(
-        'Vertretungsplan',
-        [
-          ...webActions,
-          if (Static.user.grade != null)
-            InkWell(
-              onTap: () {},
-              child: Hero(
-                tag: 'action-main',
-                child: Material(
-                  type: MaterialType.transparency,
-                  child: Container(
-                    width: 48,
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.all(7.5),
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0xFFC8C8C8),
-                              spreadRadius: 0.5,
-                              blurRadius: 1,
-                            ),
-                          ],
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(24)),
-                          border: Border.all(
-                            color: Colors.black,
-                            width: getScreenSize(
-                                        MediaQuery.of(context).size.width) ==
-                                    ScreenSize.small
-                                ? 0.5
-                                : 1.25,
-                          ),
-                        ),
-                        child: Text(
-                          isSeniorGrade(Static.user.grade)
-                              ? Static.user.grade.toUpperCase()
-                              : Static.user.grade,
-                          style: GoogleFonts.ubuntuMono(
-                            fontSize: 22,
-                          ),
-                        ),
+    final Map<String, InlinePage> pages = {};
+    pages[Keys.substitutionPlan] = InlinePage(
+      'Vertretungsplan',
+      [
+        ...webActions,
+        if (Static.user.grade != null)
+          InkWell(
+            onTap: () {},
+            child: Container(
+              width: 48,
+              child: Center(
+                child: Container(
+                  padding: EdgeInsets.all(7.5),
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xFFC8C8C8),
+                        spreadRadius: 0.5,
+                        blurRadius: 1,
                       ),
+                    ],
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.all(Radius.circular(24)),
+                    border: Border.all(
+                      color: Colors.black,
+                      width: getScreenSize(MediaQuery.of(context).size.width) ==
+                              ScreenSize.small
+                          ? 0.5
+                          : 1.25,
+                    ),
+                  ),
+                  child: Text(
+                    isSeniorGrade(Static.user.grade)
+                        ? Static.user.grade.toUpperCase()
+                        : Static.user.grade,
+                    style: GoogleFonts.ubuntuMono(
+                      fontSize: 22,
                     ),
                   ),
                 ),
               ),
             ),
-        ],
-        SubstitutionPlanPage(),
-        Icons.list,
-      ),
-      'timetable': InlinePage(
-        'Stundenplan',
-        [
-          ...webActions,
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed('/${Keys.calendar}');
-            },
-            icon: Hero(
-              tag: 'action-main',
-              child: Material(
-                type: MaterialType.transparency,
-                child: Icon(
-                  MdiIcons.calendarMonth,
-                  size: 28,
-                ),
-              ),
-            ),
           ),
-        ],
-        TimetablePage(),
-        MdiIcons.timetable,
-      ),
-    };
-    final home = InlinePage(
+      ],
+      SubstitutionPlanPage(),
+    );
+    pages[Keys.timetable] = InlinePage(
+      'Stundenplan',
+      [
+        ...webActions,
+        IconButton(
+          onPressed: () {
+            Navigator.of(context).pushNamed('/${Keys.calendar}');
+          },
+          icon: Icon(
+            MdiIcons.calendarMonth,
+            size: 28,
+          ),
+        ),
+      ],
+      TimetablePage(),
+    );
+    pages[Keys.calendar] = InlinePage(
+      'Kalender',
+      [...webActions],
+      null,
+    );
+    pages[Keys.home] = InlinePage(
       'Startseite',
       [
         ...webActions,
@@ -330,62 +321,41 @@ class _AppPageState extends State<AppPage>
           onPressed: () {
             Navigator.of(context).pushNamed('/${Keys.settings}');
           },
-          icon: Hero(
-            tag: 'action-main',
-            child: Material(
-              type: MaterialType.transparency,
-              child: Icon(
-                Icons.settings,
-                size: 28,
-              ),
-            ),
+          icon: Icon(
+            Icons.settings,
+            size: 28,
           ),
         ),
       ],
       HomePage(
         pages: pages,
       ),
-      Icons.home,
     );
     return Scaffold(
       body: CustomScrollView(slivers: [
-        SliverAppBar(
-          title: Hero(
-            tag: 'title',
-            child: Material(
-              type: MaterialType.transparency,
-              child: Container(
-                width: 200,
-                child: Text(
-                  home.title,
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w100,
-                    fontSize: 22,
-                  ),
-                ),
-              ),
+        CustomAppBar(
+          title: pages[Keys.home].title,
+          actions: pages[Keys.home].actions,
+          sliver: true,
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(3),
+            child: SizedBox(
+              height: 3,
+              child: _loading
+                  ? LinearProgressIndicator(
+                      backgroundColor: Theme.of(context).primaryColor,
+                    )
+                  : Container(),
             ),
           ),
-          actions: home.actions,
-          automaticallyImplyLeading: false,
-          floating: true,
         ),
         SliverList(
           delegate: SliverChildListDelegate(
             [
-              SizedBox(
-                height: 3,
-                child: _loading
-                    ? LinearProgressIndicator(
-                        backgroundColor: Theme.of(context).primaryColor,
-                      )
-                    : Container(),
-              ),
               NotificationsWidget(
                 fetchData: _fetchData,
               ),
-              home.content
+              pages[Keys.home].content
             ],
           ),
         )
@@ -401,7 +371,6 @@ class InlinePage {
     this.title,
     this.actions,
     this.content,
-    this.iconData,
   );
 
   // ignore: public_member_api_docs
@@ -412,7 +381,4 @@ class InlinePage {
 
   // ignore: public_member_api_docs
   final Widget content;
-
-  // ignore: public_member_api_docs
-  final IconData iconData;
 }

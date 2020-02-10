@@ -17,6 +17,15 @@ class Keys {
   static const String timetable = 'timetable';
 
   // ignore: public_member_api_docs
+  static const String title = 'title';
+
+  // ignore: public_member_api_docs
+  static const String actionMain = 'action-main';
+
+  // ignore: public_member_api_docs
+  static String navigation(String key) => '$key-navigation';
+
+  // ignore: public_member_api_docs
   static String selection(String block) => 'selection-$block';
 
   // ignore: public_member_api_docs

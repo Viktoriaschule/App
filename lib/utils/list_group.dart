@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:ginko/models/keys.dart';
 import 'package:ginko/utils/bottom_navigation.dart';
 
 // ignore: public_member_api_docs
@@ -119,7 +120,7 @@ class ListGroup extends StatelessWidget {
           ),
           if (actions.isNotEmpty && heroId != null)
             Hero(
-              tag: '$heroId-navigation',
+              tag: Keys.navigation(heroId),
               child: Material(
                 type: MaterialType.transparency,
                 child: BottomNavigation(actions: actions),
