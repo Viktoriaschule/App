@@ -49,6 +49,7 @@ class SubstitutionPlanRow extends StatelessWidget {
       infoText.add(substitution.info);
     }
     return CustomRow(
+      heroTag: substitution,
       splitColor: substitution.type == 1
           ? Theme.of(context).accentColor
           : (substitution.type == 2 ? Colors.red : Colors.orange),

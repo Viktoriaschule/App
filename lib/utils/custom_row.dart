@@ -15,6 +15,7 @@ class CustomRow extends StatelessWidget {
     this.titleAlignment,
     this.splitColor,
     this.showSplit,
+    this.heroTag,
     Key key,
   }) : super(key: key);
 
@@ -45,46 +46,62 @@ class CustomRow extends StatelessWidget {
   // ignore: public_member_api_docs
   final bool showSplit;
 
+  // ignore: public_member_api_docs
+  final dynamic heroTag;
+
   @override
-  Widget build(BuildContext context) => Row(
-        children: [
-          if (leading != null)
-            Container(
-              width: 30,
-              child: Center(
-                child: leading,
-              ),
-            ),
-          if (showSplit ?? true)
-            Container(
-              height: 40,
-              width: 2.5,
-              margin: EdgeInsets.only(
-                right: 5,
-              ),
-              color: splitColor ?? Colors.transparent,
-            ),
-          Expanded(
-            flex: 1,
-            child: Column(
-              crossAxisAlignment: titleAlignment ?? CrossAxisAlignment.start,
-              children: [
-                if (title != null)
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: titleFontWeight,
-                      color: titleColor ?? Theme.of(context).accentColor,
-                    ),
-                   overflow: TextOverflow.ellipsis,
-                   maxLines: 1,
-                  ),
-                if (subtitle != null) subtitle,
-              ],
+  Widget build(BuildContext context) {
+    final row = Row(
+      children: [
+        if (leading != null)
+          Container(
+            width: 30,
+            child: Center(
+              child: leading,
             ),
           ),
-          if (last != null) last,
-        ],
+        if (showSplit ?? true)
+          Container(
+            height: 40,
+            width: 2.5,
+            margin: EdgeInsets.only(
+              right: 5,
+            ),
+            color: splitColor ?? Colors.transparent,
+          ),
+        Expanded(
+          flex: 1,
+          child: Column(
+            crossAxisAlignment: titleAlignment ?? CrossAxisAlignment.start,
+            children: [
+              if (title != null)
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: titleFontWeight,
+                    color: titleColor ?? Theme.of(context).accentColor,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              if (subtitle != null) subtitle,
+            ],
+          ),
+        ),
+        if (last != null) last,
+      ],
+    );
+
+    if (heroTag != null) {
+      return Hero(
+        tag: heroTag,
+        child: Material(
+          type: MaterialType.transparency,
+          child: row,
+        ),
       );
+    }
+    return row;
+  }
 }

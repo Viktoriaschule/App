@@ -8,6 +8,7 @@ class ListGroup extends StatelessWidget {
   const ListGroup({
     @required this.title,
     @required this.children,
+    this.heroId,
     this.center = false,
     this.counter = 0,
     this.onTap,
@@ -27,6 +28,9 @@ class ListGroup extends StatelessWidget {
   final int counter;
 
   // ignore: public_member_api_docs
+  final String heroId;
+
+  // ignore: public_member_api_docs
   final VoidCallback onTap;
 
   @override
@@ -36,35 +40,26 @@ class ListGroup extends StatelessWidget {
         ),
         elevation: 5,
         margin: EdgeInsets.all(10),
-        child: Column(
-          children: [
-            InkWell(
-              onTap: onTap,
-              child: Container(
-                height: 40,
-                margin: EdgeInsets.only(bottom: 10),
-                padding: EdgeInsets.only(left: 20, right: 10),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      flex: 85,
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w100,
-                          color: Colors.black87,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                    if (counter > 0)
+        child: Stack(
+          children: <Widget>[
+            Column(
+              children: [
+                Container(
+                  height: 40,
+                  margin: EdgeInsets.only(bottom: 10),
+                  padding: EdgeInsets.only(left: 20, right: 10),
+                  child: Row(
+                    children: <Widget>[
                       Expanded(
-                        flex: 15,
-                        child: Center(
-                          child: Container(
-                            margin: EdgeInsets.only(right: 9),
+                        flex: 85,
+                        child: Hero(
+                          tag: heroId != null
+                              ? '$heroId-title'
+                              : 'undefined-$title-title',
+                          child: Material(
+                            type: MaterialType.transparency,
                             child: Text(
-                              '+${counter >= 10 ? counter : '$counter'}',
+                              title,
                               style: TextStyle(
                                 fontWeight: FontWeight.w100,
                                 color: Colors.black87,
@@ -74,14 +69,38 @@ class ListGroup extends StatelessWidget {
                           ),
                         ),
                       ),
-                  ],
+                      if (counter > 0)
+                        Expanded(
+                          flex: 15,
+                          child: Center(
+                            child: Container(
+                              margin: EdgeInsets.only(right: 9),
+                              child: Text(
+                                '+${counter >= 10 ? counter : '$counter'}',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w100,
+                                  color: Colors.black87,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
+                ...children,
+                Container(
+                  height: 10,
+                )
+              ],
+            ),
+            Positioned.fill(
+              child: InkWell(
+                onTap: onTap,
+                child: Container(),
               ),
             ),
-            ...children,
-            Container(
-              height: 10,
-            )
           ],
         ),
       );

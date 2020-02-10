@@ -217,10 +217,10 @@ class _TimetablePageState extends State<TimetablePage>
                                                       .width) !=
                                               ScreenSize.big,
                                           keepPadding: getScreenSize(
-                                            MediaQuery.of(context)
-                                                .size
-                                                .width) !=
-                                        ScreenSize.big,
+                                                  MediaQuery.of(context)
+                                                      .size
+                                                      .width) !=
+                                              ScreenSize.big,
                                         ))
                                     .toList()
                                     .cast<Widget>(),

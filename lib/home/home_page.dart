@@ -6,6 +6,7 @@ import 'package:ginko/app/app_page.dart';
 import 'package:ginko/cafetoria/cafetoria_row.dart';
 import 'package:ginko/calendar/calendar_row.dart';
 import 'package:ginko/substitution_plan/substitution_plan_row.dart';
+import 'package:ginko/timetable/timetable_page.dart';
 import 'package:ginko/timetable/timetable_row.dart';
 import 'package:ginko/utils/empty_list.dart';
 import 'package:ginko/utils/list_group.dart';
@@ -16,6 +17,12 @@ import 'package:ginko/models/models.dart';
 
 // ignore: public_member_api_docs
 class HomePage extends StatelessWidget {
+  // ignore: public_member_api_docs
+  const HomePage({@required this.pages});
+
+  // ignore: public_member_api_docs
+  final Map<String, InlinePage> pages;
+
   @override
   Widget build(BuildContext context) {
     final size = getScreenSize(MediaQuery.of(context).size.width);
@@ -50,14 +57,34 @@ class HomePage extends StatelessWidget {
           ListGroup(
             title: 'Nächste Stunden - ${weekdays[weekday]}',
             counter: subjects.length > 3 ? subjects.length - 3 : 0,
+            heroId: 'timetable',
             onTap: () {
-              Navigator.of(context).pushReplacement(PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    AppPage(
-                  page: 2,
-                  loading: false,
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (context) => Scaffold(
+                    appBar: AppBar(
+                      title: Hero(
+                        tag: 'timetable-title',
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: Text(
+                            pages['timetable'].title,
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w100,
+                              fontSize: 22,
+                            ),
+                          ),
+                        ),
+                      ),
+                      actions: pages['timetable'].actions,
+                      automaticallyImplyLeading: false,
+                      elevation: 0,
+                    ),
+                    body: pages['timetable'].content,
+                  ),
                 ),
-              ));
+              );
             },
             children: <Widget>[
               SizeLimit(
@@ -105,17 +132,37 @@ class HomePage extends StatelessWidget {
       children: [
         if (Static.timetable.hasLoadedData && Static.selection.isSet())
           ListGroup(
+            heroId: 'substitutionPlan',
             title:
                 'Nächste Vertretungen - ${weekdays[Static.timetable.data.initialDay(DateTime.now()).weekday - 1]}',
             counter: changes.length > 3 ? changes.length - 3 : 0,
             onTap: () {
-              Navigator.of(context).pushReplacement(PageRouteBuilder(
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    AppPage(
-                  page: 0,
-                  loading: false,
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (context) => Scaffold(
+                    appBar: AppBar(
+                      title: Hero(
+                        tag: 'substitutionPlan-title',
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: Text(
+                            pages['substitutionPlan'].title,
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w100,
+                              fontSize: 22,
+                            ),
+                          ),
+                        ),
+                      ),
+                      actions: pages['substitutionPlan'].actions,
+                      automaticallyImplyLeading: false,
+                      elevation: 0,
+                    ),
+                    body: pages['substitutionPlan'].content,
+                  ),
                 ),
-              ));
+              );
             },
             children: <Widget>[
               if (changes.isEmpty)
@@ -148,6 +195,7 @@ class HomePage extends StatelessWidget {
       children: [
         if (Static.aiXformation.hasLoadedData)
           ListGroup(
+            heroId: 'aixformation',
             title: 'AiXformation',
             counter: Static.aiXformation.data.posts.length -
                 (size == ScreenSize.small ? 2 : 3),
@@ -189,6 +237,7 @@ class HomePage extends StatelessWidget {
       children: [
         if (Static.cafetoria.hasLoadedData)
           ListGroup(
+            heroId: 'cafetoria',
             title: !loggedIn
                 ? days.isEmpty ? 'Cafétoria' : 'Cafétoria - $cafetoriaWeekday'
                 : days.isEmpty
@@ -262,83 +311,80 @@ class HomePage extends StatelessWidget {
           ),
       ],
     );
-    return Scrollbar(
-      child: ListView(
-        shrinkWrap: true,
-        children: [
-          if (size == ScreenSize.small)
-            Column(
-              children: [
-                timetableView,
-                substitutionPlanView,
-                calendarView,
-                cafetoriaView,
-                aiXformationView,
-              ],
-            ),
-          if (size == ScreenSize.middle)
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    substitutionPlanView,
-                    timetableView,
-                  ]
-                      .map((x) => Expanded(
-                            flex: 1,
-                            child: x,
-                          ))
-                      .toList()
-                      .cast<Widget>(),
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    calendarView,
-                    cafetoriaView,
-                  ]
-                      .map((x) => Expanded(
-                            flex: 1,
-                            child: x,
-                          ))
-                      .toList()
-                      .cast<Widget>(),
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    aiXformationView,
-                  ]
-                      .map((x) => Expanded(
-                            flex: 1,
-                            child: x,
-                          ))
-                      .toList()
-                      .cast<Widget>(),
-                ),
-              ],
-            ),
-          if (size == ScreenSize.big)
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                substitutionPlanView,
-                timetableView,
-                calendarView,
-                cafetoriaView,
-                aiXformationView,
-              ]
-                  .map((x) => Expanded(
-                        flex: 1,
-                        child: x,
-                      ))
-                  .toList()
-                  .cast<Widget>(),
-            ),
-        ],
-      ),
+    return Column(
+      children: [
+        if (size == ScreenSize.small)
+          Column(
+            children: [
+              timetableView,
+              substitutionPlanView,
+              calendarView,
+              cafetoriaView,
+              aiXformationView,
+            ],
+          ),
+        if (size == ScreenSize.middle)
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  substitutionPlanView,
+                  timetableView,
+                ]
+                    .map((x) => Expanded(
+                          flex: 1,
+                          child: x,
+                        ))
+                    .toList()
+                    .cast<Widget>(),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  calendarView,
+                  cafetoriaView,
+                ]
+                    .map((x) => Expanded(
+                          flex: 1,
+                          child: x,
+                        ))
+                    .toList()
+                    .cast<Widget>(),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  aiXformationView,
+                ]
+                    .map((x) => Expanded(
+                          flex: 1,
+                          child: x,
+                        ))
+                    .toList()
+                    .cast<Widget>(),
+              ),
+            ],
+          ),
+        if (size == ScreenSize.big)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              substitutionPlanView,
+              timetableView,
+              calendarView,
+              cafetoriaView,
+              aiXformationView,
+            ]
+                .map((x) => Expanded(
+                      flex: 1,
+                      child: x,
+                    ))
+                .toList()
+                .cast<Widget>(),
+          ),
+      ],
     );
   }
 }

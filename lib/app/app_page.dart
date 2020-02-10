@@ -244,44 +244,50 @@ class _AppPageState extends State<AppPage>
           ),
         ),
     ];
-    final pages = [
-      InlinePage(
+    final pages = {
+      'substitutionPlan': InlinePage(
         'Vertretungsplan',
         [
           ...webActions,
           if (Static.user.grade != null)
             InkWell(
               onTap: () {},
-              child: Container(
-                width: 48,
-                child: Center(
+              child: Hero(
+                tag: 'action-main',
+                child: Material(
+                  type: MaterialType.transparency,
                   child: Container(
-                    padding: EdgeInsets.all(7.5),
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFFC8C8C8),
-                          spreadRadius: 0.5,
-                          blurRadius: 1,
-                        ),
-                      ],
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.all(Radius.circular(24)),
-                      border: Border.all(
-                        color: Colors.black,
-                        width:
-                            getScreenSize(MediaQuery.of(context).size.width) ==
+                    width: 48,
+                    child: Center(
+                      child: Container(
+                        padding: EdgeInsets.all(7.5),
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xFFC8C8C8),
+                              spreadRadius: 0.5,
+                              blurRadius: 1,
+                            ),
+                          ],
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.all(Radius.circular(24)),
+                          border: Border.all(
+                            color: Colors.black,
+                            width: getScreenSize(
+                                        MediaQuery.of(context).size.width) ==
                                     ScreenSize.small
                                 ? 0.5
                                 : 1.25,
-                      ),
-                    ),
-                    child: Text(
-                      isSeniorGrade(Static.user.grade)
-                          ? Static.user.grade.toUpperCase()
-                          : Static.user.grade,
-                      style: GoogleFonts.ubuntuMono(
-                        fontSize: 22,
+                          ),
+                        ),
+                        child: Text(
+                          isSeniorGrade(Static.user.grade)
+                              ? Static.user.grade.toUpperCase()
+                              : Static.user.grade,
+                          style: GoogleFonts.ubuntuMono(
+                            fontSize: 22,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -292,24 +298,7 @@ class _AppPageState extends State<AppPage>
         SubstitutionPlanPage(),
         Icons.list,
       ),
-      InlinePage(
-        'Startseite',
-        [
-          ...webActions,
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed('/${Keys.settings}');
-            },
-            icon: Icon(
-              Icons.settings,
-              size: 28,
-            ),
-          ),
-        ],
-        HomePage(),
-        Icons.home,
-      ),
-      InlinePage(
+      'timetable': InlinePage(
         'Stundenplan',
         [
           ...webActions,
@@ -317,130 +306,81 @@ class _AppPageState extends State<AppPage>
             onPressed: () {
               Navigator.of(context).pushNamed('/${Keys.calendar}');
             },
-            icon: Icon(
-              MdiIcons.calendarMonth,
-              size: 28,
+            icon: Hero(
+              tag: 'action-main',
+              child: Material(
+                type: MaterialType.transparency,
+                child: Icon(
+                  MdiIcons.calendarMonth,
+                  size: 28,
+                ),
+              ),
             ),
           ),
         ],
         TimetablePage(),
         MdiIcons.timetable,
       ),
-    ];
-    final tabBar = Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            boxShadow: getScreenSize(MediaQuery.of(context).size.width) ==
-                    ScreenSize.small
-                ? [
-                    BoxShadow(
-                      color: Color(0xFFC8C8C8),
-                      spreadRadius: 1.25,
-                      blurRadius: 1,
-                    ),
-                  ]
-                : null,
-            color: Theme.of(context).primaryColor,
-          ),
-          child: TabBar(
-            controller: _tabController,
-            onTap: (index) {
-              setState(() {
-                _currentTab = _tabController.index = index;
-              });
-            },
-            indicatorColor: getScreenSize(MediaQuery.of(context).size.width) ==
-                    ScreenSize.small
-                ? Colors.transparent
-                : null,
-            tabs: pages
-                .map((page) => Tab(
-                      icon: Icon(
-                        page.iconData,
-                        color: _currentTab == pages.indexOf(page) &&
-                                getScreenSize(
-                                        MediaQuery.of(context).size.width) ==
-                                    ScreenSize.small
-                            ? Theme.of(context).accentColor
-                            : Colors.black54,
-                      ),
-                    ))
-                .toList()
-                .cast<Widget>(),
-          ),
-        ),
-        if (getScreenSize(MediaQuery.of(context).size.width) !=
-            ScreenSize.small)
-          Container(
-            height: 1,
-            margin: EdgeInsets.only(top: 1),
-            width: double.infinity,
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0xFFC8C8C8),
-                  spreadRadius: 1.25,
-                  blurRadius: 1,
-                ),
-              ],
-              color: Theme.of(context).primaryColor,
-            ),
-          ),
-      ],
-    );
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          pages[_currentTab].title,
-          style: TextStyle(
-            color: Colors.black87,
-            fontWeight: FontWeight.w100,
-            fontSize: 22,
-          ),
-        ),
-        automaticallyImplyLeading: false,
-        actions: pages[_currentTab].actions,
-        elevation: 0,
-      ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 3,
-            child: _loading
-                ? LinearProgressIndicator(
-                    backgroundColor: Theme.of(context).primaryColor,
-                  )
-                : Container(),
-          ),
-          if (getScreenSize(MediaQuery.of(context).size.width) !=
-              ScreenSize.small)
-            tabBar,
-          Expanded(
-            child: Scaffold(
-              backgroundColor:
-                  Platform().isWeb ? Color.fromARGB(200, 0, 0, 0) : null,
-              body: Stack(
-                children: [
-                  IndexedStack(
-                    index: _currentTab,
-                    children: pages
-                        .map((page) => page.content)
-                        .toList()
-                        .cast<Widget>(),
-                  ),
-                  NotificationsWidget(
-                    fetchData: _fetchData,
-                  ),
-                ],
+    };
+    final home = InlinePage(
+      'Startseite',
+      [
+        ...webActions,
+        IconButton(
+          onPressed: () {
+            Navigator.of(context).pushNamed('/${Keys.settings}');
+          },
+          icon: Hero(
+            tag: 'action-main',
+            child: Material(
+              type: MaterialType.transparency,
+              child: Icon(
+                Icons.settings,
+                size: 28,
               ),
             ),
           ),
-          if (getScreenSize(MediaQuery.of(context).size.width) ==
-              ScreenSize.small)
-            tabBar,
-        ],
+        ),
+      ],
+      HomePage(
+        pages: pages,
       ),
+      Icons.home,
+    );
+    return Scaffold(
+      body: CustomScrollView(slivers: [
+        SliverAppBar(
+          title: Text(
+            home.title,
+            style: TextStyle(
+              color: Colors.black87,
+              fontWeight: FontWeight.w100,
+              fontSize: 22,
+            ),
+          ),
+          actions: home.actions,
+          automaticallyImplyLeading: false,
+          floating: true,
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate(
+            [
+              SizedBox(
+                height: 3,
+                child: _loading
+                    ? LinearProgressIndicator(
+                        backgroundColor: Theme.of(context).primaryColor,
+                      )
+                    : Container(),
+              ),
+              NotificationsWidget(
+                fetchData: _fetchData,
+              ),
+              home.content
+            ],
+          ),
+        )
+      ]),
     );
   }
 }
