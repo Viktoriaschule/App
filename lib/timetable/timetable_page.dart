@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ginko/app/app_page.dart';
 import 'package:ginko/cafetoria/cafetoria_row.dart';
 import 'package:ginko/calendar/calendar_row.dart';
+import 'package:ginko/plugins/platform/platform.dart';
 import 'package:ginko/substitution_plan/substitution_plan_row.dart';
 import 'package:ginko/timetable/timetable_row.dart';
 import 'package:ginko/timetable/timetable_select_dialog.dart';
@@ -157,7 +158,7 @@ class _TimetablePageState extends State<TimetablePage>
                   );
                   return Scrollbar(
                     child: Hero(
-                      tag: Keys.timetable,
+                      tag: !Platform().isWeb ? Keys.timetable : this,
                       child: Material(
                         type: MaterialType.transparency,
                         child: ListView(
@@ -268,7 +269,7 @@ class _TimetablePageState extends State<TimetablePage>
             ),
           ),
           Hero(
-            tag: Keys.navigation(Keys.timetable),
+            tag: !Platform().isWeb ? Keys.navigation(Keys.timetable) : hashCode,
             child: Material(
               type: MaterialType.transparency,
               child: BottomNavigation(

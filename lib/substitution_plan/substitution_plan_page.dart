@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ginko/plugins/platform/platform.dart';
 import 'package:ginko/substitution_plan/substitution_plan_row.dart';
 import 'package:ginko/utils/bottom_navigation.dart';
 import 'package:ginko/utils/empty_list.dart';
@@ -150,7 +151,7 @@ class _SubstitutionPlanPageState extends State<SubstitutionPlanPage>
                                 ),
                               ),
                               Hero(
-                                tag: Keys.substitutionPlan,
+                                tag: !Platform().isWeb ? Keys.substitutionPlan : this,
                                 child: Material(
                                   type: MaterialType.transparency,
                                   child: Column(
@@ -168,7 +169,7 @@ class _SubstitutionPlanPageState extends State<SubstitutionPlanPage>
             ),
           ),
           Hero(
-            tag: Keys.navigation(Keys.substitutionPlan),
+            tag: !Platform().isWeb ? Keys.navigation(Keys.substitutionPlan) : hashCode,
             child: Material(
               type: MaterialType.transparency,
               child: BottomNavigation(

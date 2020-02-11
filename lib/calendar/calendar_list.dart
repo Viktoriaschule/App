@@ -3,6 +3,7 @@ import 'package:ginko/app/app_page.dart';
 import 'package:ginko/calendar/calendar_page.dart';
 import 'package:ginko/calendar/calendar_row.dart';
 import 'package:ginko/models/keys.dart';
+import 'package:ginko/plugins/platform/platform.dart';
 import 'package:ginko/utils/app_bar.dart';
 import 'package:ginko/utils/bottom_navigation.dart';
 import 'package:ginko/utils/static.dart';
@@ -20,7 +21,7 @@ class CalendarList extends StatelessWidget {
         children: <Widget>[
           Positioned.fill(
             child: Hero(
-              tag: Keys.calendar,
+              tag: !Platform().isWeb ? Keys.calendar : key,
               child: Container(color: Theme.of(context).primaryColor),
             ),
           ),
@@ -53,7 +54,7 @@ class CalendarList extends StatelessWidget {
                 ),
               ),
               Hero(
-                tag: Keys.navigation(Keys.calendar),
+                tag: !Platform().isWeb ? Keys.navigation(Keys.calendar) : this,
                 child: Material(
                   type: MaterialType.transparency,
                   child: BottomNavigation(

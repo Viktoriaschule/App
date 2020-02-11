@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ginko/models/keys.dart';
+import 'package:ginko/plugins/platform/platform.dart';
 
 // ignore: public_member_api_docs
 class CustomAppBar extends PreferredSize {
@@ -21,7 +22,7 @@ class CustomAppBar extends PreferredSize {
   @override
   Widget build(BuildContext context) {
     final _title = Hero(
-      tag: Keys.title,
+      tag: !Platform().isWeb ? Keys.title : this,
       child: Material(
         type: MaterialType.transparency,
         child: Container(
@@ -39,7 +40,7 @@ class CustomAppBar extends PreferredSize {
     );
     final _actions = actions
         .map((action) => Hero(
-              tag: actions.last == action ? Keys.actionMain : action,
+              tag: !Platform().isWeb ? (actions.last == action ? Keys.actionMain : action) : hashCode,
               child: Material(type: MaterialType.transparency, child: action),
             ))
         .toList();

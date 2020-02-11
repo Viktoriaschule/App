@@ -4,6 +4,7 @@ import 'package:ginko/calendar/calendar_grid_event.dart';
 import 'package:ginko/calendar/calendar_grid_item.dart';
 import 'package:ginko/calendar/calendar_list.dart';
 import 'package:ginko/models/models.dart';
+import 'package:ginko/plugins/platform/platform.dart';
 import 'package:ginko/utils/app_bar.dart';
 import 'package:ginko/utils/bottom_navigation.dart';
 import 'package:ginko/utils/static.dart';
@@ -299,7 +300,7 @@ class _CalendarPageState extends State<CalendarPage>
                 ));
               }
               return Hero(
-                tag: this,
+                tag: this, //TODO: Fix animation
                 child: Material(
                   type: MaterialType.transparency,
                   child: TabBarView(
@@ -312,7 +313,7 @@ class _CalendarPageState extends State<CalendarPage>
           ),
         ),
         Hero(
-          tag: Keys.navigation(Keys.calendar),
+          tag: !Platform().isWeb ? Keys.navigation(Keys.calendar) : widget.key,
           child: Material(
             type: MaterialType.transparency,
             child: BottomNavigation(

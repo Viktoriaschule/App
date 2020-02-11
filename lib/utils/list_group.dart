@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:ginko/models/keys.dart';
+import 'package:ginko/plugins/platform/platform.dart';
 import 'package:ginko/utils/bottom_navigation.dart';
 
 // ignore: public_member_api_docs
@@ -101,7 +102,7 @@ class ListGroup extends StatelessWidget {
             children: <Widget>[
               if (heroId != null)
                 Hero(
-                  tag: heroId ?? this,
+                  tag: !Platform().isWeb ? (heroId ?? this) : this,
                   child: Material(
                     type: MaterialType.transparency,
                     child: content,
@@ -120,7 +121,7 @@ class ListGroup extends StatelessWidget {
           ),
           if (actions.isNotEmpty && heroId != null)
             Hero(
-              tag: Keys.navigation(heroId),
+              tag: !Platform().isWeb ? Keys.navigation(heroId) : hashCode,
               child: Material(
                 type: MaterialType.transparency,
                 child: BottomNavigation(actions: actions),
