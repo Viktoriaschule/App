@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ginko/models/keys.dart';
 import 'package:ginko/plugins/platform/platform.dart';
+import 'package:ginko/utils/theme.dart';
 
 // ignore: public_member_api_docs
 class CustomAppBar extends PreferredSize {
@@ -30,7 +31,7 @@ class CustomAppBar extends PreferredSize {
           child: Text(
             title,
             style: TextStyle(
-              color: Colors.black87,
+              color: textColor(context),
               fontWeight: FontWeight.w100,
               fontSize: 22,
             ),

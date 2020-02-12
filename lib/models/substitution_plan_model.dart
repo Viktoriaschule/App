@@ -252,6 +252,15 @@ class Substitution {
   /// Check if the substitution could be filtered
   bool get sure => id != null && courseID != null;
 
+  /// Returns the timetable unit for this substitution
+  TimetableUnit get timetableUnit {
+    if (id != null) {
+      final fragments = id.split('-').sublist(2, 5).map(int.parse).toList();
+      return Static.timetable.data.days[fragments[0]].units[fragments[1]];
+    }
+    return null;
+  }
+
   /// Compares this substitution to the given substitution
   bool equals(Substitution c) =>
       unit == c.unit &&

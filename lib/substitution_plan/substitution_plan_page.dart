@@ -1,15 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ginko/plugins/platform/platform.dart';
 import 'package:ginko/substitution_plan/substitution_plan_row.dart';
 import 'package:ginko/utils/bottom_navigation.dart';
+import 'package:ginko/utils/custom_grid.dart';
 import 'package:ginko/utils/empty_list.dart';
 import 'package:ginko/utils/icons_texts.dart';
 import 'package:ginko/utils/list_group.dart';
 import 'package:ginko/utils/screen_sizes.dart';
 import 'package:ginko/utils/size_limit.dart';
 import 'package:ginko/utils/static.dart';
-import 'package:ginko/utils/tab_proxy.dart';
+import 'package:ginko/utils/theme.dart';
 import 'package:ginko/models/models.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -19,157 +19,177 @@ class SubstitutionPlanPage extends StatefulWidget {
   _SubstitutionPlanPageState createState() => _SubstitutionPlanPageState();
 }
 
-class _SubstitutionPlanPageState extends State<SubstitutionPlanPage>
-    with SingleTickerProviderStateMixin {
-  TabController _tabController;
-
-  @override
-  void initState() {
-    _tabController = TabController(vsync: this, length: 2);
-    super.initState();
-  }
-
+class _SubstitutionPlanPageState extends State<SubstitutionPlanPage> {
   @override
   Widget build(BuildContext context) => Column(
         children: <Widget>[
           Expanded(
-            child: TabProxy(
-              controller: _tabController,
-              weekdays: [
-                if (Static.substitutionPlan.hasLoadedData)
-                  ...Static.substitutionPlan.data.days
-                      .map((day) => weekdays[day.date.weekday - 1])
-                      .toList()
-                else ...['', ''],
-              ]
-                  .cast<String>()
-                  .map((weekday) =>
-                      getScreenSize(MediaQuery.of(context).size.width) ==
-                                  ScreenSize.small &&
-                              weekday.isNotEmpty
-                          ? weekday.substring(0, 2).toUpperCase()
-                          : weekday)
-                  .toList(),
-              tabs: List.generate(
-                2,
-                (index) {
-                  List<Substitution> myChanges = [];
-                  List<Substitution> notMyChanges = [];
-                  if (Static.substitutionPlan.hasLoadedData) {
-                    myChanges =
-                        Static.substitutionPlan.data.days[index].myChanges;
-                    notMyChanges =
-                        Static.substitutionPlan.data.days[index].otherChanges;
-                  }
-
-                  final items = [
-                    ListGroup(
-                      title: 'Meine Vertretungen',
-                      children: <Widget>[
-                        if (myChanges.isEmpty)
-                          EmptyList(title: 'Keine Änderungen')
-                        else
-                          ...myChanges
-                              .map((substitution) => SizeLimit(
-                                    child: Container(
-                                      margin: EdgeInsets.all(10),
-                                      child: SubstitutionPlanRow(
-                                        substitution: substitution,
-                                      ),
-                                    ),
-                                  ))
-                              .toList()
-                              .cast<Widget>(),
-                      ],
-                    ),
-                    if (Static.substitutionPlan.data.days[index].myUnparsed
-                        .isNotEmpty) ...[
-                      ListGroup(
-                        title: 'Nicht erkannt',
-                        children: <Widget>[
-                          ...Static.substitutionPlan.data.days[index].myUnparsed
-                              .map((unparsed) => Padding(
-                                    padding: EdgeInsets.all(20),
-                                    child: Text(unparsed),
-                                  ))
-                              .toList()
-                        ],
+            child: Static.timetable.hasLoadedData &&
+                    Static.substitutionPlan.hasLoadedData
+                ? CustomGrid(
+                    type: getScreenSize(MediaQuery.of(context).size.width) ==
+                            ScreenSize.small
+                        ? CustomGridType.tabs
+                        : CustomGridType.grid,
+                    columnPrepend: Static.substitutionPlan.data.days
+                        .map((day) => weekdays[day.date.weekday - 1])
+                        .toList(),
+                    childrenRowPrepend: [
+                      Container(
+                        height: 60,
+                        color: Colors.transparent,
+                      ),
+                      Container(
+                        height: 60,
+                        child: Center(
+                          child: Text(
+                            'Meine Vertretungen',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: textColor(context),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: 60,
+                        child: Center(
+                          child: Text(
+                            'Weitere Vertretungen',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: textColor(context),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
-                    ListGroup(
-                      title: 'Weitere Vertretungen',
-                      children: <Widget>[
-                        if (notMyChanges.isEmpty)
-                          EmptyList(title: 'Keine Änderungen'),
-                        ...notMyChanges
-                            .map((substitution) => SizeLimit(
-                                  child: Container(
+                    children: List.generate(
+                      2,
+                      (index) {
+                        List<Substitution> myChanges = [];
+                        List<Substitution> notMyChanges = [];
+                        if (Static.substitutionPlan.hasLoadedData) {
+                          myChanges = Static
+                              .substitutionPlan.data.days[index].myChanges;
+                          notMyChanges = Static
+                              .substitutionPlan.data.days[index].otherChanges;
+                        }
+                        final myChangesWidget = myChanges.isEmpty
+                            ? EmptyList(title: 'Keine Änderungen')
+                            : Column(
+                                children: [
+                                  ...myChanges
+                                      .map((change) => SizeLimit(
+                                            child: Container(
+                                              margin: EdgeInsets.all(10),
+                                              child: SubstitutionPlanRow(
+                                                substitution: change,
+                                              ),
+                                            ),
+                                          ))
+                                      .toList()
+                                      .cast<Widget>(),
+                                ],
+                              );
+                        final notMyChangesWidget = notMyChanges.isEmpty
+                            ? EmptyList(title: 'Keine Änderungen')
+                            : Column(
+                                children: [
+                                  ...notMyChanges
+                                      .map((change) => SizeLimit(
+                                            child: Container(
+                                              margin: EdgeInsets.all(10),
+                                              child: SubstitutionPlanRow(
+                                                substitution: change,
+                                              ),
+                                            ),
+                                          ))
+                                      .toList()
+                                      .cast<Widget>(),
+                                ],
+                              );
+                        final items = [
+                          if (getScreenSize(
+                                  MediaQuery.of(context).size.width) !=
+                              ScreenSize.small)
+                            myChangesWidget
+                          else
+                            ListGroup(
+                              title: 'Meine Vertretungen',
+                              children: [
+                                myChangesWidget,
+                              ],
+                            ),
+                          if (getScreenSize(
+                                  MediaQuery.of(context).size.width) !=
+                              ScreenSize.small)
+                            notMyChangesWidget
+                          else
+                            ListGroup(
+                              title: 'Weitere Vertretungen',
+                              children: [
+                                notMyChangesWidget,
+                              ],
+                            ),
+                        ];
+                        return [
+                          Hero(
+                            tag: Platform().isWeb
+                                ? this
+                                : getScreenSize(MediaQuery.of(context)
+                                            .size
+                                            .width) ==
+                                        ScreenSize.small
+                                    ? Keys.substitutionPlan
+                                    : '${Keys.substitutionPlan}-$index',
+                            child: Material(
+                              type: MaterialType.transparency,
+                              child: Center(
+                                child: SizeLimit(
+                                  child: Card(
+                                    shape: BeveledRectangleBorder(
+                                      borderRadius: BorderRadius.circular(0),
+                                    ),
+                                    elevation: 5,
                                     margin: EdgeInsets.all(10),
-                                    child: SubstitutionPlanRow(
-                                      substitution: substitution,
+                                    child: Container(
+                                      margin: EdgeInsets.all(10),
+                                      child: IconsTexts(
+                                        icons: [
+                                          Icons.event,
+                                          Icons.timer,
+                                        ],
+                                        texts: [
+                                          outputDateFormat.format(Static
+                                              .substitutionPlan
+                                              .data
+                                              .days[index]
+                                              .date),
+                                          timeago.format(
+                                            Static.substitutionPlan.data
+                                                .days[index].updated,
+                                            locale: 'de',
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ))
-                            .toList()
-                            .cast<Widget>(),
-                      ],
-                    ),
-                  ];
-                  return Scrollbar(
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        if (Static.substitutionPlan.hasLoadedData)
-                          Column(
-                            children: [
-                              Card(
-                                shape: BeveledRectangleBorder(
-                                  borderRadius: BorderRadius.circular(0),
-                                ),
-                                elevation: 5,
-                                margin: EdgeInsets.all(10),
-                                child: Container(
-                                  margin: EdgeInsets.all(10),
-                                  child: IconsTexts(
-                                    icons: [
-                                      Icons.timer,
-                                      Icons.event,
-                                    ],
-                                    texts: [
-                                      timeago.format(
-                                        Static.substitutionPlan.data.days[index]
-                                            .updated,
-                                        locale: 'de',
-                                      ),
-                                      outputDateFormat.format(Static
-                                          .substitutionPlan
-                                          .data
-                                          .days[index]
-                                          .date),
-                                    ],
-                                  ),
                                 ),
                               ),
-                              Hero(
-                                tag: !Platform().isWeb ? Keys.substitutionPlan : this,
-                                child: Material(
-                                  type: MaterialType.transparency,
-                                  child: Column(
-                                    children: items,
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                      ],
+                          ...items,
+                        ];
+                      },
                     ),
-                  );
-                },
-              ),
-            ),
+                  )
+                : Container(),
           ),
           Hero(
-            tag: !Platform().isWeb ? Keys.navigation(Keys.substitutionPlan) : hashCode,
+            tag: !Platform().isWeb
+                ? Keys.navigation(Keys.substitutionPlan)
+                : hashCode,
             child: Material(
               type: MaterialType.transparency,
               child: BottomNavigation(

@@ -5,13 +5,13 @@ import 'package:ginko/calendar/calendar_grid_item.dart';
 import 'package:ginko/calendar/calendar_list.dart';
 import 'package:ginko/models/models.dart';
 import 'package:ginko/plugins/platform/platform.dart';
-import 'package:ginko/utils/app_bar.dart';
+import 'package:ginko/utils/theme.dart';
 import 'package:ginko/utils/bottom_navigation.dart';
 import 'package:ginko/utils/static.dart';
 
 // ignore: public_member_api_docs
 class CalendarPage extends StatefulWidget {
-  // ignore: public_member_api_docs
+    // ignore: public_member_api_docs
   const CalendarPage({@required this.page});
 
   // ignore: public_member_api_docs
@@ -197,15 +197,15 @@ class _CalendarPageState extends State<CalendarPage>
           .toList();
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       children: <Widget>[
         Expanded(
           child: LayoutBuilder(
             builder: (context, constraints) {
               const otherPadding = 0.0;
               const monthHeight = 40.0;
-              final height = constraints.maxHeight - otherPadding - monthHeight - 5;
+              final height =
+                  constraints.maxHeight - otherPadding - monthHeight - 5;
               final width = constraints.maxWidth - otherPadding * 2 - 1;
               final tabs = [];
               for (var i = 0;
@@ -259,6 +259,7 @@ class _CalendarPageState extends State<CalendarPage>
                           '${months[month]} $year',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
+                            color: textColor(context),
                           ),
                         ),
                       ),
@@ -266,8 +267,12 @@ class _CalendarPageState extends State<CalendarPage>
                     Container(
                       decoration: BoxDecoration(
                         border: Border(
-                          top: BorderSide(color: Colors.grey.shade500),
-                          left: BorderSide(color: Colors.grey.shade500),
+                          top: BorderSide(
+                            color: textColor(context).withOpacity(0.5),
+                          ),
+                          left: BorderSide(
+                            color: textColor(context).withOpacity(0.5),
+                          ),
                         ),
                       ),
                       margin: EdgeInsets.only(
@@ -313,7 +318,7 @@ class _CalendarPageState extends State<CalendarPage>
           ),
         ),
         Hero(
-          tag: !Platform().isWeb ? Keys.navigation(Keys.calendar) : widget.key,
+          tag: !Platform().isWeb ? Keys.navigation(Keys.calendar) : hashCode,
           child: Material(
             type: MaterialType.transparency,
             child: BottomNavigation(
@@ -339,5 +344,4 @@ class _CalendarPageState extends State<CalendarPage>
         )
       ],
     );
-  }
 }

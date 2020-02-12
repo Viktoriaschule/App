@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ginko/utils/theme.dart';
 
 // ignore: public_member_api_docs
 class NavigationAction {
@@ -53,7 +54,7 @@ class BottomNavigation extends StatelessWidget {
                   ),
                   child: Icon(
                     action.icon,
-                    color: Colors.black54,
+                    color: textColorLight(context)
                   ),
                 ),
               ),

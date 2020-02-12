@@ -1,16 +1,19 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:ginko/calendar/calendar_page.dart';
+import 'package:ginko/cafetoria/cafetoria_page.dart';
 import 'package:ginko/home/home_page.dart';
 import 'package:ginko/plugins/platform/platform.dart';
 import 'package:ginko/plugins/pwa/pwa.dart';
 import 'package:ginko/substitution_plan/substitution_plan_page.dart';
 import 'package:ginko/timetable/timetable_page.dart';
 import 'package:ginko/utils/app_bar.dart';
+import 'package:ginko/utils/custom_circular_progress_indicator.dart';
+import 'package:ginko/utils/custom_linear_progress_indicator.dart';
 import 'package:ginko/utils/notifications.dart';
 import 'package:ginko/utils/screen_sizes.dart';
 import 'package:ginko/utils/static.dart';
+import 'package:ginko/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ginko/models/models.dart';
@@ -37,8 +40,6 @@ class AppPage extends StatefulWidget {
 class _AppPageState extends State<AppPage>
     with SingleTickerProviderStateMixin, AfterLayoutMixin<AppPage> {
   bool _loading;
-  TabController _tabController;
-  int _currentTab = 1;
   bool _permissionsGranted = true;
   bool _permissionsChecking = false;
   bool _canInstall = false;
@@ -148,11 +149,6 @@ class _AppPageState extends State<AppPage>
 
   @override
   void initState() {
-    _tabController = TabController(
-      length: 3,
-      vsync: this,
-      initialIndex: _currentTab = widget.page,
-    );
     _loading = widget.loading;
     if (_loading) {
       Static.updates.loadOffline();
@@ -171,7 +167,6 @@ class _AppPageState extends State<AppPage>
 
   @override
   void dispose() {
-    _tabController.dispose();
     super.dispose();
   }
 
@@ -195,11 +190,7 @@ class _AppPageState extends State<AppPage>
       if (_permissionsChecking)
         FlatButton(
           onPressed: () {},
-          child: CircularProgressIndicator(
-            valueColor:
-                AlwaysStoppedAnimation<Color>(Theme.of(context).accentColor),
-            strokeWidth: 2,
-          ),
+          child: CustomCircularProgressIndicator(),
         ),
       if (!_permissionsGranted && !_permissionsChecking)
         FlatButton(
@@ -217,16 +208,13 @@ class _AppPageState extends State<AppPage>
           child: Icon(
             Icons.notifications_off,
             size: 28,
+            color: textColor(context),
           ),
         ),
       if (_installing)
         FlatButton(
           onPressed: () {},
-          child: CircularProgressIndicator(
-            valueColor:
-                AlwaysStoppedAnimation<Color>(Theme.of(context).accentColor),
-            strokeWidth: 2,
-          ),
+          child: CustomCircularProgressIndicator(),
         ),
       if (_canInstall && !_installing)
         FlatButton(
@@ -243,6 +231,7 @@ class _AppPageState extends State<AppPage>
           child: Icon(
             MdiIcons.cellphoneArrowDown,
             size: 28,
+            color: textColor(context),
           ),
         ),
     ];
@@ -260,17 +249,20 @@ class _AppPageState extends State<AppPage>
                 child: Container(
                   padding: EdgeInsets.all(7.5),
                   decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0xFFC8C8C8),
-                        spreadRadius: 0.5,
-                        blurRadius: 1,
-                      ),
-                    ],
+                    boxShadow: MediaQuery.of(context).platformBrightness ==
+                            Brightness.light
+                        ? [
+                            BoxShadow(
+                              color: Color(0xFFC8C8C8),
+                              spreadRadius: 0.5,
+                              blurRadius: 1,
+                            ),
+                          ]
+                        : null,
                     color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.all(Radius.circular(24)),
                     border: Border.all(
-                      color: Colors.black,
+                      color: textColor(context),
                       width: getScreenSize(MediaQuery.of(context).size.width) ==
                               ScreenSize.small
                           ? 0.5
@@ -283,6 +275,7 @@ class _AppPageState extends State<AppPage>
                         : Static.user.grade,
                     style: GoogleFonts.ubuntuMono(
                       fontSize: 22,
+                      color: textColor(context),
                     ),
                   ),
                 ),
@@ -303,10 +296,36 @@ class _AppPageState extends State<AppPage>
           icon: Icon(
             MdiIcons.calendarMonth,
             size: 28,
+            color: textColor(context),
           ),
         ),
       ],
       TimetablePage(),
+    );
+    pages[Keys.cafetoria] = InlinePage(
+      'Cafétoria',
+      [
+        ...webActions,
+        IconButton(
+          onPressed: () {
+            //TODO: Add cafetoria login
+            Scaffold.of(context).showSnackBar(SnackBar(
+              content: Text('TODO: Login hinzufügen!'),
+            ));
+          },
+          icon: Icon(
+            MdiIcons.account,
+            size: 28,
+            color: textColor(context),
+          ),
+        ),
+      ],
+      null,
+    );
+    pages[Keys.aiXformation] = InlinePage(
+      'AiXformation',
+      [...webActions],
+      null,
     );
     pages[Keys.calendar] = InlinePage(
       'Kalender',
@@ -324,6 +343,7 @@ class _AppPageState extends State<AppPage>
           icon: Icon(
             Icons.settings,
             size: 28,
+            color: textColor(context),
           ),
         ),
       ],
@@ -337,17 +357,11 @@ class _AppPageState extends State<AppPage>
           title: pages[Keys.home].title,
           actions: pages[Keys.home].actions,
           sliver: true,
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(3),
-            child: SizedBox(
-              height: 3,
-              child: _loading
-                  ? LinearProgressIndicator(
-                      backgroundColor: Theme.of(context).primaryColor,
-                    )
-                  : Container(),
-            ),
-          ),
+          bottom: _loading
+              ? CustomLinearProgressIndicator(
+                  backgroundColor: Theme.of(context).primaryColor,
+                )
+              : null,
         ),
         SliverList(
           delegate: SliverChildListDelegate(

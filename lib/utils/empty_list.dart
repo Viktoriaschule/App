@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ginko/utils/theme.dart';
 
 // ignore: public_member_api_docs
 class EmptyList extends StatelessWidget {
@@ -21,11 +22,11 @@ class EmptyList extends StatelessWidget {
               Icon(
                 Icons.assignment_ind,
                 size: 30,
-                color: Colors.black54,
+                color: textColorLight(context),
               ),
               Text(
                 title,
-                style: TextStyle(color: Colors.black54),
+                style: TextStyle(color: textColorLight(context)),
               ),
             ],
           ),

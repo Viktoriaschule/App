@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ginko/calendar/calendar_event_dialog.dart';
+import 'package:ginko/utils/theme.dart';
 import 'package:ginko/models/models.dart';
 
 // ignore: public_member_api_docs
@@ -34,7 +35,10 @@ class CalendarGridEvent extends StatelessWidget {
               event.name,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
-              style: TextStyle(fontSize: 12),
+              style: TextStyle(
+                fontSize: 12,
+                color: darkColor,
+              ),
             ),
           ),
         ),

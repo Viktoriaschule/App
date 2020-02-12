@@ -1,7 +1,7 @@
 name: ginko
 description: The Ginko app
-version: 2.0.6+22
-author: jld3103 + fingeg
+version: 2.1.2+34
+author: jld3103, fingeg
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
@@ -18,38 +18,41 @@ dependencies:
   shared_preferences:
   material_design_icons_flutter:
   cached_network_image: ^2.0.0-rc
-  flutter_html:
   url_launcher:
   share:
   transparent_image:
   after_layout:
-  path_provider:
   timeago:
   dio:
   version:
   encrypt:
   js:
   google_fonts:
-    git:
-      url: git://github.com/jld3103/google-fonts-flutter
-      ref: fix-mixed-content
   add_2_calendar:
+  webview_flutter:
+  in_app_update:
 
 dev_dependencies:
   flutter_launcher_icons:
 
+dependency_overrides:
+  google_fonts:
+    git:
+      url: https://github.com/jld3103/google-fonts-flutter
+      ref: fix/web-path_provider
+
 flutter:
   uses-material-design: true
   fonts:
-    - family: Ubuntu
-      fonts:
-        - asset: fonts/Ubuntu-Regular.ttf
-        - asset: fonts/Ubuntu-Italic.ttf
-          style: italic
-        - asset: fonts/Ubuntu-Light.ttf
-          weight: 100
-        - asset: fonts/Ubuntu-Bold.ttf
-          weight: 700
+  - family: Ubuntu
+    fonts:
+      - asset: fonts/Ubuntu-Regular.ttf
+      - asset: fonts/Ubuntu-Italic.ttf
+        style: italic
+      - asset: fonts/Ubuntu-Light.ttf
+        weight: 100
+      - asset: fonts/Ubuntu-Bold.ttf
+        weight: 700
   assets:
     - images/logo_green.png
     - images/logo_green_192x192.png

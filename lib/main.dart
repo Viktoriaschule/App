@@ -30,6 +30,7 @@ Future main() async {
   runApp(MaterialApp(
     title: 'Ginko',
     theme: theme,
+    darkTheme: darkTheme,
     routes: <String, WidgetBuilder>{
       '/': (context) => AppPage(),
       '/${Keys.timetable}': (context) => AppPage(

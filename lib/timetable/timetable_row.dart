@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ginko/utils/custom_row.dart';
 import 'package:ginko/utils/static.dart';
+import 'package:ginko/utils/theme.dart';
 import 'package:ginko/models/models.dart';
 
 // ignore: public_member_api_docs
@@ -41,7 +41,6 @@ class TimetableRow extends StatelessWidget {
             (times[1].inMinutes % 60).toString();
     final timeStr = '$startHour:$startMinute - $endHour:$endMinute';
     return CustomRow(
-      heroTag: subject,
       splitColor: Colors.transparent,
       showSplit: !(subject.subjectID == 'Mittagspause' ||
               subject.subjectID == 'none') &&
@@ -53,7 +52,7 @@ class TimetableRow extends StatelessWidget {
                 (unit + 1).toString(),
                 style: TextStyle(
                   fontSize: 25,
-                  color: Colors.black54,
+                  color: textColorLight(context),
                   fontWeight: FontWeight.w100,
                 ),
               ),
@@ -72,18 +71,23 @@ class TimetableRow extends StatelessWidget {
               : null,
       titleColor:
           subject.subjectID == 'Mittagspause' || subject.subjectID == 'none'
-              ? Colors.black
+              ? textColor(context)
               : Theme.of(context).accentColor,
-      subtitle: subject.subjectID != 'Mittagspause'
-          ? Text(
-              timeStr,
-              style: TextStyle(fontWeight: FontWeight.w100),
-            )
-          : null,
+      subtitle:
+          subject.subjectID != 'Mittagspause' && subject.subjectID != 'none'
+              ? Text(
+                  timeStr,
+                  style: TextStyle(
+                    color: textColor(context),
+                    fontWeight: FontWeight.w100,
+                  ),
+                )
+              : null,
       last: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (subject.subjectID != 'Mittagspause')
+          if (subject.subjectID != 'Mittagspause' &&
+              subject.subjectID != 'none')
             Container(
               width: 30,
               margin: EdgeInsets.only(right: 10),
@@ -93,13 +97,17 @@ class TimetableRow extends StatelessWidget {
                   if (subject.teacherID != null)
                     Text(
                       '${subject.teacherID.toUpperCase()}\n',
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.w100),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w100,
+                        color: textColor(context),
+                      ),
                     ),
                 ],
               ),
             ),
-          if (subject.subjectID != 'Mittagspause')
+          if (subject.subjectID != 'Mittagspause' &&
+              subject.subjectID != 'none')
             Container(
               width: 30,
               child: Column(
@@ -108,8 +116,11 @@ class TimetableRow extends StatelessWidget {
                   if (subject.roomID != null)
                     Text(
                       '${subject.roomID.toUpperCase()}\n',
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.w100),
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w100,
+                        color: textColor(context),
+                      ),
                     ),
                 ],
               ),

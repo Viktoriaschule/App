@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ginko/models/models.dart';
 import 'package:ginko/timetable/timetable_row.dart';
 import 'package:ginko/utils/dialog_content_wrapper.dart';
+import 'package:ginko/utils/theme.dart';
+import 'package:ginko/models/models.dart';
 
 // ignore: public_member_api_docs
 class TimetableSelectDialog extends StatelessWidget {
@@ -21,7 +21,12 @@ class TimetableSelectDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SimpleDialog(
-        title: Text('${weekdays[weekday]} ${unit.unit + 1}.'),
+        title: Text(
+          '${weekdays[weekday]} ${unit.unit + 1}.',
+          style: TextStyle(
+            color: textColor(context),
+          ),
+        ),
         children: [
           DialogContentWrapper(
             children: unit.subjects

@@ -90,6 +90,9 @@ Map<int, String> months = {
 /// The date format to display all dates in
 DateFormat outputDateFormat = DateFormat('dd.MM.y');
 
+/// The short date format to display all dates in
+DateFormat shortOutputDateFormat = DateFormat('dd.MM');
+
 /// The date and time format to display all dates and times in
 DateFormat outputDateTimeFormat = DateFormat('dd.MM.y HH:mm');
 

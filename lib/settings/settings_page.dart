@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ginko/utils/custom_button.dart';
 import 'package:ginko/utils/size_limit.dart';
 import 'package:ginko/utils/static.dart';
+import 'package:ginko/utils/theme.dart';
 import 'package:ginko/models/models.dart';
 
 /// SettingsPage class
@@ -31,7 +32,13 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text('Einstellungen'),
+          title: Text(
+            'Einstellungen',
+            style: TextStyle(
+              color: textColor(context),
+            ),
+          ),
+          elevation: 2,
         ),
         body: Center(
           child: SizeLimit(
@@ -41,13 +48,21 @@ class _SettingsPageState extends State<SettingsPage> {
                 padding: EdgeInsets.all(5),
                 children: [
                   CheckboxListTile(
-                    title: Text('Vertretungsplanbenachrichtigungen anzeigen'),
+                    title: Text(
+                      'Vertretungsplanbenachrichtigungen anzeigen',
+                      style: TextStyle(
+                        color: textColor(context),
+                      ),
+                    ),
+                    checkColor: lightColor,
+                    activeColor: Theme.of(context).accentColor,
                     value: _substitutionPlanNotifications,
                     onChanged: (value) async {
                       setState(() {
                         _substitutionPlanNotifications = value;
                         Static.storage
                             .setBool(Keys.substitutionPlanNotifications, value);
+                        //TODO: Check if needed: Static.settings.save();
                       });
                       try {
                         await Static.tags.syncDevice();
@@ -56,13 +71,21 @@ class _SettingsPageState extends State<SettingsPage> {
                     },
                   ),
                   CheckboxListTile(
-                    title: Text('AiXformation-Benachrichtigungen anzeigen'),
+                    title: Text(
+                      'AiXformation-Benachrichtigungen anzeigen',
+                      style: TextStyle(
+                        color: textColor(context),
+                      ),
+                    ),
+                    checkColor: lightColor,
+                    activeColor: Theme.of(context).accentColor,
                     value: _aiXformationNotifications,
                     onChanged: (value) async {
                       setState(() {
                         _aiXformationNotifications = value;
                         Static.storage
                             .setBool(Keys.aiXformationNotifications, value);
+                        //TODO: Check: Static.settings.save();
                       });
                       try {
                         await Static.tags.syncDevice();
@@ -71,13 +94,21 @@ class _SettingsPageState extends State<SettingsPage> {
                     },
                   ),
                   CheckboxListTile(
-                    title: Text('Cafétoria-Benachrichtigungen anzeigen'),
+                    title: Text(
+                      'Cafétoria-Benachrichtigungen anzeigen',
+                      style: TextStyle(
+                        color: textColor(context),
+                      ),
+                    ),
+                    checkColor: lightColor,
+                    activeColor: Theme.of(context).accentColor,
                     value: _cafetoriaNotifications,
                     onChanged: (value) async {
                       setState(() {
                         _cafetoriaNotifications = value;
                         Static.storage
                             .setBool(Keys.cafetoriaNotifications, value);
+                        //TODO: Static.settings.save();
                       });
                       try {
                         await Static.tags.syncDevice();
@@ -89,7 +120,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     margin: EdgeInsets.only(top: 20, left: 5, right: 5),
                     child: SizedBox(
                       width: double.infinity,
-                      child: RaisedButton(
+                      child: CustomButton(
                         onPressed: () {
                           Static.user.clear();
                           Static.updates.clear();
@@ -99,10 +130,17 @@ class _SettingsPageState extends State<SettingsPage> {
                           Static.aiXformation.clear();
                           Static.cafetoria.clear();
                           Static.subjects.clear();
-                          Static.storage.getKeys().forEach(Static.storage.remove);
+                          Static.storage
+                              .getKeys()
+                              .forEach(Static.storage.remove);
                           Navigator.of(context).pushReplacementNamed('/');
                         },
-                        child: Text('Abmelden'),
+                        child: Text(
+                          'Abmelden',
+                          style: TextStyle(
+                            color: darkColor,
+                          ),
+                        ),
                       ),
                     ),
                   ),

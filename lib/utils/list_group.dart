@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:ginko/models/keys.dart';
 import 'package:ginko/plugins/platform/platform.dart';
 import 'package:ginko/utils/bottom_navigation.dart';
+import 'package:ginko/utils/theme.dart';
 
 // ignore: public_member_api_docs
 class ListGroup extends StatelessWidget {
@@ -13,6 +14,7 @@ class ListGroup extends StatelessWidget {
     @required this.children,
     this.actions,
     this.heroId,
+    this.heroIdNavigation,
     this.center = false,
     this.counter = 0,
     this.onTap,
@@ -34,8 +36,13 @@ class ListGroup extends StatelessWidget {
   // ignore: public_member_api_docs
   final int counter;
 
-  // ignore: public_member_api_docs
+  /// The [heroId] for an optional hero animation.
+  /// 
+  /// The hero animation is only added if the [heroId] is not null
   final String heroId;
+
+  /// If this is set, [heroIdNavigation] will be used instead of [heroId] for the navigation bar
+  final String heroIdNavigation;
 
   // ignore: public_member_api_docs
   final VoidCallback onTap;
@@ -58,7 +65,7 @@ class ListGroup extends StatelessWidget {
                     title,
                     style: TextStyle(
                       fontWeight: FontWeight.w100,
-                      color: Colors.black87,
+                      color: textColor(context),
                       fontSize: 18,
                     ),
                   ),
@@ -73,7 +80,7 @@ class ListGroup extends StatelessWidget {
                           '+${counter >= 10 ? counter : '$counter'}',
                           style: TextStyle(
                             fontWeight: FontWeight.w100,
-                            color: Colors.black87,
+                            color: textColor(context),
                             fontSize: 18,
                           ),
                         ),
@@ -119,9 +126,9 @@ class ListGroup extends StatelessWidget {
               ),
             ],
           ),
-          if (actions.isNotEmpty && heroId != null)
+          if (actions.isNotEmpty && (heroId != null || heroIdNavigation != null))
             Hero(
-              tag: !Platform().isWeb ? Keys.navigation(heroId) : hashCode,
+              tag: !Platform().isWeb ? Keys.navigation(heroIdNavigation ?? heroId) : hashCode,
               child: Material(
                 type: MaterialType.transparency,
                 child: BottomNavigation(actions: actions),

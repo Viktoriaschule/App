@@ -1,8 +1,10 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ginko/utils/custom_row.dart';
 import 'package:ginko/utils/static.dart';
+import 'package:ginko/utils/theme.dart';
 import 'package:ginko/models/models.dart';
 
 // ignore: public_member_api_docs
@@ -60,30 +62,45 @@ class SubstitutionPlanRow extends StatelessWidget {
                 (substitution.unit + 1).toString(),
                 style: TextStyle(
                   fontSize: 25,
-                  color: Colors.black54,
+                  color: textColorLight(context),
                   fontWeight: FontWeight.w100,
                 ),
               ),
             )
           : keepPadding ? Container() : null,
-      title: Static.subjects.hasLoadedData ? infoText.join(' ') : null,
+      title: Static.subjects.hasLoadedData
+          ? (infoText.isNotEmpty
+              ? infoText.join(' ')
+              : Static.subjects.data
+                  .getSubject(substitution.original.subjectID))
+          : null,
       subtitle: Static.subjects.hasLoadedData &&
               infoText.join(' ') !=
                   Static.subjects.data
-                      .getSubject(substitution.original.subjectID)
+                      .getSubject(substitution.original.subjectID) &&
+              infoText.isNotEmpty
           ? Text(
               Static.subjects.data.getSubject(substitution.original.subjectID),
               style: TextStyle(
-                  decoration: TextDecoration.lineThrough,
-                  color: Colors.black54,
-                  fontWeight: FontWeight.w100),
+                decoration: TextDecoration.lineThrough,
+                color: textColorLight(context),
+                fontWeight: FontWeight.w100,
+              ),
             )
           : null,
       last: Row(
         children: [
-          if (substitution.type != 1)
+          if (substitution.type != 1 ||
+              (substitution.timetableUnit?.subjects
+                          ?.where((s) =>
+                              Static.subjects.data.getSubject(s.subjectID) ==
+                              Static.subjects.data
+                                  .getSubject(substitution.original.subjectID))
+                          ?.length ??
+                      1) >
+                  1)
             Container(
-              width: 30,
+              width: 24,
               margin: EdgeInsets.only(right: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -91,14 +108,18 @@ class SubstitutionPlanRow extends StatelessWidget {
                   Text(
                     substitution.changed.teacherID != null
                         ? substitution.changed.teacherID.toUpperCase()
-                        : '',
+                        : substitution.original.teacherID != null
+                            ? substitution.original.teacherID.toUpperCase()
+                            : '',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w100,
+                      color: textColor(context),
                     ),
                   ),
                   Text(
                     substitution.original.teacherID != null &&
+                            substitution.changed.teacherID != null &&
                             substitution.original.teacherID !=
                                 substitution.changed.teacherID
                         ? substitution.original.teacherID.toUpperCase()
@@ -106,14 +127,22 @@ class SubstitutionPlanRow extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w100,
-                      color: Colors.black54,
+                      color: textColor(context),
                       decoration: TextDecoration.lineThrough,
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
-          if (substitution.type != 1)
+          if (substitution.type != 1 ||
+              (substitution.timetableUnit?.subjects
+                          ?.where((s) =>
+                              Static.subjects.data.getSubject(s.subjectID) ==
+                              Static.subjects.data
+                                  .getSubject(substitution.original.subjectID))
+                          ?.length ??
+                      1) >
+                  1)
             Container(
               width: 30,
               child: Column(
@@ -122,23 +151,28 @@ class SubstitutionPlanRow extends StatelessWidget {
                   Text(
                     substitution.changed.roomID != null
                         ? substitution.changed.roomID.toUpperCase()
-                        : '',
+                        : substitution.original.roomID != null
+                            ? substitution.original.roomID.toUpperCase()
+                            : '',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w100,
+                      color: textColor(context),
                     ),
                   ),
                   Text(
                     substitution.original.roomID != null &&
+                            substitution.changed.roomID != null &&
                             substitution.original.roomID !=
                                 substitution.changed.roomID
                         ? substitution.original.roomID.toUpperCase()
                         : '',
                     style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w100,
-                        color: Colors.black54,
-                        decoration: TextDecoration.lineThrough),
+                      fontSize: 13,
+                      color: textColor(context),
+                      decoration: TextDecoration.lineThrough,
+                      fontWeight: FontWeight.w100,
+                    ),
                   ),
                 ],
               ),

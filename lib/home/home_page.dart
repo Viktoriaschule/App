@@ -1,14 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:ginko/aixformation/aixformation_page.dart';
 import 'package:ginko/aixformation/aixformation_row.dart';
 import 'package:ginko/app/app_page.dart';
+import 'package:ginko/cafetoria/cafetoria_page.dart';
 import 'package:ginko/cafetoria/cafetoria_row.dart';
 import 'package:ginko/calendar/calendar_list.dart';
 import 'package:ginko/calendar/calendar_page.dart';
 import 'package:ginko/calendar/calendar_row.dart';
 import 'package:ginko/substitution_plan/substitution_plan_row.dart';
-import 'package:ginko/timetable/timetable_page.dart';
 import 'package:ginko/timetable/timetable_row.dart';
 import 'package:ginko/utils/app_bar.dart';
 import 'package:ginko/utils/bottom_navigation.dart';
@@ -17,6 +17,7 @@ import 'package:ginko/utils/list_group.dart';
 import 'package:ginko/utils/screen_sizes.dart';
 import 'package:ginko/utils/size_limit.dart';
 import 'package:ginko/utils/static.dart';
+import 'package:ginko/utils/theme.dart';
 import 'package:ginko/models/models.dart';
 
 // ignore: public_member_api_docs
@@ -53,15 +54,23 @@ class HomePage extends StatelessWidget {
         : [];
 
     // Get all changes for the user for the home page date
-    final changes =
-        Static.substitutionPlan.data?.getForDate(day)?.myChanges ?? [];
-    final timetableView = Column(
-      children: [
-        if (Static.timetable.hasLoadedData && Static.selection.isSet())
-          ListGroup(
+    final spDay = Static.substitutionPlan.data?.getForDate(day);
+    final changes = spDay?.myChanges ?? [];
+    final timetableCut = size == ScreenSize.small
+        ? 3
+        : _calculateCut(context, size == ScreenSize.middle ? 3 : 2);
+    final timetableView = Static.timetable.hasLoadedData &&
+            Static.selection.isSet()
+        ? ListGroup(
             title: 'Nächste Stunden - ${weekdays[weekday]}',
-            counter: subjects.length > 3 ? subjects.length - 3 : 0,
-            heroId: Keys.timetable,
+            counter: subjects.length > timetableCut
+                ? subjects.length - timetableCut
+                : 0,
+            heroId: getScreenSize(MediaQuery.of(context).size.width) ==
+                    ScreenSize.small
+                ? Keys.timetable
+                : '${Keys.timetable}-$weekday',
+            heroIdNavigation: Keys.timetable,
             actions: [
               NavigationAction(
                 Icons.expand_more,
@@ -80,7 +89,7 @@ class HomePage extends StatelessWidget {
                 },
               ),
             ],
-            children: <Widget>[
+            children: [
               SizeLimit(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,8 +99,8 @@ class HomePage extends StatelessWidget {
                         !Static.selection.isSet())
                       EmptyList(title: 'Kein Stundenplan')
                     else
-                      ...(subjects.length > 3
-                              ? subjects.sublist(0, 3)
+                      ...(subjects.length > timetableCut
+                              ? subjects.sublist(0, timetableCut)
                               : subjects)
                           .map(
                         (subject) => Container(
@@ -102,8 +111,8 @@ class HomePage extends StatelessWidget {
                                 subject: subject,
                               ),
                               ...changes
-                                  .where(
-                                      (change) => change.unit == subject.unit)
+                                  .where((substitution) =>
+                                      substitution.unit == subject.unit)
                                   .map((substitution) => SubstitutionPlanRow(
                                         substitution: substitution,
                                         showUnit: false,
@@ -119,76 +128,91 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-      ],
-    );
-    final substitutionPlanView = Column(
-      children: [
-        if (Static.timetable.hasLoadedData && Static.selection.isSet())
-          ListGroup(
-            heroId: Keys.substitutionPlan,
-            title:
-                'Nächste Vertretungen - ${weekdays[Static.timetable.data.initialDay(DateTime.now()).weekday - 1]}',
-            counter: changes.length > 3 ? changes.length - 3 : 0,
+          )
+        : Container();
+    final substitutionPlanCut = size == ScreenSize.small
+        ? 3
+        : _calculateCut(context, size == ScreenSize.middle ? 3 : 2);
+    final substitutionPlanView =
+        Static.timetable.hasLoadedData && Static.selection.isSet()
+            ? ListGroup(
+                heroId: getScreenSize(MediaQuery.of(context).size.width) ==
+                        ScreenSize.small
+                    ? Keys.substitutionPlan
+                    : '${Keys.substitutionPlan}-${Static.substitutionPlan.data.days.indexOf(spDay)}',
+                heroIdNavigation: Keys.substitutionPlan,
+                title:
+                    'Nächste Vertretungen - ${weekdays[Static.timetable.data.initialDay(DateTime.now()).weekday - 1]}',
+                counter: changes.length > substitutionPlanCut
+                    ? changes.length - substitutionPlanCut
+                    : 0,
+                actions: [
+                  NavigationAction(Icons.expand_more, () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (context) => Scaffold(
+                          appBar: CustomAppBar(
+                            title: pages[Keys.substitutionPlan].title,
+                            actions: pages[Keys.substitutionPlan].actions,
+                          ),
+                          body: pages[Keys.substitutionPlan].content,
+                        ),
+                      ),
+                    );
+                  }),
+                ],
+                children: [
+                  if (changes.isEmpty)
+                    EmptyList(title: 'Keine Änderungen')
+                  else
+                    SizeLimit(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (Static.substitutionPlan.hasLoadedData)
+                            ...(changes.length > substitutionPlanCut
+                                    ? changes.sublist(0, substitutionPlanCut)
+                                    : changes)
+                                .map((substitution) => Container(
+                                      margin: EdgeInsets.all(10),
+                                      child: SubstitutionPlanRow(
+                                        substitution: substitution,
+                                      ),
+                                    ))
+                                .toList()
+                                .cast<Widget>()
+                        ],
+                      ),
+                    ),
+                ],
+              )
+            : Container();
+    final aiXformationCut = size == ScreenSize.small
+        ? 3
+        : _calculateCut(context, size == ScreenSize.middle ? 3 : 1);
+    final aiXformationView = Static.aiXformation.hasLoadedData
+        ? ListGroup(
+            heroId: Keys.aiXformation,
             actions: [
               NavigationAction(Icons.expand_more, () {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder: (context) => Scaffold(
-                      appBar: CustomAppBar(
-                        title: pages[Keys.substitutionPlan].title,
-                        actions: pages[Keys.substitutionPlan].actions,
-                      ),
-                      body: pages[Keys.substitutionPlan].content,
+                      body: AiXformationPage(page: pages[Keys.aiXformation]),
                     ),
                   ),
                 );
               }),
             ],
-            children: <Widget>[
-              if (changes.isEmpty)
-                EmptyList(title: 'Keine Änderungen')
-              else
-                SizeLimit(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (Static.substitutionPlan.hasLoadedData)
-                        ...(changes.length > 3
-                                ? changes.sublist(0, 3)
-                                : changes)
-                            .map((substitution) => Container(
-                                  margin: EdgeInsets.all(10),
-                                  child: SubstitutionPlanRow(
-                                    substitution: substitution,
-                                  ),
-                                ))
-                            .toList()
-                            .cast<Widget>()
-                    ],
-                  ),
-                ),
-            ],
-          ),
-      ],
-    );
-    final aiXformationView = Column(
-      children: [
-        if (Static.aiXformation.hasLoadedData)
-          ListGroup(
-            heroId: 'aixformation',
-            actions: [
-              NavigationAction(Icons.expand_more, () {
-                Navigator.of(context).pushNamed('/${Keys.aiXformation}');
-              }),
-            ],
             title: 'AiXformation',
-            counter: Static.aiXformation.data.posts.length -
-                (size == ScreenSize.small ? 2 : 3),
-            children: <Widget>[
-              if (Static.aiXformation.hasLoadedData)
-                ...Static.aiXformation.data.posts
-                    .sublist(0, size == ScreenSize.small ? 2 : 3)
+            counter: Static.aiXformation.data.posts.length - aiXformationCut,
+            children: [
+              if (Static.aiXformation.hasLoadedData &&
+                  Static.aiXformation.data.posts.isNotEmpty)
+                ...(Static.aiXformation.data.posts.length > aiXformationCut
+                        ? Static.aiXformation.data.posts
+                            .sublist(0, aiXformationCut)
+                        : Static.aiXformation.data.posts)
                     .map((post) => Container(
                           margin: EdgeInsets.all(10),
                           child: AiXformationRow(
@@ -196,58 +220,68 @@ class HomePage extends StatelessWidget {
                           ),
                         ))
                     .toList()
-                    .cast<Widget>(),
-              if (Static.aiXformation.hasLoadedData &&
-                  Static.aiXformation.data.posts.isEmpty)
+                    .cast<Widget>()
+              else
                 EmptyList(title: 'Keine Artikel')
             ],
-          ),
-      ],
-    );
-    final days = Static.cafetoria.hasLoadedData
-        ? (Static.cafetoria.data.days
-                .where(
-                    (d) => d.date.isAfter(day.subtract(Duration(seconds: 1))))
-                .toList()
-                  ..sort((a, b) => a.date.compareTo(b.date)))
+          )
+        : Container();
+    final allDays = Static.cafetoria.hasLoadedData
+        ? (Static.cafetoria.data.days.toList()
+              ..sort((a, b) => a.date.compareTo(b.date)))
             .toList()
         : [];
+    final afterDays = allDays
+        .where((d) => d.date.isAfter(day.subtract(Duration(seconds: 1))))
+        .toList();
     final cafetoriaWeekday =
-        days.isNotEmpty ? weekdays[days[0].date.weekday - 1] : '';
+        afterDays.isNotEmpty ? weekdays[afterDays.first.date.weekday - 1] : '';
     final bool loggedIn = Static.storage.getString(Keys.cafetoriaId) != null &&
         Static.storage.getString(Keys.cafetoriaPassword) != null;
-    final cafetoriaView = Column(
-      children: [
-        if (Static.cafetoria.hasLoadedData)
-          ListGroup(
-            heroId: 'cafetoria',
+    final cafetoriaCut = size == ScreenSize.small
+        ? 3
+        : _calculateCut(context, size == ScreenSize.middle ? 3 : 2);
+    final cafetoriaView = Static.cafetoria.hasLoadedData
+        ? ListGroup(
+            heroId: '${Keys.cafetoria}-0',
+            heroIdNavigation: Keys.cafetoria,
             actions: [
-              NavigationAction(Icons.list, () {}),
-              NavigationAction(Icons.credit_card, () {}),
+              NavigationAction(Icons.list, () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => Scaffold(
+                      body: CafetoriaPage(page: pages[Keys.cafetoria]),
+                    ),
+                  ),
+                );
+              }),
+              NavigationAction(Icons.credit_card, () {
+                //TODO: Open the cafetoria website
+              }),
             ],
             title: !loggedIn
-                ? days.isEmpty ? 'Cafétoria' : 'Cafétoria - $cafetoriaWeekday'
-                : days.isEmpty
+                ? afterDays.isEmpty
+                    ? 'Cafétoria'
+                    : 'Cafétoria - $cafetoriaWeekday'
+                : afterDays.isEmpty
                     ? 'Cafétoria (${Static.cafetoria.data.saldo}€)'
                     : 'Cafétoria - $cafetoriaWeekday (${Static.cafetoria.data.saldo}€) ',
-            counter: days.isNotEmpty ? days[0].menus.length - 3 : 0,
-            onTap: () {
-              Navigator.of(context).pushNamed('/${Keys.cafetoria}');
-            },
-            children: <Widget>[
-              if (!Static.cafetoria.hasLoadedData || days.isEmpty)
+            counter: allDays.length - 1,
+            children: [
+              if (!Static.cafetoria.hasLoadedData || afterDays.isEmpty)
                 EmptyList(title: 'Keine Menüs')
               else
                 SizeLimit(
                   child: Column(
-                    children: (days[0].menus.length > 3
-                            ? days[0].menus.sublist(0, 3)
-                            : days[0].menus)
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: (afterDays.first.menus.length > cafetoriaCut
+                            ? afterDays.first.menus.sublist(0, cafetoriaCut)
+                            : afterDays.first.menus)
                         .map(
                           (menu) => Container(
                             margin: EdgeInsets.all(10),
                             child: CafetoriaRow(
-                              day: days[0],
+                              day: allDays.first,
                               menu: menu,
                             ),
                           ),
@@ -257,21 +291,22 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
             ],
-          ),
-      ],
-    );
+          )
+        : Container();
     final events = Static.calendar.hasLoadedData
         ? (Static.calendar.data
                 .getEventsForTimeSpan(day, day.add(Duration(days: 730)))
                   ..sort((a, b) => a.start.compareTo(b.start)))
             .toList()
         : [];
-    final calendarView = Column(
-      children: [
-        if (Static.calendar.hasLoadedData)
-          ListGroup(
+    final calendarCut = size == ScreenSize.small
+        ? 3
+        : _calculateCut(context, size == ScreenSize.middle ? 3 : 2);
+    final calendarView = Static.calendar.hasLoadedData
+        ? ListGroup(
             heroId: Keys.calendar,
             title: 'Kalender',
+            counter: events.length - calendarCut,
             actions: [
               NavigationAction(
                 Icons.list,
@@ -299,15 +334,16 @@ class HomePage extends StatelessWidget {
                 );
               })
             ],
-            counter: events.length - 3,
-            children: <Widget>[
+            children: [
               if (!Static.calendar.hasLoadedData || events.isEmpty)
                 EmptyList(title: 'Keine Termine')
               else
                 SizeLimit(
                   child: Column(
                     children: [
-                      ...(events.length > 3 ? events.sublist(0, 3) : events)
+                      ...(events.length > calendarCut
+                              ? events.sublist(0, calendarCut)
+                              : events)
                           .map((event) => Container(
                                 margin: EdgeInsets.all(10),
                                 child: CalendarRow(
@@ -320,84 +356,144 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
             ],
-          ),
-      ],
-    );
-    //TODO: Use a grid and show no data if there is nothing to show
-    return Column(
-      children: [
-        if (size == ScreenSize.small)
-          Column(
-            children: [
-              timetableView,
-              substitutionPlanView,
-              calendarView,
-              cafetoriaView,
-              aiXformationView,
-            ],
-          ),
-        if (size == ScreenSize.middle)
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  substitutionPlanView,
-                  timetableView,
-                ]
-                    .map((x) => Expanded(
-                          flex: 1,
-                          child: x,
-                        ))
-                    .toList()
-                    .cast<Widget>(),
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  calendarView,
-                  cafetoriaView,
-                ]
-                    .map((x) => Expanded(
-                          flex: 1,
-                          child: x,
-                        ))
-                    .toList()
-                    .cast<Widget>(),
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  aiXformationView,
-                ]
-                    .map((x) => Expanded(
-                          flex: 1,
-                          child: x,
-                        ))
-                    .toList()
-                    .cast<Widget>(),
-              ),
-            ],
-          ),
-        if (size == ScreenSize.big)
+          )
+        : Container();
+    if (size == ScreenSize.small) {
+      return Container(
+        color: backgroundColor(context),
+        child: Column(
+          children: [
+            timetableView,
+            substitutionPlanView,
+            calendarView,
+            cafetoriaView,
+            aiXformationView,
+          ],
+        ),
+      );
+    }
+    if (size == ScreenSize.middle) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               substitutionPlanView,
               timetableView,
+            ]
+                .map((x) => Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        height: (MediaQuery.of(context).size.height -
+                                _screenPadding) /
+                            3,
+                        child: x,
+                      ),
+                    ))
+                .toList()
+                .cast<Widget>(),
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               calendarView,
               cafetoriaView,
+            ]
+                .map((x) => Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        height: (MediaQuery.of(context).size.height -
+                                _screenPadding) /
+                            3,
+                        child: x,
+                      ),
+                    ))
+                .toList()
+                .cast<Widget>(),
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               aiXformationView,
             ]
                 .map((x) => Expanded(
                       flex: 1,
+                      child: SizedBox(
+                        height: (MediaQuery.of(context).size.height -
+                                _screenPadding) /
+                            3,
+                        child: x,
+                      ),
+                    ))
+                .toList()
+                .cast<Widget>(),
+          ),
+        ],
+      );
+    }
+    if (size == ScreenSize.big) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              substitutionPlanView,
+              cafetoriaView,
+            ]
+                .map((x) => SizedBox(
+                      height: (MediaQuery.of(context).size.height -
+                              _screenPadding) /
+                          2,
                       child: x,
                     ))
                 .toList()
                 .cast<Widget>(),
           ),
-      ],
-    );
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              timetableView,
+              calendarView,
+            ]
+                .map((x) => SizedBox(
+                      height: (MediaQuery.of(context).size.height -
+                              _screenPadding) /
+                          2,
+                      child: x,
+                    ))
+                .toList()
+                .cast<Widget>(),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height - _screenPadding,
+            child: aiXformationView,
+          ),
+        ]
+            .map((x) => Expanded(
+                  flex: 1,
+                  child: x,
+                ))
+            .toList()
+            .cast<Widget>(),
+      );
+    }
+    return Container();
   }
+
+  int _calculateCut(BuildContext context, int parts) =>
+      _calculateHeight(context, parts) ~/ 60;
+
+  double _calculateHeight(BuildContext context, int parts) {
+    final viewHeight = MediaQuery.of(context).size.height;
+    final tabBarHeight = TabBar(
+      tabs: const [],
+    ).preferredSize.height;
+    const padding = 30;
+    return (viewHeight - _screenPadding) / parts - tabBarHeight - padding;
+  }
+
+  // ignore: avoid_field_initializers_in_const_classes
+  final _screenPadding = 110;
 }

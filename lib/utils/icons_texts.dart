@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ginko/utils/theme.dart';
 
 // ignore: public_member_api_docs
 class IconsTexts extends StatelessWidget {
@@ -35,8 +35,8 @@ class IconsTexts extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: Colors.black54,
                 size: 18,
+                color: textColorLight(context),
               ),
               Container(
                 width: 2.5,
@@ -46,6 +46,7 @@ class IconsTexts extends StatelessWidget {
               Text(
                 text,
                 style: TextStyle(
+                  color: textColor(context),
                   fontSize: 14,
                   fontWeight: FontWeight.w100
                 ),
