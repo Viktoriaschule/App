@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'command.dart';
 
 Future main(List<String> arguments) async {
@@ -7,9 +8,14 @@ Future main(List<String> arguments) async {
     logDebug = arguments[0] == '-d' || arguments[0] == '--debug';
   }
 
-  await runCommand('flutter pub get', log: logDebug);
+  await runCommand(
+    'flutter',
+    ['pub', 'get'],
+    log: logDebug,
+  );
   final error = (await runCommand(
-        'flutter test',
+        'flutter ',
+        ['test'],
         dir: 'app',
         log: logDebug,
       ))['exitCode'] !=
