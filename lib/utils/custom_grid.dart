@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:ginko/utils/custom_grid_tabs_list.dart';
-import 'package:ginko/utils/theme.dart';
+import 'package:viktoriaapp/utils/custom_grid_tabs_list.dart';
+import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs
 class CustomGrid extends StatefulWidget {

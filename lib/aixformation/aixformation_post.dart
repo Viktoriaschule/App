@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:ginko/aixformation/aixformation_utils.dart';
-import 'package:ginko/plugins/platform/platform.dart';
-import 'package:ginko/utils/theme.dart';
-import 'package:ginko/models/models.dart';
+import 'package:viktoriaapp/aixformation/aixformation_utils.dart';
+import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/models/models.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';

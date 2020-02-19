@@ -1,6 +1,6 @@
-import 'package:ginko/loaders/loader.dart';
-import 'package:ginko/models/models.dart';
-import 'package:ginko/utils/static.dart';
+import 'package:viktoriaapp/loaders/loader.dart';
+import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/static.dart';
 
 /// SubstitutionPlanLoader class
 class SubstitutionPlanLoader extends Loader<SubstitutionPlan> {

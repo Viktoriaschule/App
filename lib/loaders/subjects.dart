@@ -1,6 +1,6 @@
-import 'package:ginko/loaders/loader.dart';
-import 'package:ginko/models/models.dart';
-import 'package:ginko/models/subjects.dart';
+import 'package:viktoriaapp/loaders/loader.dart';
+import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/models/subjects.dart';
 
 /// SubjectsLoader class
 class SubjectsLoader extends Loader<Subjects> {

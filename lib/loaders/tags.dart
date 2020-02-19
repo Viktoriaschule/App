@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:ginko/loaders/loader.dart';
-import 'package:ginko/models/models.dart';
-import 'package:ginko/plugins/platform/platform.dart';
-import 'package:ginko/utils/encrypt.dart';
-import 'package:ginko/utils/static.dart';
+import 'package:viktoriaapp/loaders/loader.dart';
+import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/utils/encrypt.dart';
+import 'package:viktoriaapp/utils/static.dart';
 
 /// SubjectsLoader class
 class TagsLoader extends Loader<Tags> {

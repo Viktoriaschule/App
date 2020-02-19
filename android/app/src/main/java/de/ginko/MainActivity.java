@@ -1,4 +1,4 @@
-package de.ginko;
+package app.viktoria.schule;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends FlutterActivity {
-    static final String CHANNEL = "de.ginko";
+    static final String CHANNEL = "app.viktoria.schule";
     static DartExecutor dartExecutor;
 
     @Override

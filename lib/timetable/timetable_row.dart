@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:ginko/utils/custom_row.dart';
-import 'package:ginko/utils/static.dart';
-import 'package:ginko/utils/theme.dart';
-import 'package:ginko/models/models.dart';
+import 'package:viktoriaapp/utils/custom_row.dart';
+import 'package:viktoriaapp/utils/static.dart';
+import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/models/models.dart';
 
 // ignore: public_member_api_docs
 class TimetableRow extends StatelessWidget {

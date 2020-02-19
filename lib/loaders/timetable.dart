@@ -1,5 +1,5 @@
-import 'package:ginko/loaders/loader.dart';
-import 'package:ginko/models/models.dart';
+import 'package:viktoriaapp/loaders/loader.dart';
+import 'package:viktoriaapp/models/models.dart';
 
 /// TimetableLoader class
 class TimetableLoader extends Loader<Timetable> {

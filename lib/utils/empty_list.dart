@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ginko/utils/theme.dart';
+import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs
 class EmptyList extends StatelessWidget {

@@ -6,7 +6,7 @@ import 'dart:html';
 import 'dart:js';
 import 'dart:typed_data';
 
-import 'package:ginko/plugins/pwa/pwa_base.dart';
+import 'package:viktoriaapp/plugins/pwa/pwa_base.dart';
 import 'package:js/js.dart';
 
 // ignore: avoid_annotating_with_dynamic

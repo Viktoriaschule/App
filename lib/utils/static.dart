@@ -1,14 +1,14 @@
-import 'package:ginko/loaders/aixformation.dart';
-import 'package:ginko/loaders/cafetoria.dart';
-import 'package:ginko/loaders/calendar.dart';
-import 'package:ginko/loaders/subjects.dart';
-import 'package:ginko/loaders/substitution_plan.dart';
-import 'package:ginko/loaders/tags.dart';
-import 'package:ginko/loaders/timetable.dart';
-import 'package:ginko/loaders/updates.dart';
-import 'package:ginko/models/models.dart';
-import 'package:ginko/plugins/firebase/firebase.dart';
-import 'package:ginko/plugins/storage/storage.dart';
+import 'package:viktoriaapp/loaders/aixformation.dart';
+import 'package:viktoriaapp/loaders/cafetoria.dart';
+import 'package:viktoriaapp/loaders/calendar.dart';
+import 'package:viktoriaapp/loaders/subjects.dart';
+import 'package:viktoriaapp/loaders/substitution_plan.dart';
+import 'package:viktoriaapp/loaders/tags.dart';
+import 'package:viktoriaapp/loaders/timetable.dart';
+import 'package:viktoriaapp/loaders/updates.dart';
+import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/plugins/firebase/firebase.dart';
+import 'package:viktoriaapp/plugins/storage/storage.dart';
 
 // ignore: avoid_classes_with_only_static_members
 /// Static class

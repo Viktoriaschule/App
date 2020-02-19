@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:ginko/aixformation/aixformation_row.dart';
-import 'package:ginko/app/app_page.dart';
-import 'package:ginko/models/models.dart';
-import 'package:ginko/plugins/platform/platform.dart';
-import 'package:ginko/utils/app_bar.dart';
-import 'package:ginko/utils/bottom_navigation.dart';
-import 'package:ginko/utils/empty_list.dart';
-import 'package:ginko/utils/size_limit.dart';
-import 'package:ginko/utils/static.dart';
-import 'package:ginko/utils/theme.dart';
+import 'package:viktoriaapp/aixformation/aixformation_row.dart';
+import 'package:viktoriaapp/app/app_page.dart';
+import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/utils/app_bar.dart';
+import 'package:viktoriaapp/utils/bottom_navigation.dart';
+import 'package:viktoriaapp/utils/empty_list.dart';
+import 'package:viktoriaapp/utils/size_limit.dart';
+import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs
 class AiXformationPage extends StatelessWidget {

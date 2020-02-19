@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:ginko/models/keys.dart';
-import 'package:ginko/plugins/platform/platform.dart';
-import 'package:ginko/utils/bottom_navigation.dart';
-import 'package:ginko/utils/theme.dart';
+import 'package:viktoriaapp/models/keys.dart';
+import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/utils/bottom_navigation.dart';
+import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs
 class ListGroup extends StatelessWidget {
@@ -37,7 +37,7 @@ class ListGroup extends StatelessWidget {
   final int counter;
 
   /// The [heroId] for an optional hero animation.
-  /// 
+  ///
   /// The hero animation is only added if the [heroId] is not null
   final String heroId;
 
@@ -126,9 +126,12 @@ class ListGroup extends StatelessWidget {
               ),
             ],
           ),
-          if (actions.isNotEmpty && (heroId != null || heroIdNavigation != null))
+          if (actions.isNotEmpty &&
+              (heroId != null || heroIdNavigation != null))
             Hero(
-              tag: !Platform().isWeb ? Keys.navigation(heroIdNavigation ?? heroId) : hashCode,
+              tag: !Platform().isWeb
+                  ? Keys.navigation(heroIdNavigation ?? heroId)
+                  : hashCode,
               child: Material(
                 type: MaterialType.transparency,
                 child: BottomNavigation(actions: actions),

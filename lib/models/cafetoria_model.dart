@@ -1,4 +1,4 @@
-import 'package:ginko/models/models.dart';
+import 'package:viktoriaapp/models/models.dart';
 
 /// Describes the login information...
 class CafetoriaLogin {
@@ -71,9 +71,9 @@ class CafetoriaMenu {
 
   /// Creates a cafetoria menu from json map
   factory CafetoriaMenu.fromJson(Map<String, dynamic> json) => CafetoriaMenu(
-        time: json['time'],
-        name: json['name'],
-        price: double.parse('${json['price'] ?? 0.0}'));
+      time: json['time'],
+      name: json['name'],
+      price: double.parse('${json['price'] ?? 0.0}'));
 
   /// The time of this menu
   final String time;

@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:ginko/models/models.dart';
-import 'package:ginko/utils/static.dart';
+import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs
 abstract class Loader<LoaderType> {

@@ -1,6 +1,6 @@
-import 'package:ginko/loaders/loader.dart';
-import 'package:ginko/models/models.dart';
-import 'package:ginko/utils/static.dart';
+import 'package:viktoriaapp/loaders/loader.dart';
+import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/static.dart';
 
 /// CafetoriaLoader class
 class CafetoriaLoader extends Loader<Cafetoria> {
@@ -12,9 +12,9 @@ class CafetoriaLoader extends Loader<Cafetoria> {
 
   @override
   Map<String, String> get postBody => {
-    'id': Static.storage.getString(Keys.cafetoriaId),
-    'pin': Static.storage.getString(Keys.cafetoriaPassword)
-  };
+        'id': Static.storage.getString(Keys.cafetoriaId),
+        'pin': Static.storage.getString(Keys.cafetoriaPassword)
+      };
 
   @override
   // ignore: type_annotate_public_apis, always_declare_return_types

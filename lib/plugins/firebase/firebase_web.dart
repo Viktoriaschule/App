@@ -6,8 +6,8 @@ import 'dart:convert';
 import 'dart:html';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:ginko/plugins/firebase/firebase_base.dart';
-import 'package:ginko/plugins/firebase/notification_web.dart';
+import 'package:viktoriaapp/plugins/firebase/firebase_base.dart';
+import 'package:viktoriaapp/plugins/firebase/notification_web.dart';
 import 'package:js/js.dart';
 import 'package:js/js_util.dart';
 

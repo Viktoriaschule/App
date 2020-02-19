@@ -1,5 +1,5 @@
-import 'package:ginko/models/models.dart';
-import 'package:ginko/utils/static.dart';
+import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/static.dart';
 
 /// User class
 /// describes a user

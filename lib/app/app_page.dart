@@ -1,22 +1,21 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:ginko/cafetoria/cafetoria_page.dart';
-import 'package:ginko/home/home_page.dart';
-import 'package:ginko/plugins/platform/platform.dart';
-import 'package:ginko/plugins/pwa/pwa.dart';
-import 'package:ginko/substitution_plan/substitution_plan_page.dart';
-import 'package:ginko/timetable/timetable_page.dart';
-import 'package:ginko/utils/app_bar.dart';
-import 'package:ginko/utils/custom_circular_progress_indicator.dart';
-import 'package:ginko/utils/custom_linear_progress_indicator.dart';
-import 'package:ginko/utils/notifications.dart';
-import 'package:ginko/utils/screen_sizes.dart';
-import 'package:ginko/utils/static.dart';
-import 'package:ginko/utils/theme.dart';
+import 'package:viktoriaapp/home/home_page.dart';
+import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/plugins/pwa/pwa.dart';
+import 'package:viktoriaapp/substitution_plan/substitution_plan_page.dart';
+import 'package:viktoriaapp/timetable/timetable_page.dart';
+import 'package:viktoriaapp/utils/app_bar.dart';
+import 'package:viktoriaapp/utils/custom_circular_progress_indicator.dart';
+import 'package:viktoriaapp/utils/custom_linear_progress_indicator.dart';
+import 'package:viktoriaapp/utils/notifications.dart';
+import 'package:viktoriaapp/utils/screen_sizes.dart';
+import 'package:viktoriaapp/utils/static.dart';
+import 'package:viktoriaapp/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ginko/models/models.dart';
+import 'package:viktoriaapp/models/models.dart';
 
 // ignore: public_member_api_docs
 class AppPage extends StatefulWidget {

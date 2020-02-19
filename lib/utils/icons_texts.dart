@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ginko/utils/theme.dart';
+import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs
 class IconsTexts extends StatelessWidget {
@@ -46,10 +46,9 @@ class IconsTexts extends StatelessWidget {
               Text(
                 text,
                 style: TextStyle(
-                  color: textColor(context),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w100
-                ),
+                    color: textColor(context),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w100),
               ),
               if (i != icons.length - 1)
                 Container(

@@ -1,12 +1,12 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:ginko/utils/custom_row.dart';
-import 'package:ginko/utils/icons_texts.dart';
-import 'package:ginko/utils/theme.dart';
+import 'package:viktoriaapp/utils/custom_row.dart';
+import 'package:viktoriaapp/utils/icons_texts.dart';
+import 'package:viktoriaapp/utils/theme.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ginko/models/models.dart';
+import 'package:viktoriaapp/models/models.dart';
 
 // ignore: public_member_api_docs
 class CafetoriaRow extends StatefulWidget {

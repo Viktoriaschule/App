@@ -1,11 +1,11 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:ginko/plugins/platform/platform.dart';
-import 'package:ginko/utils/custom_row.dart';
-import 'package:ginko/utils/theme.dart';
+import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/utils/custom_row.dart';
+import 'package:viktoriaapp/utils/theme.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:ginko/models/models.dart';
+import 'package:viktoriaapp/models/models.dart';
 
 // ignore: public_member_api_docs
 class CalendarRow extends StatefulWidget {
@@ -55,9 +55,7 @@ class _CalendarRowState extends State<CalendarRow>
           subtitle: Text(
             widget.event.dateString,
             style: TextStyle(
-              color: textColor(context),
-              fontWeight: FontWeight.w100
-            ),
+                color: textColor(context), fontWeight: FontWeight.w100),
           ),
           last: Platform().isMobile
               ? IconButton(

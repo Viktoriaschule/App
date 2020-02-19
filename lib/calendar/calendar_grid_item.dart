@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ginko/calendar/calendar_event_dialog.dart';
-import 'package:ginko/utils/static.dart';
-import 'package:ginko/utils/theme.dart';
-import 'package:ginko/models/models.dart';
+import 'package:viktoriaapp/calendar/calendar_event_dialog.dart';
+import 'package:viktoriaapp/utils/static.dart';
+import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/models/models.dart';
 
 // ignore: public_member_api_docs
 class CalendarGridItem extends StatefulWidget {

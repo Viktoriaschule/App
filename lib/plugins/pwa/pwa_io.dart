@@ -2,7 +2,7 @@ library pwa;
 
 import 'dart:typed_data';
 
-import 'package:ginko/plugins/pwa/pwa_base.dart';
+import 'package:viktoriaapp/plugins/pwa/pwa_base.dart';
 
 // ignore: public_member_api_docs
 class PWA extends PWABase {

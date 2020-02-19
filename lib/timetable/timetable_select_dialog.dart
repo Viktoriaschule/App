@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ginko/timetable/timetable_row.dart';
-import 'package:ginko/utils/dialog_content_wrapper.dart';
-import 'package:ginko/utils/theme.dart';
-import 'package:ginko/models/models.dart';
+import 'package:viktoriaapp/timetable/timetable_row.dart';
+import 'package:viktoriaapp/utils/dialog_content_wrapper.dart';
+import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/models/models.dart';
 
 // ignore: public_member_api_docs
 class TimetableSelectDialog extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ginko/utils/custom_circular_progress_indicator.dart';
+import 'package:viktoriaapp/utils/custom_circular_progress_indicator.dart';
 
 // ignore: public_member_api_docs
 Widget getLoadingPlaceholder(BuildContext context) => Container(

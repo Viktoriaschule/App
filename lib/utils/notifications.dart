@@ -1,13 +1,13 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ginko/aixformation/aixformation_post.dart';
-import 'package:ginko/app/app_page.dart';
-import 'package:ginko/cafetoria/cafetoria_page.dart';
-import 'package:ginko/plugins/platform/platform.dart';
-import 'package:ginko/utils/static.dart';
-import 'package:ginko/utils/theme.dart';
-import 'package:ginko/models/models.dart';
+import 'package:viktoriaapp/aixformation/aixformation_post.dart';
+import 'package:viktoriaapp/app/app_page.dart';
+import 'package:viktoriaapp/cafetoria/cafetoria_page.dart';
+import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/utils/static.dart';
+import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/models/models.dart';
 
 // ignore: public_member_api_docs
 class NotificationsWidget extends StatefulWidget {
@@ -48,7 +48,8 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     }
     await Static.tags.syncDevice();
     if (Platform().isAndroid) {
-      await MethodChannel('de.ginko').invokeMethod('channel_registered');
+      await MethodChannel('app.viktoria.schule')
+          .invokeMethod('channel_registered');
     }
   }
 
@@ -128,7 +129,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
 
   //TODO: Change all open functions to new view
   Future _openTimetable() =>
-    Navigator.of(context).pushReplacement(PageRouteBuilder(
+      Navigator.of(context).pushReplacement(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) => AppPage(
           page: 1,
           loading: false,

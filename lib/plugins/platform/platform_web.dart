@@ -1,4 +1,4 @@
-import 'package:ginko/plugins/platform/platform_base.dart';
+import 'package:viktoriaapp/plugins/platform/platform_base.dart';
 
 /// Platform class
 /// handles platform on web devices

@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:crypto/crypto.dart';
-import 'package:ginko/utils/static.dart';
-
+import 'package:viktoriaapp/utils/static.dart';
 
 /// Encrypts a raw string with the user password
 String encryptText(String text) {

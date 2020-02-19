@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:ginko/aixformation/aixformation_post.dart';
-import 'package:ginko/aixformation/aixformation_utils.dart';
-import 'package:ginko/plugins/platform/platform.dart';
-import 'package:ginko/utils/custom_row.dart';
-import 'package:ginko/utils/icons_texts.dart';
-import 'package:ginko/utils/theme.dart';
-import 'package:ginko/models/models.dart';
+import 'package:viktoriaapp/aixformation/aixformation_post.dart';
+import 'package:viktoriaapp/aixformation/aixformation_utils.dart';
+import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/utils/custom_row.dart';
+import 'package:viktoriaapp/utils/icons_texts.dart';
+import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/models/models.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 

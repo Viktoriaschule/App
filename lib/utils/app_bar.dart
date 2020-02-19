@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:ginko/models/keys.dart';
-import 'package:ginko/plugins/platform/platform.dart';
-import 'package:ginko/utils/theme.dart';
+import 'package:viktoriaapp/models/keys.dart';
+import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs
 class CustomAppBar extends PreferredSize {
   // ignore: public_member_api_docs
-  const CustomAppBar({@required this.title, this.actions, this.bottom, this.sliver = false});
+  const CustomAppBar(
+      {@required this.title, this.actions, this.bottom, this.sliver = false});
 
   // ignore: public_member_api_docs
   final String title;
@@ -41,7 +42,9 @@ class CustomAppBar extends PreferredSize {
     );
     final _actions = actions
         .map((action) => Hero(
-              tag: !Platform().isWeb ? (actions.last == action ? Keys.actionMain : action) : hashCode,
+              tag: !Platform().isWeb
+                  ? (actions.last == action ? Keys.actionMain : action)
+                  : hashCode,
               child: Material(type: MaterialType.transparency, child: action),
             ))
         .toList();

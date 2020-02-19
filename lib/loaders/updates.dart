@@ -1,5 +1,5 @@
-import 'package:ginko/loaders/loader.dart';
-import 'package:ginko/models/models.dart';
+import 'package:viktoriaapp/loaders/loader.dart';
+import 'package:viktoriaapp/models/models.dart';
 
 /// UpdatesLoader class
 class UpdatesLoader extends Loader<Updates> {

@@ -1,20 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:ginko/cafetoria/cafetoria_row.dart';
-import 'package:ginko/calendar/calendar_row.dart';
-import 'package:ginko/plugins/platform/platform.dart';
-import 'package:ginko/substitution_plan/substitution_plan_row.dart';
-import 'package:ginko/timetable/timetable_row.dart';
-import 'package:ginko/timetable/timetable_select_dialog.dart';
-import 'package:ginko/utils/custom_grid.dart';
-import 'package:ginko/utils/empty_list.dart';
-import 'package:ginko/utils/bottom_navigation.dart';
-import 'package:ginko/utils/list_group.dart';
-import 'package:ginko/utils/screen_sizes.dart';
-import 'package:ginko/utils/size_limit.dart';
-import 'package:ginko/utils/static.dart';
-import 'package:ginko/utils/theme.dart';
-import 'package:ginko/models/models.dart';
+import 'package:viktoriaapp/cafetoria/cafetoria_row.dart';
+import 'package:viktoriaapp/calendar/calendar_row.dart';
+import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
+import 'package:viktoriaapp/timetable/timetable_row.dart';
+import 'package:viktoriaapp/timetable/timetable_select_dialog.dart';
+import 'package:viktoriaapp/utils/custom_grid.dart';
+import 'package:viktoriaapp/utils/empty_list.dart';
+import 'package:viktoriaapp/utils/bottom_navigation.dart';
+import 'package:viktoriaapp/utils/list_group.dart';
+import 'package:viktoriaapp/utils/screen_sizes.dart';
+import 'package:viktoriaapp/utils/size_limit.dart';
+import 'package:viktoriaapp/utils/static.dart';
+import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/models/models.dart';
 
 // ignore: public_member_api_docs
 class TimetablePage extends StatefulWidget {

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:ginko/plugins/platform/platform.dart';
-import 'package:ginko/substitution_plan/substitution_plan_row.dart';
-import 'package:ginko/utils/bottom_navigation.dart';
-import 'package:ginko/utils/custom_grid.dart';
-import 'package:ginko/utils/empty_list.dart';
-import 'package:ginko/utils/icons_texts.dart';
-import 'package:ginko/utils/list_group.dart';
-import 'package:ginko/utils/screen_sizes.dart';
-import 'package:ginko/utils/size_limit.dart';
-import 'package:ginko/utils/static.dart';
-import 'package:ginko/utils/theme.dart';
-import 'package:ginko/models/models.dart';
+import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
+import 'package:viktoriaapp/utils/bottom_navigation.dart';
+import 'package:viktoriaapp/utils/custom_grid.dart';
+import 'package:viktoriaapp/utils/empty_list.dart';
+import 'package:viktoriaapp/utils/icons_texts.dart';
+import 'package:viktoriaapp/utils/list_group.dart';
+import 'package:viktoriaapp/utils/screen_sizes.dart';
+import 'package:viktoriaapp/utils/size_limit.dart';
+import 'package:viktoriaapp/utils/static.dart';
+import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/models/models.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 // ignore: public_member_api_docs

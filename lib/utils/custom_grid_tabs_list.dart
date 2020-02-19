@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:ginko/utils/custom_grid.dart';
-import 'package:ginko/utils/theme.dart';
+import 'package:viktoriaapp/utils/custom_grid.dart';
+import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs
 class CustomGridTabsList extends StatefulWidget {

@@ -1,4 +1,4 @@
-package de.ginko;
+package app.viktoria.schule;
 
 import android.app.ActivityManager;
 import android.app.PendingIntent;
