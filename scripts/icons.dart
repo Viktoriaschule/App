@@ -62,10 +62,10 @@ Future main(List<String> arguments) async {
     log: logDebug,
   );
 
-  await Directory('go/assets/').create();
+  //await Directory('go/assets/').create();
   await File('images/logo_white.png')
       .copy('android/app/src/main/res/drawable/logo_white.png');
-  await File('images/logo_green.png').copy('go/assets/icon.png');
+  //await File('images/logo_green.png').copy('go/assets/icon.png');
 }
 
 Future<List<int>> post(String url, Map<String, dynamic> body) async {

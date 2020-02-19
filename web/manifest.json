@@ -1,6 +1,6 @@
 {
-  "short_name": "Ginko",
-  "name": "Ginko",
+  "short_name": "ViktoriaApp",
+  "name": "ViktoriaApp",
   "description": "Eine App für die Viktoriaschule",
   "start_url": "/",
   "scope": "/",

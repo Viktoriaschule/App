@@ -28,7 +28,7 @@ Future main() async {
   await setupDateFormats();
 
   runApp(MaterialApp(
-    title: 'Ginko',
+    title: 'ViktoriaApp',
     theme: theme,
     darkTheme: darkTheme,
     routes: <String, WidgetBuilder>{
