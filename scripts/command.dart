@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-Future<dynamic> runCommand(String cmd,
-    {List<String> attributes, String dir, bool log, bool runInShell}) async {
-  print('Run: $cmd ($dir)');
+Future<dynamic> runCommand(String cmd, List<String> attributes,
+    {String dir, bool log, bool runInShell}) async {
+  print('Run: $cmd${dir != null ? ' ($dir)' : ''}');
   if (dir != null) {
     final currentDir = Directory.current.toString().split('\'')[1];
     dir = '$currentDir/$dir';

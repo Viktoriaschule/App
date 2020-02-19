@@ -26,8 +26,16 @@ Future main(List<String> arguments) async {
   print(
       '${programms.length - failed.length}/${programms.length} programms are installed!');
 
-  await runCommand('pub global activate test_coverage', log: logDebug);
-  await runCommand('flutter pub get', log: logDebug);
+  await runCommand(
+    'pub',
+    ['global', 'activate', 'test_coverage'],
+    log: logDebug,
+  );
+  await runCommand(
+    'flutter',
+    ['pub', 'get'],
+    log: logDebug,
+  );
 
   await generate.main(arguments);
 }
