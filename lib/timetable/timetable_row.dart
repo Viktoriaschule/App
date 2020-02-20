@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/custom_row.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
-import 'package:viktoriaapp/models/models.dart';
 
 // ignore: public_member_api_docs
 class TimetableRow extends StatelessWidget {
@@ -98,9 +98,10 @@ class TimetableRow extends StatelessWidget {
                     Text(
                       '${subject.teacherID.toUpperCase()}\n',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 16,
                         fontWeight: FontWeight.w100,
                         color: textColor(context),
+                        fontFamily: 'UbuntuMono',
                       ),
                     ),
                 ],
@@ -117,9 +118,10 @@ class TimetableRow extends StatelessWidget {
                     Text(
                       '${subject.roomID.toUpperCase()}\n',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 16,
                         fontWeight: FontWeight.w100,
                         color: textColor(context),
+                        fontFamily: 'UbuntuMono',
                       ),
                     ),
                 ],

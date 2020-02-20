@@ -2,10 +2,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/custom_row.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
-import 'package:viktoriaapp/models/models.dart';
 
 // ignore: public_member_api_docs
 class SubstitutionPlanRow extends StatelessWidget {
@@ -100,7 +100,7 @@ class SubstitutionPlanRow extends StatelessWidget {
                       1) >
                   1)
             Container(
-              width: 24,
+              width: 30,
               margin: EdgeInsets.only(right: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -112,9 +112,10 @@ class SubstitutionPlanRow extends StatelessWidget {
                             ? substitution.original.teacherID.toUpperCase()
                             : '',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 16,
                       fontWeight: FontWeight.w100,
                       color: textColor(context),
+                      fontFamily: 'UbuntuMono',
                     ),
                   ),
                   Text(
@@ -125,10 +126,11 @@ class SubstitutionPlanRow extends StatelessWidget {
                         ? substitution.original.teacherID.toUpperCase()
                         : '',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 16,
                       fontWeight: FontWeight.w100,
                       color: textColor(context),
                       decoration: TextDecoration.lineThrough,
+                      fontFamily: 'UbuntuMono',
                     ),
                   ),
                 ],
@@ -155,9 +157,10 @@ class SubstitutionPlanRow extends StatelessWidget {
                             ? substitution.original.roomID.toUpperCase()
                             : '',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 16,
                       fontWeight: FontWeight.w100,
                       color: textColor(context),
+                      fontFamily: 'UbuntuMono',
                     ),
                   ),
                   Text(
@@ -168,10 +171,11 @@ class SubstitutionPlanRow extends StatelessWidget {
                         ? substitution.original.roomID.toUpperCase()
                         : '',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 16,
                       color: textColor(context),
                       decoration: TextDecoration.lineThrough,
                       fontWeight: FontWeight.w100,
+                      fontFamily: 'UbuntuMono',
                     ),
                   ),
                 ],
