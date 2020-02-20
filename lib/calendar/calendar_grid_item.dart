@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:viktoriaapp/calendar/calendar_event_dialog.dart';
+import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
-import 'package:viktoriaapp/models/models.dart';
 
 // ignore: public_member_api_docs
 class CalendarGridItem extends StatefulWidget {
@@ -91,7 +91,10 @@ class _CalendarGridItemState extends State<CalendarGridItem> {
             widget.date.day.toString(),
             style: TextStyle(
               color: _isWeekend()
-                  ? Colors.red.withOpacity(0.5)
+                  ? MediaQuery.of(context).platformBrightness ==
+                          Brightness.light
+                      ? Colors.red
+                      : Colors.red.withOpacity(0.5)
                   : !widget.main
                       ? textColor(context).withOpacity(0.5)
                       : _isToday() ? Colors.blue : textColor(context),
