@@ -226,7 +226,7 @@ class HomePage extends StatelessWidget {
             ],
           )
         : Container();
-    final allDays = Static.cafetoria.hasLoadedData
+    final List<CafetoriaDay> allDays = Static.cafetoria.hasLoadedData
         ? (Static.cafetoria.data.days.toList()
               ..sort((a, b) => a.date.compareTo(b.date)))
             .toList()
@@ -268,7 +268,7 @@ class HomePage extends StatelessWidget {
                     : 'Cafétoria - $cafetoriaWeekday (${Static.cafetoria.data.saldo}€) ',
             counter: allDays.length - 1,
             children: [
-              if (!Static.cafetoria.hasLoadedData || afterDays.isEmpty)
+              if (!Static.cafetoria.hasLoadedData || afterDays.isEmpty || afterDays.first.menus.isEmpty)
                 EmptyList(title: 'Keine Menüs')
               else
                 SizeLimit(
