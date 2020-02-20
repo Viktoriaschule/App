@@ -4,13 +4,11 @@ import 'package:viktoriaapp/plugins/platform/platform.dart';
 // ignore: public_member_api_docs
 class CustomHero extends StatelessWidget {
   // ignore: public_member_api_docs
-  CustomHero({
+  const CustomHero({
     @required this.child,
     this.tag,
     Key key,
-  }) : super(key: key) {
-    print(tag);
-  }
+  }) : super(key: key);
 
   // ignore: public_member_api_docs
   final Widget child;
@@ -27,7 +25,5 @@ class CustomHero extends StatelessWidget {
           tag: tag,
           child: child,
         )
-      : Container(
-          child: child,
-        );
+      : child;
 }
