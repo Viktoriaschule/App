@@ -199,21 +199,6 @@ class _TimetablePageState extends State<TimetablePage> {
                                   .cast<Widget>(),
                           ];
                         }),
-                        tabsChildrenWrap: (child) => Container(
-                          margin: EdgeInsets.only(
-                            bottom: 10,
-                            left: 5,
-                            right: 5,
-                            top: 5,
-                          ),
-                          child: Card(
-                            shape: BeveledRectangleBorder(
-                              borderRadius: BorderRadius.circular(0),
-                            ),
-                            elevation: 3,
-                            child: child,
-                          ),
-                        ),
                         children: List.generate(
                           5,
                           (weekday) => Static.timetable.data.days[weekday].units
