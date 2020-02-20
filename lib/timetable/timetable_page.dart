@@ -207,8 +207,8 @@ class _TimetablePageState extends State<TimetablePage> {
                             top: 5,
                           ),
                           child: Card(
-                            shape: BeveledRectangleBorder(
-                              borderRadius: BorderRadius.circular(0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
                             ),
                             elevation: 3,
                             child: child,
