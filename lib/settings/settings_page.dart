@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/custom_button.dart';
 import 'package:viktoriaapp/utils/size_limit.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
-import 'package:viktoriaapp/models/models.dart';
 
 /// SettingsPage class
 /// describes the Settings widget
@@ -30,17 +30,8 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Einstellungen',
-            style: TextStyle(
-              color: textColor(context),
-            ),
-          ),
-          elevation: 2,
-        ),
-        body: Center(
+  Widget build(BuildContext context) => Material(
+        child: Center(
           child: SizeLimit(
             child: Scrollbar(
               child: ListView(

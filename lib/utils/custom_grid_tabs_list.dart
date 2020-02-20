@@ -53,7 +53,8 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
         TabBar(
               tabs: const [],
             ).preferredSize.height *
-            3.5;
+            2.5 +
+        2;
     final content = Column(
       children: [
         ...widget.tab,
@@ -105,7 +106,7 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
                 child: Container(
                   margin: EdgeInsets.all(10),
                   child: Icon(
-                    Icons.keyboard_arrow_down,
+                    Icons.expand_more,
                     size: 30,
                     color: textColor(context),
                   ),

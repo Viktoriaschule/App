@@ -6,6 +6,7 @@ import 'package:viktoriaapp/home/home_page.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/plugins/pwa/pwa.dart';
+import 'package:viktoriaapp/settings/settings_page.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_page.dart';
 import 'package:viktoriaapp/timetable/timetable_page.dart';
 import 'package:viktoriaapp/utils/app_bar.dart';
@@ -331,13 +332,28 @@ class _AppPageState extends State<AppPage>
       [...webActions],
       null,
     );
+    pages[Keys.settings] = InlinePage(
+      'Einstellungen',
+      [],
+      SettingsPage(),
+    );
     pages[Keys.home] = InlinePage(
       'Startseite',
       [
         ...webActions,
         IconButton(
           onPressed: () {
-            Navigator.of(context).pushNamed('/${Keys.settings}');
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (context) => Scaffold(
+                  appBar: CustomAppBar(
+                    title: pages[Keys.settings].title,
+                    actions: pages[Keys.settings].actions,
+                  ),
+                  body: pages[Keys.settings].content,
+                ),
+              ),
+            );
           },
           icon: Icon(
             Icons.settings,
