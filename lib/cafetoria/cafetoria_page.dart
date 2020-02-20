@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_row.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/utils/app_bar.dart';
 import 'package:viktoriaapp/utils/bottom_navigation.dart';
 import 'package:viktoriaapp/utils/custom_hero.dart';
+import 'package:viktoriaapp/utils/empty_list.dart';
 import 'package:viktoriaapp/utils/list_group.dart';
 import 'package:viktoriaapp/utils/size_limit.dart';
 import 'package:viktoriaapp/utils/static.dart';
@@ -42,18 +44,20 @@ class CafetoriaPage extends StatelessWidget {
                               title:
                                   // ignore: lines_longer_than_80_chars
                                   '${weekdays[day.date.weekday - 1]} ${shortOutputDateFormat.format(day.date)}',
-                              children: day.menus
-                                  .map(
-                                    (menu) => Container(
-                                      margin: EdgeInsets.all(10),
-                                      child: CafetoriaRow(
-                                        day: day,
-                                        menu: menu,
-                                      ),
-                                    ),
-                                  )
-                                  .toList()
-                                  .cast<Widget>(),
+                              children: day.menus.isNotEmpty
+                                  ? day.menus
+                                      .map(
+                                        (menu) => Container(
+                                          margin: EdgeInsets.all(10),
+                                          child: CafetoriaRow(
+                                            day: day,
+                                            menu: menu,
+                                          ),
+                                        ),
+                                      )
+                                      .toList()
+                                      .cast<Widget>()
+                                  : [EmptyList(title: 'Keine Menüs')],
                             ),
                           ))
                       .toList()
@@ -72,8 +76,11 @@ class CafetoriaPage extends StatelessWidget {
                 NavigationAction(Icons.expand_less, () {
                   Navigator.pop(context);
                 }),
-                NavigationAction(Icons.credit_card, () {
-                  //TODO: Open cafetoria website
+                NavigationAction(Icons.credit_card, () async {
+                  const url = 'https://www.opc-asp.de/vs-aachen/';
+                  if (await canLaunch(url)) {
+                    await launch(url);
+                  }
                 })
               ],
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:viktoriaapp/aixformation/aixformation_page.dart';
 import 'package:viktoriaapp/aixformation/aixformation_row.dart';
 import 'package:viktoriaapp/app/app_page.dart';
@@ -255,8 +256,11 @@ class HomePage extends StatelessWidget {
                   ),
                 );
               }),
-              NavigationAction(Icons.credit_card, () {
-                //TODO: Open the cafetoria website
+              NavigationAction(Icons.credit_card, () async {
+                const url = 'https://www.opc-asp.de/vs-aachen/';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                }
               }),
             ],
             title: !loggedIn
@@ -268,7 +272,9 @@ class HomePage extends StatelessWidget {
                     : 'Cafétoria - $cafetoriaWeekday (${Static.cafetoria.data.saldo}€) ',
             counter: allDays.length - 1,
             children: [
-              if (!Static.cafetoria.hasLoadedData || afterDays.isEmpty || afterDays.first.menus.isEmpty)
+              if (!Static.cafetoria.hasLoadedData ||
+                  afterDays.isEmpty ||
+                  afterDays.first.menus.isEmpty)
                 EmptyList(title: 'Keine Menüs')
               else
                 SizeLimit(
