@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:viktoriaapp/models/keys.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/utils/bottom_navigation.dart';
+import 'package:viktoriaapp/utils/custom_hero.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs
@@ -108,8 +109,8 @@ class ListGroup extends StatelessWidget {
           Stack(
             children: <Widget>[
               if (heroId != null)
-                Hero(
-                  tag: !Platform().isWeb ? (heroId ?? this) : this,
+                CustomHero(
+                  tag: heroId,
                   child: Material(
                     type: MaterialType.transparency,
                     child: content,
@@ -128,10 +129,8 @@ class ListGroup extends StatelessWidget {
           ),
           if (actions.isNotEmpty &&
               (heroId != null || heroIdNavigation != null))
-            Hero(
-              tag: !Platform().isWeb
-                  ? Keys.navigation(heroIdNavigation ?? heroId)
-                  : hashCode,
+            CustomHero(
+              tag: Keys.navigation(heroIdNavigation ?? heroId),
               child: Material(
                 type: MaterialType.transparency,
                 child: BottomNavigation(actions: actions),
