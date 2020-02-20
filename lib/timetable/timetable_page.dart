@@ -7,6 +7,7 @@ import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
 import 'package:viktoriaapp/timetable/timetable_row.dart';
 import 'package:viktoriaapp/timetable/timetable_select_dialog.dart';
 import 'package:viktoriaapp/utils/custom_grid.dart';
+import 'package:viktoriaapp/utils/custom_hero.dart';
 import 'package:viktoriaapp/utils/empty_list.dart';
 import 'package:viktoriaapp/utils/bottom_navigation.dart';
 import 'package:viktoriaapp/utils/list_group.dart';
@@ -27,8 +28,8 @@ class _TimetablePageState extends State<TimetablePage> {
   Widget build(BuildContext context) => Column(
         children: <Widget>[
           Expanded(
-            child: Hero(
-              tag: Platform().isWeb ? this : Keys.timetable,
+            child: CustomHero(
+              tag: Keys.timetable,
               child: Static.timetable.hasLoadedData &&
                       Static.substitutionPlan.hasLoadedData &&
                       Static.cafetoria.hasLoadedData &&
@@ -300,8 +301,8 @@ class _TimetablePageState extends State<TimetablePage> {
                   : Container(),
             ),
           ),
-          Hero(
-            tag: !Platform().isWeb ? Keys.navigation(Keys.timetable) : hashCode,
+          CustomHero(
+            tag: Keys.navigation(Keys.timetable),
             child: Material(
               type: MaterialType.transparency,
               child: BottomNavigation(

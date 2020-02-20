@@ -5,6 +5,7 @@ import 'package:viktoriaapp/calendar/calendar_grid_item.dart';
 import 'package:viktoriaapp/calendar/calendar_list.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/utils/custom_hero.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 import 'package:viktoriaapp/utils/bottom_navigation.dart';
 import 'package:viktoriaapp/utils/static.dart';
@@ -304,8 +305,8 @@ class _CalendarPageState extends State<CalendarPage>
                     ],
                   ));
                 }
-                return Hero(
-                  tag: this, //TODO: Fix animation
+                return CustomHero(
+                  //tag: Keys.calendar, //TODO: Fix animation
                   child: Material(
                     type: MaterialType.transparency,
                     child: TabBarView(
@@ -317,8 +318,8 @@ class _CalendarPageState extends State<CalendarPage>
               },
             ),
           ),
-          Hero(
-            tag: !Platform().isWeb ? Keys.navigation(Keys.calendar) : hashCode,
+          CustomHero(
+            tag: Keys.navigation(Keys.calendar),
             child: Material(
               type: MaterialType.transparency,
               child: BottomNavigation(

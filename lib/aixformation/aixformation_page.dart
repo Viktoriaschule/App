@@ -58,10 +58,8 @@ class AiXformationPage extends StatelessWidget {
                   ],
                 ),
               ),
-            ),
-          ),
-          Hero(
-            tag: !Platform().isWeb ? Keys.navigation(Keys.aiXformation) : this,
+          CustomHero(
+            tag: Keys.navigation(Keys.aiXformation),
             child: Material(
               type: MaterialType.transparency,
               child: BottomNavigation(

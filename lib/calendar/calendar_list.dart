@@ -6,6 +6,7 @@ import 'package:viktoriaapp/models/keys.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/utils/app_bar.dart';
 import 'package:viktoriaapp/utils/bottom_navigation.dart';
+import 'package:viktoriaapp/utils/custom_hero.dart';
 import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs
@@ -44,8 +45,8 @@ class CalendarList extends StatelessWidget {
               ],
             ),
           ),
-          Hero(
-            tag: !Platform().isWeb ? Keys.navigation(Keys.calendar) : this,
+          CustomHero(
+            tag: Keys.navigation(Keys.calendar),
             child: Material(
               type: MaterialType.transparency,
               child: BottomNavigation(
