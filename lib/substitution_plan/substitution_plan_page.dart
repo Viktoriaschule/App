@@ -3,6 +3,7 @@ import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
 import 'package:viktoriaapp/utils/bottom_navigation.dart';
 import 'package:viktoriaapp/utils/custom_grid.dart';
+import 'package:viktoriaapp/utils/custom_hero.dart';
 import 'package:viktoriaapp/utils/empty_list.dart';
 import 'package:viktoriaapp/utils/icons_texts.dart';
 import 'package:viktoriaapp/utils/list_group.dart';
@@ -134,22 +135,19 @@ class _SubstitutionPlanPageState extends State<SubstitutionPlanPage> {
                             ),
                         ];
                         return [
-                          Hero(
-                            tag: Platform().isWeb
-                                ? this
-                                : getScreenSize(MediaQuery.of(context)
-                                            .size
-                                            .width) ==
-                                        ScreenSize.small
-                                    ? Keys.substitutionPlan
-                                    : '${Keys.substitutionPlan}-$index',
+                          CustomHero(
+                            tag: getScreenSize(
+                                        MediaQuery.of(context).size.width) ==
+                                    ScreenSize.small
+                                ? Keys.substitutionPlan
+                                : '${Keys.substitutionPlan}-$index',
                             child: Material(
                               type: MaterialType.transparency,
                               child: Center(
                                 child: SizeLimit(
                                   child: Card(
-                                    shape: BeveledRectangleBorder(
-                                      borderRadius: BorderRadius.circular(0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
                                     ),
                                     elevation: 5,
                                     margin: EdgeInsets.all(10),
@@ -186,10 +184,8 @@ class _SubstitutionPlanPageState extends State<SubstitutionPlanPage> {
                   )
                 : Container(),
           ),
-          Hero(
-            tag: !Platform().isWeb
-                ? Keys.navigation(Keys.substitutionPlan)
-                : hashCode,
+          CustomHero(
+            tag: Keys.navigation(Keys.substitutionPlan),
             child: Material(
               type: MaterialType.transparency,
               child: BottomNavigation(

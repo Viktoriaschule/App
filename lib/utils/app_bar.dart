@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:viktoriaapp/models/keys.dart';
-import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/utils/custom_hero.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs
@@ -23,8 +23,8 @@ class CustomAppBar extends PreferredSize {
 
   @override
   Widget build(BuildContext context) {
-    final _title = Hero(
-      tag: !Platform().isWeb ? Keys.title : this,
+    final _title = CustomHero(
+      tag: Keys.title,
       child: Material(
         type: MaterialType.transparency,
         child: Container(
@@ -41,10 +41,8 @@ class CustomAppBar extends PreferredSize {
       ),
     );
     final _actions = actions
-        .map((action) => Hero(
-              tag: !Platform().isWeb
-                  ? (actions.last == action ? Keys.actionMain : action)
-                  : hashCode,
+        .map((action) => CustomHero(
+              tag: actions.last == action ? Keys.actionMain : action,
               child: Material(type: MaterialType.transparency, child: action),
             ))
         .toList();
