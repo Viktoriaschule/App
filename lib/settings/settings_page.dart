@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/custom_button.dart';
+import 'package:viktoriaapp/utils/list_group.dart';
 import 'package:viktoriaapp/utils/size_limit.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
-import 'package:viktoriaapp/models/models.dart';
 
 /// SettingsPage class
 /// describes the Settings widget
@@ -30,91 +31,84 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Einstellungen',
-            style: TextStyle(
-              color: textColor(context),
-            ),
-          ),
-          elevation: 2,
-        ),
-        body: Center(
+  Widget build(BuildContext context) => Material(
+        child: Center(
           child: SizeLimit(
             child: Scrollbar(
               child: ListView(
                 shrinkWrap: true,
                 padding: EdgeInsets.all(5),
                 children: [
-                  CheckboxListTile(
-                    title: Text(
-                      'Vertretungsplanbenachrichtigungen anzeigen',
-                      style: TextStyle(
-                        color: textColor(context),
+                  ListGroup(
+                    title: 'Benachrichtigungen',
+                    children: [
+                      CheckboxListTile(
+                        title: Text(
+                          'Vertretungsplan',
+                          style: TextStyle(
+                            color: textColor(context),
+                          ),
+                        ),
+                        checkColor: lightColor,
+                        activeColor: Theme.of(context).accentColor,
+                        value: _substitutionPlanNotifications,
+                        onChanged: (value) async {
+                          setState(() {
+                            _substitutionPlanNotifications = value;
+                            Static.storage.setBool(
+                                Keys.substitutionPlanNotifications, value);
+                          });
+                          try {
+                            await Static.tags.syncDevice();
+                            // ignore: empty_catches
+                          } on DioError {}
+                        },
                       ),
-                    ),
-                    checkColor: lightColor,
-                    activeColor: Theme.of(context).accentColor,
-                    value: _substitutionPlanNotifications,
-                    onChanged: (value) async {
-                      setState(() {
-                        _substitutionPlanNotifications = value;
-                        Static.storage
-                            .setBool(Keys.substitutionPlanNotifications, value);
-                        //TODO: Check if needed: Static.settings.save();
-                      });
-                      try {
-                        await Static.tags.syncDevice();
-                        // ignore: empty_catches
-                      } on DioError {}
-                    },
-                  ),
-                  CheckboxListTile(
-                    title: Text(
-                      'AiXformation-Benachrichtigungen anzeigen',
-                      style: TextStyle(
-                        color: textColor(context),
+                      CheckboxListTile(
+                        title: Text(
+                          'AiXformation',
+                          style: TextStyle(
+                            color: textColor(context),
+                          ),
+                        ),
+                        checkColor: lightColor,
+                        activeColor: Theme.of(context).accentColor,
+                        value: _aiXformationNotifications,
+                        onChanged: (value) async {
+                          setState(() {
+                            _aiXformationNotifications = value;
+                            Static.storage
+                                .setBool(Keys.aiXformationNotifications, value);
+                          });
+                          try {
+                            await Static.tags.syncDevice();
+                            // ignore: empty_catches
+                          } on DioError {}
+                        },
                       ),
-                    ),
-                    checkColor: lightColor,
-                    activeColor: Theme.of(context).accentColor,
-                    value: _aiXformationNotifications,
-                    onChanged: (value) async {
-                      setState(() {
-                        _aiXformationNotifications = value;
-                        Static.storage
-                            .setBool(Keys.aiXformationNotifications, value);
-                        //TODO: Check: Static.settings.save();
-                      });
-                      try {
-                        await Static.tags.syncDevice();
-                        // ignore: empty_catches
-                      } on DioError {}
-                    },
-                  ),
-                  CheckboxListTile(
-                    title: Text(
-                      'Cafétoria-Benachrichtigungen anzeigen',
-                      style: TextStyle(
-                        color: textColor(context),
+                      CheckboxListTile(
+                        title: Text(
+                          'Cafétoria',
+                          style: TextStyle(
+                            color: textColor(context),
+                          ),
+                        ),
+                        checkColor: lightColor,
+                        activeColor: Theme.of(context).accentColor,
+                        value: _cafetoriaNotifications,
+                        onChanged: (value) async {
+                          setState(() {
+                            _cafetoriaNotifications = value;
+                            Static.storage
+                                .setBool(Keys.cafetoriaNotifications, value);
+                          });
+                          try {
+                            await Static.tags.syncDevice();
+                            // ignore: empty_catches
+                          } on DioError {}
+                        },
                       ),
-                    ),
-                    checkColor: lightColor,
-                    activeColor: Theme.of(context).accentColor,
-                    value: _cafetoriaNotifications,
-                    onChanged: (value) async {
-                      setState(() {
-                        _cafetoriaNotifications = value;
-                        Static.storage
-                            .setBool(Keys.cafetoriaNotifications, value);
-                        //TODO: Static.settings.save();
-                      });
-                      try {
-                        await Static.tags.syncDevice();
-                        // ignore: empty_catches
-                      } on DioError {}
-                    },
+                    ],
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 20, left: 5, right: 5),

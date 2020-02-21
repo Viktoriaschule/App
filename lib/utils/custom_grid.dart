@@ -14,7 +14,6 @@ class CustomGrid extends StatefulWidget {
     this.childrenRowPrepend,
     this.appendRowPrepend,
     this.initialHorizontalIndex = 0,
-    this.tabsChildrenWrap,
     Key key,
   }) : super(key: key);
 
@@ -38,9 +37,6 @@ class CustomGrid extends StatefulWidget {
 
   // ignore: public_member_api_docs
   final int initialHorizontalIndex;
-
-  // ignore: public_member_api_docs
-  final WidgetCallback tabsChildrenWrap;
 
   @override
   _CustomGridState createState() => _CustomGridState();
@@ -102,7 +98,6 @@ class _CustomGridState extends State<CustomGrid>
                 .map((tab) => CustomGridTabsList(
                       tab: tab,
                       append: widget.append,
-                      wrap: widget.tabsChildrenWrap,
                       children: widget.children,
                     ))
                 .toList(),

@@ -4,10 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:viktoriaapp/aixformation/aixformation_post.dart';
 import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_page.dart';
+import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/utils/static.dart';
-import 'package:viktoriaapp/utils/theme.dart';
-import 'package:viktoriaapp/models/models.dart';
 
 // ignore: public_member_api_docs
 class NotificationsWidget extends StatefulWidget {
@@ -88,12 +87,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
             await callback();
           },
         ),
-        content: Text(
-          text,
-          style: TextStyle(
-            color: lightColor,
-          ),
-        ),
+        content: Text(text),
       ));
       _lastSnackbar = DateTime.now();
     }

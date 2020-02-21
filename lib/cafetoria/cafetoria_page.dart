@@ -25,67 +25,41 @@ class CafetoriaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final days =
         (Static.cafetoria.data.days..sort((a, b) => a.date.compareTo(b.date)));
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: CustomScrollView(
-            slivers: [
-              CustomAppBar(
-                title: page.title,
-                actions: page.actions,
-                sliver: true,
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  days
-                      .map((day) => SizeLimit(
-                            child: ListGroup(
-                              heroId: '${Keys.cafetoria}-${days.indexOf(day)}',
-                              title:
-                                  // ignore: lines_longer_than_80_chars
-                                  '${weekdays[day.date.weekday - 1]} ${shortOutputDateFormat.format(day.date)}',
-                              children: day.menus.isNotEmpty
-                                  ? day.menus
-                                      .map(
-                                        (menu) => Container(
-                                          margin: EdgeInsets.all(10),
-                                          child: CafetoriaRow(
-                                            day: day,
-                                            menu: menu,
-                                          ),
-                                        ),
-                                      )
-                                      .toList()
-                                      .cast<Widget>()
-                                  : [EmptyList(title: 'Keine Menüs')],
-                            ),
-                          ))
-                      .toList()
-                      .cast<Widget>(),
-                ),
-              ),
-            ],
+    return CustomScrollView(
+      slivers: [
+        CustomAppBar(
+          title: page.title,
+          actions: page.actions,
+          sliver: true,
+        ),
+        SliverList(
+          delegate: SliverChildListDelegate(
+            (Static.cafetoria.data.days
+                  ..sort((a, b) => a.date.compareTo(b.date)))
+                .map((day) => SizeLimit(
+                      child: ListGroup(
+                        heroId: '${Keys.cafetoria}-${days.indexOf(day)}',
+                        title:
+                            // ignore: lines_longer_than_80_chars
+                            '${weekdays[day.date.weekday - 1]} ${shortOutputDateFormat.format(day.date)}',
+                        children: day.menus
+                            .map(
+                              (menu) => Container(
+                                margin: EdgeInsets.all(10),
+                                child: CafetoriaRow(
+                                  day: day,
+                                  menu: menu,
+                                ),
+                              ),
+                            )
+                            .toList()
+                            .cast<Widget>(),
+                      ),
+                    ))
+                .toList()
+                .cast<Widget>(),
           ),
         ),
-        CustomHero(
-          tag: Keys.navigation(Keys.cafetoria),
-          child: Material(
-            type: MaterialType.transparency,
-            child: BottomNavigation(
-              actions: [
-                NavigationAction(Icons.expand_less, () {
-                  Navigator.pop(context);
-                }),
-                NavigationAction(Icons.credit_card, () async {
-                  const url = 'https://www.opc-asp.de/vs-aachen/';
-                  if (await canLaunch(url)) {
-                    await launch(url);
-                  }
-                })
-              ],
-            ),
-          ),
-        )
       ],
     );
   }

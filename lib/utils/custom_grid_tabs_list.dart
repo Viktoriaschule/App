@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:viktoriaapp/utils/custom_grid.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs
@@ -11,7 +10,6 @@ class CustomGridTabsList extends StatefulWidget {
     @required this.tab,
     @required this.children,
     @required this.append,
-    this.wrap,
     Key key,
   }) : super(key: key);
 
@@ -23,9 +21,6 @@ class CustomGridTabsList extends StatefulWidget {
 
   // ignore: public_member_api_docs
   final List<List<Widget>> append;
-
-  // ignore: public_member_api_docs
-  final WidgetCallback wrap;
 
   @override
   _CustomGridTabsListState createState() => _CustomGridTabsListState();
@@ -58,18 +53,13 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
         TabBar(
               tabs: const [],
             ).preferredSize.height *
-            3.5;
-    final content = widget.wrap != null
-        ? widget.wrap(Column(
-            children: [
-              ...widget.tab,
-            ],
-          ))
-        : Column(
-            children: [
-              ...widget.tab,
-            ],
-          );
+            2.5 +
+        2;
+    final content = Column(
+      children: [
+        ...widget.tab,
+      ],
+    );
     return Stack(
       children: [
         Container(
@@ -116,7 +106,7 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
                 child: Container(
                   margin: EdgeInsets.all(10),
                   child: Icon(
-                    Icons.keyboard_arrow_down,
+                    Icons.expand_more,
                     size: 30,
                     color: textColor(context),
                   ),

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:viktoriaapp/models/keys.dart';
-import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/utils/bottom_navigation.dart';
 import 'package:viktoriaapp/utils/custom_hero.dart';
 import 'package:viktoriaapp/utils/theme.dart';
@@ -52,6 +51,7 @@ class ListGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     final actions = this.actions ?? [];
     final content = Container(
+      padding: EdgeInsets.only(bottom: 10),
       child: Column(
         children: [
           Container(
@@ -72,29 +72,18 @@ class ListGroup extends StatelessWidget {
                   ),
                 ),
                 if (counter > 0)
-                  Expanded(
-                    flex: 15,
-                    child: Center(
-                      child: Container(
-                        margin: EdgeInsets.only(right: 9),
-                        child: Text(
-                          '+${counter >= 10 ? counter : '$counter'}',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w100,
-                            color: textColor(context),
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
+                  Text(
+                    '+${counter >= 10 ? counter : '$counter'}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w100,
+                      color: textColor(context),
+                      fontSize: 18,
                     ),
                   ),
               ],
             ),
           ),
           ...children,
-          Container(
-            height: 10,
-          ),
         ],
       ),
     );
