@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/custom_button.dart';
-import 'package:viktoriaapp/utils/custom_linear_progress_indicator.dart';
+import 'package:viktoriaapp/utils/custom_circular_progress_indicator.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 
@@ -42,36 +42,42 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
   /// Checks if the user is currently logged in
   bool get loggedIn => id != null && password != null;
 
-  /// Sets if the cafetoria login is currently loading
-  bool loading = false;
+  /// Sets if the cafetoria login is currently logging in
+  bool loggingIn = false;
+
+  /// Sets if the cafetoria login is currently logging out
+  bool loggingOut = false;
 
   /// Checks the login
   Future<void> checkForm() async {
-    setState(() => loading = true);
-    final loginStatus = await Static.cafetoria
-        .checkLogin(idController.text, passwordController.text, context);
-    failMsg = loginStatus == StatusCodes.success
-        ? null
-        : (loginStatus == StatusCodes.failed
-            ? 'Serverfehler - Versuchen Sie es später nochmal'
-            : 'Login-Daten nicht korrekt');
-    _credentialsCorrect = loginStatus == StatusCodes.success;
-    if (_formKey.currentState.validate()) {
-      // Save correct credentials
-      Static.storage
-          .setString(Keys.cafetoriaModified, DateTime.now().toIso8601String());
-      Static.storage.setString(Keys.cafetoriaId, idController.text);
-      Static.storage.setString(Keys.cafetoriaPassword, passwordController.text);
-      await Static.tags
-          .syncTags(context, syncExams: false, syncSelections: false);
-      await Static.cafetoria.loadOnline(context, force: true);
-      setState(() => loading = false);
-      Navigator.pop(context);
-      // Update UI
-      widget.onFinished();
-    } else {
-      setState(() => loading = false);
-      passwordController.clear();
+    if (!loggingIn) {
+      setState(() => loggingIn = true);
+      final loginStatus = await Static.cafetoria
+          .checkLogin(idController.text, passwordController.text, context);
+      failMsg = loginStatus == StatusCodes.success
+          ? null
+          : (loginStatus == StatusCodes.failed
+              ? 'Serverfehler - Versuche es später nochmal'
+              : 'Login-Daten nicht korrekt');
+      _credentialsCorrect = loginStatus == StatusCodes.success;
+      if (_formKey.currentState.validate()) {
+        // Save correct credentials
+        Static.storage.setString(
+            Keys.cafetoriaModified, DateTime.now().toIso8601String());
+        Static.storage.setString(Keys.cafetoriaId, idController.text);
+        Static.storage
+            .setString(Keys.cafetoriaPassword, passwordController.text);
+        await Static.tags
+            .syncTags(context, syncExams: false, syncSelections: false);
+        await Static.cafetoria.loadOnline(context, force: true);
+        setState(() => loggingIn = false);
+        Navigator.pop(context);
+        // Update UI
+        widget.onFinished();
+      } else {
+        setState(() => loggingIn = false);
+        passwordController.clear();
+      }
     }
   }
 
@@ -93,24 +99,14 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
   @override
   Widget build(BuildContext context) => SimpleDialog(
         titlePadding: EdgeInsets.all(0),
-        title: Column(
-          children: [
-            AnimatedOpacity(
-              opacity: loading ? 1 : 0,
-              duration: Duration(milliseconds: 300),
-              child: CustomLinearProgressIndicator(
-                height: 4,
-                backgroundColor: Colors.white,
-              ),
+        title: Center(
+          child: Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: Text(
+              'Cafétoria Login',
+              style: TextStyle(fontWeight: FontWeight.w100),
             ),
-            Padding(
-              padding: EdgeInsets.only(top: 10),
-              child: Text(
-                'Cafétoria Login',
-                style: TextStyle(fontWeight: FontWeight.w100),
-              ),
-            ),
-          ],
+          ),
         ),
         children: [
           Padding(
@@ -162,12 +158,19 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
                         Expanded(
                           child: CustomButton(
                             onPressed: checkForm,
-                            child: Text(
-                              'Anmelden',
-                              style: TextStyle(
-                                color: darkColor,
-                              ),
-                            ),
+                            enabled: !loggingOut,
+                            child: loggingIn
+                                ? CustomCircularProgressIndicator(
+                                    height: 25,
+                                    width: 25,
+                                    color: Theme.of(context).primaryColor,
+                                  )
+                                : Text(
+                                    'Anmelden',
+                                    style: TextStyle(
+                                      color: darkColor,
+                                    ),
+                                  ),
                           ),
                         ),
                         if (loggedIn)
@@ -176,18 +179,27 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
                           Expanded(
                             child: CustomButton(
                               onPressed: () async {
-                                setState(() => loading = true);
-                                await Static.cafetoria.logout(context);
-                                setState(() => loading = false);
-                                Navigator.pop(context);
-                                widget.onFinished();
+                                if (!loggingOut) {
+                                  setState(() => loggingOut = true);
+                                  await Static.cafetoria.logout(context);
+                                  setState(() => loggingOut = false);
+                                  Navigator.pop(context);
+                                  widget.onFinished();
+                                }
                               },
-                              child: Text(
-                                'Abmelden',
-                                style: TextStyle(
-                                  color: darkColor,
-                                ),
-                              ),
+                              enabled: !loggingIn,
+                              child: loggingOut
+                                  ? CustomCircularProgressIndicator(
+                                      height: 25,
+                                      width: 25,
+                                      color: Theme.of(context).primaryColor,
+                                    )
+                                  : Text(
+                                      'Abmelden',
+                                      style: TextStyle(
+                                        color: darkColor,
+                                      ),
+                                    ),
                             ),
                           ),
                       ],
