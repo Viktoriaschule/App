@@ -9,6 +9,7 @@ import 'package:viktoriaapp/cafetoria/cafetoria_row.dart';
 import 'package:viktoriaapp/calendar/calendar_list.dart';
 import 'package:viktoriaapp/calendar/calendar_page.dart';
 import 'package:viktoriaapp/calendar/calendar_row.dart';
+import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
 import 'package:viktoriaapp/timetable/timetable_row.dart';
 import 'package:viktoriaapp/utils/app_bar.dart';
@@ -18,8 +19,6 @@ import 'package:viktoriaapp/utils/list_group.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
 import 'package:viktoriaapp/utils/size_limit.dart';
 import 'package:viktoriaapp/utils/static.dart';
-import 'package:viktoriaapp/utils/theme.dart';
-import 'package:viktoriaapp/models/models.dart';
 
 // ignore: public_member_api_docs
 class HomePage extends StatelessWidget {
@@ -366,7 +365,7 @@ class HomePage extends StatelessWidget {
         : Container();
     if (size == ScreenSize.small) {
       return Container(
-        color: backgroundColor(context),
+        color: Theme.of(context).backgroundColor,
         child: Column(
           children: [
             timetableView,

@@ -63,7 +63,7 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
     return Stack(
       children: [
         Container(
-          color: backgroundColor(context),
+          color: Theme.of(context).backgroundColor,
           child: Scrollbar(
             child: ListView(
               controller: _scrollController,

@@ -138,10 +138,6 @@ class _SubstitutionPlanPageState extends State<SubstitutionPlanPage> {
                         child: Center(
                           child: SizeLimit(
                             child: Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              elevation: 5,
                               margin: EdgeInsets.all(10),
                               child: Container(
                                 margin: EdgeInsets.all(10),

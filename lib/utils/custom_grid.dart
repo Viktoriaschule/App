@@ -118,7 +118,7 @@ class _CustomGridState extends State<CustomGrid>
             .toList()[0]
         : 0;
     return Container(
-      color: backgroundColor(context),
+      color: Theme.of(context).backgroundColor,
       child: Scrollbar(
         child: ListView(
           shrinkWrap: true,
