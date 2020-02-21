@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:viktoriaapp/utils/snapping_list_view.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs
@@ -60,31 +63,47 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
         ...widget.tab,
       ],
     );
+    final margin = contentHeight - widget.tab.length * 60 - 50;
+    final animationProgress =
+        double.parse((_offset / contentHeight).toStringAsPrecision(3));
     return Stack(
       children: [
         Container(
           color: Theme.of(context).backgroundColor,
           child: Scrollbar(
-            child: ListView(
+            child: SnappingListView(
               controller: _scrollController,
-              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemExtent: contentHeight,
               children: [
                 if (widget.append == null)
                   ConstrainedBox(
                     constraints: BoxConstraints(
                       minHeight: contentHeight,
                     ),
-                    child: content,
-                  ),
-                if (widget.append != null)
-                  Container(
-                    margin: EdgeInsets.only(
-                      bottom: contentHeight - widget.tab.length * 60,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [content],
+                      ),
                     ),
-                    child: content,
                   ),
                 if (widget.append != null)
-                  ...widget.append[widget.children.indexOf(widget.tab)]
+                  SingleChildScrollView(
+                    padding: EdgeInsets.only(
+                      bottom: !margin.isNegative ? margin : 0,
+                    ),
+                    child: Column(
+                      children: [content],
+                    ),
+                  ),
+                if (widget.append != null)
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ...widget.append[widget.children.indexOf(widget.tab)],
+                      ],
+                    ),
+                  ),
               ],
             ),
           ),
@@ -92,19 +111,20 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
         if (widget.append != null)
           Container(
             alignment: Alignment.bottomCenter,
-            child: AnimatedOpacity(
-              opacity: _offset > 10 ? 0 : 1,
-              duration: Duration(milliseconds: 100),
-              child: GestureDetector(
-                onTap: () {
-                  _scrollController.animateTo(
-                    _scrollController.position.maxScrollExtent,
-                    duration: Duration(milliseconds: 250),
-                    curve: Curves.easeInOutCubic,
-                  );
-                },
-                child: Container(
-                  margin: EdgeInsets.all(10),
+            child: GestureDetector(
+              onTap: () {
+                _scrollController.animateTo(
+                  animationProgress < 0.5
+                      ? _scrollController.position.maxScrollExtent
+                      : 0,
+                  duration: Duration(milliseconds: 250),
+                  curve: Curves.easeInOutCubic,
+                );
+              },
+              child: Container(
+                padding: EdgeInsets.all(7.5),
+                child: Transform.rotate(
+                  angle: animationProgress * pi,
                   child: Icon(
                     Icons.expand_more,
                     size: 30,
