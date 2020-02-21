@@ -372,6 +372,7 @@ class _AppPageState extends State<AppPage>
           title: pages[Keys.home].title,
           actions: pages[Keys.home].actions,
           sliver: true,
+          isLeading: false,
           bottom: _loading
               ? CustomLinearProgressIndicator(
                   backgroundColor: Theme.of(context).primaryColor,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_login.dart' as dialog;
 import 'package:viktoriaapp/cafetoria/cafetoria_row.dart';
@@ -37,6 +38,19 @@ class CafetoriaPageState extends State<CafetoriaPage> {
               ? '${widget.page.title} (${Static.cafetoria.data.saldo}€)'
               : widget.page.title,
           actions: [
+            IconButton(
+              onPressed: () async {
+                const url = 'https://www.opc-asp.de/vs-aachen/';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                }
+              },
+              icon: Icon(
+                Icons.credit_card,
+                size: 28,
+                color: textColor(context),
+              ),
+            ),
             IconButton(
               onPressed: () {
                 showDialog(

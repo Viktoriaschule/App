@@ -7,7 +7,11 @@ import 'package:viktoriaapp/utils/theme.dart';
 class CustomAppBar extends PreferredSize {
   // ignore: public_member_api_docs
   const CustomAppBar(
-      {@required this.title, this.actions, this.bottom, this.sliver = false});
+      {@required this.title,
+      this.actions,
+      this.bottom,
+      this.sliver = false,
+      this.isLeading = true});
 
   // ignore: public_member_api_docs
   final String title;
@@ -20,6 +24,9 @@ class CustomAppBar extends PreferredSize {
 
   // ignore: public_member_api_docs
   final PreferredSize bottom;
+
+  // ignore: public_member_api_docs
+  final bool isLeading;
 
   @override
   Size get preferredSize => AppBar().preferredSize;
@@ -56,6 +63,7 @@ class CustomAppBar extends PreferredSize {
         floating: false,
         pinned: true,
         bottom: bottom,
+        titleSpacing: isLeading ? 0 : NavigationToolbar.kMiddleSpacing,
       );
     }
     return AppBar(
@@ -63,6 +71,7 @@ class CustomAppBar extends PreferredSize {
       actions: _actions,
       elevation: 0,
       bottom: bottom,
+      titleSpacing: isLeading ? 0 : NavigationToolbar.kMiddleSpacing,
     );
   }
 }
