@@ -118,11 +118,17 @@ class ListGroup extends StatelessWidget {
               tag: Keys.navigation(heroIdNavigation ?? heroId),
               child: Material(
                 type: MaterialType.transparency,
-                child: BottomNavigation(actions: actions),
+                child: BottomNavigation(
+                  actions: actions,
+                  forceBorderTop: true,
+                ),
               ),
             )
           else if (actions.isNotEmpty)
-            BottomNavigation(actions: actions),
+            BottomNavigation(
+              actions: actions,
+              forceBorderTop: true,
+            ),
         ],
       ),
     );
