@@ -63,7 +63,7 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
         ...widget.tab,
       ],
     );
-    final margin = contentHeight - widget.tab.length * 60;
+    final margin = contentHeight - widget.tab.length * 60 - 50;
     final animationProgress =
         double.parse((_offset / contentHeight).toStringAsPrecision(3));
     return Stack(
