@@ -29,12 +29,7 @@ class _LoginPageState extends State<_LoginPage> {
       if (_usernameFieldController.text.isEmpty ||
           _passwordFieldController.text.isEmpty) {
         Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(
-            'Username und Passwort erforderlich',
-            style: TextStyle(
-              color: lightColor,
-            ),
-          ),
+          content: Text('Username und Passwort erforderlich'),
         ));
         return;
       }
@@ -44,6 +39,7 @@ class _LoginPageState extends State<_LoginPage> {
       final result = await Static.updates.loadOnline(
         context,
         force: true,
+        autoLogin: false,
         username: _usernameFieldController.text,
         password: _passwordFieldController.text,
       );
@@ -73,12 +69,7 @@ class _LoginPageState extends State<_LoginPage> {
         _checkingLogin = false;
       });
       Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text(
-          'Deine Anmeldung konnte nicht überprüft werden',
-          style: TextStyle(
-            color: lightColor,
-          ),
-        ),
+        content: Text('Deine Anmeldung konnte nicht überprüft werden'),
       ));
     }
   }

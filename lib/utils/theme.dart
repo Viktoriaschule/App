@@ -30,6 +30,12 @@ ThemeData get darkTheme => ThemeData(
       primaryColor: darkColor,
       accentColor: _accentColor,
       highlightColor: Color(0xFF666666),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: darkColor,
+        contentTextStyle: TextStyle(
+          color: lightColor,
+        ),
+      ),
       primaryIconTheme: IconThemeData(
         color: Color(0xFFCCCCCC),
       ),
