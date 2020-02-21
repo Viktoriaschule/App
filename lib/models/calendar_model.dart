@@ -72,10 +72,13 @@ class CalendarEvent {
 
   // ignore: public_member_api_docs
   String name;
+
   // ignore: public_member_api_docs
   String info;
+
   // ignore: public_member_api_docs
   DateTime start;
+
   // ignore: public_member_api_docs
   DateTime end;
 
@@ -96,7 +99,7 @@ class CalendarEvent {
         ).add(Duration(days: 1)).subtract(Duration(seconds: 1)) !=
         end) {
       dateStr += ' - ';
-      if (end.hour != 23 || end.minute != 59) {
+      if (end.hour != 0 || end.minute != 0) {
         dateStr += _dateTimeFormat.format(end);
       } else {
         dateStr += _dateFormat.format(end);
