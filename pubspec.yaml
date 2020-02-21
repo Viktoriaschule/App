@@ -48,11 +48,8 @@ flutter:
           weight: 700
     - family: RobotoMono
       fonts:
-        - asset: fonts/RobotoMono-Regular.ttf
         - asset: fonts/RobotoMono-Light.ttf
           weight: 200
-        - asset: fonts/RobotoMono-Thin.ttf
-          weight: 100
   assets:
     - images/logo_green.png
     - images/logo_green_192x192.png
