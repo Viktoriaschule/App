@@ -112,10 +112,10 @@ class SubstitutionPlanRow extends StatelessWidget {
                             ? substitution.original.teacherID.toUpperCase()
                             : '',
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w100,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w300,
                       color: textColor(context),
-                      fontFamily: 'UbuntuMono',
+                      fontFamily: 'RobotoMono',
                     ),
                   ),
                   Text(
@@ -126,11 +126,11 @@ class SubstitutionPlanRow extends StatelessWidget {
                         ? substitution.original.teacherID.toUpperCase()
                         : '',
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w100,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w300,
                       color: textColor(context),
                       decoration: TextDecoration.lineThrough,
-                      fontFamily: 'UbuntuMono',
+                      fontFamily: 'RobotoMono',
                     ),
                   ),
                 ],
@@ -157,10 +157,10 @@ class SubstitutionPlanRow extends StatelessWidget {
                             ? substitution.original.roomID.toUpperCase()
                             : '',
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w100,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w300,
                       color: textColor(context),
-                      fontFamily: 'UbuntuMono',
+                      fontFamily: 'RobotoMono',
                     ),
                   ),
                   Text(
@@ -171,11 +171,11 @@ class SubstitutionPlanRow extends StatelessWidget {
                         ? substitution.original.roomID.toUpperCase()
                         : '',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       color: textColor(context),
                       decoration: TextDecoration.lineThrough,
-                      fontWeight: FontWeight.w100,
-                      fontFamily: 'UbuntuMono',
+                      fontWeight: FontWeight.w300,
+                      fontFamily: 'RobotoMono',
                     ),
                   ),
                 ],

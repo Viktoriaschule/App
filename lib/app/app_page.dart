@@ -275,7 +275,7 @@ class _AppPageState extends State<AppPage>
                     style: TextStyle(
                       fontSize: 22,
                       color: textColor(context),
-                      fontFamily: 'UbuntuMono',
+                      fontFamily: 'RobotoMono',
                     ),
                   ),
                 ),

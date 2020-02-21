@@ -98,10 +98,10 @@ class TimetableRow extends StatelessWidget {
                     Text(
                       '${subject.teacherID.toUpperCase()}\n',
                       style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w100,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w300,
                         color: textColor(context),
-                        fontFamily: 'UbuntuMono',
+                        fontFamily: 'RobotoMono',
                       ),
                     ),
                 ],
@@ -118,10 +118,10 @@ class TimetableRow extends StatelessWidget {
                     Text(
                       '${subject.roomID.toUpperCase()}\n',
                       style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w100,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w300,
                         color: textColor(context),
-                        fontFamily: 'UbuntuMono',
+                        fontFamily: 'RobotoMono',
                       ),
                     ),
                 ],
