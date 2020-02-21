@@ -3,7 +3,6 @@ import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/calendar/calendar_page.dart';
 import 'package:viktoriaapp/calendar/calendar_row.dart';
 import 'package:viktoriaapp/models/keys.dart';
-import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/utils/app_bar.dart';
 import 'package:viktoriaapp/utils/bottom_navigation.dart';
 import 'package:viktoriaapp/utils/custom_hero.dart';
@@ -51,9 +50,6 @@ class CalendarList extends StatelessWidget {
               type: MaterialType.transparency,
               child: BottomNavigation(
                 actions: [
-                  NavigationAction(Icons.expand_less, () {
-                    Navigator.pop(context);
-                  }),
                   NavigationAction(Icons.calendar_today, () {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute<void>(

@@ -11,10 +11,13 @@ class CustomAppBar extends PreferredSize {
 
   // ignore: public_member_api_docs
   final String title;
+
   // ignore: public_member_api_docs
   final List<Widget> actions;
+
   // ignore: public_member_api_docs
   final bool sliver;
+
   // ignore: public_member_api_docs
   final PreferredSize bottom;
 
@@ -50,7 +53,6 @@ class CustomAppBar extends PreferredSize {
       return SliverAppBar(
         title: _title,
         actions: _actions,
-        automaticallyImplyLeading: false,
         floating: false,
         pinned: true,
         bottom: bottom,
@@ -59,7 +61,6 @@ class CustomAppBar extends PreferredSize {
     return AppBar(
       title: _title,
       actions: _actions,
-      automaticallyImplyLeading: false,
       elevation: 0,
       bottom: bottom,
     );

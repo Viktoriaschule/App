@@ -51,8 +51,15 @@ class BottomNavigation extends StatelessWidget {
                               ),
                             )
                           : null,
+                      color: MediaQuery.of(context).platformBrightness ==
+                              Brightness.dark
+                          ? darkColor
+                          : null,
                     ),
-                    child: Icon(action.icon, color: textColorLight(context)),
+                    child: Icon(
+                      action.icon,
+                      color: textColorLight(context),
+                    ),
                   ),
                 ),
               );

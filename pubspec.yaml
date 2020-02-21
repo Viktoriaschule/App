@@ -27,7 +27,6 @@ dependencies:
   version:
   encrypt:
   js:
-  google_fonts:
   add_2_calendar:
   webview_flutter:
   in_app_update:
@@ -35,24 +34,22 @@ dependencies:
 dev_dependencies:
   flutter_launcher_icons:
 
-dependency_overrides:
-  google_fonts:
-    git:
-      url: https://github.com/jld3103/google-fonts-flutter
-      ref: fix/web-path_provider
-
 flutter:
   uses-material-design: true
   fonts:
-  - family: Ubuntu
-    fonts:
-      - asset: fonts/Ubuntu-Regular.ttf
-      - asset: fonts/Ubuntu-Italic.ttf
-        style: italic
-      - asset: fonts/Ubuntu-Light.ttf
-        weight: 100
-      - asset: fonts/Ubuntu-Bold.ttf
-        weight: 700
+    - family: Ubuntu
+      fonts:
+        - asset: fonts/Ubuntu-Regular.ttf
+        - asset: fonts/Ubuntu-Italic.ttf
+          style: italic
+        - asset: fonts/Ubuntu-Light.ttf
+          weight: 100
+        - asset: fonts/Ubuntu-Bold.ttf
+          weight: 700
+    - family: RobotoMono
+      fonts:
+        - asset: fonts/RobotoMono-Light.ttf
+          weight: 200
   assets:
     - images/logo_green.png
     - images/logo_green_192x192.png
