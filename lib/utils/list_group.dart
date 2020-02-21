@@ -88,10 +88,6 @@ class ListGroup extends StatelessWidget {
       ),
     );
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4),
-      ),
-      elevation: 5,
       margin: EdgeInsets.all(10),
       child: Column(
         children: <Widget>[
@@ -122,11 +118,17 @@ class ListGroup extends StatelessWidget {
               tag: Keys.navigation(heroIdNavigation ?? heroId),
               child: Material(
                 type: MaterialType.transparency,
-                child: BottomNavigation(actions: actions),
+                child: BottomNavigation(
+                  actions: actions,
+                  forceBorderTop: true,
+                ),
               ),
             )
           else if (actions.isNotEmpty)
-            BottomNavigation(actions: actions),
+            BottomNavigation(
+              actions: actions,
+              forceBorderTop: true,
+            ),
         ],
       ),
     );
