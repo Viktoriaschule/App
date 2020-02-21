@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 // ignore: public_member_api_docs
 final Color lightColor = Color(0xFFFAFAFA);
 // ignore: public_member_api_docs
-final Color lightBackgroundColor = Color(0xFFFAFAFA);
+final Color lightBackgroundColor = lightColor;
 // ignore: public_member_api_docs
 final Color darkColor = Color(0xFF424242);
 // ignore: public_member_api_docs
@@ -21,6 +22,11 @@ ThemeData get theme => ThemeData(
       primaryIconTheme: IconThemeData(
         color: darkColor,
       ),
+      cardTheme: CardTheme(
+        elevation: 5,
+      ),
+      cardColor: lightColor,
+      backgroundColor: lightBackgroundColor,
       fontFamily: 'Ubuntu',
     );
 
@@ -28,7 +34,7 @@ ThemeData get theme => ThemeData(
 ThemeData get darkTheme => ThemeData(
       brightness: Brightness.dark,
       primaryColor: darkColor,
-      accentColor: _accentColor,
+      accentColor: theme.accentColor,
       highlightColor: Color(0xFF666666),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: darkColor,
@@ -39,9 +45,13 @@ ThemeData get darkTheme => ThemeData(
       primaryIconTheme: IconThemeData(
         color: Color(0xFFCCCCCC),
       ),
+      cardTheme: theme.cardTheme,
+      cardColor: darkColor,
+      backgroundColor: darkBackgroundColor,
       fontFamily: 'Ubuntu',
     );
 
+/// TODO: Remove the usage of these functions by using the theme
 /// Get the text color according to the theme
 Color textColor(BuildContext context) =>
     MediaQuery.of(context).platformBrightness == Brightness.light
@@ -53,9 +63,3 @@ Color textColorLight(BuildContext context) =>
     MediaQuery.of(context).platformBrightness == Brightness.light
         ? darkColorLight
         : Color(0xFFCCCCCC);
-
-/// Get the background color according to the theme
-Color backgroundColor(BuildContext context) =>
-    MediaQuery.of(context).platformBrightness == Brightness.light
-        ? lightBackgroundColor
-        : darkBackgroundColor;

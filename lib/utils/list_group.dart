@@ -88,10 +88,6 @@ class ListGroup extends StatelessWidget {
       ),
     );
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4),
-      ),
-      elevation: 5,
       margin: EdgeInsets.all(10),
       child: Column(
         children: <Widget>[

@@ -151,7 +151,7 @@ class _LoginPageState extends State<_LoginPage> {
       ),
     );
     return Container(
-      color: backgroundColor(context),
+      color: Theme.of(context).backgroundColor,
       child: Center(
         child: Scrollbar(
           child: ListView(
