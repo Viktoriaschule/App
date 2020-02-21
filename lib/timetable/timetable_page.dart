@@ -101,7 +101,7 @@ class _TimetablePageState extends State<TimetablePage> {
                               ..sort((a, b) => a.start.compareTo(b.start)))
                             .toList()
                         : [];
-                    final days = Static.cafetoria.hasLoadedData
+                    final List<CafetoriaDay> days = Static.cafetoria.hasLoadedData
                         ? (Static.cafetoria.data.days
                                 .where((d) =>
                                     d.date ==
@@ -128,7 +128,7 @@ class _TimetablePageState extends State<TimetablePage> {
                               ],
                             ),
                           );
-                    final cafetoriaWidget = days.isEmpty
+                    final cafetoriaWidget = days.isEmpty || days.first.menus.isEmpty
                         ? EmptyList(title: 'Keine Menüs')
                         : SizeLimit(
                             child: Column(
