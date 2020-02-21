@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/custom_button.dart';
+import 'package:viktoriaapp/utils/custom_linear_progress_indicator.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 
@@ -8,7 +9,7 @@ import 'package:viktoriaapp/utils/theme.dart';
 /// Cafetoria login data
 class CafetoriaLogin extends StatefulWidget {
   // ignore: public_member_api_docs
-  const CafetoriaLogin({this.onFinished});
+  const CafetoriaLogin({@required this.onFinished});
 
   /// Finish callback
   final VoidCallback onFinished;
@@ -27,10 +28,10 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
   String failMsg;
 
   /// Text editing controller for the keyfob id
-  TextEditingController idController;
+  TextEditingController idController = TextEditingController();
 
   /// Text editing controller for the keyfob password
-  TextEditingController passwordController;
+  TextEditingController passwordController = TextEditingController();
 
   /// The current keyfob id
   String id;
@@ -41,10 +42,14 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
   /// Checks if the user is currently logged in
   bool get loggedIn => id != null && password != null;
 
-  /// Check the login
+  /// Sets if the cafetoria login is currently loading
+  bool loading = false;
+
+  /// Checks the login
   Future<void> checkForm() async {
-    final loginStatus =
-        await Static.cafetoria.checkLogin(id, password, context);
+    setState(() => loading = true);
+    final loginStatus = await Static.cafetoria
+        .checkLogin(idController.text, passwordController.text, context);
     failMsg = loginStatus == StatusCodes.success
         ? null
         : (loginStatus == StatusCodes.failed
@@ -59,10 +64,13 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
       Static.storage.setString(Keys.cafetoriaPassword, passwordController.text);
       await Static.tags
           .syncTags(context, syncExams: false, syncSelections: false);
+      await Static.cafetoria.loadOnline(context, force: true);
+      setState(() => loading = false);
       Navigator.pop(context);
       // Update UI
       widget.onFinished();
     } else {
+      setState(() => loading = false);
       passwordController.clear();
     }
   }
@@ -71,6 +79,7 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
   void initState() {
     id = Static.storage.getString(Keys.cafetoriaId);
     password = Static.storage.getString(Keys.cafetoriaPassword);
+    idController.text = id ?? '';
     super.initState();
   }
 
@@ -83,84 +92,109 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
 
   @override
   Widget build(BuildContext context) => SimpleDialog(
-        title: Text(
-          'Cafétoria Login',
-          style: TextStyle(fontWeight: FontWeight.w100),
+        titlePadding: EdgeInsets.all(0),
+        title: Column(
+          children: [
+            AnimatedOpacity(
+              opacity: loading ? 1 : 0,
+              duration: Duration(milliseconds: 300),
+              child: CustomLinearProgressIndicator(
+                height: 4,
+                backgroundColor: Colors.white,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Text(
+                'Cafétoria Login',
+                style: TextStyle(fontWeight: FontWeight.w100),
+              ),
+            ),
+          ],
         ),
         children: [
-          Form(
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  controller: idController,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Id muss angegeben sein';
-                    }
-                    if (!_credentialsCorrect) {
-                      return 'Login-Daten falsch';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(hintText: 'Keyfob-ID'),
-                  onFieldSubmitted: (value) {
-                    FocusScope.of(context).requestFocus(_focus);
-                  },
-                ),
-                TextFormField(
-                  controller: passwordController,
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Password kann nicht leer sein';
-                    }
-                    if (!_credentialsCorrect) {
-                      return 'Login-Daten falsch';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Keyfob-Pin',
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    controller: idController,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Id muss angegeben sein';
+                      }
+                      if (!_credentialsCorrect) {
+                        return failMsg;
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(hintText: 'Keyfob-ID'),
+                    onFieldSubmitted: (value) {
+                      FocusScope.of(context).requestFocus(_focus);
+                    },
                   ),
-                  onFieldSubmitted: (value) {
-                    checkForm();
-                  },
-                  obscureText: true,
-                  focusNode: _focus,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 20, right: 20),
-                        child: CustomButton(
-                          onPressed: () => null,
-                          child: Text(
-                            'Anmelden',
-                            style: TextStyle(
-                              color: darkColor,
-                            ),
-                          ),
-                        ),
-                      ),
+                  TextFormField(
+                    controller: passwordController,
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Password kann nicht leer sein';
+                      }
+                      if (!_credentialsCorrect) {
+                        return failMsg;
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Keyfob-Pin',
                     ),
-                    if (loggedIn)
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 20),
+                    onFieldSubmitted: (value) {
+                      checkForm();
+                    },
+                    obscureText: true,
+                    focusNode: _focus,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: Row(
+                      children: [
+                        Expanded(
                           child: CustomButton(
-                            onPressed: () => null,
+                            onPressed: checkForm,
                             child: Text(
-                              'Abmelden',
+                              'Anmelden',
                               style: TextStyle(
                                 color: darkColor,
                               ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
-                )
-              ],
+                        if (loggedIn)
+                          Padding(padding: EdgeInsets.only(right: 20)),
+                        if (loggedIn)
+                          Expanded(
+                            child: CustomButton(
+                              onPressed: () async {
+                                setState(() => loading = true);
+                                await Static.cafetoria.logout(context);
+                                setState(() => loading = false);
+                                Navigator.pop(context);
+                                widget.onFinished();
+                              },
+                              child: Text(
+                                'Abmelden',
+                                style: TextStyle(
+                                  color: darkColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           )
         ],

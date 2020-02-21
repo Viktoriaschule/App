@@ -6,17 +6,21 @@ class CustomLinearProgressIndicator extends PreferredSize {
   CustomLinearProgressIndicator({
     Key key,
     Color backgroundColor,
+    this.height = 3,
   }) : super(
           key: key,
           child: SizedBox(
-            height: 3,
+            height: height,
             child: LinearProgressIndicator(
               backgroundColor: backgroundColor,
             ),
           ),
-          preferredSize: Size.fromHeight(3),
+          preferredSize: Size.fromHeight(height),
         );
 
+  // ignore: public_member_api_docs
+  final double height;
+
   @override
-  Size get preferredSize => Size.fromHeight(3);
+  Size get preferredSize => Size.fromHeight(height);
 }

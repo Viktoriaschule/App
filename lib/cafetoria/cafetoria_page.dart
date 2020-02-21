@@ -13,7 +13,7 @@ import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs
-class CafetoriaPage extends StatelessWidget {
+class CafetoriaPage extends StatefulWidget {
   // ignore: public_member_api_docs
   const CafetoriaPage({@required this.page});
 
@@ -21,19 +21,29 @@ class CafetoriaPage extends StatelessWidget {
   final InlinePage page;
 
   @override
+  State<StatefulWidget> createState() => CafetoriaPageState();
+}
+
+// ignore: public_member_api_docs
+class CafetoriaPageState extends State<CafetoriaPage> {
+  @override
   Widget build(BuildContext context) {
     final days =
         (Static.cafetoria.data.days..sort((a, b) => a.date.compareTo(b.date)));
     return CustomScrollView(
       slivers: [
         CustomAppBar(
-          title: page.title,
+          title: Static.cafetoria.data.saldo != null
+              ? '${widget.page.title} (${Static.cafetoria.data.saldo}€)'
+              : widget.page.title,
           actions: [
             IconButton(
               onPressed: () {
                 showDialog(
                   context: context,
-                  child: dialog.CafetoriaLogin(),
+                  child: dialog.CafetoriaLogin(
+                    onFinished: () => setState(() => null),
+                  ),
                 );
               },
               icon: Icon(
