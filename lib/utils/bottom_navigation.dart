@@ -16,21 +16,31 @@ class NavigationAction {
 // ignore: public_member_api_docs
 class BottomNavigation extends StatelessWidget {
   // ignore: public_member_api_docs
-  const BottomNavigation({@required this.actions});
+  const BottomNavigation({
+    @required this.actions,
+    this.forceBorderTop = false,
+  });
 
   // ignore: public_member_api_docs
   final List<NavigationAction> actions;
 
+  // ignore: public_member_api_docs
+  final bool forceBorderTop;
+
   @override
   Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              width: 1,
-              color: Color.fromARGB(50, 0, 0, 0),
-            ),
-          ),
-        ),
+        decoration:
+            MediaQuery.of(context).platformBrightness == Brightness.light ||
+                    forceBorderTop
+                ? BoxDecoration(
+                    border: Border(
+                      top: BorderSide(
+                        width: 1,
+                        color: Color.fromARGB(50, 0, 0, 0),
+                      ),
+                    ),
+                  )
+                : null,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
