@@ -126,6 +126,7 @@ class ListGroup extends StatelessWidget {
                 child: CustomBottomNavigation(
                   actions: actions,
                   forceBorderTop: true,
+                  inCard: true,
                 ),
               ),
             )
@@ -133,6 +134,7 @@ class ListGroup extends StatelessWidget {
             CustomBottomNavigation(
               actions: actions,
               forceBorderTop: true,
+              inCard: true,
             ),
         ],
       ),

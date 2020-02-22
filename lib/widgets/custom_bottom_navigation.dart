@@ -19,6 +19,7 @@ class CustomBottomNavigation extends StatelessWidget {
   const CustomBottomNavigation({
     @required this.actions,
     this.forceBorderTop = false,
+    this.inCard = false,
   });
 
   // ignore: public_member_api_docs
@@ -26,6 +27,9 @@ class CustomBottomNavigation extends StatelessWidget {
 
   // ignore: public_member_api_docs
   final bool forceBorderTop;
+
+  // ignore: public_member_api_docs
+  final bool inCard;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -62,7 +66,8 @@ class CustomBottomNavigation extends StatelessWidget {
                             )
                           : null,
                       color: MediaQuery.of(context).platformBrightness ==
-                              Brightness.dark
+                                  Brightness.dark &&
+                              !inCard
                           ? darkColor
                           : null,
                     ),
