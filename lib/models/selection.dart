@@ -50,7 +50,9 @@ class Selection {
           .setString(Keys.selection(selected.block), selected.courseID);
       Static.storage.setString(Keys.selectionTimestamp(selected.block),
           DateTime.now().toIso8601String());
-      Static.substitutionPlan.data.updateFilter();
+      if (Static.substitutionPlan.hasLoadedData) {
+        Static.substitutionPlan.data.updateFilter();
+      }
     }
     if (!defaultSelection) {
       EventBus.of(context).publish(TimetableUpdateEvent());
