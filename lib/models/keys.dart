@@ -57,9 +57,6 @@ class Keys {
   static const String teachers = 'teachers';
 
   // ignore: public_member_api_docs
-  static const String weekday = 'weekday';
-
-  // ignore: public_member_api_docs
   static const String aiXformation = 'aixformation';
 
   // ignore: public_member_api_docs
