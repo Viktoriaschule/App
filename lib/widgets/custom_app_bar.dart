@@ -8,7 +8,7 @@ class CustomAppBar extends PreferredSize {
   // ignore: public_member_api_docs
   const CustomAppBar(
       {@required this.title,
-      this.actions,
+      this.actions = const [],
       this.bottom,
       this.sliver = false,
       this.isLeading = true});

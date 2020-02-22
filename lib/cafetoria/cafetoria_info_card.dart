@@ -18,7 +18,6 @@ class CafetoriaInfoCard extends StatefulWidget {
   // ignore: public_member_api_docs
   const CafetoriaInfoCard({
     @required this.date,
-    @required this.pages,
     this.showNavigation = true,
     this.isSingleDay = false,
     Key key,
@@ -26,9 +25,6 @@ class CafetoriaInfoCard extends StatefulWidget {
 
   // ignore: public_member_api_docs
   final DateTime date;
-
-  // ignore: public_member_api_docs
-  final Map<String, InlinePage> pages;
 
   // ignore: public_member_api_docs
   final bool showNavigation;
@@ -77,9 +73,7 @@ class _CafetoriaInfoCardState extends Interactor<CafetoriaInfoCard> {
         NavigationAction(Icons.list, () {
           Navigator.of(context).push(
             MaterialPageRoute<void>(
-              builder: (context) => Scaffold(
-                body: CafetoriaPage(page: widget.pages[Keys.cafetoria]),
-              ),
+              builder: (context) => CafetoriaPage(),
             ),
           );
         }),
