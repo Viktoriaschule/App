@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:viktoriaapp/aixformation/aixformation_page.dart';
 import 'package:viktoriaapp/aixformation/aixformation_row.dart';
-import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
@@ -14,15 +13,11 @@ class AiXformationInfoCard extends StatefulWidget {
   // ignore: public_member_api_docs
   const AiXformationInfoCard({
     @required this.date,
-    @required this.pages,
     Key key,
   }) : super(key: key);
 
   // ignore: public_member_api_docs
   final DateTime date;
-
-  // ignore: public_member_api_docs
-  final Map<String, InlinePage> pages;
 
   @override
   _AiXformationInfoCardState createState() => _AiXformationInfoCardState();
@@ -40,9 +35,7 @@ class _AiXformationInfoCardState extends State<AiXformationInfoCard> {
         NavigationAction(Icons.expand_more, () {
           Navigator.of(context).push(
             MaterialPageRoute<void>(
-              builder: (context) => Scaffold(
-                body: AiXformationPage(page: widget.pages[Keys.aiXformation]),
-              ),
+              builder: (context) => AiXformationPage(),
             ),
           );
         }),

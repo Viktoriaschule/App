@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/calendar/calendar_list.dart';
 import 'package:viktoriaapp/calendar/calendar_page.dart';
 import 'package:viktoriaapp/calendar/calendar_row.dart';
@@ -11,6 +10,7 @@ import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
 import 'package:viktoriaapp/widgets/empty_list.dart';
 import 'package:viktoriaapp/utils/info_card.dart';
+import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/widgets/list_group.dart';
 import 'package:viktoriaapp/widgets/size_limit.dart';
 
@@ -19,7 +19,6 @@ class CalendarInfoCard extends StatefulWidget {
   // ignore: public_member_api_docs
   const CalendarInfoCard({
     @required this.date,
-    @required this.pages,
     this.showNavigation = true,
     this.isSingleDay = false,
     Key key,
@@ -27,9 +26,6 @@ class CalendarInfoCard extends StatefulWidget {
 
   // ignore: public_member_api_docs
   final DateTime date;
-
-  // ignore: public_member_api_docs
-  final Map<String, InlinePage> pages;
 
   // ignore: public_member_api_docs
   final bool showNavigation;
@@ -84,7 +80,7 @@ class _CalendarInfoCardState extends Interactor<CalendarInfoCard> {
             Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (context) => Scaffold(
-                  body: CalendarList(page: widget.pages[Keys.calendar]),
+                  body: CalendarList(),
                 ),
               ),
             );
@@ -93,13 +89,7 @@ class _CalendarInfoCardState extends Interactor<CalendarInfoCard> {
         NavigationAction(Icons.calendar_today, () {
           Navigator.of(context).push(
             MaterialPageRoute<void>(
-              builder: (context) => Scaffold(
-                appBar: CustomAppBar(
-                  title: widget.pages[Keys.calendar].title,
-                  actions: widget.pages[Keys.calendar].actions,
-                ),
-                body: CalendarPage(page: widget.pages[Keys.calendar]),
-              ),
+              builder: (context) => CalendarPage(),
             ),
           );
         })

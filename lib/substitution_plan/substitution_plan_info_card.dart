@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/substitution_plan/substitution_plan_page.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
 import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
+import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
@@ -18,15 +19,11 @@ class SubstitutionPlanInfoCard extends StatefulWidget {
   // ignore: public_member_api_docs
   const SubstitutionPlanInfoCard({
     @required this.date,
-    @required this.pages,
     Key key,
   }) : super(key: key);
 
   // ignore: public_member_api_docs
   final DateTime date;
-
-  // ignore: public_member_api_docs
-  final Map<String, InlinePage> pages;
 
   @override
   _SubstitutionPlanInfoCardState createState() =>
@@ -82,13 +79,7 @@ class _SubstitutionPlanInfoCardState
         NavigationAction(Icons.expand_more, () {
           Navigator.of(context).push(
             MaterialPageRoute<void>(
-              builder: (context) => Scaffold(
-                appBar: CustomAppBar(
-                  title: widget.pages[Keys.substitutionPlan].title,
-                  actions: widget.pages[Keys.substitutionPlan].actions,
-                ),
-                body: widget.pages[Keys.substitutionPlan].content,
-              ),
+              builder: (context) => SubstitutionPlanPage(),
             ),
           );
         }),

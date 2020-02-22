@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:viktoriaapp/aixformation/aixformation_info_card.dart';
-import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_info_card.dart';
 import 'package:viktoriaapp/calendar/calendar_info_card.dart';
 import 'package:viktoriaapp/models/models.dart';
@@ -12,12 +11,6 @@ import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs
 class HomePage extends StatelessWidget {
-  // ignore: public_member_api_docs
-  const HomePage({@required this.pages});
-
-  // ignore: public_member_api_docs
-  final Map<String, InlinePage> pages;
-
   @override
   Widget build(BuildContext context) {
     final size = getScreenSize(MediaQuery.of(context).size.width);
@@ -34,35 +27,20 @@ class HomePage extends StatelessWidget {
 
     final timetableView =
         Static.timetable.hasLoadedData && Static.selection.isSet()
-            ? TimetableInfoCard(
-                date: day,
-                pages: pages,
-              )
+            ? TimetableInfoCard(date: day)
             : Container();
     final substitutionPlanView =
         Static.timetable.hasLoadedData && Static.selection.isSet()
-            ? SubstitutionPlanInfoCard(
-                date: day,
-                pages: pages,
-              )
+            ? SubstitutionPlanInfoCard(date: day)
             : Container();
     final aiXformationView = Static.aiXformation.hasLoadedData
-        ? AiXformationInfoCard(
-            date: day,
-            pages: pages,
-          )
+        ? AiXformationInfoCard(date: day)
         : Container();
     final cafetoriaView = Static.cafetoria.hasLoadedData
-        ? CafetoriaInfoCard(
-            date: day,
-            pages: pages,
-          )
+        ? CafetoriaInfoCard(date: day)
         : Container();
     final calendarView = Static.calendar.hasLoadedData
-        ? CalendarInfoCard(
-            date: day,
-            pages: pages,
-          )
+        ? CalendarInfoCard(date: day)
         : Container();
 
     if (size == ScreenSize.small) {

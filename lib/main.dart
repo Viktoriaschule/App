@@ -10,6 +10,7 @@ import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/plugins/storage/storage.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/utils/pages.dart';
 
 Future main() async {
   if (Platform().isDesktop) {
@@ -25,14 +26,16 @@ Future main() async {
   await setupDateFormats();
 
   runApp(EventBusWidget(
-    child: MaterialApp(
-      title: 'ViktoriaApp',
-      theme: theme,
-      darkTheme: darkTheme,
-      routes: <String, WidgetBuilder>{
-        '/': (context) => AppPage(),
-        '/${Keys.login}': (context) => LoginPageWrapper(),
-      },
+    child: Pages(
+      child: MaterialApp(
+        title: 'ViktoriaApp',
+        theme: theme,
+        darkTheme: darkTheme,
+        routes: <String, WidgetBuilder>{
+          '/': (context) => AppPage(),
+          '/${Keys.login}': (context) => LoginPageWrapper(),
+        },
+      ),
     ),
   ));
 }

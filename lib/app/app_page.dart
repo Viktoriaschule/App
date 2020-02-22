@@ -10,6 +10,7 @@ import 'package:viktoriaapp/settings/settings_page.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_page.dart';
 import 'package:viktoriaapp/timetable/timetable_page.dart';
 import 'package:viktoriaapp/utils/notifications.dart';
+import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
@@ -235,133 +236,28 @@ class _AppPageState extends State<AppPage>
           ),
         ),
     ];
-    final Map<String, InlinePage> pages = {};
-    pages[Keys.substitutionPlan] = InlinePage(
-      'Vertretungsplan',
-      [
-        ...webActions,
-        if (Static.user.grade != null)
-          InkWell(
-            onTap: () {},
-            child: Container(
-              width: 48,
-              child: Center(
-                child: Container(
-                  padding: EdgeInsets.all(7.5),
-                  decoration: BoxDecoration(
-                    boxShadow: MediaQuery.of(context).platformBrightness ==
-                            Brightness.light
-                        ? [
-                            BoxShadow(
-                              color: Color(0xFFC8C8C8),
-                              spreadRadius: 0.5,
-                              blurRadius: 1,
-                            ),
-                          ]
-                        : null,
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.all(Radius.circular(24)),
-                    border: Border.all(
-                      color: textColor(context),
-                      width: getScreenSize(MediaQuery.of(context).size.width) ==
-                              ScreenSize.small
-                          ? 0.5
-                          : 1.25,
-                    ),
-                  ),
-                  child: Text(
-                    isSeniorGrade(Static.user.grade)
-                        ? Static.user.grade.toUpperCase()
-                        : Static.user.grade,
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: textColor(context),
-                      fontFamily: 'RobotoMono',
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-      ],
-      SubstitutionPlanPage(),
-    );
-    pages[Keys.cafetoria] = InlinePage(
-      'Cafétoria',
-      [
-        ...webActions,
-        IconButton(
-          onPressed: () {
-            //TODO: Add cafetoria login
-            Scaffold.of(context).showSnackBar(SnackBar(
-              content: Text('TODO: Login hinzufügen!'),
-            ));
-          },
-          icon: Icon(
-            MdiIcons.account,
-            size: 28,
-            color: textColor(context),
-          ),
-        ),
-      ],
-      null,
-    );
-    pages[Keys.aiXformation] = InlinePage(
-      'AiXformation',
-      [...webActions],
-      null,
-    );
-    pages[Keys.calendar] = InlinePage(
-      'Kalender',
-      [...webActions],
-      null,
-    );
-    pages[Keys.settings] = InlinePage(
-      'Einstellungen',
-      [],
-      SettingsPage(),
-    );
-    pages[Keys.timetable] = InlinePage(
-      'Stundenplan',
-      webActions,
-      TimetablePage(
-        pages: pages,
-      ),
-    );
-    pages[Keys.home] = InlinePage(
-      'Startseite',
-      [
-        ...webActions,
-        IconButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (context) => Scaffold(
-                  appBar: CustomAppBar(
-                    title: pages[Keys.settings].title,
-                    actions: pages[Keys.settings].actions,
-                  ),
-                  body: pages[Keys.settings].content,
-                ),
-              ),
-            );
-          },
-          icon: Icon(
-            Icons.settings,
-            size: 28,
-            color: textColor(context),
-          ),
-        ),
-      ],
-      HomePage(
-        pages: pages,
-      ),
-    );
+    final pages = Pages.of(context).pages;
     return Scaffold(
       body: CustomScrollView(slivers: [
         CustomAppBar(
           title: pages[Keys.home].title,
-          actions: pages[Keys.home].actions,
+          actions: [
+            ...webActions,
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => SettingsPage(),
+                  ),
+                );
+              },
+              icon: Icon(
+                Icons.settings,
+                size: 28,
+                color: textColor(context),
+              ),
+            ),
+          ],
           sliver: true,
           isLeading: false,
           bottom: _loading
@@ -373,34 +269,12 @@ class _AppPageState extends State<AppPage>
         SliverList(
           delegate: SliverChildListDelegate(
             [
-              NotificationsWidget(
-                fetchData: _fetchData,
-                pages: pages,
-              ),
-              pages[Keys.home].content
+              NotificationsWidget(fetchData: _fetchData),
+              HomePage(),
             ],
           ),
         )
       ]),
     );
   }
-}
-
-// ignore: public_member_api_docs
-class InlinePage {
-  // ignore: public_member_api_docs
-  InlinePage(
-    this.title,
-    this.actions,
-    this.content,
-  );
-
-  // ignore: public_member_api_docs
-  final String title;
-
-  // ignore: public_member_api_docs
-  final List<Widget> actions;
-
-  // ignore: public_member_api_docs
-  final Widget content;
 }

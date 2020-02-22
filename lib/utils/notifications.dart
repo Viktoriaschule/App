@@ -2,27 +2,23 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:viktoriaapp/aixformation/aixformation_page.dart';
-import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_page.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/substitution_plan/substitution_plan_page.dart';
+import 'package:viktoriaapp/timetable/timetable_page.dart';
 import 'package:viktoriaapp/utils/static.dart';
-import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 
 // ignore: public_member_api_docs
 class NotificationsWidget extends StatefulWidget {
   // ignore: public_member_api_docs
   const NotificationsWidget({
     @required this.fetchData,
-    @required this.pages,
     Key key,
   }) : super(key: key);
 
   // ignore: public_member_api_docs
   final FutureCallback fetchData;
-
-  // ignore: public_member_api_docs
-  final Map<String, InlinePage> pages;
 
   @override
   _NotificationsWidgetState createState() => _NotificationsWidgetState();
@@ -128,41 +124,25 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
 
   Future _openTimetable() => Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (context) => Scaffold(
-            appBar: CustomAppBar(
-              title: widget.pages[Keys.timetable].title,
-              actions: widget.pages[Keys.timetable].actions,
-            ),
-            body: widget.pages[Keys.timetable].content,
-          ),
+          builder: (context) => TimetablePage(),
         ),
       );
 
   Future _openSubstitutionPlan() => Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (context) => Scaffold(
-            appBar: CustomAppBar(
-              title: widget.pages[Keys.substitutionPlan].title,
-              actions: widget.pages[Keys.substitutionPlan].actions,
-            ),
-            body: widget.pages[Keys.substitutionPlan].content,
-          ),
+          builder: (context) => SubstitutionPlanPage(),
         ),
       );
 
   Future _openCafetoria() => Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (context) => Scaffold(
-            body: CafetoriaPage(page: widget.pages[Keys.cafetoria]),
-          ),
+          builder: (context) => CafetoriaPage(),
         ),
       );
 
   Future _openAiXformation(Post post) => Navigator.of(context).push(
         MaterialPageRoute<void>(
-          builder: (context) => Scaffold(
-            body: AiXformationPage(page: widget.pages[Keys.aiXformation]),
-          ),
+          builder: (context) => AiXformationPage(),
         ),
       );
 
