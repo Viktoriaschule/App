@@ -126,7 +126,6 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     }
   }
 
-  //TODO: Change all open functions to new view
   Future _openTimetable() => Navigator.of(context).push(
         MaterialPageRoute<void>(
           builder: (context) => Scaffold(
