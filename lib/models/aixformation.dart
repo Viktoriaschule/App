@@ -39,11 +39,8 @@ class Post {
     @required this.id,
     @required this.date,
     @required this.title,
-    @required this.content,
     @required this.url,
-    @required this.thumbnailUrl,
-    @required this.mediumUrl,
-    @required this.fullUrl,
+    @required this.imageUrl,
     @required this.author,
     @required this.tags,
   });
@@ -53,11 +50,8 @@ class Post {
         id: json['id'],
         date: DateTime.parse(json['date']),
         title: json['title'],
-        content: json['content'],
         url: json['url'],
-        thumbnailUrl: json['thumbnailUrl'],
-        mediumUrl: json['mediumUrl'],
-        fullUrl: json['fullUrl'],
+        imageUrl: json['imageUrl'],
         author: json['author'],
         tags: json['tags'].cast<String>(),
       );
@@ -67,11 +61,8 @@ class Post {
         'id': id,
         'date': date.toIso8601String(),
         'title': title,
-        'content': content,
         'url': url,
-        'thumbnailUrl': thumbnailUrl,
-        'mediumUrl': mediumUrl,
-        'fullUrl': fullUrl,
+        'imageUrl': imageUrl,
         'author': author,
         'tags': tags,
       };
@@ -86,19 +77,10 @@ class Post {
   final String title;
 
   // ignore: public_member_api_docs
-  final String content;
-
-  // ignore: public_member_api_docs
   final String url;
 
   // ignore: public_member_api_docs
-  final String thumbnailUrl;
-
-  // ignore: public_member_api_docs
-  final String mediumUrl;
-
-  // ignore: public_member_api_docs
-  final String fullUrl;
+  final String imageUrl;
 
   // ignore: public_member_api_docs
   final String author;

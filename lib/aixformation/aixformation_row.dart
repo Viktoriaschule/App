@@ -47,12 +47,12 @@ class AiXformationRow extends StatelessWidget {
                         height: 40,
                         width: 40,
                         placeholder: kTransparentImage,
-                        image: post.thumbnailUrl,
+                        image: post.imageUrl,
                       ),
                     ],
                   )
                 : CachedNetworkImage(
-                    imageUrl: post.thumbnailUrl,
+                    imageUrl: post.imageUrl,
                     height: 40,
                     width: 40,
                     placeholder: (context, url) =>
