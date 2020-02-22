@@ -21,13 +21,14 @@ class Cafetoria {
 
   /// Creates cafetoria from json map
   factory Cafetoria.fromJson(Map<String, dynamic> json) => Cafetoria(
-      error: json['error'],
-      days: json['days']
-          .toList()
-          .map((day) => CafetoriaDay.fromJson(day))
-          .toList()
-          .cast<CafetoriaDay>(),
-      saldo: double.parse('${json['saldo'] ?? -1.0}'));
+        error: json['error'],
+        days: json['days']
+            .toList()
+            .map((day) => CafetoriaDay.fromJson(day))
+            .toList()
+            .cast<CafetoriaDay>(),
+        saldo: json['saldo'],
+      );
 
   /// The login errors
   final String error;

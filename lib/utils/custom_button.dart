@@ -5,9 +5,10 @@ class CustomButton extends StatelessWidget {
   // ignore: public_member_api_docs
   const CustomButton({
     @required this.onPressed,
+    @required this.child,
     this.focusNode,
     this.margin,
-    this.child,
+    this.enabled = true,
     Key key,
   }) : super(key: key);
 
@@ -21,6 +22,9 @@ class CustomButton extends StatelessWidget {
   final EdgeInsets margin;
 
   // ignore: public_member_api_docs
+  final bool enabled;
+
+  // ignore: public_member_api_docs
   final Widget child;
 
   @override
@@ -28,7 +32,7 @@ class CustomButton extends StatelessWidget {
         margin: margin,
         child: RaisedButton(
           focusNode: focusNode,
-          onPressed: onPressed,
+          onPressed: enabled ? onPressed : null,
           color: Theme.of(context).accentColor,
           child: child,
         ),

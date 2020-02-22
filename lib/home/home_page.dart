@@ -236,8 +236,6 @@ class HomePage extends StatelessWidget {
         .toList();
     final cafetoriaWeekday =
         afterDays.isNotEmpty ? weekdays[afterDays.first.date.weekday - 1] : '';
-    final bool loggedIn = Static.storage.getString(Keys.cafetoriaId) != null &&
-        Static.storage.getString(Keys.cafetoriaPassword) != null;
     final cafetoriaCut = size == ScreenSize.small
         ? 3
         : _calculateCut(context, size == ScreenSize.middle ? 3 : 2);
@@ -262,7 +260,7 @@ class HomePage extends StatelessWidget {
                 }
               }),
             ],
-            title: !loggedIn
+            title: Static.cafetoria.data.saldo == null
                 ? afterDays.isEmpty
                     ? 'Cafétoria'
                     : 'Cafétoria - $cafetoriaWeekday'

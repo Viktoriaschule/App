@@ -44,6 +44,41 @@ abstract class Loader<LoaderType> {
 
   /// Download the data from the api and returns the status code
   Future<int> loadOnline(BuildContext context,
+          {String username,
+          String password,
+          bool force = false,
+          bool post = false,
+          Map<String, dynamic> body,
+          bool store = true,
+          bool autoLogin = true}) async =>
+      (await _load(context,
+              username: username,
+              password: password,
+              force: force,
+              post: post,
+              body: body,
+              store: store,
+              autoLogin: autoLogin))
+          .statusCode;
+
+  /// Fetches the data
+  Future<Response> fetch(BuildContext context,
+          {String username,
+          String password,
+          bool post = false,
+          Map<String, dynamic> body,
+          bool autoLogin = true}) =>
+      _load(context,
+          username: username,
+          password: password,
+          force: true,
+          post: post,
+          body: body,
+          store: false,
+          autoLogin: autoLogin);
+
+  /// Download the data from the api and returns the status code
+  Future<Response> _load(BuildContext context,
       {String username,
       String password,
       bool force = false,
@@ -52,7 +87,7 @@ abstract class Loader<LoaderType> {
       bool store = true,
       bool autoLogin = true}) async {
     if (_loadedFromOnline && !force) {
-      return StatusCodes.success;
+      return Response(statusCode: StatusCodes.success);
     }
     username ??= Static.user.username;
     password ??= Static.user.password;
@@ -98,7 +133,8 @@ abstract class Loader<LoaderType> {
           context != null) {
         await Navigator.of(context).pushReplacementNamed('/${Keys.login}');
       }
-      return response.statusCode;
+      response.data = data;
+      return response;
     } on DioError catch (e) {
       print(e);
       if (e.response != null) {
@@ -109,7 +145,11 @@ abstract class Loader<LoaderType> {
             context != null) {
           await Navigator.of(context).pushReplacementNamed('/${Keys.login}');
         }
-        return e.response.statusCode;
+        try {
+          e.response.data = json.decode(e.response.data);
+          // ignore: avoid_catches_without_on_clauses
+        } catch (_) {}
+        return e.response;
       }
       rethrow;
     }
