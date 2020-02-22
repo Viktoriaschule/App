@@ -14,9 +14,9 @@ class NavigationAction {
 }
 
 // ignore: public_member_api_docs
-class BottomNavigation extends StatelessWidget {
+class CustomBottomNavigation extends StatelessWidget {
   // ignore: public_member_api_docs
-  const BottomNavigation({
+  const CustomBottomNavigation({
     @required this.actions,
     this.forceBorderTop = false,
   });

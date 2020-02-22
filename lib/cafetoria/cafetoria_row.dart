@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:viktoriaapp/models/models.dart';
-import 'package:viktoriaapp/utils/custom_row.dart';
-import 'package:viktoriaapp/utils/icons_texts.dart';
+import 'package:viktoriaapp/widgets/custom_row.dart';
+import 'package:viktoriaapp/widgets/icons_texts.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs

@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:viktoriaapp/models/keys.dart';
-import 'package:viktoriaapp/utils/bottom_navigation.dart';
-import 'package:viktoriaapp/utils/custom_hero.dart';
 import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
+import 'package:viktoriaapp/widgets/custom_hero.dart';
 
 // ignore: public_member_api_docs
 class ListGroup extends StatelessWidget {
@@ -118,14 +118,14 @@ class ListGroup extends StatelessWidget {
               tag: Keys.navigation(heroIdNavigation ?? heroId),
               child: Material(
                 type: MaterialType.transparency,
-                child: BottomNavigation(
+                child: CustomBottomNavigation(
                   actions: actions,
                   forceBorderTop: true,
                 ),
               ),
             )
           else if (actions.isNotEmpty)
-            BottomNavigation(
+            CustomBottomNavigation(
               actions: actions,
               forceBorderTop: true,
             ),

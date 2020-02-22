@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:viktoriaapp/aixformation/aixformation_row.dart';
 import 'package:viktoriaapp/app/app_page.dart';
-import 'package:viktoriaapp/utils/app_bar.dart';
-import 'package:viktoriaapp/utils/empty_list.dart';
-import 'package:viktoriaapp/utils/size_limit.dart';
+import 'package:viktoriaapp/widgets/custom_app_bar.dart';
+import 'package:viktoriaapp/widgets/empty_list.dart';
+import 'package:viktoriaapp/widgets/size_limit.dart';
 import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs

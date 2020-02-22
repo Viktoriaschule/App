@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:viktoriaapp/utils/snapping_list_view.dart';
 import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/widgets/snapping_list_view.dart';
 
 // ignore: public_member_api_docs
 class CustomGridTabsList extends StatefulWidget {

@@ -12,12 +12,12 @@ import 'package:viktoriaapp/calendar/calendar_row.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
 import 'package:viktoriaapp/timetable/timetable_row.dart';
-import 'package:viktoriaapp/utils/app_bar.dart';
-import 'package:viktoriaapp/utils/bottom_navigation.dart';
-import 'package:viktoriaapp/utils/empty_list.dart';
-import 'package:viktoriaapp/utils/list_group.dart';
+import 'package:viktoriaapp/widgets/custom_app_bar.dart';
+import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
+import 'package:viktoriaapp/widgets/empty_list.dart';
+import 'package:viktoriaapp/widgets/list_group.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
-import 'package:viktoriaapp/utils/size_limit.dart';
+import 'package:viktoriaapp/widgets/size_limit.dart';
 import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs

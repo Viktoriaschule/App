@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:viktoriaapp/models/models.dart';
-import 'package:viktoriaapp/utils/custom_button.dart';
-import 'package:viktoriaapp/utils/custom_circular_progress_indicator.dart';
+import 'package:viktoriaapp/widgets/custom_button.dart';
+import 'package:viktoriaapp/widgets/custom_circular_progress_indicator.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 

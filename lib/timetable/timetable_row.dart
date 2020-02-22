@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:viktoriaapp/models/models.dart';
-import 'package:viktoriaapp/utils/custom_row.dart';
+import 'package:viktoriaapp/widgets/custom_row.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:viktoriaapp/calendar/calendar_row.dart';
-import 'package:viktoriaapp/utils/custom_button.dart';
-import 'package:viktoriaapp/utils/dialog_content_wrapper.dart';
+import 'package:viktoriaapp/widgets/custom_button.dart';
+import 'package:viktoriaapp/widgets/dialog_content_wrapper.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 import 'package:viktoriaapp/models/models.dart';
 

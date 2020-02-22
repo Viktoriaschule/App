@@ -3,9 +3,9 @@ import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/calendar/calendar_page.dart';
 import 'package:viktoriaapp/calendar/calendar_row.dart';
 import 'package:viktoriaapp/models/keys.dart';
-import 'package:viktoriaapp/utils/app_bar.dart';
-import 'package:viktoriaapp/utils/bottom_navigation.dart';
-import 'package:viktoriaapp/utils/custom_hero.dart';
+import 'package:viktoriaapp/widgets/custom_app_bar.dart';
+import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
+import 'package:viktoriaapp/widgets/custom_hero.dart';
 import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs
@@ -48,7 +48,7 @@ class CalendarList extends StatelessWidget {
             tag: Keys.navigation(Keys.calendar),
             child: Material(
               type: MaterialType.transparency,
-              child: BottomNavigation(
+              child: CustomBottomNavigation(
                 actions: [
                   NavigationAction(Icons.calendar_today, () {
                     Navigator.of(context).pushReplacement(

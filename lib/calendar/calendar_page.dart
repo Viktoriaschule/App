@@ -4,8 +4,8 @@ import 'package:viktoriaapp/calendar/calendar_grid_event.dart';
 import 'package:viktoriaapp/calendar/calendar_grid_item.dart';
 import 'package:viktoriaapp/calendar/calendar_list.dart';
 import 'package:viktoriaapp/models/models.dart';
-import 'package:viktoriaapp/utils/bottom_navigation.dart';
-import 'package:viktoriaapp/utils/custom_hero.dart';
+import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
+import 'package:viktoriaapp/widgets/custom_hero.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 
@@ -321,7 +321,7 @@ class _CalendarPageState extends State<CalendarPage>
             tag: Keys.navigation(Keys.calendar),
             child: Material(
               type: MaterialType.transparency,
-              child: BottomNavigation(
+              child: CustomBottomNavigation(
                 actions: [
                   NavigationAction(
                     Icons.list,
