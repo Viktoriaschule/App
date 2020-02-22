@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride;
 import 'package:flutter/material.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/login/login_page.dart';
@@ -23,13 +24,15 @@ Future main() async {
   await Static.storage.init();
   await setupDateFormats();
 
-  runApp(MaterialApp(
-    title: 'ViktoriaApp',
-    theme: theme,
-    darkTheme: darkTheme,
-    routes: <String, WidgetBuilder>{
-      '/': (context) => AppPage(),
-      '/${Keys.login}': (context) => LoginPageWrapper(),
-    },
+  runApp(EventBusWidget(
+    child: MaterialApp(
+      title: 'ViktoriaApp',
+      theme: theme,
+      darkTheme: darkTheme,
+      routes: <String, WidgetBuilder>{
+        '/': (context) => AppPage(),
+        '/${Keys.login}': (context) => LoginPageWrapper(),
+      },
+    ),
   ));
 }

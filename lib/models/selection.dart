@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs
@@ -39,7 +41,7 @@ class Selection {
   }
 
   /// Set the selected subject
-  void setSelectedSubject(TimetableSubject selected,
+  void setSelectedSubject(TimetableSubject selected, BuildContext context,
       {bool defaultSelection = false}) {
     // If it is a new selection update it
     if (Static.storage.getString(Keys.selection(selected.block)) !=
@@ -48,6 +50,10 @@ class Selection {
           .setString(Keys.selection(selected.block), selected.courseID);
       Static.storage.setString(Keys.selectionTimestamp(selected.block),
           DateTime.now().toIso8601String());
+      Static.substitutionPlan.data.updateFilter();
+    }
+    if (!defaultSelection) {
+      EventBus.of(context).publish(TimetableUpdateEvent());
     }
   }
 

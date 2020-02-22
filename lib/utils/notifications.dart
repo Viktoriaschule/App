@@ -45,7 +45,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
         },
       );
     }
-    await Static.tags.syncDevice();
+    await Static.tags.syncDevice(context);
     if (Platform().isAndroid) {
       await MethodChannel('app.viktoria.schule')
           .invokeMethod('channel_registered');

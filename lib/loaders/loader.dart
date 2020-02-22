@@ -2,16 +2,21 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs
 abstract class Loader<LoaderType> {
   // ignore: public_member_api_docs
-  Loader(this.key);
+  Loader(this.key, this.event);
 
   // ignore: public_member_api_docs
   final String key;
+
+  /// The download event
+  final Event event;
 
   /// Sets if all request should be posts
   ///
@@ -36,9 +41,10 @@ abstract class Loader<LoaderType> {
   bool _loadedFromOnline = false;
 
   // ignore: public_member_api_docs
-  void loadOffline() {
+  void loadOffline(BuildContext context) {
     if (hasStoredData) {
       parsedData = fromJSON(Static.storage.getJSON(key));
+      sendEvent(context);
     }
   }
 
@@ -134,9 +140,11 @@ abstract class Loader<LoaderType> {
         await Navigator.of(context).pushReplacementNamed('/${Keys.login}');
       }
       response.data = data;
+      sendEvent(context);
       return response;
     } on DioError catch (e) {
       print(e);
+      sendEvent(context);
       if (e.response != null) {
         print(
             '${e.response.statusMessage} (${e.response.statusCode}): ${e.response.data}');
@@ -152,6 +160,17 @@ abstract class Loader<LoaderType> {
         return e.response;
       }
       rethrow;
+    }
+  }
+
+  // ignore: public_member_api_docs
+  void sendEvent(BuildContext context) {
+    try {
+      EventBus.of(context).publish(event);
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      print(
+          'Cannot send event. Event must be fired after init state and before dispose!');
     }
   }
 

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
 import 'package:viktoriaapp/timetable/timetable_row.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
@@ -18,8 +20,6 @@ class TimetableInfoCard extends StatefulWidget {
   const TimetableInfoCard({
     @required this.date,
     @required this.pages,
-    @required this.subjects,
-    @required this.changes,
     Key key,
   }) : super(key: key);
 
@@ -29,27 +29,58 @@ class TimetableInfoCard extends StatefulWidget {
   // ignore: public_member_api_docs
   final Map<String, InlinePage> pages;
 
-  // ignore: public_member_api_docs
-  final List<TimetableSubject> subjects;
-
-  // ignore: public_member_api_docs
-  final List<Substitution> changes;
-
   @override
   _TimetableInfoCardState createState() => _TimetableInfoCardState();
 }
 
-class _TimetableInfoCardState extends State<TimetableInfoCard> {
+class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
   InfoCardUtils utils;
+
+  List<TimetableSubject> _subjects;
+  List<Substitution> _substitutions;
+
+  List<TimetableSubject> getSubjects() => Static.timetable.hasLoadedData
+      ? Static.timetable.data.days[widget.date.weekday - 1].units
+          .map((unit) => Static.selection.getSelectedSubject(unit.subjects))
+          .where((subject) =>
+              subject != null &&
+              subject.subjectID != 'Mittagspause' &&
+              DateTime.now().isBefore(
+                  widget.date.add(Times.getUnitTimes(subject.unit)[1])))
+          .toList()
+      : [];
+
+  List<Substitution> getSubstitutions() {
+    final spDay = Static.substitutionPlan.data?.getForDate(widget.date);
+    return spDay?.myChanges ?? [];
+  }
+
+  @override
+  void initState() {
+    _subjects = getSubjects();
+    _substitutions = getSubstitutions();
+    super.initState();
+  }
+
+  @override
+  Subscription subscribeEvents(EventBus eventBus) {
+    return eventBus
+        .respond<TimetableUpdateEvent>(update)
+        .respond<SubstitutionPlanUpdateEvent>(update);
+  }
+
+  // ignore: type_annotate_public_apis
+  void update(event) => setState(() {
+        _subjects = getSubjects();
+        _substitutions = getSubstitutions();
+      });
 
   @override
   Widget build(BuildContext context) {
     utils ??= InfoCardUtils(context, widget.date);
     return ListGroup(
       title: 'Nächste Stunden - ${weekdays[utils.weekday]}',
-      counter: widget.subjects.length > utils.cut
-          ? widget.subjects.length - utils.cut
-          : 0,
+      counter: _subjects.length > utils.cut ? _subjects.length - utils.cut : 0,
       heroId: utils.size == ScreenSize.small
           ? Keys.timetable
           : '${Keys.timetable}-${utils.weekday}',
@@ -77,14 +108,14 @@ class _TimetableInfoCardState extends State<TimetableInfoCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (widget.subjects.isEmpty ||
+              if (_subjects.isEmpty ||
                   !Static.timetable.hasLoadedData ||
                   !Static.selection.isSet())
                 EmptyList(title: 'Kein Stundenplan')
               else
-                ...(widget.subjects.length > utils.cut
-                        ? widget.subjects.sublist(0, utils.cut)
-                        : widget.subjects)
+                ...(_subjects.length > utils.cut
+                        ? _subjects.sublist(0, utils.cut)
+                        : _subjects)
                     .map(
                   (subject) => Container(
                     margin: EdgeInsets.all(10),
@@ -93,7 +124,7 @@ class _TimetableInfoCardState extends State<TimetableInfoCard> {
                         TimetableRow(
                           subject: subject,
                         ),
-                        ...widget.changes
+                        ..._substitutions
                             .where((substitution) =>
                                 substitution.unit == subject.unit)
                             .map((substitution) => SubstitutionPlanRow(

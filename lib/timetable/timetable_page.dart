@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_info_card.dart';
 import 'package:viktoriaapp/calendar/calendar_info_card.dart';
@@ -7,6 +8,7 @@ import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
 import 'package:viktoriaapp/timetable/timetable_row.dart';
 import 'package:viktoriaapp/timetable/timetable_select_dialog.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
@@ -101,37 +103,18 @@ class _TimetablePageState extends State<TimetablePage> {
                   append: List.generate(5, (weekday) {
                     final day =
                         monday(DateTime.now()).add(Duration(days: weekday));
-
-                    final events = Static.calendar.hasLoadedData
-                        ? (Static.calendar.data.getEventsForTimeSpan(
-                                day,
-                                day
-                                    .add(Duration(days: 1))
-                                    .subtract(Duration(seconds: 1)))
-                              ..sort((a, b) => a.start.compareTo(b.start)))
-                            .toList()
-                        : [];
-                    final List<CafetoriaDay> days = Static
-                            .cafetoria.hasLoadedData
-                        ? (Static.cafetoria.data.days
-                                .where((d) => d.date == day)
-                                .toList()
-                                  ..sort((a, b) => a.date.compareTo(b.date)))
-                            .toList()
-                        : [];
                     final cafetoriaView = Static.cafetoria.hasLoadedData
                         ? CafetoriaInfoCard(
                             date: day,
                             pages: widget.pages,
-                            days: days,
                             showNavigation: false,
+                            isSingleDay: true,
                           )
                         : Container();
                     final calendarView = Static.calendar.hasLoadedData
                         ? CalendarInfoCard(
                             date: day,
                             pages: widget.pages,
-                            events: events,
                             showNavigation: false,
                             isSingleDay: true,
                           )
@@ -149,7 +132,7 @@ class _TimetablePageState extends State<TimetablePage> {
                           Static.selection.getSelectedSubject(unit.subjects);
                       // ignore: omit_local_variable_types
                       final List<Substitution> substitutions =
-                          subject.substitutions;
+                          subject?.substitutions ?? [];
                       return SizeLimit(
                         child: InkWell(
                           onTap: () async {
@@ -166,8 +149,8 @@ class _TimetablePageState extends State<TimetablePage> {
                               if (selection == null) {
                                 return;
                               }
-                              Static.selection.setSelectedSubject(selection);
-                              //TODO: Why?: Static.selection.save();
+                              Static.selection
+                                  .setSelectedSubject(selection, context);
                               setState(() {});
                               try {
                                 await Static.selection.save(context);

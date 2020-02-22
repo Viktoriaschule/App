@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_page.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_row.dart';
 import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
 import 'package:viktoriaapp/widgets/empty_list.dart';
@@ -17,8 +19,8 @@ class CafetoriaInfoCard extends StatefulWidget {
   const CafetoriaInfoCard({
     @required this.date,
     @required this.pages,
-    @required this.days,
     this.showNavigation = true,
+    this.isSingleDay = false,
     Key key,
   }) : super(key: key);
 
@@ -29,22 +31,41 @@ class CafetoriaInfoCard extends StatefulWidget {
   final Map<String, InlinePage> pages;
 
   // ignore: public_member_api_docs
-  final List<CafetoriaDay> days;
+  final bool showNavigation;
 
   // ignore: public_member_api_docs
-  final bool showNavigation;
+  final bool isSingleDay;
 
   @override
   _CafetoriaInfoCardState createState() => _CafetoriaInfoCardState();
 }
 
-class _CafetoriaInfoCardState extends State<CafetoriaInfoCard> {
+class _CafetoriaInfoCardState extends Interactor<CafetoriaInfoCard> {
   InfoCardUtils utils;
+
+  List<CafetoriaDay> _days;
+
+  List<CafetoriaDay> getDays() => Static.cafetoria.hasLoadedData
+      ? (Static.cafetoria.data.days.toList()
+            ..sort((a, b) => a.date.compareTo(b.date)))
+          .toList()
+      : [];
+
+  @override
+  void initState() {
+    _days = getDays();
+    super.initState();
+  }
+
+  @override
+  Subscription subscribeEvents(EventBus eventBus) =>
+      eventBus.respond<CafetoriaUpdateEvent>(
+          (event) => setState(() => _days = getDays()));
 
   @override
   Widget build(BuildContext context) {
     utils ??= InfoCardUtils(context, widget.date);
-    final afterDays = widget.days
+    final afterDays = _days
         .where(
             (d) => d.date.isAfter(widget.date.subtract(Duration(seconds: 1))))
         .toList();
@@ -69,7 +90,7 @@ class _CafetoriaInfoCardState extends State<CafetoriaInfoCard> {
       title: Static.cafetoria.data.saldo == null
           ? 'Cafétoria - ${weekdays[widget.date.weekday - 1]}'
           : 'Cafétoria - ${weekdays[widget.date.weekday - 1]} (${Static.cafetoria.data.saldo}€) ',
-      counter: widget.days.length - 1,
+      counter: _days.length - 1,
       children: [
         if (!Static.cafetoria.hasLoadedData ||
             afterDays.isEmpty ||
@@ -79,14 +100,15 @@ class _CafetoriaInfoCardState extends State<CafetoriaInfoCard> {
           SizeLimit(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: (afterDays.first.menus.length > utils.cut
+              children: (afterDays.first.menus.length > utils.cut &&
+                          !widget.isSingleDay
                       ? afterDays.first.menus.sublist(0, utils.cut)
                       : afterDays.first.menus)
                   .map(
                     (menu) => Container(
                       margin: EdgeInsets.all(10),
                       child: CafetoriaRow(
-                        day: widget.days.first,
+                        day: _days.first,
                         menu: menu,
                       ),
                     ),
