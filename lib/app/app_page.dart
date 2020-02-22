@@ -9,13 +9,13 @@ import 'package:viktoriaapp/plugins/pwa/pwa.dart';
 import 'package:viktoriaapp/settings/settings_page.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_page.dart';
 import 'package:viktoriaapp/timetable/timetable_page.dart';
-import 'package:viktoriaapp/widgets/custom_app_bar.dart';
-import 'package:viktoriaapp/widgets/custom_circular_progress_indicator.dart';
-import 'package:viktoriaapp/widgets/custom_linear_progress_indicator.dart';
 import 'package:viktoriaapp/utils/notifications.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/widgets/custom_app_bar.dart';
+import 'package:viktoriaapp/widgets/custom_circular_progress_indicator.dart';
+import 'package:viktoriaapp/widgets/custom_linear_progress_indicator.dart';
 
 // ignore: public_member_api_docs
 class AppPage extends StatefulWidget {
@@ -285,23 +285,6 @@ class _AppPageState extends State<AppPage>
       ],
       SubstitutionPlanPage(),
     );
-    pages[Keys.timetable] = InlinePage(
-      'Stundenplan',
-      [
-        ...webActions,
-        IconButton(
-          onPressed: () {
-            Navigator.of(context).pushNamed('/${Keys.calendar}');
-          },
-          icon: Icon(
-            MdiIcons.calendarMonth,
-            size: 28,
-            color: textColor(context),
-          ),
-        ),
-      ],
-      TimetablePage(),
-    );
     pages[Keys.cafetoria] = InlinePage(
       'Cafétoria',
       [
@@ -336,6 +319,13 @@ class _AppPageState extends State<AppPage>
       'Einstellungen',
       [],
       SettingsPage(),
+    );
+    pages[Keys.timetable] = InlinePage(
+      'Stundenplan',
+      webActions,
+      TimetablePage(
+        pages: pages,
+      ),
     );
     pages[Keys.home] = InlinePage(
       'Startseite',

@@ -18,6 +18,7 @@ class ListGroup extends StatelessWidget {
     this.center = false,
     this.counter = 0,
     this.onTap,
+    this.showNavigation = true,
     Key key,
   }) : super(key: key);
 
@@ -46,6 +47,9 @@ class ListGroup extends StatelessWidget {
 
   // ignore: public_member_api_docs
   final VoidCallback onTap;
+
+  // ignore: public_member_api_docs
+  final bool showNavigation;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +97,7 @@ class ListGroup extends StatelessWidget {
         children: <Widget>[
           Stack(
             children: <Widget>[
-              if (heroId != null)
+              if (heroId != null && showNavigation)
                 CustomHero(
                   tag: heroId,
                   child: Material(
@@ -113,7 +117,8 @@ class ListGroup extends StatelessWidget {
             ],
           ),
           if (actions.isNotEmpty &&
-              (heroId != null || heroIdNavigation != null))
+              (heroId != null || heroIdNavigation != null) &&
+              showNavigation)
             CustomHero(
               tag: Keys.navigation(heroIdNavigation ?? heroId),
               child: Material(
@@ -124,7 +129,7 @@ class ListGroup extends StatelessWidget {
                 ),
               ),
             )
-          else if (actions.isNotEmpty)
+          else if (actions.isNotEmpty && showNavigation)
             CustomBottomNavigation(
               actions: actions,
               forceBorderTop: true,

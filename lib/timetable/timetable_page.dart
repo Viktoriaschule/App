@@ -1,22 +1,30 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:viktoriaapp/cafetoria/cafetoria_row.dart';
-import 'package:viktoriaapp/calendar/calendar_row.dart';
+import 'package:viktoriaapp/app/app_page.dart';
+import 'package:viktoriaapp/cafetoria/cafetoria_info_card.dart';
+import 'package:viktoriaapp/calendar/calendar_info_card.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
 import 'package:viktoriaapp/timetable/timetable_row.dart';
 import 'package:viktoriaapp/timetable/timetable_select_dialog.dart';
-import 'package:viktoriaapp/widgets/custom_grid.dart';
-import 'package:viktoriaapp/widgets/custom_hero.dart';
-import 'package:viktoriaapp/widgets/empty_list.dart';
-import 'package:viktoriaapp/widgets/list_group.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
-import 'package:viktoriaapp/widgets/size_limit.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/widgets/custom_grid.dart';
+import 'package:viktoriaapp/widgets/custom_hero.dart';
+import 'package:viktoriaapp/widgets/size_limit.dart';
 
 // ignore: public_member_api_docs
 class TimetablePage extends StatefulWidget {
+  // ignore: public_member_api_docs
+  const TimetablePage({
+    @required this.pages,
+    Key key,
+  }) : super(key: key);
+
+  // ignore: public_member_api_docs
+  final Map<String, InlinePage> pages;
+
   @override
   _TimetablePageState createState() => _TimetablePageState();
 }
@@ -91,12 +99,14 @@ class _TimetablePageState extends State<TimetablePage> {
                     ),
                   ],
                   append: List.generate(5, (weekday) {
+                    final day =
+                        monday(DateTime.now()).add(Duration(days: weekday));
+
                     final events = Static.calendar.hasLoadedData
                         ? (Static.calendar.data.getEventsForTimeSpan(
-                                monday(DateTime.now())
-                                    .add(Duration(days: weekday)),
-                                monday(DateTime.now())
-                                    .add(Duration(days: weekday + 1))
+                                day,
+                                day
+                                    .add(Duration(days: 1))
                                     .subtract(Duration(seconds: 1)))
                               ..sort((a, b) => a.start.compareTo(b.start)))
                             .toList()
@@ -104,91 +114,32 @@ class _TimetablePageState extends State<TimetablePage> {
                     final List<CafetoriaDay> days = Static
                             .cafetoria.hasLoadedData
                         ? (Static.cafetoria.data.days
-                                .where((d) =>
-                                    d.date ==
-                                    monday(DateTime.now())
-                                        .add(Duration(days: weekday)))
+                                .where((d) => d.date == day)
                                 .toList()
                                   ..sort((a, b) => a.date.compareTo(b.date)))
                             .toList()
                         : [];
-                    final calendarWidget = events.isEmpty
-                        ? EmptyList(title: 'Keine Termine')
-                        : SizeLimit(
-                            child: Column(
-                              children: [
-                                ...events
-                                    .map((event) => Container(
-                                          margin: EdgeInsets.all(10),
-                                          child: CalendarRow(
-                                            event: event,
-                                          ),
-                                        ))
-                                    .toList()
-                                    .cast<Widget>(),
-                              ],
-                            ),
-                          );
-                    final cafetoriaWidget = days.isEmpty ||
-                            days.first.menus.isEmpty
-                        ? EmptyList(title: 'Keine Menüs')
-                        : SizeLimit(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ...days
-                                    .map((day) => Column(
-                                          children: day.menus
-                                              .map(
-                                                (menu) => Container(
-                                                  margin: EdgeInsets.all(10),
-                                                  child: CafetoriaRow(
-                                                    day: day,
-                                                    menu: menu,
-                                                  ),
-                                                ),
-                                              )
-                                              .toList()
-                                              .cast<Widget>(),
-                                        ))
-                                    .toList()
-                                    .cast<Widget>(),
-                              ],
-                            ),
-                          );
+                    final cafetoriaView = Static.cafetoria.hasLoadedData
+                        ? CafetoriaInfoCard(
+                            date: day,
+                            pages: widget.pages,
+                            days: days,
+                            showNavigation: false,
+                          )
+                        : Container();
+                    final calendarView = Static.calendar.hasLoadedData
+                        ? CalendarInfoCard(
+                            date: day,
+                            pages: widget.pages,
+                            events: events,
+                            showNavigation: false,
+                            isSingleDay: true,
+                          )
+                        : Container();
                     return [
-                      if (getScreenSize(MediaQuery.of(context).size.width) ==
-                          ScreenSize.big) ...[
-                        calendarWidget,
-                        cafetoriaWidget,
-                      ] else
-                        ...[
-                          ListGroup(
-                            title: 'Termine',
-                            onTap: () {
-                              Navigator.of(context)
-                                  .pushNamed('/${Keys.calendar}');
-                            },
-                            children: [
-                              calendarWidget,
-                            ],
-                          ),
-                          ListGroup(
-                            title: 'Cafétoria',
-                            onTap: () {
-                              //TODO: Replace with new actions (like in this whole file)
-                              Navigator.of(context)
-                                  .pushNamed('/${Keys.cafetoria}');
-                            },
-                            children: [
-                              cafetoriaWidget,
-                            ],
-                          ),
-                        ]
-                            .map((x) => SizeLimit(child: x))
-                            .toList()
-                            .cast<Widget>(),
-                    ];
+                      calendarView,
+                      cafetoriaView,
+                    ].map((x) => SizeLimit(child: x)).toList().cast<Widget>();
                   }),
                   children: List.generate(
                     5,
