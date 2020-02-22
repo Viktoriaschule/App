@@ -1,23 +1,28 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:viktoriaapp/aixformation/aixformation_post.dart';
+import 'package:viktoriaapp/aixformation/aixformation_page.dart';
 import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_page.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/utils/static.dart';
+import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 
 // ignore: public_member_api_docs
 class NotificationsWidget extends StatefulWidget {
   // ignore: public_member_api_docs
   const NotificationsWidget({
     @required this.fetchData,
+    @required this.pages,
     Key key,
   }) : super(key: key);
 
   // ignore: public_member_api_docs
   final FutureCallback fetchData;
+
+  // ignore: public_member_api_docs
+  final Map<String, InlinePage> pages;
 
   @override
   _NotificationsWidgetState createState() => _NotificationsWidgetState();
@@ -25,8 +30,6 @@ class NotificationsWidget extends StatefulWidget {
 
 class _NotificationsWidgetState extends State<NotificationsWidget>
     with AfterLayoutMixin<NotificationsWidget> {
-  DateTime _lastSnackbar;
-
   /// Register everything needed for notifications
   Future _registerNotifications(BuildContext context) async {
     if (Platform().isMobile || Platform().isWeb) {
@@ -56,6 +59,9 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     BuildContext context,
     Map<String, dynamic> data,
   ) async {
+    if (data['action'] != 'update') {
+      return;
+    }
     FutureCallback callback;
     String text;
     switch (data[Keys.type]) {
@@ -76,21 +82,20 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
         callback = () async => _openAiXformation(Post(url: data['url']));
         text = 'Neuer AiXformation-Artikel';
         break;
+      default:
+        print('Got unknown notification: $data');
+        return;
     }
-    if (_lastSnackbar == null ||
-        DateTime.now().difference(_lastSnackbar).inSeconds > 3) {
-      Scaffold.of(context).showSnackBar(SnackBar(
-        action: SnackBarAction(
-          label: 'Öffnen',
-          onPressed: () async {
-            await widget.fetchData();
-            await callback();
-          },
-        ),
-        content: Text(text),
-      ));
-      _lastSnackbar = DateTime.now();
-    }
+    Scaffold.of(context).showSnackBar(SnackBar(
+      action: SnackBarAction(
+        label: 'Öffnen',
+        onPressed: () async {
+          await widget.fetchData();
+          await callback();
+        },
+      ),
+      content: Text(text),
+    ));
   }
 
   Future _backgroundNotification(
@@ -116,40 +121,50 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
         await _openAiXformation(Post(url: data['url']));
         break;
       default:
-        print('Unknown key: ${data[Keys.type]}');
+        print('Got unknown notification: $data');
         break;
     }
   }
 
-  //TODO: Change all open functions to new view
-  Future _openTimetable() =>
-      Navigator.of(context).pushReplacement(PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => AppPage(
-          page: 1,
-          loading: false,
+  Future _openTimetable() => Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (context) => Scaffold(
+            appBar: CustomAppBar(
+              title: widget.pages[Keys.timetable].title,
+              actions: widget.pages[Keys.timetable].actions,
+            ),
+            body: widget.pages[Keys.timetable].content,
+          ),
         ),
-      ));
+      );
 
-  Future _openSubstitutionPlan() =>
-      Navigator.of(context).pushReplacement(PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => AppPage(
-          page: 0,
-          loading: false,
+  Future _openSubstitutionPlan() => Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (context) => Scaffold(
+            appBar: CustomAppBar(
+              title: widget.pages[Keys.substitutionPlan].title,
+              actions: widget.pages[Keys.substitutionPlan].actions,
+            ),
+            body: widget.pages[Keys.substitutionPlan].content,
+          ),
         ),
-      ));
+      );
 
-  Future _openCafetoria() => Navigator.of(context).push(PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            CafetoriaPage(),
-      ));
-
-  Future _openAiXformation(Post post) =>
-      Navigator.of(context).push(PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            AiXformationPost(
-          post: post,
+  Future _openCafetoria() => Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (context) => Scaffold(
+            body: CafetoriaPage(page: widget.pages[Keys.cafetoria]),
+          ),
         ),
-      ));
+      );
+
+  Future _openAiXformation(Post post) => Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (context) => Scaffold(
+            body: AiXformationPage(page: widget.pages[Keys.aiXformation]),
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) => Container();

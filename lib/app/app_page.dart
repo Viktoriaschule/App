@@ -374,6 +374,7 @@ class _AppPageState extends State<AppPage>
             [
               NotificationsWidget(
                 fetchData: _fetchData,
+                pages: pages,
               ),
               pages[Keys.home].content
             ],

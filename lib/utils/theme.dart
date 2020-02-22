@@ -37,7 +37,8 @@ ThemeData get darkTheme => ThemeData(
       accentColor: theme.accentColor,
       highlightColor: Color(0xFF666666),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: darkColor,
+        backgroundColor: Color.lerp(darkColor, darkBackgroundColor, 0.5),
+        actionTextColor: theme.accentColor,
         contentTextStyle: TextStyle(
           color: lightColor,
         ),
