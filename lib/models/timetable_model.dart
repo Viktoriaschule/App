@@ -187,7 +187,8 @@ class TimetableUnit {
   /// Set the default selection
   void setSelection(int day, int unit) {
     if (subjects.length == 1) {
-      Static.selection.setSelectedSubject(subjects[0], defaultSelection: true);
+      Static.selection
+          .setSelectedSubject(subjects[0], null, defaultSelection: true);
     }
   }
 

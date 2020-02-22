@@ -59,7 +59,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 Keys.substitutionPlanNotifications, value);
                           });
                           try {
-                            await Static.tags.syncDevice();
+                            await Static.tags.syncDevice(context);
                             // ignore: empty_catches
                           } on DioError {}
                         },
@@ -81,7 +81,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 .setBool(Keys.aiXformationNotifications, value);
                           });
                           try {
-                            await Static.tags.syncDevice();
+                            await Static.tags.syncDevice(context);
                             // ignore: empty_catches
                           } on DioError {}
                         },
@@ -103,7 +103,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 .setBool(Keys.cafetoriaNotifications, value);
                           });
                           try {
-                            await Static.tags.syncDevice();
+                            await Static.tags.syncDevice(context);
                             // ignore: empty_catches
                           } on DioError {}
                         },

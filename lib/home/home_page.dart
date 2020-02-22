@@ -32,39 +32,11 @@ class HomePage extends StatelessWidget {
         ? Static.timetable.data.initialDay(DateTime.now())
         : monday(DateTime.now()).add(Duration(days: weekday));
 
-    final subjects = Static.timetable.hasLoadedData
-        ? Static.timetable.data.days[weekday].units
-            .map((unit) => Static.selection.getSelectedSubject(unit.subjects))
-            .where((subject) =>
-                subject != null &&
-                subject.subjectID != 'Mittagspause' &&
-                DateTime.now()
-                    .isBefore(day.add(Times.getUnitTimes(subject.unit)[1])))
-            .toList()
-        : [];
-
-    // Get all changes for the user for the home page date
-    final spDay = Static.substitutionPlan.data?.getForDate(day);
-    final changes = spDay?.myChanges ?? [];
-    final List<CafetoriaDay> allDays = Static.cafetoria.hasLoadedData
-        ? (Static.cafetoria.data.days.toList()
-              ..sort((a, b) => a.date.compareTo(b.date)))
-            .toList()
-        : [];
-    final events = Static.calendar.hasLoadedData
-        ? (Static.calendar.data
-                .getEventsForTimeSpan(day, day.add(Duration(days: 730)))
-                  ..sort((a, b) => a.start.compareTo(b.start)))
-            .toList()
-        : [];
-
     final timetableView =
         Static.timetable.hasLoadedData && Static.selection.isSet()
             ? TimetableInfoCard(
                 date: day,
                 pages: pages,
-                subjects: subjects,
-                changes: changes,
               )
             : Container();
     final substitutionPlanView =
@@ -72,8 +44,6 @@ class HomePage extends StatelessWidget {
             ? SubstitutionPlanInfoCard(
                 date: day,
                 pages: pages,
-                changes: changes,
-                substitutionPlanDay: spDay,
               )
             : Container();
     final aiXformationView = Static.aiXformation.hasLoadedData
@@ -86,14 +56,12 @@ class HomePage extends StatelessWidget {
         ? CafetoriaInfoCard(
             date: day,
             pages: pages,
-            days: allDays,
           )
         : Container();
     final calendarView = Static.calendar.hasLoadedData
         ? CalendarInfoCard(
             date: day,
             pages: pages,
-            events: events,
           )
         : Container();
 

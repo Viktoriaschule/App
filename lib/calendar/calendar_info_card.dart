@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/calendar/calendar_list.dart';
 import 'package:viktoriaapp/calendar/calendar_page.dart';
 import 'package:viktoriaapp/calendar/calendar_row.dart';
 import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
@@ -18,7 +20,6 @@ class CalendarInfoCard extends StatefulWidget {
   const CalendarInfoCard({
     @required this.date,
     @required this.pages,
-    @required this.events,
     this.showNavigation = true,
     this.isSingleDay = false,
     Key key,
@@ -31,9 +32,6 @@ class CalendarInfoCard extends StatefulWidget {
   final Map<String, InlinePage> pages;
 
   // ignore: public_member_api_docs
-  final List<CalendarEvent> events;
-
-  // ignore: public_member_api_docs
   final bool showNavigation;
 
   // ignore: public_member_api_docs
@@ -43,8 +41,31 @@ class CalendarInfoCard extends StatefulWidget {
   _CalendarInfoCardState createState() => _CalendarInfoCardState();
 }
 
-class _CalendarInfoCardState extends State<CalendarInfoCard> {
+class _CalendarInfoCardState extends Interactor<CalendarInfoCard> {
   InfoCardUtils utils;
+
+  List<CalendarEvent> _events;
+
+  List<CalendarEvent> getEvents() => Static.calendar.hasLoadedData
+      ? (Static.calendar.data.getEventsForTimeSpan(
+              widget.date,
+              widget.isSingleDay
+                  ? widget.date
+                  : widget.date.add(Duration(days: 730)))
+            ..sort((a, b) => a.start.compareTo(b.start)))
+          .toList()
+      : [];
+
+  @override
+  void initState() {
+    _events = getEvents();
+    super.initState();
+  }
+
+  @override
+  Subscription subscribeEvents(EventBus eventBus) =>
+      eventBus.respond<CafetoriaUpdateEvent>(
+          (event) => setState(() => _events = getEvents()));
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +76,7 @@ class _CalendarInfoCardState extends State<CalendarInfoCard> {
       title: widget.isSingleDay
           ? 'Termine - ${weekdays[widget.date.weekday - 1]}'
           : 'Kalender',
-      counter: widget.events.length - utils.cut,
+      counter: widget.isSingleDay ? 0 : _events.length - utils.cut,
       actions: [
         NavigationAction(
           Icons.list,
@@ -84,15 +105,15 @@ class _CalendarInfoCardState extends State<CalendarInfoCard> {
         })
       ],
       children: [
-        if (!Static.calendar.hasLoadedData || widget.events.isEmpty)
+        if (!Static.calendar.hasLoadedData || _events.isEmpty)
           EmptyList(title: 'Keine Termine')
         else
           SizeLimit(
             child: Column(
               children: [
-                ...(widget.events.length > utils.cut
-                        ? widget.events.sublist(0, utils.cut)
-                        : widget.events)
+                ...(_events.length > utils.cut && !widget.isSingleDay
+                        ? _events.sublist(0, utils.cut)
+                        : _events)
                     .map((event) => Container(
                           margin: EdgeInsets.all(10),
                           child: CalendarRow(

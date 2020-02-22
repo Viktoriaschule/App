@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
@@ -17,8 +19,6 @@ class SubstitutionPlanInfoCard extends StatefulWidget {
   const SubstitutionPlanInfoCard({
     @required this.date,
     @required this.pages,
-    @required this.changes,
-    @required this.substitutionPlanDay,
     Key key,
   }) : super(key: key);
 
@@ -28,19 +28,41 @@ class SubstitutionPlanInfoCard extends StatefulWidget {
   // ignore: public_member_api_docs
   final Map<String, InlinePage> pages;
 
-  // ignore: public_member_api_docs
-  final List<Substitution> changes;
-
-  // ignore: public_member_api_docs
-  final SubstitutionPlanDay substitutionPlanDay;
-
   @override
   _SubstitutionPlanInfoCardState createState() =>
       _SubstitutionPlanInfoCardState();
 }
 
-class _SubstitutionPlanInfoCardState extends State<SubstitutionPlanInfoCard> {
+class _SubstitutionPlanInfoCardState
+    extends Interactor<SubstitutionPlanInfoCard> {
   InfoCardUtils utils;
+
+  List<Substitution> _substitutions;
+  SubstitutionPlanDay _substitutionPlanDay;
+
+  SubstitutionPlanDay getSpDay() =>
+      Static.substitutionPlan.data?.getForDate(widget.date);
+
+  List<Substitution> getSubstitutions() =>
+      _substitutionPlanDay?.myChanges ?? [];
+
+  @override
+  void initState() {
+    _substitutionPlanDay = getSpDay();
+    _substitutions = getSubstitutions();
+    super.initState();
+  }
+
+  @override
+  Subscription subscribeEvents(EventBus eventBus) => eventBus
+      .respond<TimetableUpdateEvent>(update)
+      .respond<SubstitutionPlanUpdateEvent>(update);
+
+  // ignore: type_annotate_public_apis
+  void update(event) => setState(() {
+        _substitutionPlanDay = getSpDay();
+        _substitutions = getSubstitutions();
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +71,12 @@ class _SubstitutionPlanInfoCardState extends State<SubstitutionPlanInfoCard> {
       heroId: getScreenSize(MediaQuery.of(context).size.width) ==
               ScreenSize.small
           ? Keys.substitutionPlan
-          : '${Keys.substitutionPlan}-${Static.substitutionPlan.data.days.indexOf(widget.substitutionPlanDay)}',
+          : '${Keys.substitutionPlan}-${Static.substitutionPlan.data.days.indexOf(_substitutionPlanDay)}',
       heroIdNavigation: Keys.substitutionPlan,
       title:
           'Nächste Vertretungen - ${weekdays[Static.timetable.data.initialDay(DateTime.now()).weekday - 1]}',
-      counter: widget.changes.length > utils.cut
-          ? widget.changes.length - utils.cut
+      counter: _substitutions.length > utils.cut
+          ? _substitutions.length - utils.cut
           : 0,
       actions: [
         NavigationAction(Icons.expand_more, () {
@@ -72,7 +94,7 @@ class _SubstitutionPlanInfoCardState extends State<SubstitutionPlanInfoCard> {
         }),
       ],
       children: [
-        if (widget.changes.isEmpty)
+        if (_substitutions.isEmpty)
           EmptyList(title: 'Keine Änderungen')
         else
           SizeLimit(
@@ -80,9 +102,9 @@ class _SubstitutionPlanInfoCardState extends State<SubstitutionPlanInfoCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (Static.substitutionPlan.hasLoadedData)
-                  ...(widget.changes.length > utils.cut
-                          ? widget.changes.sublist(0, utils.cut)
-                          : widget.changes)
+                  ...(_substitutions.length > utils.cut
+                          ? _substitutions.sublist(0, utils.cut)
+                          : _substitutions)
                       .map((substitution) => Container(
                             margin: EdgeInsets.all(10),
                             child: SubstitutionPlanRow(

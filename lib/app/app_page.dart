@@ -149,18 +149,6 @@ class _AppPageState extends State<AppPage>
   @override
   void initState() {
     _loading = widget.loading;
-    if (_loading) {
-      Static.updates.loadOffline();
-      if (Static.updates.data == null) {
-        Static.updates.parsedData = Updates.fromJson({});
-      }
-      Static.subjects.loadOffline();
-      Static.timetable.loadOffline();
-      Static.substitutionPlan.loadOffline();
-      Static.calendar.loadOffline();
-      Static.aiXformation.loadOffline();
-      Static.cafetoria.loadOffline();
-    }
     super.initState();
   }
 
@@ -171,6 +159,19 @@ class _AppPageState extends State<AppPage>
 
   @override
   Future afterFirstLayout(BuildContext context) async {
+    if (_loading) {
+      Static.updates.loadOffline(context);
+      if (Static.updates.data == null) {
+        Static.updates.parsedData = Updates.fromJson({});
+      }
+      Static.subjects.loadOffline(context);
+      Static.timetable.loadOffline(context);
+      Static.substitutionPlan.loadOffline(context);
+      Static.calendar.loadOffline(context);
+      Static.aiXformation.loadOffline(context);
+      Static.cafetoria.loadOffline(context);
+    }
+
     _pwa = PWA();
     if (Platform().isWeb) {
       _permissionsGranted =
@@ -199,7 +200,7 @@ class _AppPageState extends State<AppPage>
             });
             _permissionsGranted =
                 await Static.firebaseMessaging.requestNotificationPermissions();
-            await Static.tags.syncDevice();
+            await Static.tags.syncDevice(context);
             setState(() {
               _permissionsChecking = false;
             });

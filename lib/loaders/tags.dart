@@ -1,16 +1,18 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/loaders/loader.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/utils/encrypt.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/static.dart';
 
 /// SubjectsLoader class
 class TagsLoader extends Loader<Tags> {
   // ignore: public_member_api_docs
-  TagsLoader() : super(Keys.tags);
+  TagsLoader() : super(Keys.tags, TagsUpdateEvent());
 
   @override
   // ignore: type_annotate_public_apis, always_declare_return_types
@@ -23,7 +25,7 @@ class TagsLoader extends Loader<Tags> {
   }
 
   /// Initialize device tags
-  Future syncDevice() async {
+  Future syncDevice(BuildContext context) async {
     final String id = await Static.firebaseMessaging.getToken();
     final String appVersion = (await rootBundle.loadString('pubspec.yaml'))
         .split('\n')
@@ -47,7 +49,7 @@ class TagsLoader extends Loader<Tags> {
             axfNotifications:
                 Static.storage.getBool(Keys.aiXformationNotifications) ?? true,
           ));
-      await sendTags({'device': device.toMap()});
+      await sendTags({'device': device.toMap()}, context);
     }
   }
 
@@ -96,6 +98,7 @@ class TagsLoader extends Loader<Tags> {
         }
         Static.storage.setString(Keys.cafetoriaModified,
             tags.cafetoriaLogin.timestamp.toIso8601String());
+        EventBus().publish(CafetoriaUpdateEvent());
       }
 
       // If the server do not has any data of this user, do not sync
@@ -136,6 +139,7 @@ class TagsLoader extends Loader<Tags> {
             }
           }
         }
+        EventBus().publish(TimetableUpdateEvent());
       } else if (autoSync) {
         await syncTags(context, checkSync: false);
       }
@@ -144,7 +148,7 @@ class TagsLoader extends Loader<Tags> {
   }
 
   /// Send tags to server
-  Future sendTags(Map<String, dynamic> tags, {BuildContext context}) async {
+  Future sendTags(Map<String, dynamic> tags, BuildContext context) async {
     try {
       await loadOnline(
         context,
@@ -258,7 +262,7 @@ class TagsLoader extends Loader<Tags> {
         (tagsToUpdate['exams'] != null && tagsToUpdate['exams'].length > 0) ||
         tagsToUpdate['device'] != null ||
         tagsToUpdate['cafetoria'] != null) {
-      await sendTags(tagsToUpdate, context: context);
+      await sendTags(tagsToUpdate, context);
     }
   }
 }

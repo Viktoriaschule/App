@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:viktoriaapp/loaders/loader.dart';
 import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/static.dart';
 
 /// CafetoriaLoader class
 class CafetoriaLoader extends Loader<Cafetoria> {
   // ignore: public_member_api_docs
-  CafetoriaLoader() : super(Keys.cafetoria);
+  CafetoriaLoader() : super(Keys.cafetoria, CafetoriaUpdateEvent());
 
   @override
   bool get alwaysPost => true;
