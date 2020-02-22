@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:viktoriaapp/models/models.dart';
-import 'package:viktoriaapp/utils/custom_button.dart';
-import 'package:viktoriaapp/utils/list_group.dart';
-import 'package:viktoriaapp/utils/size_limit.dart';
+import 'package:viktoriaapp/widgets/custom_button.dart';
+import 'package:viktoriaapp/widgets/list_group.dart';
+import 'package:viktoriaapp/widgets/size_limit.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 

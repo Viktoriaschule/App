@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:viktoriaapp/timetable/timetable_row.dart';
-import 'package:viktoriaapp/utils/dialog_content_wrapper.dart';
+import 'package:viktoriaapp/widgets/dialog_content_wrapper.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 import 'package:viktoriaapp/models/models.dart';
 

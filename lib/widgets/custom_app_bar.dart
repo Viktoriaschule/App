@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:viktoriaapp/models/keys.dart';
-import 'package:viktoriaapp/utils/custom_hero.dart';
 import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/widgets/custom_hero.dart';
 
 // ignore: public_member_api_docs
 class CustomAppBar extends PreferredSize {

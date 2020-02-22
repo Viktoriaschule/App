@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:viktoriaapp/models/keys.dart';
-import 'package:viktoriaapp/utils/bottom_navigation.dart';
-import 'package:viktoriaapp/utils/custom_hero.dart';
 import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
+import 'package:viktoriaapp/widgets/custom_hero.dart';
 
 // ignore: public_member_api_docs
 class ListGroup extends StatelessWidget {
@@ -18,6 +18,7 @@ class ListGroup extends StatelessWidget {
     this.center = false,
     this.counter = 0,
     this.onTap,
+    this.showNavigation = true,
     Key key,
   }) : super(key: key);
 
@@ -46,6 +47,9 @@ class ListGroup extends StatelessWidget {
 
   // ignore: public_member_api_docs
   final VoidCallback onTap;
+
+  // ignore: public_member_api_docs
+  final bool showNavigation;
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +97,7 @@ class ListGroup extends StatelessWidget {
         children: <Widget>[
           Stack(
             children: <Widget>[
-              if (heroId != null)
+              if (heroId != null && showNavigation)
                 CustomHero(
                   tag: heroId,
                   child: Material(
@@ -113,19 +117,20 @@ class ListGroup extends StatelessWidget {
             ],
           ),
           if (actions.isNotEmpty &&
-              (heroId != null || heroIdNavigation != null))
+              (heroId != null || heroIdNavigation != null) &&
+              showNavigation)
             CustomHero(
               tag: Keys.navigation(heroIdNavigation ?? heroId),
               child: Material(
                 type: MaterialType.transparency,
-                child: BottomNavigation(
+                child: CustomBottomNavigation(
                   actions: actions,
                   forceBorderTop: true,
                 ),
               ),
             )
-          else if (actions.isNotEmpty)
-            BottomNavigation(
+          else if (actions.isNotEmpty && showNavigation)
+            CustomBottomNavigation(
               actions: actions,
               forceBorderTop: true,
             ),

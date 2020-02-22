@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:viktoriaapp/utils/size_limit.dart';
+import 'package:viktoriaapp/widgets/size_limit.dart';
 
 /// DialogContentWrapper class
 /// wrap the content of a dialog

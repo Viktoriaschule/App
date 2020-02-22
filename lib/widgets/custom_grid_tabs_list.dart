@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:viktoriaapp/utils/snapping_list_view.dart';
 import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/widgets/snapping_list_view.dart';
 
 // ignore: public_member_api_docs
 class CustomGridTabsList extends StatefulWidget {
@@ -56,8 +56,7 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
         TabBar(
               tabs: const [],
             ).preferredSize.height *
-            2.5 +
-        2;
+            2.5;
     final content = Column(
       children: [
         ...widget.tab,
@@ -70,42 +69,40 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
       children: [
         Container(
           color: Theme.of(context).backgroundColor,
-          child: Scrollbar(
-            child: SnappingListView(
-              controller: _scrollController,
-              scrollDirection: Axis.vertical,
-              itemExtent: contentHeight,
-              children: [
-                if (widget.append == null)
-                  ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: contentHeight,
-                    ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [content],
-                      ),
-                    ),
+          child: SnappingListView(
+            controller: _scrollController,
+            scrollDirection: Axis.vertical,
+            itemExtent: contentHeight,
+            children: [
+              if (widget.append == null)
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: contentHeight,
                   ),
-                if (widget.append != null)
-                  SingleChildScrollView(
-                    padding: EdgeInsets.only(
-                      bottom: !margin.isNegative ? margin : 0,
-                    ),
+                  child: SingleChildScrollView(
                     child: Column(
                       children: [content],
                     ),
                   ),
-                if (widget.append != null)
-                  SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        ...widget.append[widget.children.indexOf(widget.tab)],
-                      ],
-                    ),
+                ),
+              if (widget.append != null)
+                SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    bottom: !margin.isNegative ? margin : 0,
                   ),
-              ],
-            ),
+                  child: Column(
+                    children: [content],
+                  ),
+                ),
+              if (widget.append != null)
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ...widget.append[widget.children.indexOf(widget.tab)],
+                    ],
+                  ),
+                ),
+            ],
           ),
         ),
         if (widget.append != null)
