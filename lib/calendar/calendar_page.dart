@@ -11,6 +11,7 @@ import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
 import 'package:viktoriaapp/widgets/custom_hero.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/widgets/custom_refresh_indicator.dart';
 
 // ignore: public_member_api_docs
 class CalendarPage extends StatefulWidget {
@@ -19,7 +20,7 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends Interactor<CalendarPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   // ignore: public_member_api_docs
   DateTime firstEvent;
 
@@ -315,13 +316,26 @@ class _CalendarPageState extends Interactor<CalendarPage>
                       ],
                     ));
                   }
-                  return CustomHero(
-                    //tag: Keys.calendar, //TODO: Fix animation
-                    child: Material(
-                      type: MaterialType.transparency,
-                      child: TabBarView(
-                        controller: controller,
-                        children: tabs.cast<Widget>(),
+                  return Container(
+                    height: constraints.maxHeight,
+                    child: CustomRefreshIndicator(
+                      loadOnline: () =>
+                          Static.calendar.loadOnline(context, force: true),
+                      child: SingleChildScrollView(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        child: Container(
+                          height: constraints.maxHeight,
+                          child: CustomHero(
+                            //tag: Keys.calendar, //TODO: Fix animation
+                            child: Material(
+                              type: MaterialType.transparency,
+                              child: TabBarView(
+                                controller: controller,
+                                children: tabs.cast<Widget>(),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   );
