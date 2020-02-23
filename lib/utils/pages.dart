@@ -7,9 +7,18 @@ class Pages extends InheritedWidget {
   Pages({@required Widget child}) : super(child: child);
 
   /// Checks if any page is loading
-  bool get isLoading => pages.keys
-      .map((key) => pages[key].isLoading)
-      .reduce((v1, v2) => v1 || v2);
+  bool get _isHomeLoading =>
+      _loading.values.isNotEmpty &&
+      _loading.values.reduce((v1, v2) => v1 || v2);
+
+  final Map<String, bool> _loading = {};
+
+  /// Check if a loader is loading
+  bool isLoading(String key) =>
+      key == Keys.home ? _isHomeLoading : (_loading[key] ?? false);
+
+  /// Sets if a loader is loading
+  void setLoading(String key, bool isLoading) => _loading[key] = isLoading;
 
   /// All pages in this app
   final Map<String, Page> pages = {
@@ -33,11 +42,8 @@ class Pages extends InheritedWidget {
 // ignore: public_member_api_docs
 class Page {
   // ignore: public_member_api_docs
-  Page(this.title, {this.isLoading = false});
+  Page(this.title);
 
   // ignore: public_member_api_docs
   final String title;
-
-  // ignore: public_member_api_docs
-  bool isLoading;
 }

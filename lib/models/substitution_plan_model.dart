@@ -116,7 +116,6 @@ class SubstitutionPlanDay {
 
   /// Insert the substitutions into the timetable
   void insertInTimetable() {
-    print('insert ${date.weekday}');
     final List<TimetableSubject> subjects =
         Static.timetable.data.getAllSubjects();
     final List<String> subjectsIds = subjects.map((s) => s.id).toList();
@@ -148,7 +147,6 @@ class SubstitutionPlanDay {
 
   /// Set the unparsed filtered lists
   List<String> filterUnparsed({String grade}) {
-    print('filter u ${date.weekday}');
     myUnparsed = [];
     if (grade == null) {
       filteredGrade = Static.timetable.data.grade;

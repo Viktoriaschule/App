@@ -6,7 +6,6 @@ import 'package:viktoriaapp/timetable/timetable_page.dart';
 import 'package:viktoriaapp/timetable/timetable_row.dart';
 import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
-import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
 import 'package:viktoriaapp/widgets/empty_list.dart';
@@ -59,11 +58,9 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
   }
 
   @override
-  Subscription subscribeEvents(EventBus eventBus) {
-    return eventBus
-        .respond<TimetableUpdateEvent>(update)
-        .respond<SubstitutionPlanUpdateEvent>(update);
-  }
+  Subscription subscribeEvents(EventBus eventBus) => eventBus
+      .respond<TimetableUpdateEvent>(update)
+      .respond<SubstitutionPlanUpdateEvent>(update);
 
   // ignore: type_annotate_public_apis
   void update(event) => setState(() {

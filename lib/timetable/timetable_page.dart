@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_info_card.dart';
 import 'package:viktoriaapp/calendar/calendar_info_card.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
 import 'package:viktoriaapp/timetable/timetable_row.dart';
 import 'package:viktoriaapp/timetable/timetable_select_dialog.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
@@ -21,12 +23,17 @@ class TimetablePage extends StatefulWidget {
   _TimetablePageState createState() => _TimetablePageState();
 }
 
-class _TimetablePageState extends State<TimetablePage> {
+class _TimetablePageState extends Interactor<TimetablePage> {
+  @override
+  Subscription subscribeEvents(EventBus eventBus) => eventBus
+      .respond<SubstitutionPlanUpdateEvent>((event) => setState(() => null))
+      .respond<TimetableUpdateEvent>((event) => setState(() => null));
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: CustomAppBar(
           title: Pages.of(context).pages[Keys.timetable].title,
-          actions: const [],
+          pageKey: Keys.timetable,
         ),
         body: CustomHero(
           tag: Keys.timetable,
@@ -38,6 +45,11 @@ class _TimetablePageState extends State<TimetablePage> {
               ? Material(
                   type: MaterialType.transparency,
                   child: CustomGrid(
+                    onRefresh: () async {
+                      await Static.timetable.loadOnline(context, force: true);
+                      await Static.substitutionPlan
+                          .loadOnline(context, force: true);
+                    },
                     initialHorizontalIndex: Static.timetable.data
                             .initialDay(DateTime.now())
                             .weekday -

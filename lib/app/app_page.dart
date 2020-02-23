@@ -7,16 +7,13 @@ import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/plugins/pwa/pwa.dart';
 import 'package:viktoriaapp/settings/settings_page.dart';
-import 'package:viktoriaapp/substitution_plan/substitution_plan_page.dart';
-import 'package:viktoriaapp/timetable/timetable_page.dart';
 import 'package:viktoriaapp/utils/notifications.dart';
 import 'package:viktoriaapp/utils/pages.dart';
-import 'package:viktoriaapp/utils/screen_sizes.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 import 'package:viktoriaapp/widgets/custom_circular_progress_indicator.dart';
-import 'package:viktoriaapp/widgets/custom_linear_progress_indicator.dart';
+import 'package:viktoriaapp/widgets/custom_refresh_indicator.dart';
 
 // ignore: public_member_api_docs
 class AppPage extends StatefulWidget {
@@ -46,7 +43,7 @@ class _AppPageState extends State<AppPage>
   bool _installing = false;
   PWA _pwa;
 
-  Future _fetchData() async {
+  Future _fetchData({bool force = false}) async {
     setState(() {
       _loading = true;
     });
@@ -67,17 +64,19 @@ class _AppPageState extends State<AppPage>
         //TODO: Add old app dialog
 
         // Update all changed data
-        if (storedUpdates.subjects != fetchedUpdates.subjects ||
+        if (force ||
+            storedUpdates.subjects != fetchedUpdates.subjects ||
             !Static.subjects.hasLoadedData) {
-          if (await Static.subjects.loadOnline(context) ==
+          if (await Static.subjects.loadOnline(context, force: force) ==
               StatusCodes.success) {
             Static.updates.data.subjects = fetchedUpdates.subjects;
           }
         }
-        if (storedUpdates.timetable != fetchedUpdates.timetable ||
+        if (force ||
+            storedUpdates.timetable != fetchedUpdates.timetable ||
             gradeChanged ||
             !Static.timetable.hasLoadedData) {
-          if (await Static.timetable.loadOnline(context) ==
+          if (await Static.timetable.loadOnline(context, force: force) ==
               StatusCodes.success) {
             Static.updates.data.timetable = fetchedUpdates.timetable;
           }
@@ -86,9 +85,10 @@ class _AppPageState extends State<AppPage>
         if (mounted) {
           setState(() {});
         }
-        if (storedUpdates.substitutionPlan != fetchedUpdates.substitutionPlan ||
+        if (force ||
+            storedUpdates.substitutionPlan != fetchedUpdates.substitutionPlan ||
             !Static.substitutionPlan.hasLoadedData) {
-          if (await Static.substitutionPlan.loadOnline(context) ==
+          if (await Static.substitutionPlan.loadOnline(context, force: force) ==
               StatusCodes.success) {
             Static.updates.data.substitutionPlan =
                 fetchedUpdates.substitutionPlan;
@@ -97,9 +97,10 @@ class _AppPageState extends State<AppPage>
         if (mounted) {
           setState(() {});
         }
-        if (storedUpdates.calendar != fetchedUpdates.calendar ||
+        if (force ||
+            storedUpdates.calendar != fetchedUpdates.calendar ||
             !Static.calendar.hasLoadedData) {
-          if (await Static.calendar.loadOnline(context) ==
+          if (await Static.calendar.loadOnline(context, force: force) ==
               StatusCodes.success) {
             Static.updates.data.calendar = fetchedUpdates.calendar;
           }
@@ -108,9 +109,10 @@ class _AppPageState extends State<AppPage>
         if (mounted) {
           setState(() {});
         }
-        if (storedUpdates.aixformation != fetchedUpdates.aixformation ||
+        if (force ||
+            storedUpdates.aixformation != fetchedUpdates.aixformation ||
             !Static.aiXformation.hasLoadedData) {
-          if (await Static.aiXformation.loadOnline(context) ==
+          if (await Static.aiXformation.loadOnline(context, force: force) ==
               StatusCodes.success) {
             Static.updates.data.aixformation = fetchedUpdates.aixformation;
           }
@@ -119,11 +121,12 @@ class _AppPageState extends State<AppPage>
         if (mounted) {
           setState(() {});
         }
-        if (storedUpdates.cafetoria != fetchedUpdates.cafetoria ||
+        if (force ||
+            storedUpdates.cafetoria != fetchedUpdates.cafetoria ||
             !Static.cafetoria.hasLoadedData ||
             (Static.storage.getString(Keys.cafetoriaId) != null &&
                 Static.storage.getString(Keys.cafetoriaPassword) != null)) {
-          if (await Static.cafetoria.loadOnline(context) ==
+          if (await Static.cafetoria.loadOnline(context, force: force) ==
               StatusCodes.success) {
             Static.updates.data.cafetoria = fetchedUpdates.cafetoria;
           }
@@ -238,43 +241,43 @@ class _AppPageState extends State<AppPage>
     ];
     final pages = Pages.of(context).pages;
     return Scaffold(
-      body: CustomScrollView(slivers: [
-        CustomAppBar(
-          title: pages[Keys.home].title,
-          actions: [
-            ...webActions,
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) => SettingsPage(),
-                  ),
-                );
-              },
-              icon: Icon(
-                Icons.settings,
-                size: 28,
-                color: textColor(context),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxScrolled) => [
+          CustomAppBar(
+            title: pages[Keys.home].title,
+            actions: [
+              ...webActions,
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => SettingsPage(),
+                    ),
+                  );
+                },
+                icon: Icon(
+                  Icons.settings,
+                  size: 28,
+                  color: textColor(context),
+                ),
               ),
-            ),
-          ],
-          sliver: true,
-          isLeading: false,
-          bottom: _loading
-              ? CustomLinearProgressIndicator(
-                  backgroundColor: Theme.of(context).primaryColor,
-                )
-              : null,
-        ),
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
+            ],
+            sliver: true,
+            isLeading: false,
+            pageKey: Keys.home,
+          ),
+        ],
+        body: CustomRefreshIndicator(
+          loadOnline: () => _fetchData(force: true),
+          child: SingleChildScrollView(
+              child: Column(
+            children: [
               NotificationsWidget(fetchData: _fetchData),
               HomePage(),
             ],
-          ),
-        )
-      ]),
+          )),
+        ),
+      ),
     );
   }
 }

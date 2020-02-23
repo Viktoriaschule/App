@@ -6,11 +6,9 @@ import 'package:viktoriaapp/calendar/calendar_row.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/static.dart';
-import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
 import 'package:viktoriaapp/widgets/empty_list.dart';
 import 'package:viktoriaapp/utils/info_card.dart';
-import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/widgets/list_group.dart';
 import 'package:viktoriaapp/widgets/size_limit.dart';
 
@@ -60,7 +58,7 @@ class _CalendarInfoCardState extends Interactor<CalendarInfoCard> {
 
   @override
   Subscription subscribeEvents(EventBus eventBus) =>
-      eventBus.respond<CafetoriaUpdateEvent>(
+      eventBus.respond<CalendarUpdateEvent>(
           (event) => setState(() => _events = getEvents()));
 
   @override

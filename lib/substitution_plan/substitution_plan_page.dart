@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 import 'package:viktoriaapp/widgets/custom_grid.dart';
@@ -20,11 +22,17 @@ class SubstitutionPlanPage extends StatefulWidget {
   _SubstitutionPlanPageState createState() => _SubstitutionPlanPageState();
 }
 
-class _SubstitutionPlanPageState extends State<SubstitutionPlanPage> {
+class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
+  @override
+  Subscription subscribeEvents(EventBus eventBus) => eventBus
+      .respond<SubstitutionPlanUpdateEvent>((event) => setState(() => null))
+      .respond<TimetableUpdateEvent>((event) => setState(() => null));
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: CustomAppBar(
-          title: Pages.of(context).pages[Keys.timetable].title,
+          title: Pages.of(context).pages[Keys.substitutionPlan].title,
+          pageKey: Keys.substitutionPlan,
           actions: <Widget>[
             if (Static.user.grade != null)
               InkWell(
@@ -75,6 +83,8 @@ class _SubstitutionPlanPageState extends State<SubstitutionPlanPage> {
         body: Static.timetable.hasLoadedData &&
                 Static.substitutionPlan.hasLoadedData
             ? CustomGrid(
+                onRefresh: () =>
+                    Static.substitutionPlan.loadOnline(context, force: true),
                 type: getScreenSize(MediaQuery.of(context).size.width) ==
                         ScreenSize.small
                     ? CustomGridType.tabs
