@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/aixformation/aixformation_page.dart';
 import 'package:viktoriaapp/aixformation/aixformation_row.dart';
 import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
 import 'package:viktoriaapp/widgets/empty_list.dart';
@@ -23,7 +25,7 @@ class AiXformationInfoCard extends StatefulWidget {
   _AiXformationInfoCardState createState() => _AiXformationInfoCardState();
 }
 
-class _AiXformationInfoCardState extends State<AiXformationInfoCard> {
+class _AiXformationInfoCardState extends Interactor<AiXformationInfoCard> {
   InfoCardUtils utils;
 
   @override
@@ -61,4 +63,8 @@ class _AiXformationInfoCardState extends State<AiXformationInfoCard> {
       ],
     );
   }
+
+  @override
+  Subscription subscribeEvents(EventBus eventBus) => eventBus
+      .respond<AiXformationUpdateEvent>((event) => setState(() => null));
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:viktoriaapp/app/app_page.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_page.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_row.dart';
 import 'package:viktoriaapp/models/models.dart';

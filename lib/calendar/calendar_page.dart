@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:viktoriaapp/app/app_page.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/calendar/calendar_grid_event.dart';
 import 'package:viktoriaapp/calendar/calendar_grid_item.dart';
 import 'package:viktoriaapp/calendar/calendar_list.dart';
 import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
@@ -13,12 +14,11 @@ import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs
 class CalendarPage extends StatefulWidget {
-
   @override
   _CalendarPageState createState() => _CalendarPageState();
 }
 
-class _CalendarPageState extends State<CalendarPage>
+class _CalendarPageState extends Interactor<CalendarPage>
     with SingleTickerProviderStateMixin {
   // ignore: public_member_api_docs
   DateTime firstEvent;
@@ -29,21 +29,25 @@ class _CalendarPageState extends State<CalendarPage>
   // ignore: public_member_api_docs
   TabController controller;
 
-  final List<CalendarEvent> events = Static.calendar.data.getEventsForTimeSpan(
-      DateTime.now(), DateTime.now().add(Duration(days: 730)));
+  List<CalendarEvent> events;
 
   @override
-  void initState() {
-    events.sort((a, b) {
-      if (b.end == null) {
-        return 1;
-      }
-      if (a.end == null) {
-        return 1;
-      }
-      return b.end.millisecondsSinceEpoch
-          .compareTo(a.end.millisecondsSinceEpoch);
-    });
+  Subscription subscribeEvents(EventBus eventBus) =>
+      eventBus.respond<CalendarUpdateEvent>((event) => setState(update));
+
+  void update() {
+    events = Static.calendar.data.getEventsForTimeSpan(
+        DateTime.now(), DateTime.now().add(Duration(days: 730)))
+      ..sort((a, b) {
+        if (b.end == null) {
+          return 1;
+        }
+        if (a.end == null) {
+          return 1;
+        }
+        return b.end.millisecondsSinceEpoch
+            .compareTo(a.end.millisecondsSinceEpoch);
+      });
     lastEvent = events[0].end;
     events.sort((a, b) => a.start.millisecondsSinceEpoch
         .compareTo(b.start.millisecondsSinceEpoch));
@@ -55,6 +59,11 @@ class _CalendarPageState extends State<CalendarPage>
           (lastEvent.year - firstEvent.year) * 12,
       vsync: this,
     );
+  }
+
+  @override
+  void initState() {
+    update();
     super.initState();
   }
 
