@@ -26,6 +26,9 @@ class TagsUpdateEvent extends Event {}
 class UpdatesUpdateEvent extends Event {}
 
 // ignore: public_member_api_docs
+class FetchAppDataEvent extends Event {}
+
+// ignore: public_member_api_docs
 class LoadingStatusChangedEvent extends Event {
   // ignore: public_member_api_docs
   LoadingStatusChangedEvent(this.key);

@@ -51,15 +51,20 @@ class _LoginPageState extends State<_LoginPage> {
         Static.user.password = _passwordFieldController.text;
         await Navigator.of(context).pushReplacementNamed('/');
         return;
-      } else if (result == StatusCodes.unauthorized) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('Die Anmeldedaten sind falsch'),
-        ));
-        _passwordFieldController.clear();
-        FocusScope.of(context).requestFocus(_passwordFieldFocus);
       } else {
+        String msg;
+        switch (result) {
+          case StatusCodes.unauthorized:
+            msg = 'Die Anmeldedaten sind falsch';
+            break;
+          case StatusCodes.offline:
+            msg = 'Du musst online sein';
+            break;
+          default:
+            msg = 'Fehler bei der Anmeldung. Probiere es später erneut!';
+        }
         Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('Fehler bei der Anmeldung. Probiere es später erneut!'),
+          content: Text(msg),
         ));
         _passwordFieldController.clear();
         FocusScope.of(context).requestFocus(_passwordFieldFocus);

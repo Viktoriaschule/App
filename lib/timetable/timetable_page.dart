@@ -46,9 +46,17 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                   type: MaterialType.transparency,
                   child: CustomGrid(
                     onRefresh: () async {
-                      await Static.timetable.loadOnline(context, force: true);
-                      await Static.substitutionPlan
+                      final statusTt = await Static.timetable
                           .loadOnline(context, force: true);
+                      final statusSp = await Static.substitutionPlan
+                          .loadOnline(context, force: true);
+                      return statusSp == StatusCodes.success &&
+                              statusTt == StatusCodes.success
+                          ? StatusCodes.success
+                          : statusTt == StatusCodes.offline ||
+                                  statusSp == StatusCodes.offline
+                              ? StatusCodes.offline
+                              : StatusCodes.failed;
                     },
                     initialHorizontalIndex: Static.timetable.data
                             .initialDay(DateTime.now())

@@ -18,12 +18,6 @@ class TagsLoader extends Loader<Tags> {
   // ignore: type_annotate_public_apis, always_declare_return_types
   fromJSON(json) => Tags.fromJson(json);
 
-  /// Checks if the tags on the server are already initialized
-  Future<bool> isInitialized() async {
-    await loadOnline(null, force: true);
-    return parsedData.isInitialized;
-  }
-
   /// Initialize device tags
   Future syncDevice(BuildContext context) async {
     final String id = await Static.firebaseMessaging.getToken();

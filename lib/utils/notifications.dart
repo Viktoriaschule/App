@@ -1,24 +1,26 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/aixformation/aixformation_page.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_page.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_page.dart';
 import 'package:viktoriaapp/timetable/timetable_page.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs
 class NotificationsWidget extends StatefulWidget {
   // ignore: public_member_api_docs
   const NotificationsWidget({
-    @required this.fetchData,
+    @required this.child,
     Key key,
   }) : super(key: key);
 
   // ignore: public_member_api_docs
-  final FutureCallback fetchData;
+  final Widget child;
 
   @override
   _NotificationsWidgetState createState() => _NotificationsWidgetState();
@@ -86,7 +88,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
       action: SnackBarAction(
         label: 'Öffnen',
         onPressed: () async {
-          await widget.fetchData();
+          EventBus.of(context).publish(FetchAppDataEvent());
           await callback();
         },
       ),
@@ -100,19 +102,19 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
   ) async {
     switch (data['type']) {
       case Keys.substitutionPlanNotification:
-        await widget.fetchData();
+        EventBus.of(context).publish(FetchAppDataEvent());
         await _openSubstitutionPlan();
         break;
       case Keys.timetable:
-        await widget.fetchData();
+        EventBus.of(context).publish(FetchAppDataEvent());
         await _openTimetable();
         break;
       case Keys.cafetoria:
-        await widget.fetchData();
+        EventBus.of(context).publish(FetchAppDataEvent());
         await _openCafetoria();
         break;
       case Keys.aiXformation:
-        await widget.fetchData();
+        EventBus.of(context).publish(FetchAppDataEvent());
         // ignore: missing_required_param
         await _openAiXformation(Post(url: data['url']));
         break;
@@ -147,7 +149,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
       );
 
   @override
-  Widget build(BuildContext context) => Container();
+  Widget build(BuildContext context) => widget.child;
 
   @override
   void afterFirstLayout(BuildContext context) =>

@@ -8,6 +8,7 @@ import 'package:viktoriaapp/login/login_page.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/plugins/storage/storage.dart';
+import 'package:viktoriaapp/utils/notifications.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 import 'package:viktoriaapp/utils/pages.dart';
@@ -25,17 +26,24 @@ Future main() async {
   await Static.storage.init();
   await setupDateFormats();
 
-  runApp(EventBusWidget(
-    child: Pages(
-      child: MaterialApp(
-        title: 'ViktoriaApp',
-        theme: theme,
-        darkTheme: darkTheme,
-        routes: <String, WidgetBuilder>{
-          '/': (context) => AppPage(),
-          '/${Keys.login}': (context) => LoginPageWrapper(),
-        },
+  runApp(
+    EventBusWidget(
+      child: Pages(
+        child: MaterialApp(
+          title: 'ViktoriaApp',
+          theme: theme,
+          darkTheme: darkTheme,
+          routes: <String, WidgetBuilder>{
+            '/': (context) => AppPage(),
+            '/${Keys.login}': (context) => LoginPageWrapper(),
+          },
+          builder: (context, child) => Scaffold(
+            body: NotificationsWidget(
+              child: child,
+            ),
+          ),
+        ),
       ),
     ),
-  ));
+  );
 }
