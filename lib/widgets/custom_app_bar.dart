@@ -1,3 +1,4 @@
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/models/keys.dart';
@@ -63,7 +64,7 @@ class CustomAppBar extends PreferredSize {
         .toList();
     final _bottom = PreferredSize(
       preferredSize: Size.fromHeight(3),
-      child: LoadingProgress(
+      child: LinearLoadingProgress(
         height: 3,
         pageKey: pageKey,
       ),
@@ -89,9 +90,9 @@ class CustomAppBar extends PreferredSize {
 }
 
 // ignore: public_member_api_docs
-class LoadingProgress extends StatefulWidget {
+class LinearLoadingProgress extends StatefulWidget {
   // ignore: public_member_api_docs
-  const LoadingProgress({
+  const LinearLoadingProgress({
     @required this.pageKey,
     this.height,
     Key key,
@@ -104,54 +105,41 @@ class LoadingProgress extends StatefulWidget {
   final double height;
 
   @override
-  State<StatefulWidget> createState() => LoadingProgressState();
+  State<StatefulWidget> createState() => LinearLoadingProgressState();
 }
 
 // ignore: public_member_api_docs
-class LoadingProgressState extends Interactor<LoadingProgress> {
-  // ignore: public_member_api_docs
+class LinearLoadingProgressState extends Interactor<LinearLoadingProgress>
+    with AfterLayoutMixin<LinearLoadingProgress> {
   bool _isLoading = false;
-  Future _minTime = Future.delayed(Duration(microseconds: 0));
-
-  Future<void> _setLoading(bool loading) async {
-    if (loading && !_isLoading) {
-      _isLoading = true;
-      _minTime = Future.delayed(Duration(seconds: 1, microseconds: 800));
-    } else if (!loading && _isLoading) {
-      await _minTime;
-      _isLoading = false;
-    }
-  }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    _setLoading(Pages.of(context).isLoading(widget.pageKey));
-    super.didChangeDependencies();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedOpacity(
-      duration: Duration(milliseconds: 200),
-      opacity: _isLoading ? 1 : 0,
-      child: CustomLinearProgressIndicator(
-        height: widget.height,
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-    );
-  }
+  Widget build(BuildContext context) => AnimatedOpacity(
+        duration: Duration(milliseconds: 200),
+        opacity: _isLoading ? 1 : 0,
+        child: CustomLinearProgressIndicator(
+          height: widget.height,
+          backgroundColor: Theme.of(context).primaryColor,
+        ),
+      );
 
   @override
   Subscription subscribeEvents(EventBus eventBus) =>
       eventBus.respond<LoadingStatusChangedEvent>((event) async {
-        if (event.key == widget.pageKey || widget.pageKey == Keys.home) {
-          await _setLoading(Pages.of(context).isLoading(widget.pageKey));
-          setState(() => null);
+        if ((event.key == widget.pageKey || widget.pageKey == Keys.home) &&
+            mounted) {
+          setState(() {
+            _isLoading = Pages.of(context).isLoading(widget.pageKey) ||
+                Pages.of(context).isHomeLoading;
+          });
         }
       });
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    setState(() {
+      _isLoading = Pages.of(context).isLoading(widget.pageKey) ||
+          Pages.of(context).isHomeLoading;
+    });
+  }
 }

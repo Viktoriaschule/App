@@ -4,10 +4,10 @@ import 'package:viktoriaapp/aixformation/aixformation_page.dart';
 import 'package:viktoriaapp/aixformation/aixformation_row.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/events.dart';
+import 'package:viktoriaapp/utils/info_card.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
 import 'package:viktoriaapp/widgets/empty_list.dart';
-import 'package:viktoriaapp/utils/info_card.dart';
 import 'package:viktoriaapp/widgets/list_group.dart';
 
 // ignore: public_member_api_docs
@@ -32,6 +32,7 @@ class _AiXformationInfoCardState extends Interactor<AiXformationInfoCard> {
   Widget build(BuildContext context) {
     utils ??= InfoCardUtils(context, widget.date);
     return ListGroup(
+      pageKey: Keys.aiXformation,
       heroId: Keys.aiXformation,
       actions: [
         NavigationAction(Icons.expand_more, () {
@@ -43,7 +44,9 @@ class _AiXformationInfoCardState extends Interactor<AiXformationInfoCard> {
         }),
       ],
       title: 'AiXformation',
-      counter: Static.aiXformation.data.posts.length - utils.cut,
+      counter: Static.aiXformation.hasLoadedData
+          ? Static.aiXformation.data.posts.length - utils.cut
+          : 0,
       children: [
         if (Static.aiXformation.hasLoadedData &&
             Static.aiXformation.data.posts.isNotEmpty)
