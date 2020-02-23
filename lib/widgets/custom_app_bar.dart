@@ -138,11 +138,7 @@ class LoadingProgressState extends Interactor<LoadingProgress> {
   @override
   Subscription subscribeEvents(EventBus eventBus) =>
       eventBus.respond<LoadingStatusChangedEvent>((event) {
-        if (widget.pageKey == Keys.home) {
-          setState(() {
-            isLoading = Pages.of(context).isLoading(widget.pageKey);
-          });
-        } else if (event.key == widget.pageKey) {
+        if (event.key == widget.pageKey || widget.pageKey == Keys.home) {
           setState(
               () => isLoading = Pages.of(context).isLoading(widget.pageKey));
         }
