@@ -30,7 +30,7 @@ class CustomRefreshIndicator extends StatelessWidget {
                 SnackBar(
                   content: Text(msg),
                   action: SnackBarAction(
-                    label: 'Ok',
+                    label: 'OK',
                     onPressed: () => null,
                   ),
                 ),

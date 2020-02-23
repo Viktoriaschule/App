@@ -61,12 +61,12 @@ class _AppPageState extends Interactor<AppPage>
       } else if (result != StatusCodes.success) {
         if (showStatus) {
           final msg = result == StatusCodes.offline
-              ? 'Du bist Offline'
-              : 'Verbing zum Server Fehlgeschlagen';
+              ? 'Du bist offline'
+              : 'Verbindung zum Server fehlgeschlagen';
           Scaffold.of(context).showSnackBar(SnackBar(
             content: Text(msg),
             action: SnackBarAction(
-              label: 'Ok',
+              label: 'OK',
               onPressed: () => null,
             ),
           ));
