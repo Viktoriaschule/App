@@ -265,7 +265,6 @@ class _AppPageState extends Interactor<AppPage>
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxScrolled) => [
           CustomAppBar(
-            disableLoading: true,
             title: pages[Keys.home].title,
             actions: [
               ...webActions,
