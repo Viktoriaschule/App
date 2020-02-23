@@ -110,7 +110,18 @@ class LoadingProgress extends StatefulWidget {
 // ignore: public_member_api_docs
 class LoadingProgressState extends Interactor<LoadingProgress> {
   // ignore: public_member_api_docs
-  bool isLoading;
+  bool _isLoading = false;
+  Future _minTime = Future.delayed(Duration(microseconds: 0));
+
+  Future<void> _setLoading(bool loading) async {
+    if (loading && !_isLoading) {
+      _isLoading = true;
+      _minTime = Future.delayed(Duration(seconds: 1, microseconds: 800));
+    } else if (!loading && _isLoading) {
+      await _minTime;
+      _isLoading = false;
+    }
+  }
 
   @override
   void initState() {
@@ -119,7 +130,7 @@ class LoadingProgressState extends Interactor<LoadingProgress> {
 
   @override
   void didChangeDependencies() {
-    isLoading = Pages.of(context).isLoading(widget.pageKey);
+    _setLoading(Pages.of(context).isLoading(widget.pageKey));
     super.didChangeDependencies();
   }
 
@@ -127,7 +138,7 @@ class LoadingProgressState extends Interactor<LoadingProgress> {
   Widget build(BuildContext context) {
     return AnimatedOpacity(
       duration: Duration(milliseconds: 200),
-      opacity: isLoading ? 1 : 0,
+      opacity: _isLoading ? 1 : 0,
       child: CustomLinearProgressIndicator(
         height: widget.height,
         backgroundColor: Theme.of(context).primaryColor,
@@ -137,10 +148,10 @@ class LoadingProgressState extends Interactor<LoadingProgress> {
 
   @override
   Subscription subscribeEvents(EventBus eventBus) =>
-      eventBus.respond<LoadingStatusChangedEvent>((event) {
+      eventBus.respond<LoadingStatusChangedEvent>((event) async {
         if (event.key == widget.pageKey || widget.pageKey == Keys.home) {
-          setState(
-              () => isLoading = Pages.of(context).isLoading(widget.pageKey));
+          await _setLoading(Pages.of(context).isLoading(widget.pageKey));
+          setState(() => null);
         }
       });
 }
