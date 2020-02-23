@@ -24,3 +24,12 @@ class TagsUpdateEvent extends Event {}
 
 // ignore: public_member_api_docs
 class UpdatesUpdateEvent extends Event {}
+
+// ignore: public_member_api_docs
+class LoadingStatusChangedEvent extends Event {
+  // ignore: public_member_api_docs
+  LoadingStatusChangedEvent(this.key);
+
+  // ignore: public_member_api_docs
+  final String key;
+}

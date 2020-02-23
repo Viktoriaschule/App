@@ -7,6 +7,7 @@ import 'package:viktoriaapp/models/keys.dart';
 import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
+import 'package:viktoriaapp/widgets/custom_refresh_indicator.dart';
 import 'package:viktoriaapp/widgets/empty_list.dart';
 import 'package:viktoriaapp/widgets/size_limit.dart';
 import 'package:viktoriaapp/utils/static.dart';
@@ -26,10 +27,11 @@ class AiXformationPageState extends Interactor<AiXformationPage> {
             CustomAppBar(
               title: Pages.of(context).pages[Keys.aiXformation].title,
               sliver: true,
+              pageKey: Keys.aiXformation,
             ),
           ],
-          body: RefreshIndicator(
-            onRefresh: () =>
+          body: CustomRefreshIndicator(
+            loadOnline: () =>
                 Static.aiXformation.loadOnline(context, force: true),
             child: Static.aiXformation.data.posts.isNotEmpty
                 ? ListView.builder(
@@ -57,6 +59,6 @@ class AiXformationPageState extends Interactor<AiXformationPage> {
       );
 
   @override
-  Subscription subscribeEvents(EventBus eventBus) =>
-      eventBus.respond<AiXformationUpdateEvent>((event) => setState(() => null));
+  Subscription subscribeEvents(EventBus eventBus) => eventBus
+      .respond<AiXformationUpdateEvent>((event) => setState(() => null));
 }

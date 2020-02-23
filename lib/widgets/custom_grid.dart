@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 import 'package:viktoriaapp/widgets/custom_grid_tabs_list.dart';
+import 'package:viktoriaapp/widgets/custom_refresh_indicator.dart';
 
 // ignore: public_member_api_docs
 class CustomGrid extends StatefulWidget {
@@ -99,8 +100,8 @@ class _CustomGridState extends State<CustomGrid>
           body: TabBarView(
             controller: _tabController,
             children: widget.children
-                .map((tab) => RefreshIndicator(
-                      onRefresh: widget.onRefresh,
+                .map((tab) => CustomRefreshIndicator(
+                      loadOnline: widget.onRefresh,
                       child: CustomGridTabsList(
                         tab: tab,
                         append: widget.append,
@@ -126,8 +127,8 @@ class _CustomGridState extends State<CustomGrid>
         : 0;
     return Container(
       color: Theme.of(context).backgroundColor,
-      child: RefreshIndicator(
-        onRefresh: widget.onRefresh,
+      child: CustomRefreshIndicator(
+        loadOnline: widget.onRefresh,
         child: Scrollbar(
           child: ListView(
             shrinkWrap: true,

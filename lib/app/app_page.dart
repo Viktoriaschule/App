@@ -13,7 +13,7 @@ import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 import 'package:viktoriaapp/widgets/custom_circular_progress_indicator.dart';
-import 'package:viktoriaapp/widgets/custom_linear_progress_indicator.dart';
+import 'package:viktoriaapp/widgets/custom_refresh_indicator.dart';
 
 // ignore: public_member_api_docs
 class AppPage extends StatefulWidget {
@@ -64,14 +64,16 @@ class _AppPageState extends State<AppPage>
         //TODO: Add old app dialog
 
         // Update all changed data
-        if (force || storedUpdates.subjects != fetchedUpdates.subjects ||
+        if (force ||
+            storedUpdates.subjects != fetchedUpdates.subjects ||
             !Static.subjects.hasLoadedData) {
           if (await Static.subjects.loadOnline(context, force: force) ==
               StatusCodes.success) {
             Static.updates.data.subjects = fetchedUpdates.subjects;
           }
         }
-        if (force || storedUpdates.timetable != fetchedUpdates.timetable ||
+        if (force ||
+            storedUpdates.timetable != fetchedUpdates.timetable ||
             gradeChanged ||
             !Static.timetable.hasLoadedData) {
           if (await Static.timetable.loadOnline(context, force: force) ==
@@ -83,7 +85,8 @@ class _AppPageState extends State<AppPage>
         if (mounted) {
           setState(() {});
         }
-        if (force || storedUpdates.substitutionPlan != fetchedUpdates.substitutionPlan ||
+        if (force ||
+            storedUpdates.substitutionPlan != fetchedUpdates.substitutionPlan ||
             !Static.substitutionPlan.hasLoadedData) {
           if (await Static.substitutionPlan.loadOnline(context, force: force) ==
               StatusCodes.success) {
@@ -94,7 +97,8 @@ class _AppPageState extends State<AppPage>
         if (mounted) {
           setState(() {});
         }
-        if (force || storedUpdates.calendar != fetchedUpdates.calendar ||
+        if (force ||
+            storedUpdates.calendar != fetchedUpdates.calendar ||
             !Static.calendar.hasLoadedData) {
           if (await Static.calendar.loadOnline(context, force: force) ==
               StatusCodes.success) {
@@ -105,7 +109,8 @@ class _AppPageState extends State<AppPage>
         if (mounted) {
           setState(() {});
         }
-        if (force || storedUpdates.aixformation != fetchedUpdates.aixformation ||
+        if (force ||
+            storedUpdates.aixformation != fetchedUpdates.aixformation ||
             !Static.aiXformation.hasLoadedData) {
           if (await Static.aiXformation.loadOnline(context, force: force) ==
               StatusCodes.success) {
@@ -116,7 +121,8 @@ class _AppPageState extends State<AppPage>
         if (mounted) {
           setState(() {});
         }
-        if (force || storedUpdates.cafetoria != fetchedUpdates.cafetoria ||
+        if (force ||
+            storedUpdates.cafetoria != fetchedUpdates.cafetoria ||
             !Static.cafetoria.hasLoadedData ||
             (Static.storage.getString(Keys.cafetoriaId) != null &&
                 Static.storage.getString(Keys.cafetoriaPassword) != null)) {
@@ -258,24 +264,11 @@ class _AppPageState extends State<AppPage>
             ],
             sliver: true,
             isLeading: false,
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(3),
-              child: AnimatedOpacity(
-                opacity: _loading ? 1 : 0,
-                duration: Duration(milliseconds: 200),
-                child: CustomLinearProgressIndicator(
-                  height: 3,
-                  backgroundColor: Theme.of(context).primaryColor,
-                ),
-              ),
-            ),
+            pageKey: Keys.home,
           ),
         ],
-        body: RefreshIndicator(
-          onRefresh: () async {
-            // ignore: unawaited_futures
-            _fetchData(force: true);
-          },
+        body: CustomRefreshIndicator(
+          loadOnline: () => _fetchData(force: true),
           child: SingleChildScrollView(
               child: Column(
             children: [

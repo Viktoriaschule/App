@@ -7,6 +7,7 @@ import 'package:viktoriaapp/cafetoria/cafetoria_login.dart' as dialog;
 import 'package:viktoriaapp/cafetoria/cafetoria_row.dart';
 import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
+import 'package:viktoriaapp/widgets/custom_refresh_indicator.dart';
 import 'package:viktoriaapp/widgets/empty_list.dart';
 import 'package:viktoriaapp/widgets/list_group.dart';
 import 'package:viktoriaapp/widgets/size_limit.dart';
@@ -39,6 +40,7 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
             title: Static.cafetoria.data.saldo != null
                 ? '${page.title} (${Static.cafetoria.data.saldo}€)'
                 : page.title,
+            pageKey: Keys.cafetoria,
             actions: [
               IconButton(
                 onPressed: () async {
@@ -72,8 +74,8 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
             sliver: true,
           ),
         ],
-        body: RefreshIndicator(
-          onRefresh: () => Static.cafetoria.loadOnline(context, force: true),
+        body: CustomRefreshIndicator(
+          loadOnline: () => Static.cafetoria.loadOnline(context, force: true),
           child: days.isNotEmpty
               ? ListView.builder(
                   padding: EdgeInsets.only(bottom: 10),

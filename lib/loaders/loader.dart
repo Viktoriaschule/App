@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/events.dart';
+import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs
@@ -44,7 +45,7 @@ abstract class Loader<LoaderType> {
   void loadOffline(BuildContext context) {
     if (hasStoredData) {
       parsedData = fromJSON(Static.storage.getJSON(key));
-      sendEvent(context);
+      _sendLoadedEvent(context);
     }
   }
 
@@ -95,6 +96,7 @@ abstract class Loader<LoaderType> {
     if (_loadedFromOnline && !force) {
       return Response(statusCode: StatusCodes.success);
     }
+    _sendLoadingEvent(context);
     username ??= Static.user.username;
     password ??= Static.user.password;
     const baseUrl = 'https://vsa.fingeg.de';
@@ -106,8 +108,8 @@ abstract class Loader<LoaderType> {
                 'Basic ${base64.encode(utf8.encode('$username:$password'))}',
           },
           responseType: ResponseType.plain,
-          connectTimeout: 20000,
-          receiveTimeout: 20000,
+          connectTimeout: 3000,
+          receiveTimeout: 3000,
         );
       Response response;
       if (alwaysPost || post) {
@@ -140,11 +142,11 @@ abstract class Loader<LoaderType> {
         await Navigator.of(context).pushReplacementNamed('/${Keys.login}');
       }
       response.data = data;
-      sendEvent(context);
+      _sendLoadedEvent(context);
       return response;
     } on DioError catch (e) {
       print(e);
-      sendEvent(context);
+      _sendLoadedEvent(context);
       if (e.response != null) {
         print(
             '${e.response.statusMessage} (${e.response.statusCode}): ${e.response.data}');
@@ -163,14 +165,32 @@ abstract class Loader<LoaderType> {
     }
   }
 
+  /// Sets the page loading state
+  void _setLoading(BuildContext context, bool isLoading) {
+    Pages.of(context).setLoading(key, isLoading);
+    EventBus.of(context).publish(LoadingStatusChangedEvent(key));
+  }
+
   // ignore: public_member_api_docs
-  void sendEvent(BuildContext context) {
+  void _sendLoadingEvent(BuildContext context) {
     try {
-      EventBus.of(context).publish(event);
+      _setLoading(context, true);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       print(
-          'Cannot send event. Event must be fired after init state and before dispose!');
+          'Cannot send start loading event. Event must be fired after init state and before dispose!');
+    }
+  }
+
+  // ignore: public_member_api_docs
+  void _sendLoadedEvent(BuildContext context) {
+    try {
+      EventBus.of(context).publish(event);
+      _setLoading(context, false);
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      print(
+          'Cannot send finished loading event. Event must be fired after init state and before dispose!');
     }
   }
 

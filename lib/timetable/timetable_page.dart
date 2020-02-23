@@ -33,7 +33,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
   Widget build(BuildContext context) => Scaffold(
         appBar: CustomAppBar(
           title: Pages.of(context).pages[Keys.timetable].title,
-          actions: const [],
+          pageKey: Keys.timetable,
         ),
         body: CustomHero(
           tag: Keys.timetable,

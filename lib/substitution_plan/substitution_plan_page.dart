@@ -32,6 +32,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
   Widget build(BuildContext context) => Scaffold(
         appBar: CustomAppBar(
           title: Pages.of(context).pages[Keys.substitutionPlan].title,
+          pageKey: Keys.substitutionPlan,
           actions: <Widget>[
             if (Static.user.grade != null)
               InkWell(

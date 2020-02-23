@@ -36,7 +36,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) => Scaffold(
         appBar: CustomAppBar(
           title: Pages.of(context).pages[Keys.settings].title,
-          actions: const [],
+          pageKey: Keys.settings,
         ),
         body: Material(
           child: Center(

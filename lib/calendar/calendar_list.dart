@@ -9,6 +9,7 @@ import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
 import 'package:viktoriaapp/widgets/custom_hero.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/pages.dart';
+import 'package:viktoriaapp/widgets/custom_refresh_indicator.dart';
 import 'package:viktoriaapp/widgets/empty_list.dart';
 
 // ignore: public_member_api_docs
@@ -38,10 +39,12 @@ class CalendarListState extends Interactor<CalendarList> {
                 title: page.title,
                 actions: const [],
                 sliver: true,
+                pageKey: Keys.calendar,
               ),
             ],
-            body: RefreshIndicator(
-              onRefresh: () => Static.calendar.loadOnline(context, force: true),
+            body: CustomRefreshIndicator(
+              loadOnline: () =>
+                  Static.calendar.loadOnline(context, force: true),
               child: events.isNotEmpty
                   ? ListView.builder(
                       padding: EdgeInsets.only(bottom: 10),

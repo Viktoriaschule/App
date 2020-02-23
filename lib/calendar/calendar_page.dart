@@ -206,7 +206,7 @@ class _CalendarPageState extends Interactor<CalendarPage>
   Widget build(BuildContext context) => Scaffold(
         appBar: CustomAppBar(
           title: Pages.of(context).pages[Keys.calendar].title,
-          actions: const [],
+          pageKey: Keys.calendar,
         ),
         body: Column(
           children: <Widget>[
