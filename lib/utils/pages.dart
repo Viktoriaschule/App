@@ -7,15 +7,22 @@ class Pages extends InheritedWidget {
   Pages({@required Widget child}) : super(child: child);
 
   /// Checks if any page is loading
-  bool get _isHomeLoading =>
+  bool get isHomeLoading =>
       _loading.values.isNotEmpty &&
-      _loading.values.reduce((v1, v2) => v1 || v2);
+      _loading.keys
+          .where((k) => [
+                Keys.subjects,
+                Keys.updates,
+                Keys.tags,
+              ].contains(k))
+          .map((k) => _loading[k])
+          .toList()
+          .reduce((v1, v2) => v1 || v2);
 
   final Map<String, bool> _loading = {};
 
   /// Check if a loader is loading
-  bool isLoading(String key) =>
-      key == Keys.home ? _isHomeLoading : (_loading[key] ?? false);
+  bool isLoading(String key) => _loading[key] ?? false;
 
   /// Sets if a loader is loading
   void setLoading(String key, bool isLoading) => _loading[key] = isLoading;

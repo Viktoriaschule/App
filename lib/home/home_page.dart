@@ -15,33 +15,18 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = getScreenSize(MediaQuery.of(context).size.width);
 
-    // Get the weekday for the home page
-    final weekday = Static.timetable.hasLoadedData
-        ? Static.timetable.data.initialDay(DateTime.now()).weekday - 1
-        : 0;
-
     // Get the date for the home page
     final day = Static.selection.isSet() && Static.timetable.hasLoadedData
         ? Static.timetable.data.initialDay(DateTime.now())
-        : monday(DateTime.now()).add(Duration(days: weekday));
+        : monday(DateTime.now()).add(Duration(
+            days: (DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday) - 1,
+          ));
 
-    final timetableView =
-        Static.timetable.hasLoadedData && Static.selection.isSet()
-            ? TimetableInfoCard(date: day)
-            : Container();
-    final substitutionPlanView =
-        Static.timetable.hasLoadedData && Static.selection.isSet()
-            ? SubstitutionPlanInfoCard(date: day)
-            : Container();
-    final aiXformationView = Static.aiXformation.hasLoadedData
-        ? AiXformationInfoCard(date: day)
-        : Container();
-    final cafetoriaView = Static.cafetoria.hasLoadedData
-        ? CafetoriaInfoCard(date: day)
-        : Container();
-    final calendarView = Static.calendar.hasLoadedData
-        ? CalendarInfoCard(date: day)
-        : Container();
+    final timetableView = TimetableInfoCard(date: day);
+    final substitutionPlanView = SubstitutionPlanInfoCard(date: day);
+    final aiXformationView = AiXformationInfoCard(date: day);
+    final cafetoriaView = CafetoriaInfoCard(date: day);
+    final calendarView = CalendarInfoCard(date: day);
 
     if (size == ScreenSize.small) {
       return Container(

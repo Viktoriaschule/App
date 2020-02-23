@@ -5,11 +5,11 @@ import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
 import 'package:viktoriaapp/timetable/timetable_page.dart';
 import 'package:viktoriaapp/timetable/timetable_row.dart';
 import 'package:viktoriaapp/utils/events.dart';
+import 'package:viktoriaapp/utils/info_card.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
 import 'package:viktoriaapp/widgets/empty_list.dart';
-import 'package:viktoriaapp/utils/info_card.dart';
 import 'package:viktoriaapp/widgets/list_group.dart';
 import 'package:viktoriaapp/widgets/size_limit.dart';
 
@@ -72,6 +72,7 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
   Widget build(BuildContext context) {
     utils ??= InfoCardUtils(context, widget.date);
     return ListGroup(
+      pageKey: Keys.timetable,
       title: 'Nächste Stunden - ${weekdays[utils.weekday]}',
       counter: _subjects.length > utils.cut ? _subjects.length - utils.cut : 0,
       heroId: utils.size == ScreenSize.small

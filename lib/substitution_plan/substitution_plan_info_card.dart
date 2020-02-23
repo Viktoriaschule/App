@@ -4,11 +4,11 @@ import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_page.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
 import 'package:viktoriaapp/utils/events.dart';
+import 'package:viktoriaapp/utils/info_card.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
 import 'package:viktoriaapp/widgets/empty_list.dart';
-import 'package:viktoriaapp/utils/info_card.dart';
 import 'package:viktoriaapp/widgets/list_group.dart';
 import 'package:viktoriaapp/widgets/size_limit.dart';
 
@@ -63,13 +63,13 @@ class _SubstitutionPlanInfoCardState
   Widget build(BuildContext context) {
     utils ??= InfoCardUtils(context, widget.date);
     return ListGroup(
+      pageKey: Keys.substitutionPlan,
       heroId: getScreenSize(MediaQuery.of(context).size.width) ==
               ScreenSize.small
           ? Keys.substitutionPlan
           : '${Keys.substitutionPlan}-${Static.substitutionPlan.data.days.indexOf(_substitutionPlanDay)}',
       heroIdNavigation: Keys.substitutionPlan,
-      title:
-          'Nächste Vertretungen - ${weekdays[Static.timetable.data.initialDay(DateTime.now()).weekday - 1]}',
+      title: 'Nächste Vertretungen - ${weekdays[widget.date.weekday - 1]}',
       counter: _substitutions.length > utils.cut
           ? _substitutions.length - utils.cut
           : 0,

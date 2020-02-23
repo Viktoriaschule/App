@@ -110,18 +110,6 @@ class _AppPageState extends State<AppPage>
           setState(() {});
         }
         if (force ||
-            storedUpdates.aixformation != fetchedUpdates.aixformation ||
-            !Static.aiXformation.hasLoadedData) {
-          if (await Static.aiXformation.loadOnline(context, force: force) ==
-              StatusCodes.success) {
-            Static.updates.data.aixformation = fetchedUpdates.aixformation;
-          }
-        }
-        await Static.tags.syncTags(context);
-        if (mounted) {
-          setState(() {});
-        }
-        if (force ||
             storedUpdates.cafetoria != fetchedUpdates.cafetoria ||
             !Static.cafetoria.hasLoadedData ||
             (Static.storage.getString(Keys.cafetoriaId) != null &&
@@ -129,6 +117,18 @@ class _AppPageState extends State<AppPage>
           if (await Static.cafetoria.loadOnline(context, force: force) ==
               StatusCodes.success) {
             Static.updates.data.cafetoria = fetchedUpdates.cafetoria;
+          }
+        }
+        await Static.tags.syncTags(context);
+        if (mounted) {
+          setState(() {});
+        }
+        if (force ||
+            storedUpdates.aixformation != fetchedUpdates.aixformation ||
+            !Static.aiXformation.hasLoadedData) {
+          if (await Static.aiXformation.loadOnline(context, force: force) ==
+              StatusCodes.success) {
+            Static.updates.data.aixformation = fetchedUpdates.aixformation;
           }
         }
         if (mounted) {
@@ -172,8 +172,8 @@ class _AppPageState extends State<AppPage>
       Static.timetable.loadOffline(context);
       Static.substitutionPlan.loadOffline(context);
       Static.calendar.loadOffline(context);
-      Static.aiXformation.loadOffline(context);
       Static.cafetoria.loadOffline(context);
+      Static.aiXformation.loadOffline(context);
     }
 
     _pwa = PWA();
@@ -244,6 +244,7 @@ class _AppPageState extends State<AppPage>
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxScrolled) => [
           CustomAppBar(
+            disableLoading: true,
             title: pages[Keys.home].title,
             actions: [
               ...webActions,

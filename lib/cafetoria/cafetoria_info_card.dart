@@ -5,10 +5,10 @@ import 'package:viktoriaapp/cafetoria/cafetoria_page.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_row.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/events.dart';
+import 'package:viktoriaapp/utils/info_card.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
 import 'package:viktoriaapp/widgets/empty_list.dart';
-import 'package:viktoriaapp/utils/info_card.dart';
 import 'package:viktoriaapp/widgets/list_group.dart';
 import 'package:viktoriaapp/widgets/size_limit.dart';
 
@@ -65,6 +65,7 @@ class _CafetoriaInfoCardState extends Interactor<CafetoriaInfoCard> {
             (d) => d.date.isAfter(widget.date.subtract(Duration(seconds: 1))))
         .toList();
     return ListGroup(
+      pageKey: Keys.cafetoria,
       showNavigation: widget.showNavigation,
       heroId: '${Keys.cafetoria}-0',
       heroIdNavigation: Keys.cafetoria,
@@ -80,7 +81,8 @@ class _CafetoriaInfoCardState extends Interactor<CafetoriaInfoCard> {
           await launch('https://www.opc-asp.de/vs-aachen/');
         }),
       ],
-      title: Static.cafetoria.data.saldo == null
+      title: !Static.cafetoria.hasLoadedData ||
+              Static.cafetoria.data.saldo == null
           ? 'Cafétoria - ${weekdays[widget.date.weekday - 1]}'
           : 'Cafétoria - ${weekdays[widget.date.weekday - 1]} (${Static.cafetoria.data.saldo}€) ',
       counter: _days.length - 1,

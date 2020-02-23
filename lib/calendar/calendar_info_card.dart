@@ -65,6 +65,7 @@ class _CalendarInfoCardState extends Interactor<CalendarInfoCard> {
   Widget build(BuildContext context) {
     utils ??= InfoCardUtils(context, widget.date);
     return ListGroup(
+      pageKey: Keys.calendar,
       showNavigation: widget.showNavigation,
       heroId: Keys.calendar,
       title: widget.isSingleDay
