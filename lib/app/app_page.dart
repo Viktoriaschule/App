@@ -1,13 +1,14 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:viktoriaapp/home/home_page.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/plugins/pwa/pwa.dart';
 import 'package:viktoriaapp/settings/settings_page.dart';
-import 'package:viktoriaapp/utils/notifications.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
@@ -34,7 +35,7 @@ class AppPage extends StatefulWidget {
   State<StatefulWidget> createState() => _AppPageState();
 }
 
-class _AppPageState extends State<AppPage>
+class _AppPageState extends Interactor<AppPage>
     with SingleTickerProviderStateMixin, AfterLayoutMixin<AppPage> {
   bool _loading;
   bool _permissionsGranted = true;
@@ -43,7 +44,12 @@ class _AppPageState extends State<AppPage>
   bool _installing = false;
   PWA _pwa;
 
-  Future _fetchData({bool force = false}) async {
+  @override
+  Subscription subscribeEvents(EventBus eventBus) =>
+      eventBus.respond<FetchAppDataEvent>((event) => _fetchData());
+
+  Future<StatusCodes> _fetchData(
+      {bool force = false, bool showStatus = true}) async {
     setState(() {
       _loading = true;
     });
@@ -52,6 +58,19 @@ class _AppPageState extends State<AppPage>
           await Static.tags.loadOnline(context, force: true, autoLogin: false);
       if (result == StatusCodes.unauthorized) {
         await _launchLogin();
+      } else if (result != StatusCodes.success) {
+        if (showStatus) {
+          final msg = result == StatusCodes.offline
+              ? 'Du bist Offline'
+              : 'Verbing zum Server Fehlgeschlagen';
+          Scaffold.of(context).showSnackBar(SnackBar(
+            content: Text(msg),
+            action: SnackBarAction(
+              label: 'Ok',
+              onPressed: () => null,
+            ),
+          ));
+        }
       } else {
         final storedUpdates = Static.updates.data ?? Updates.fromJson({});
         await Static.updates.loadOnline(context, force: true);
@@ -137,12 +156,14 @@ class _AppPageState extends State<AppPage>
           });
         }
       }
+      return result;
     } on DioError {
       if (mounted) {
         setState(() {
           _loading = false;
         });
       }
+      return StatusCodes.failed;
     }
   }
 
@@ -268,14 +289,10 @@ class _AppPageState extends State<AppPage>
           ),
         ],
         body: CustomRefreshIndicator(
-          loadOnline: () => _fetchData(force: true),
+          loadOnline: () => _fetchData(force: true, showStatus: false),
           child: SingleChildScrollView(
-              child: Column(
-            children: [
-              NotificationsWidget(fetchData: _fetchData),
-              HomePage(),
-            ],
-          )),
+            child: HomePage(),
+          ),
         ),
       ),
     );

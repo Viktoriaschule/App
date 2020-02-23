@@ -15,24 +15,27 @@ export 'updates_model.dart';
 export 'user.dart';
 
 /// Http status codes
-class StatusCodes {
+enum StatusCodes {
   // ignore: public_member_api_docs
-  static int get success => 200;
+  success,
+  // ignore: public_member_api_docs
+  unauthorized,
+  // ignore: public_member_api_docs
+  offline,
+  // ignore: public_member_api_docs
+  failed,
+}
 
-  // ignore: public_member_api_docs
-  static int get timeout => 408;
-
-  // ignore: public_member_api_docs
-  static int get notFound => 404;
-
-  // ignore: public_member_api_docs
-  static int get unauthorized => 401;
-
-  // ignore: public_member_api_docs
-  static int get offline => -1;
-
-  // ignore: public_member_api_docs
-  static int get failed => -100;
+// ignore: public_member_api_docs
+StatusCodes getStatusCode(int httpStatusCode) {
+  switch (httpStatusCode) {
+    case 401:
+      return StatusCodes.unauthorized;
+    case 200:
+      return StatusCodes.success;
+    default:
+      return StatusCodes.failed;
+  }
 }
 
 /// List of all grades

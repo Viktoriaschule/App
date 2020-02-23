@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -50,7 +51,7 @@ abstract class Loader<LoaderType> {
   }
 
   /// Download the data from the api and returns the status code
-  Future<int> loadOnline(BuildContext context,
+  Future<StatusCodes> loadOnline(BuildContext context,
           {String username,
           String password,
           bool force = false,
@@ -69,7 +70,7 @@ abstract class Loader<LoaderType> {
           .statusCode;
 
   /// Fetches the data
-  Future<Response> fetch(BuildContext context,
+  Future<LoaderResponse> fetch(BuildContext context,
           {String username,
           String password,
           bool post = false,
@@ -85,7 +86,7 @@ abstract class Loader<LoaderType> {
           autoLogin: autoLogin);
 
   /// Download the data from the api and returns the status code
-  Future<Response> _load(BuildContext context,
+  Future<LoaderResponse> _load(BuildContext context,
       {String username,
       String password,
       bool force = false,
@@ -94,13 +95,19 @@ abstract class Loader<LoaderType> {
       bool store = true,
       bool autoLogin = true}) async {
     if (_loadedFromOnline && !force) {
-      return Response(statusCode: StatusCodes.success);
+      return LoaderResponse(statusCode: StatusCodes.success);
     }
     _sendLoadingEvent(context);
     username ??= Static.user.username;
     password ??= Static.user.password;
     const baseUrl = 'https://vsa.fingeg.de';
     try {
+      if (username == null || password == null) {
+        throw DioError(
+          type: DioErrorType.RESPONSE,
+          response: Response(statusCode: 401),
+        );
+      }
       final dio = Dio()
         ..options = BaseOptions(
           headers: {
@@ -136,32 +143,32 @@ abstract class Loader<LoaderType> {
           print('$key failed to load');
         }
       }
-      if (response.statusCode == StatusCodes.unauthorized &&
-          autoLogin &&
-          context != null) {
+      if (response.statusCode == 401 && autoLogin && context != null) {
         await Navigator.of(context).pushReplacementNamed('/${Keys.login}');
       }
-      response.data = data;
       _sendLoadedEvent(context);
-      return response;
+      return LoaderResponse(
+          data: data, statusCode: getStatusCode(response.statusCode));
     } on DioError catch (e) {
-      print(e);
       _sendLoadedEvent(context);
-      if (e.response != null) {
-        print(
-            '${e.response.statusMessage} (${e.response.statusCode}): ${e.response.data}');
-        if (e.response.statusCode == StatusCodes.unauthorized &&
-            autoLogin &&
-            context != null) {
-          await Navigator.of(context).pushReplacementNamed('/${Keys.login}');
-        }
-        try {
-          e.response.data = json.decode(e.response.data);
-          // ignore: avoid_catches_without_on_clauses
-        } catch (_) {}
-        return e.response;
+      switch (e.type) {
+        case DioErrorType.RESPONSE:
+          if (e.response.statusCode == 401) {
+            if (autoLogin && context != null) {
+              await Navigator.of(context)
+                  .pushReplacementNamed('/${Keys.login}');
+            }
+            return LoaderResponse(statusCode: StatusCodes.unauthorized);
+          }
+          return LoaderResponse(statusCode: StatusCodes.failed);
+        case DioErrorType.DEFAULT:
+          if (e.error is SocketException) {
+            return LoaderResponse(statusCode: StatusCodes.offline);
+          }
+          return LoaderResponse(statusCode: StatusCodes.failed);
+        default:
+          return LoaderResponse(statusCode: StatusCodes.failed);
       }
-      rethrow;
     }
   }
 
@@ -212,4 +219,15 @@ abstract class Loader<LoaderType> {
 
   /// Check if there is any data loaded
   bool get hasLoadedData => data != null;
+}
+
+// ignore: public_member_api_docs
+class LoaderResponse<T> {
+  // ignore: public_member_api_docs
+  LoaderResponse({this.data, this.statusCode});
+
+  // ignore: public_member_api_docs
+  final T data;
+  // ignore: public_member_api_docs
+  final StatusCodes statusCode;
 }

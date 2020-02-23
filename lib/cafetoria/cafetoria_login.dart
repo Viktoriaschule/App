@@ -58,7 +58,9 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
           ? null
           : (loginStatus == StatusCodes.failed
               ? 'Serverfehler - Versuche es später nochmal'
-              : 'Login-Daten nicht korrekt');
+              : loginStatus == StatusCodes.offline
+                  ? 'Offline'
+                  : 'Login-Daten nicht korrekt');
       _credentialsCorrect = loginStatus == StatusCodes.success;
       if (_formKey.currentState.validate()) {
         // Save correct credentials
@@ -181,10 +183,23 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
                               onPressed: () async {
                                 if (!loggingOut) {
                                   setState(() => loggingOut = true);
-                                  await Static.cafetoria.logout(context);
+                                  final status =
+                                      await Static.cafetoria.logout(context);
                                   setState(() => loggingOut = false);
-                                  Navigator.pop(context);
-                                  widget.onFinished();
+                                  switch (status) {
+                                    case StatusCodes.success:
+                                      Navigator.pop(context);
+                                      widget.onFinished();
+                                      return;
+                                    case StatusCodes.offline:
+                                      failMsg = 'Offline';
+                                      break;
+                                    default:
+                                      failMsg =
+                                          'Serverfehler - Versuche es später nochmal';
+                                  }
+                                  _credentialsCorrect = false;
+                                  _formKey.currentState.validate();
                                 }
                               },
                               enabled: !loggingIn,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 import 'package:viktoriaapp/widgets/custom_grid_tabs_list.dart';
 import 'package:viktoriaapp/widgets/custom_refresh_indicator.dart';
@@ -41,7 +42,7 @@ class CustomGrid extends StatefulWidget {
   final int initialHorizontalIndex;
 
   // ignore: public_member_api_docs
-  final Future<void> Function() onRefresh;
+  final Future<StatusCodes> Function() onRefresh;
 
   @override
   _CustomGridState createState() => _CustomGridState();
