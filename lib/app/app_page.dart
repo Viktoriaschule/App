@@ -81,7 +81,7 @@ class _AppPageState extends Interactor<AppPage>
         // The futures will run parallel and after starting all, the programm will wait until all are finished
         final downloads = [
           /// Download subject, timetable and substitution plan in the correct order
-          download(() async {
+          () async {
             await Static.subjects.update(
               context,
               fetchedUpdates,
@@ -97,26 +97,24 @@ class _AppPageState extends Interactor<AppPage>
               fetchedUpdates,
               force: force,
             );
-          }),
-          download(() => Static.calendar.update(
-                context,
-                fetchedUpdates,
-                force: force,
-              )),
-          download(
-            () => Static.cafetoria.update(
-              context,
-              fetchedUpdates,
-              force: force ||
-                  (Static.storage.getString(Keys.cafetoriaId) != null &&
-                      Static.storage.getString(Keys.cafetoriaPassword) != null),
-            ),
+          }(),
+          Static.calendar.update(
+            context,
+            fetchedUpdates,
+            force: force,
           ),
-          download(() => Static.aiXformation.update(
-                context,
-                fetchedUpdates,
-                force: force,
-              )),
+          Static.cafetoria.update(
+            context,
+            fetchedUpdates,
+            force: force ||
+                (Static.storage.getString(Keys.cafetoriaId) != null &&
+                    Static.storage.getString(Keys.cafetoriaPassword) != null),
+          ),
+          Static.aiXformation.update(
+            context,
+            fetchedUpdates,
+            force: force,
+          ),
         ];
 
         // Wait until all futures are finished
@@ -127,8 +125,6 @@ class _AppPageState extends Interactor<AppPage>
       return StatusCodes.failed;
     }
   }
-
-  Future<void> download(Future<void> Function() downloader) => downloader();
 
   Future _launchLogin() async {
     await Navigator.of(context).pushReplacementNamed('/${Keys.login}');
