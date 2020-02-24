@@ -53,7 +53,7 @@ class _AppState extends Interactor<App> {
                 systemNavigationBarColor:
                     ThemeWidget.of(context).theme.snackBarTheme.backgroundColor,
               )
-            : SystemUiOverlayStyle.dark.copyWith(
+            : SystemUiOverlayStyle.light.copyWith(
                 systemNavigationBarColor:
                     ThemeWidget.of(context).theme.backgroundColor,
               ),
