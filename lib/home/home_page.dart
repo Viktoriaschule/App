@@ -22,12 +22,18 @@ class HomePage extends StatelessWidget {
             days: (DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday) - 1,
           ));
 
+    Widget timetableBuilder() => TimetableInfoCard(date: day);
+    Widget substitutionPlanBuilder() => SubstitutionPlanInfoCard(date: day);
+    Widget calendarBuilder() => CalendarInfoCard(date: day);
+    Widget cafetoriaBuilder() => CafetoriaInfoCard(date: day);
+    Widget aixformationBuilder() => AiXformationInfoCard(date: day);
+
     final widgetBuilders = [
-      () => TimetableInfoCard(date: day),
-      () => SubstitutionPlanInfoCard(date: day),
-      () => CalendarInfoCard(date: day),
-      () => CafetoriaInfoCard(date: day),
-      () => AiXformationInfoCard(date: day),
+      timetableBuilder,
+      substitutionPlanBuilder,
+      calendarBuilder,
+      cafetoriaBuilder,
+      aixformationBuilder,
     ];
 
     if (size == ScreenSize.small) {
@@ -47,8 +53,8 @@ class HomePage extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              widgetBuilders[1](),
-              widgetBuilders[0](),
+              substitutionPlanBuilder(),
+              timetableBuilder(),
             ]
                 .map((x) => Expanded(
                       flex: 1,
@@ -65,8 +71,8 @@ class HomePage extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              widgetBuilders[4](),
-              widgetBuilders[3](),
+              calendarBuilder(),
+              cafetoriaBuilder(),
             ]
                 .map((x) => Expanded(
                       flex: 1,
@@ -83,7 +89,7 @@ class HomePage extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              widgetBuilders[2](),
+              aixformationBuilder(),
             ]
                 .map((x) => Expanded(
                       flex: 1,
@@ -107,8 +113,8 @@ class HomePage extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              widgetBuilders[1](),
-              widgetBuilders[3](),
+              substitutionPlanBuilder(),
+              cafetoriaBuilder(),
             ]
                 .map((x) => SizedBox(
                       height: (MediaQuery.of(context).size.height -
@@ -122,8 +128,8 @@ class HomePage extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              widgetBuilders[0](),
-              widgetBuilders[4](),
+              timetableBuilder(),
+              calendarBuilder(),
             ]
                 .map((x) => SizedBox(
                       height: (MediaQuery.of(context).size.height -
@@ -136,7 +142,7 @@ class HomePage extends StatelessWidget {
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height - _screenPadding,
-            child: widgetBuilders[2](),
+            child: aixformationBuilder(),
           ),
         ]
             .map((x) => Expanded(
