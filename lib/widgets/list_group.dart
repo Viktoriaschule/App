@@ -103,7 +103,7 @@ class _ListGroupState extends Interactor<ListGroup>
                     widget.title,
                     style: TextStyle(
                       fontWeight: FontWeight.w100,
-                      color: textColor(context),
+                      color: ThemeWidget.of(context).textColor,
                       fontSize: 18,
                     ),
                   ),
@@ -124,7 +124,7 @@ class _ListGroupState extends Interactor<ListGroup>
                             '+${widget.counter}',
                             style: TextStyle(
                               fontWeight: FontWeight.w100,
-                              color: textColor(context),
+                              color: ThemeWidget.of(context).textColor,
                               fontSize: 18,
                             ),
                           )
@@ -157,13 +157,16 @@ class _ListGroupState extends Interactor<ListGroup>
                 )
               else
                 content,
-              Positioned.fill(
-                child: InkWell(
-                  onTap: widget.onTap ??
-                      (actions.isNotEmpty ? actions[0].onTap : null),
-                  child: Container(),
+              if ((widget.onTap ??
+                      (actions.isNotEmpty ? actions[0].onTap : null)) !=
+                  null)
+                Positioned.fill(
+                  child: InkWell(
+                    onTap: widget.onTap ??
+                        (actions.isNotEmpty ? actions[0].onTap : null),
+                    child: Container(),
+                  ),
                 ),
-              ),
             ],
           ),
           if (actions.isNotEmpty &&

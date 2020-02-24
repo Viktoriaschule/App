@@ -8,10 +8,11 @@ import 'package:viktoriaapp/login/login_page.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/plugins/storage/storage.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/notifications.dart';
+import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
-import 'package:viktoriaapp/utils/pages.dart';
 
 Future main() async {
   if (Platform().isDesktop) {
@@ -29,21 +30,37 @@ Future main() async {
   runApp(
     EventBusWidget(
       child: Pages(
-        child: MaterialApp(
-          title: 'ViktoriaApp',
-          theme: theme,
-          darkTheme: darkTheme,
-          routes: <String, WidgetBuilder>{
-            '/': (context) => AppPage(),
-            '/${Keys.login}': (context) => LoginPageWrapper(),
-          },
-          builder: (context, child) => Scaffold(
-            body: NotificationsWidget(
-              child: child,
-            ),
-          ),
+        child: ThemeWidget(
+          child: App(),
         ),
       ),
     ),
   );
+}
+
+// ignore: public_member_api_docs
+class App extends StatefulWidget {
+  @override
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends Interactor<App> {
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+        title: 'ViktoriaApp',
+        theme: ThemeWidget.of(context).theme,
+        routes: <String, WidgetBuilder>{
+          '/': (context) => AppPage(),
+          '/${Keys.login}': (context) => LoginPageWrapper(),
+        },
+        builder: (context, child) => Scaffold(
+          body: NotificationsWidget(
+            child: child,
+          ),
+        ),
+      );
+
+  @override
+  Subscription subscribeEvents(EventBus eventBus) =>
+      eventBus.respond<ThemeChangedEvent>((event) => setState(() => null));
 }

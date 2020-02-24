@@ -36,7 +36,7 @@ class IconsTexts extends StatelessWidget {
               Icon(
                 icon,
                 size: 18,
-                color: textColorLight(context),
+                color: ThemeWidget.of(context).textColorLight,
               ),
               Container(
                 width: 2.5,
@@ -46,7 +46,7 @@ class IconsTexts extends StatelessWidget {
               Text(
                 text,
                 style: TextStyle(
-                    color: textColor(context),
+                    color: ThemeWidget.of(context).textColor,
                     fontSize: 14,
                     fontWeight: FontWeight.w100),
               ),

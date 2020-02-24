@@ -48,7 +48,7 @@ class CustomAppBar extends PreferredSize {
           child: Text(
             title,
             style: TextStyle(
-              color: textColor(context),
+              color: ThemeWidget.of(context).textColor,
               fontWeight: FontWeight.w100,
               fontSize: 22,
             ),

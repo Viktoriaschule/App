@@ -6,11 +6,11 @@ import 'package:viktoriaapp/calendar/calendar_list.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/pages.dart';
+import 'package:viktoriaapp/utils/static.dart';
+import 'package:viktoriaapp/utils/theme.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
 import 'package:viktoriaapp/widgets/custom_hero.dart';
-import 'package:viktoriaapp/utils/static.dart';
-import 'package:viktoriaapp/utils/theme.dart';
 import 'package:viktoriaapp/widgets/custom_refresh_indicator.dart';
 
 // ignore: public_member_api_docs
@@ -271,7 +271,8 @@ class _CalendarPageState extends Interactor<CalendarPage>
                               '${months[month]} $year',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: textColor(context),
+                                color:
+                                    ThemeWidget.of(context).textColor,
                               ),
                             ),
                           ),
@@ -280,10 +281,12 @@ class _CalendarPageState extends Interactor<CalendarPage>
                           decoration: BoxDecoration(
                             border: Border(
                               top: BorderSide(
-                                color: textColor(context).withOpacity(0.5),
+                                color: ThemeWidget.of(context)
+                                    .textColor
+                                    .withOpacity(0.5),
                               ),
                               left: BorderSide(
-                                color: textColor(context).withOpacity(0.5),
+                                color: ThemeWidget.of(context).textColor.withOpacity(0.5),
                               ),
                             ),
                           ),

@@ -110,4 +110,13 @@ class Keys {
 
   // ignore: public_member_api_docs
   static const String cafetoriaPassword = 'cafetoriaPassword';
+
+  // ignore: public_member_api_docs
+  static const String automaticDesign = 'automaticDesign';
+
+  // ignore: public_member_api_docs
+  static const String darkMode = 'darkMode';
+
+  // ignore: public_member_api_docs
+  static const String platformBrightness = 'platformBrightness';
 }

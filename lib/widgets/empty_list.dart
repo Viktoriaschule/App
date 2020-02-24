@@ -22,11 +22,12 @@ class EmptyList extends StatelessWidget {
               Icon(
                 Icons.assignment_ind,
                 size: 30,
-                color: textColorLight(context),
+                color: ThemeWidget.of(context).textColorLight,
               ),
               Text(
                 title,
-                style: TextStyle(color: textColorLight(context)),
+                style: TextStyle(
+                    color: ThemeWidget.of(context).textColorLight),
               ),
             ],
           ),

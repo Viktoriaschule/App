@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs
 final Color lightColor = Color(0xFFFAFAFA);
@@ -15,7 +17,7 @@ final Color darkBackgroundColor = Color(0xFF303030);
 final _accentColor = Color(0xFF74B451);
 
 /// Get the theme of the app
-ThemeData get theme => ThemeData(
+ThemeData get _theme => ThemeData(
       brightness: Brightness.light,
       primaryColor: lightColor,
       accentColor: _accentColor,
@@ -31,14 +33,14 @@ ThemeData get theme => ThemeData(
     );
 
 /// Get the dark theme of the app
-ThemeData get darkTheme => ThemeData(
+ThemeData get _darkTheme => ThemeData(
       brightness: Brightness.dark,
       primaryColor: darkColor,
-      accentColor: theme.accentColor,
+      accentColor: _theme.accentColor,
       highlightColor: Color(0xFF666666),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: Color.lerp(darkColor, darkBackgroundColor, 0.5),
-        actionTextColor: theme.accentColor,
+        actionTextColor: _theme.accentColor,
         contentTextStyle: TextStyle(
           color: lightColor,
         ),
@@ -46,21 +48,46 @@ ThemeData get darkTheme => ThemeData(
       primaryIconTheme: IconThemeData(
         color: Color(0xFFCCCCCC),
       ),
-      cardTheme: theme.cardTheme,
+      cardTheme: _theme.cardTheme,
       cardColor: darkColor,
       backgroundColor: darkBackgroundColor,
       fontFamily: 'Ubuntu',
     );
 
-/// TODO: Remove the usage of these functions by using the theme
-/// Get the text color according to the theme
-Color textColor(BuildContext context) =>
-    MediaQuery.of(context).platformBrightness == Brightness.light
-        ? darkColor
-        : Color(0xFFCCCCCC);
+// ignore: public_member_api_docs
+class ThemeWidget extends InheritedWidget {
+  // ignore: public_member_api_docs
+  const ThemeWidget({@required Widget child}) : super(child: child);
 
-/// Get the text color according to the theme
-Color textColorLight(BuildContext context) =>
-    MediaQuery.of(context).platformBrightness == Brightness.light
-        ? darkColorLight
-        : Color(0xFFCCCCCC);
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) => false;
+
+  /// Find the closest [ThemeWidget] from ancestor tree.
+  static ThemeWidget of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<ThemeWidget>();
+
+  // ignore: public_member_api_docs
+  ThemeData get theme =>
+      _getBrightness() == Brightness.light ? _theme : _darkTheme;
+
+  Brightness _getBrightness() {
+    if (Static.storage.getBool(Keys.automaticDesign) ?? true) {
+      return Static.storage.getBool(Keys.platformBrightness) ?? false
+          ? Brightness.dark
+          : Brightness.light;
+    }
+    if (Static.storage.getBool(Keys.darkMode) ?? false) {
+      return Brightness.dark;
+    }
+    return Brightness.light;
+  }
+
+  /// TODO: Remove the usage of these functions by using the theme
+  /// Get the text color according to the theme
+  Color get textColor =>
+      _getBrightness() == Brightness.light ? darkColor : Color(0xFFCCCCCC);
+
+  /// Get the text color according to the theme
+  Color get textColorLight =>
+      _getBrightness() == Brightness.light ? darkColorLight : Color(0xFFCCCCCC);
+}
