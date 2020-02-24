@@ -43,7 +43,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                     child: Container(
                       padding: EdgeInsets.all(7.5),
                       decoration: BoxDecoration(
-                        boxShadow: MediaQuery.of(context).platformBrightness ==
+                        boxShadow: ThemeWidget.of(context).brightness ==
                                 Brightness.light
                             ? [
                                 BoxShadow(

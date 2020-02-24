@@ -33,18 +33,17 @@ class CustomBottomNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        decoration:
-            MediaQuery.of(context).platformBrightness == Brightness.light ||
-                    forceBorderTop
-                ? BoxDecoration(
-                    border: Border(
-                      top: BorderSide(
-                        width: 1,
-                        color: Color.fromARGB(50, 0, 0, 0),
-                      ),
-                    ),
-                  )
-                : null,
+        decoration: ThemeWidget.of(context).brightness == Brightness.light ||
+                forceBorderTop
+            ? BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(50, 0, 0, 0),
+                  ),
+                ),
+              )
+            : null,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -65,7 +64,7 @@ class CustomBottomNavigation extends StatelessWidget {
                               ),
                             )
                           : null,
-                      color: MediaQuery.of(context).platformBrightness ==
+                      color: ThemeWidget.of(context).brightness ==
                                   Brightness.dark &&
                               !inCard
                           ? darkColor
