@@ -101,13 +101,11 @@ class _CustomGridState extends State<CustomGrid>
           body: TabBarView(
             controller: _tabController,
             children: widget.children
-                .map((tab) => CustomRefreshIndicator(
-                      loadOnline: widget.onRefresh,
-                      child: CustomGridTabsList(
+                .map((tab) =>  CustomGridTabsList(
                         tab: tab,
                         append: widget.append,
+                        onRefresh:widget.onRefresh,
                         children: widget.children,
-                      ),
                     ))
                 .toList(),
           ),
