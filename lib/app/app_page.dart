@@ -63,6 +63,7 @@ class _AppPageState extends Interactor<AppPage>
         }
       } else {
         // First sync the tags
+        await Static.tags.syncDevice(context);
         await Static.tags.syncTags(context);
 
         // Then check all updates (If there is something new to update)
