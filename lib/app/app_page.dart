@@ -249,12 +249,7 @@ class _AppPageState extends Interactor<AppPage>
         body: LayoutBuilder(
           builder: (context, constraints) => CustomRefreshIndicator(
             loadOnline: () => _fetchData(force: true, showStatus: false),
-            child: SingleChildScrollView(
-              child: SizedBox(
-                height: constraints.maxHeight,
-                child: HomePage(),
-              ),
-            ),
+            child: HomePage(),
           ),
         ),
       ),
