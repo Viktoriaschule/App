@@ -89,7 +89,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
         label: 'Öffnen',
         onPressed: () async {
           EventBus.of(context).publish(FetchAppDataEvent());
-          await callback();
+          callback();
         },
       ),
       content: Text(text),

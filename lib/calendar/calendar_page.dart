@@ -207,7 +207,7 @@ class _CalendarPageState extends Interactor<CalendarPage>
   Widget build(BuildContext context) => Scaffold(
         appBar: CustomAppBar(
           title: Pages.of(context).pages[Keys.calendar].title,
-          pageKey: Keys.calendar,
+          loadingKeys: [Keys.calendar],
         ),
         body: Column(
           children: <Widget>[
@@ -271,8 +271,7 @@ class _CalendarPageState extends Interactor<CalendarPage>
                               '${months[month]} $year',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color:
-                                    ThemeWidget.of(context).textColor,
+                                color: ThemeWidget.of(context).textColor,
                               ),
                             ),
                           ),
@@ -286,7 +285,9 @@ class _CalendarPageState extends Interactor<CalendarPage>
                                     .withOpacity(0.5),
                               ),
                               left: BorderSide(
-                                color: ThemeWidget.of(context).textColor.withOpacity(0.5),
+                                color: ThemeWidget.of(context)
+                                    .textColor
+                                    .withOpacity(0.5),
                               ),
                             ),
                           ),

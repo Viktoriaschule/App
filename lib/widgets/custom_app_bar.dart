@@ -13,7 +13,7 @@ class CustomAppBar extends PreferredSize {
   // ignore: public_member_api_docs
   const CustomAppBar({
     @required this.title,
-    @required this.pageKey,
+    @required this.loadingKeys,
     this.actions = const [],
     this.sliver = false,
     this.isLeading = true,
@@ -32,7 +32,7 @@ class CustomAppBar extends PreferredSize {
   final bool isLeading;
 
   // ignore: public_member_api_docs
-  final String pageKey;
+  final List<String> loadingKeys;
 
   @override
   Size get preferredSize => AppBar().preferredSize;
@@ -66,7 +66,7 @@ class CustomAppBar extends PreferredSize {
       preferredSize: Size.fromHeight(3),
       child: LinearLoadingProgress(
         height: 3,
-        pageKey: pageKey,
+        loadingKeys: loadingKeys,
       ),
     );
     if (sliver) {
@@ -93,13 +93,13 @@ class CustomAppBar extends PreferredSize {
 class LinearLoadingProgress extends StatefulWidget {
   // ignore: public_member_api_docs
   const LinearLoadingProgress({
-    @required this.pageKey,
+    @required this.loadingKeys,
     this.height,
     Key key,
   }) : super(key: key);
 
   // ignore: public_member_api_docs
-  final String pageKey;
+  final List<String> loadingKeys;
 
   // ignore: public_member_api_docs
   final double height;
@@ -126,11 +126,9 @@ class LinearLoadingProgressState extends Interactor<LinearLoadingProgress>
   @override
   Subscription subscribeEvents(EventBus eventBus) =>
       eventBus.respond<LoadingStatusChangedEvent>((event) async {
-        if ((event.key == widget.pageKey || widget.pageKey == Keys.home) &&
-            mounted) {
+        if (widget.loadingKeys.contains(event.key)) {
           setState(() {
-            _isLoading = Pages.of(context).isLoading(widget.pageKey) ||
-                Pages.of(context).isHomeLoading;
+            _isLoading = Pages.of(context).isLoading(widget.loadingKeys);
           });
         }
       });
@@ -138,8 +136,7 @@ class LinearLoadingProgressState extends Interactor<LinearLoadingProgress>
   @override
   void afterFirstLayout(BuildContext context) {
     setState(() {
-      _isLoading = Pages.of(context).isLoading(widget.pageKey) ||
-          Pages.of(context).isHomeLoading;
+      _isLoading = Pages.of(context).isLoading(widget.loadingKeys);
     });
   }
 }

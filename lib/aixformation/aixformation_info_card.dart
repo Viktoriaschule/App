@@ -32,7 +32,7 @@ class _AiXformationInfoCardState extends Interactor<AiXformationInfoCard> {
   Widget build(BuildContext context) {
     utils ??= InfoCardUtils(context, widget.date);
     return ListGroup(
-      pageKey: Keys.aiXformation,
+      loadingKeys: [Keys.aiXformation],
       heroId: Keys.aiXformation,
       actions: [
         NavigationAction(Icons.expand_more, () {

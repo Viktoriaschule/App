@@ -33,7 +33,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
   Widget build(BuildContext context) => Scaffold(
         appBar: CustomAppBar(
           title: Pages.of(context).pages[Keys.timetable].title,
-          pageKey: Keys.timetable,
+          loadingKeys: [Keys.timetable, Keys.substitutionPlan, Keys.tags],
         ),
         body: CustomHero(
           tag: Keys.timetable,
@@ -46,17 +46,13 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                   type: MaterialType.transparency,
                   child: CustomGrid(
                     onRefresh: () async {
-                      final statusTt = await Static.timetable
-                          .loadOnline(context, force: true);
-                      final statusSp = await Static.substitutionPlan
-                          .loadOnline(context, force: true);
-                      return statusSp == StatusCodes.success &&
-                              statusTt == StatusCodes.success
-                          ? StatusCodes.success
-                          : statusTt == StatusCodes.offline ||
-                                  statusSp == StatusCodes.offline
-                              ? StatusCodes.offline
-                              : StatusCodes.failed;
+                      final results = [
+                        await Static.tags.syncTags(context),
+                        await Static.timetable.loadOnline(context, force: true),
+                        await Static.substitutionPlan
+                            .loadOnline(context, force: true),
+                      ];
+                      return reduceStatusCodes(results);
                     },
                     initialHorizontalIndex: Static.timetable.data
                             .initialDay(DateTime.now())

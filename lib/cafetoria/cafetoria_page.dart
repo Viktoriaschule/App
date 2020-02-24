@@ -40,7 +40,7 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
             title: Static.cafetoria.data.saldo != null
                 ? '${page.title} (${Static.cafetoria.data.saldo}€)'
                 : page.title,
-            pageKey: Keys.cafetoria,
+            loadingKeys: [Keys.cafetoria, Keys.tags],
             actions: [
               IconButton(
                 onPressed: () async {
@@ -75,7 +75,10 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
           ),
         ],
         body: CustomRefreshIndicator(
-          loadOnline: () => Static.cafetoria.loadOnline(context, force: true),
+          loadOnline: () async => reduceStatusCodes([
+            await Static.tags.syncTags(context),
+            await Static.cafetoria.loadOnline(context, force: true),
+          ]),
           child: days.isNotEmpty
               ? ListView.builder(
                   padding: EdgeInsets.only(bottom: 10),

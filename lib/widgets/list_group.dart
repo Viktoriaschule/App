@@ -17,7 +17,7 @@ class ListGroup extends StatefulWidget {
   const ListGroup({
     @required this.title,
     @required this.children,
-    this.pageKey,
+    this.loadingKeys = const [],
     this.actions,
     this.heroId,
     this.heroIdNavigation,
@@ -58,7 +58,7 @@ class ListGroup extends StatefulWidget {
   final bool showNavigation;
 
   // ignore: public_member_api_docs
-  final String pageKey;
+  final List<String> loadingKeys;
 
   @override
   _ListGroupState createState() => _ListGroupState();
@@ -71,9 +71,9 @@ class _ListGroupState extends Interactor<ListGroup>
   @override
   Subscription subscribeEvents(EventBus eventBus) =>
       eventBus.respond<LoadingStatusChangedEvent>((event) async {
-        if (event.key == widget.pageKey) {
+        if (widget.loadingKeys.contains(event.key)) {
           setState(() {
-            _isLoading = Pages.of(context).isLoading(widget.pageKey);
+            _isLoading = Pages.of(context).isLoading(widget.loadingKeys);
           });
         }
       });
@@ -81,7 +81,7 @@ class _ListGroupState extends Interactor<ListGroup>
   @override
   void afterFirstLayout(BuildContext context) {
     setState(() {
-      _isLoading = Pages.of(context).isLoading(widget.pageKey);
+      _isLoading = Pages.of(context).isLoading(widget.loadingKeys);
     });
   }
 
@@ -129,7 +129,7 @@ class _ListGroupState extends Interactor<ListGroup>
                             ),
                           )
                         : Container(),
-                    crossFadeState: widget.pageKey != null && _isLoading
+                    crossFadeState: widget.loadingKeys != null && _isLoading
                         ? CrossFadeState.showFirst
                         : CrossFadeState.showSecond,
                   ),

@@ -32,7 +32,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
   Widget build(BuildContext context) => Scaffold(
         appBar: CustomAppBar(
           title: Pages.of(context).pages[Keys.substitutionPlan].title,
-          pageKey: Keys.substitutionPlan,
+          loadingKeys: [Keys.substitutionPlan, Keys.timetable, Keys.tags],
           actions: <Widget>[
             if (Static.user.grade != null)
               InkWell(
@@ -83,8 +83,12 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
         body: Static.timetable.hasLoadedData &&
                 Static.substitutionPlan.hasLoadedData
             ? CustomGrid(
-                onRefresh: () =>
-                    Static.substitutionPlan.loadOnline(context, force: true),
+                onRefresh: () async => reduceStatusCodes([
+                  await Static.tags.syncTags(context),
+                  await Static.timetable.loadOnline(context, force: true),
+                  await Static.substitutionPlan
+                      .loadOnline(context, force: true),
+                ]),
                 type: getScreenSize(MediaQuery.of(context).size.width) ==
                         ScreenSize.small
                     ? CustomGridType.tabs

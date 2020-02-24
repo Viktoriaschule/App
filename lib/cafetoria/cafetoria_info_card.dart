@@ -65,7 +65,7 @@ class _CafetoriaInfoCardState extends Interactor<CafetoriaInfoCard> {
             (d) => d.date.isAfter(widget.date.subtract(Duration(seconds: 1))))
         .toList();
     return ListGroup(
-      pageKey: Keys.cafetoria,
+      loadingKeys: [Keys.cafetoria],
       showNavigation: widget.showNavigation,
       heroId: '${Keys.cafetoria}-0',
       heroIdNavigation: Keys.cafetoria,

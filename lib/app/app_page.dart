@@ -242,7 +242,7 @@ class _AppPageState extends Interactor<AppPage>
             ],
             sliver: true,
             isLeading: false,
-            pageKey: Keys.home,
+            loadingKeys: [Keys.tags, Keys.subjects, Keys.updates],
           ),
         ],
         body: CustomRefreshIndicator(
