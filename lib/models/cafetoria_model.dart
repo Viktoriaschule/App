@@ -43,20 +43,19 @@ class Cafetoria {
 /// Describes a day of the cafetoria...
 class CafetoriaDay {
   // ignore: public_member_api_docs
-  CafetoriaDay({this.day, this.date, this.menus});
+  CafetoriaDay({
+    this.date,
+    this.menus,
+  });
 
   /// Creates a cafetoria day from json map
   factory CafetoriaDay.fromJson(Map<String, dynamic> json) => CafetoriaDay(
-        day: json['day'],
         date: parseDate(json['date']),
         menus: json['menus']
             .map((day) => CafetoriaMenu.fromJson(day))
             .toList()
             .cast<CafetoriaMenu>(),
       );
-
-  /// The day index
-  final int day;
 
   /// The day [date]
   final DateTime date;
