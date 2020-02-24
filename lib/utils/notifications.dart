@@ -46,7 +46,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
         },
       );
     }
-    await Static.tags.syncDevice(context);
+    await Static.tags.syncDevice(null);
     if (Platform().isAndroid) {
       await MethodChannel('app.viktoria.schule')
           .invokeMethod('channel_registered');
@@ -60,7 +60,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     if (data['action'] != 'update') {
       return;
     }
-    FutureCallback callback;
+    VoidCallback callback;
     String text;
     switch (data[Keys.type]) {
       case Keys.substitutionPlanNotification:
@@ -77,7 +77,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
         break;
       case Keys.aiXformation:
         // ignore: missing_required_param
-        callback = () async => _openAiXformation(Post(url: data['url']));
+        callback = () => _openAiXformation(Post(url: data['url']));
         text = 'Neuer AiXformation-Artikel';
         break;
       default:
@@ -103,20 +103,20 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     switch (data['type']) {
       case Keys.substitutionPlanNotification:
         EventBus.of(context).publish(FetchAppDataEvent());
-        await _openSubstitutionPlan();
+        _openSubstitutionPlan();
         break;
       case Keys.timetable:
         EventBus.of(context).publish(FetchAppDataEvent());
-        await _openTimetable();
+        _openTimetable();
         break;
       case Keys.cafetoria:
         EventBus.of(context).publish(FetchAppDataEvent());
-        await _openCafetoria();
+        _openCafetoria();
         break;
       case Keys.aiXformation:
         EventBus.of(context).publish(FetchAppDataEvent());
         // ignore: missing_required_param
-        await _openAiXformation(Post(url: data['url']));
+        _openAiXformation(Post(url: data['url']));
         break;
       default:
         print('Got unknown notification: $data');
@@ -124,29 +124,17 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     }
   }
 
-  Future _openTimetable() => Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (context) => TimetablePage(),
-        ),
-      );
+  void _openTimetable() =>
+      EventBus.of(context).publish(PushMaterialPageRouteEvent(TimetablePage()));
 
-  Future _openSubstitutionPlan() => Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (context) => SubstitutionPlanPage(),
-        ),
-      );
+  void _openSubstitutionPlan() => EventBus.of(context)
+      .publish(PushMaterialPageRouteEvent(SubstitutionPlanPage()));
 
-  Future _openCafetoria() => Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (context) => CafetoriaPage(),
-        ),
-      );
+  void _openCafetoria() =>
+      EventBus.of(context).publish(PushMaterialPageRouteEvent(CafetoriaPage()));
 
-  Future _openAiXformation(Post post) => Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (context) => AiXformationPage(),
-        ),
-      );
+  void _openAiXformation(Post post) => EventBus.of(context)
+      .publish(PushMaterialPageRouteEvent(AiXformationPage()));
 
   @override
   Widget build(BuildContext context) => widget.child;

@@ -1,4 +1,6 @@
 // ignore: public_member_api_docs
+import 'package:flutter/material.dart';
+
 abstract class Event {}
 
 // ignore: public_member_api_docs
@@ -27,6 +29,15 @@ class UpdatesUpdateEvent extends Event {}
 
 // ignore: public_member_api_docs
 class FetchAppDataEvent extends Event {}
+
+// ignore: public_member_api_docs
+class PushMaterialPageRouteEvent extends Event {
+  // ignore: public_member_api_docs
+  PushMaterialPageRouteEvent(this.page);
+
+  // ignore: public_member_api_docs
+  final Widget page;
+}
 
 // ignore: public_member_api_docs
 class LoadingStatusChangedEvent extends Event {

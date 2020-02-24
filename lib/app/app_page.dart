@@ -45,8 +45,15 @@ class _AppPageState extends Interactor<AppPage>
   PWA _pwa;
 
   @override
-  Subscription subscribeEvents(EventBus eventBus) =>
-      eventBus.respond<FetchAppDataEvent>((event) => _fetchData());
+  Subscription subscribeEvents(EventBus eventBus) => eventBus
+      .respond<FetchAppDataEvent>((event) => _fetchData())
+      .respond<PushMaterialPageRouteEvent>(
+        (event) => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (context) => event.page,
+          ),
+        ),
+      );
 
   Future<StatusCodes> _fetchData(
       {bool force = false, bool showStatus = true}) async {
