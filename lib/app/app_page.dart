@@ -218,6 +218,7 @@ class _AppPageState extends Interactor<AppPage>
     ];
     final pages = Pages.of(context).pages;
     return Scaffold(
+      extendBody: true,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxScrolled) => [
           CustomAppBar(
