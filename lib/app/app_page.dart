@@ -246,10 +246,15 @@ class _AppPageState extends Interactor<AppPage>
             loadingKeys: [Keys.tags, Keys.subjects, Keys.updates],
           ),
         ],
-        body: CustomRefreshIndicator(
-          loadOnline: () => _fetchData(force: true, showStatus: false),
-          child: SingleChildScrollView(
-            child: HomePage(),
+        body: LayoutBuilder(
+          builder: (context, constraints) => CustomRefreshIndicator(
+            loadOnline: () => _fetchData(force: true, showStatus: false),
+            child: SingleChildScrollView(
+              child: SizedBox(
+                height: constraints.maxHeight,
+                child: HomePage(),
+              ),
+            ),
           ),
         ),
       ),
