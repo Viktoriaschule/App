@@ -92,7 +92,7 @@ class _CustomGridState extends State<CustomGrid>
                       child: Text(
                         widget.columnPrepend[widget.children.indexOf(c)],
                         style: TextStyle(
-                          color: textColor(context),
+                          color: ThemeWidget.of(context).textColor(),
                         ),
                       ),
                     ))
@@ -143,7 +143,7 @@ class _CustomGridState extends State<CustomGrid>
                         border: Border(
                           bottom: BorderSide(
                             width: 1,
-                            color: textColor(context),
+                            color: ThemeWidget.of(context).textColor(),
                           ),
                         ),
                       )
@@ -166,7 +166,7 @@ class _CustomGridState extends State<CustomGrid>
                             widget.columnPrepend[column - 1],
                             style: TextStyle(
                               fontSize: 16,
-                              color: textColor(context),
+                              color: ThemeWidget.of(context).textColor(),
                             ),
                           ),
                         );

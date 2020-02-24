@@ -36,3 +36,6 @@ class LoadingStatusChangedEvent extends Event {
   // ignore: public_member_api_docs
   final String key;
 }
+
+// ignore: public_member_api_docs
+class ThemeChangedEvent extends Event {}

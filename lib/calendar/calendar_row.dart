@@ -1,11 +1,11 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:viktoriaapp/plugins/platform/platform.dart';
-import 'package:viktoriaapp/widgets/custom_row.dart';
-import 'package:viktoriaapp/utils/theme.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/widgets/custom_row.dart';
 
 // ignore: public_member_api_docs
 class CalendarRow extends StatefulWidget {
@@ -48,14 +48,15 @@ class _CalendarRowState extends State<CalendarRow>
           showSplit: widget.showSplit,
           leading: Icon(
             Icons.calendar_today,
-            color: textColorLight(context),
+            color: ThemeWidget.of(context).textColorLight(),
           ),
           title: '${widget.event.name}',
           titleOverflow: TextOverflow.visible,
           subtitle: Text(
             widget.event.dateString,
             style: TextStyle(
-                color: textColor(context), fontWeight: FontWeight.w100),
+                color: ThemeWidget.of(context).textColor(),
+                fontWeight: FontWeight.w100),
           ),
           last: Platform().isMobile
               ? IconButton(
@@ -80,7 +81,7 @@ class _CalendarRowState extends State<CalendarRow>
                   },
                   icon: Icon(
                     Icons.add,
-                    color: textColorLight(context),
+                    color: ThemeWidget.of(context).textColorLight(),
                   ),
                 )
               : null,

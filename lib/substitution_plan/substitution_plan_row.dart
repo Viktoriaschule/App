@@ -3,9 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:viktoriaapp/models/models.dart';
-import 'package:viktoriaapp/widgets/custom_row.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/widgets/custom_row.dart';
 
 // ignore: public_member_api_docs
 class SubstitutionPlanRow extends StatelessWidget {
@@ -62,7 +62,7 @@ class SubstitutionPlanRow extends StatelessWidget {
                 (substitution.unit + 1).toString(),
                 style: TextStyle(
                   fontSize: 25,
-                  color: textColorLight(context),
+                  color: ThemeWidget.of(context).textColorLight(),
                   fontWeight: FontWeight.w100,
                 ),
               ),
@@ -83,7 +83,7 @@ class SubstitutionPlanRow extends StatelessWidget {
               Static.subjects.data.getSubject(substitution.original.subjectID),
               style: TextStyle(
                 decoration: TextDecoration.lineThrough,
-                color: textColorLight(context),
+                color: ThemeWidget.of(context).textColorLight(),
                 fontWeight: FontWeight.w100,
               ),
             )
@@ -114,7 +114,7 @@ class SubstitutionPlanRow extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w300,
-                      color: textColor(context),
+                      color: ThemeWidget.of(context).textColor(),
                       fontFamily: 'RobotoMono',
                     ),
                   ),
@@ -128,7 +128,7 @@ class SubstitutionPlanRow extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w300,
-                      color: textColor(context),
+                      color: ThemeWidget.of(context).textColor(),
                       decoration: TextDecoration.lineThrough,
                       fontFamily: 'RobotoMono',
                     ),
@@ -159,7 +159,7 @@ class SubstitutionPlanRow extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w300,
-                      color: textColor(context),
+                      color: ThemeWidget.of(context).textColor(),
                       fontFamily: 'RobotoMono',
                     ),
                   ),
@@ -172,7 +172,7 @@ class SubstitutionPlanRow extends StatelessWidget {
                         : '',
                     style: TextStyle(
                       fontSize: 14,
-                      color: textColor(context),
+                      color: ThemeWidget.of(context).textColor(),
                       decoration: TextDecoration.lineThrough,
                       fontWeight: FontWeight.w300,
                       fontFamily: 'RobotoMono',

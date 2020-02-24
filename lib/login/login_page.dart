@@ -85,7 +85,7 @@ class _LoginPageState extends State<_LoginPage> {
       obscureText: false,
       enabled: !_checkingLogin,
       style: TextStyle(
-        color: textColor(context),
+        color: ThemeWidget.of(context).textColor(),
       ),
       decoration: InputDecoration(
         hintText: 'Username',
@@ -111,7 +111,7 @@ class _LoginPageState extends State<_LoginPage> {
       obscureText: true,
       enabled: !_checkingLogin,
       style: TextStyle(
-        color: textColor(context),
+        color: ThemeWidget.of(context).textColor(),
       ),
       decoration: InputDecoration(
         hintText: 'Passwort',

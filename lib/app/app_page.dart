@@ -183,6 +183,14 @@ class _AppPageState extends Interactor<AppPage>
   }
 
   @override
+  void didChangeDependencies() {
+    Static.storage.setBool(Keys.platformBrightness,
+        MediaQuery.of(context).platformBrightness == Brightness.dark);
+    EventBus.of(context).publish(ThemeChangedEvent());
+    super.didChangeDependencies();
+  }
+
+  @override
   Future afterFirstLayout(BuildContext context) async {
     if (_loading) {
       Static.updates.loadOffline(context);
@@ -233,7 +241,7 @@ class _AppPageState extends Interactor<AppPage>
           child: Icon(
             Icons.notifications_off,
             size: 28,
-            color: textColor(context),
+            color: ThemeWidget.of(context).textColor(),
           ),
         ),
       if (_installing)
@@ -256,7 +264,7 @@ class _AppPageState extends Interactor<AppPage>
           child: Icon(
             MdiIcons.cellphoneArrowDown,
             size: 28,
-            color: textColor(context),
+            color: ThemeWidget.of(context).textColor(),
           ),
         ),
     ];
@@ -279,7 +287,7 @@ class _AppPageState extends Interactor<AppPage>
                 icon: Icon(
                   Icons.settings,
                   size: 28,
-                  color: textColor(context),
+                  color: ThemeWidget.of(context).textColor(),
                 ),
               ),
             ],

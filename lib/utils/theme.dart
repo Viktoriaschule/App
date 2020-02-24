@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs
 final Color lightColor = Color(0xFFFAFAFA);
@@ -52,15 +54,44 @@ ThemeData get darkTheme => ThemeData(
       fontFamily: 'Ubuntu',
     );
 
-/// TODO: Remove the usage of these functions by using the theme
-/// Get the text color according to the theme
-Color textColor(BuildContext context) =>
-    MediaQuery.of(context).platformBrightness == Brightness.light
-        ? darkColor
-        : Color(0xFFCCCCCC);
+// ignore: public_member_api_docs
+class ThemeWidget extends InheritedWidget {
+  // ignore: public_member_api_docs
+  const ThemeWidget({@required Widget child}) : super(child: child);
 
-/// Get the text color according to the theme
-Color textColorLight(BuildContext context) =>
-    MediaQuery.of(context).platformBrightness == Brightness.light
-        ? darkColorLight
-        : Color(0xFFCCCCCC);
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) => false;
+
+  /// Find the closest [ThemeWidget] from ancestor tree.
+  static ThemeWidget of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<ThemeWidget>();
+
+  // ignore: public_member_api_docs
+  ThemeData getTheme() {
+    if (_getBrightness() == Brightness.light) {
+      return theme;
+    }
+    return darkTheme;
+  }
+
+  Brightness _getBrightness() {
+    if (Static.storage.getBool(Keys.automaticDesign) ?? true) {
+      return Static.storage.getBool(Keys.platformBrightness) ?? false
+          ? Brightness.dark
+          : Brightness.light;
+    }
+    if (Static.storage.getBool(Keys.darkMode) ?? false) {
+      return Brightness.dark;
+    }
+    return Brightness.light;
+  }
+
+  /// TODO: Remove the usage of these functions by using the theme
+  /// Get the text color according to the theme
+  Color textColor() =>
+      _getBrightness() == Brightness.light ? darkColor : Color(0xFFCCCCCC);
+
+  /// Get the text color according to the theme
+  Color textColorLight() =>
+      _getBrightness() == Brightness.light ? darkColorLight : Color(0xFFCCCCCC);
+}
