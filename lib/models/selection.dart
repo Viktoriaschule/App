@@ -75,6 +75,5 @@ class Selection {
   }
 
   /// Saves the selections to the server
-  Future<void> save(BuildContext context) =>
-      Static.tags.syncTags(context, syncExams: false, syncCafetoria: false);
+  Future<void> save(BuildContext context) => Static.tags.syncTags(context);
 }

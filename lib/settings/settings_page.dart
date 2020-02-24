@@ -18,7 +18,7 @@ class SettingsPage extends StatefulWidget {
   _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsPageState extends Interactor<SettingsPage> {
   bool _substitutionPlanNotifications;
   bool _aiXformationNotifications;
   bool _cafetoriaNotifications;
@@ -26,7 +26,10 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _darkMode;
 
   @override
-  void initState() {
+  Subscription subscribeEvents(EventBus eventBus) =>
+      eventBus.respond<TagsUpdateEvent>((event) => setState(_init));
+
+  void _init() {
     _substitutionPlanNotifications =
         Static.storage.getBool(Keys.substitutionPlanNotifications) ?? true;
     _aiXformationNotifications =
@@ -35,6 +38,11 @@ class _SettingsPageState extends State<SettingsPage> {
         Static.storage.getBool(Keys.cafetoriaNotifications) ?? true;
     _automaticDesign = Static.storage.getBool(Keys.automaticDesign) ?? true;
     _darkMode = Static.storage.getBool(Keys.darkMode) ?? false;
+  }
+
+  @override
+  void initState() {
+    _init();
     super.initState();
   }
 
@@ -42,7 +50,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) => Scaffold(
         appBar: CustomAppBar(
           title: Pages.of(context).pages[Keys.settings].title,
-          pageKey: Keys.settings,
+          loadingKeys: [Keys.tags],
         ),
         body: Material(
           child: Center(

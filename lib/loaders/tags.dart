@@ -156,16 +156,13 @@ class TagsLoader extends Loader<Tags> {
   }
 
   /// Sync the tags
-  Future<void> syncTags(BuildContext context,
-      {bool syncExams = true,
-      bool syncSelections = true,
-      bool syncCafetoria = true,
-      bool checkSync = true}) async {
+  Future<StatusCodes> syncTags(BuildContext context,
+      {bool checkSync = true}) async {
     // Get all server tags...
-    await loadOnline(context, force: true);
+    final status = await loadOnline(context, force: true);
     final Tags allTags = parsedData;
     if (allTags == null) {
-      return;
+      return reduceStatusCodes([status, StatusCodes.failed]);
     }
 
     if (checkSync) {
@@ -175,79 +172,75 @@ class TagsLoader extends Loader<Tags> {
     // Get all changed tags
     final Map<String, dynamic> tagsToUpdate = {};
 
-    if (syncExams || syncSelections) {
-      final List<String> keys = Static.storage.getKeys();
-      final List<SelectionValue> selections = [];
-      final List<Exam> exams = [];
+    // Sync selections and exmas
+    final List<String> keys = Static.storage.getKeys();
+    final List<SelectionValue> selections = [];
+    final List<Exam> exams = [];
 
-      // Get all selections and exams
-      for (final key in keys) {
-        // If the preference key is a selection
-        if (key.startsWith(Keys.selection(''))) {
-          final selection = SelectionValue(
-            block: key.split('-').sublist(1).join('-'),
-            courseID: Static.storage.getString(key),
-            timestamp: DateTime.parse(
-                Static.storage.getString('timestamp-$key') ?? '20000101'),
-          );
-          // Check if the local selection is newer than the server selection
-          final serverSelection = allTags.selected
-              .where((s) => s.block == selection.block)
-              .toList();
-          // If the server does not have this selection,
-          // or the selection changed and the local version is newer, sync the selection
-          if (serverSelection.isEmpty ||
-              (serverSelection[0].courseID != selection.courseID &&
-                  selection.timestamp.isAfter(serverSelection[0].timestamp))) {
-            selections.add(selection);
-          }
-        }
-        // If the preference key is an exam
-        else if (key.startsWith(Keys.exam(''))) {
-          final exam = Exam(
-              subject: key.split('-').sublist(1).join('-'),
-              writing: Static.storage.getBool(key),
-              timestamp: DateTime.parse(
-                  Static.storage.getString('timestamp-$key') ?? '20000101'));
-          // Check if the local exam is newer than the server exam
-          final serverExam =
-              allTags.exams.where((e) => e.subject == exam.subject).toList();
-          // If the server does not have this exam,
-          // or the exam changed and the local version is newer, sync the exam
-          if (serverExam.isEmpty ||
-              (serverExam[0].writing != exam.writing &&
-                  exam.timestamp.isAfter(serverExam[0].timestamp))) {
-            exams.add(exam);
-          }
+    // Get all selections and exams
+    for (final key in keys) {
+      // If the preference key is a selection
+      if (key.startsWith(Keys.selection(''))) {
+        final selection = SelectionValue(
+          block: key.split('-').sublist(1).join('-'),
+          courseID: Static.storage.getString(key),
+          timestamp: DateTime.parse(
+              Static.storage.getString('timestamp-$key') ?? '20000101'),
+        );
+        // Check if the local selection is newer than the server selection
+        final serverSelection =
+            allTags.selected.where((s) => s.block == selection.block).toList();
+        // If the server does not have this selection,
+        // or the selection changed and the local version is newer, sync the selection
+        if (serverSelection.isEmpty ||
+            (serverSelection[0].courseID != selection.courseID &&
+                selection.timestamp.isAfter(serverSelection[0].timestamp))) {
+          selections.add(selection);
         }
       }
-
-      tagsToUpdate['selected'] = selections.map((s) => s.toMap()).toList();
-      tagsToUpdate['exams'] = exams.map((e) => e.toMap()).toList();
+      // If the preference key is an exam
+      else if (key.startsWith(Keys.exam(''))) {
+        final exam = Exam(
+            subject: key.split('-').sublist(1).join('-'),
+            writing: Static.storage.getBool(key),
+            timestamp: DateTime.parse(
+                Static.storage.getString('timestamp-$key') ?? '20000101'));
+        // Check if the local exam is newer than the server exam
+        final serverExam =
+            allTags.exams.where((e) => e.subject == exam.subject).toList();
+        // If the server does not have this exam,
+        // or the exam changed and the local version is newer, sync the exam
+        if (serverExam.isEmpty ||
+            (serverExam[0].writing != exam.writing &&
+                exam.timestamp.isAfter(serverExam[0].timestamp))) {
+          exams.add(exam);
+        }
+      }
     }
 
-    if (syncCafetoria) {
-      final String id = Static.storage.getString(Keys.cafetoriaId);
-      final String password = Static.storage.getString(Keys.cafetoriaPassword);
-      final String lastModified =
-          Static.storage.getString(Keys.cafetoriaModified);
+    tagsToUpdate['selected'] = selections.map((s) => s.toMap()).toList();
+    tagsToUpdate['exams'] = exams.map((e) => e.toMap()).toList();
 
-      // If the local cafetoria login data is set and newer than the server login data
-      if (lastModified != null &&
-          DateTime.parse(lastModified)
-              .isAfter(allTags.cafetoriaLogin.timestamp)) {
-        final encryptedId = id == null ? null : encryptText(id);
-        final encryptedPassword =
-            password == null ? null : encryptText(password);
+    // Sync cafetoria
+    final String id = Static.storage.getString(Keys.cafetoriaId);
+    final String password = Static.storage.getString(Keys.cafetoriaPassword);
+    final String lastModified =
+        Static.storage.getString(Keys.cafetoriaModified);
 
-        if (allTags.cafetoriaLogin.id != encryptedId ||
-            allTags.cafetoriaLogin.password != encryptedPassword) {
-          tagsToUpdate['cafetoria'] = CafetoriaTags(
-                  id: encryptedId,
-                  password: encryptedPassword,
-                  timestamp: DateTime.parse(lastModified))
-              .toMap();
-        }
+    // If the local cafetoria login data is set and newer than the server login data
+    if (lastModified != null &&
+        DateTime.parse(lastModified)
+            .isAfter(allTags.cafetoriaLogin.timestamp)) {
+      final encryptedId = id == null ? null : encryptText(id);
+      final encryptedPassword = password == null ? null : encryptText(password);
+
+      if (allTags.cafetoriaLogin.id != encryptedId ||
+          allTags.cafetoriaLogin.password != encryptedPassword) {
+        tagsToUpdate['cafetoria'] = CafetoriaTags(
+                id: encryptedId,
+                password: encryptedPassword,
+                timestamp: DateTime.parse(lastModified))
+            .toMap();
       }
     }
 
@@ -256,7 +249,9 @@ class TagsLoader extends Loader<Tags> {
         (tagsToUpdate['exams'] != null && tagsToUpdate['exams'].length > 0) ||
         tagsToUpdate['device'] != null ||
         tagsToUpdate['cafetoria'] != null) {
-      await sendTags(tagsToUpdate, context);
+      final result = await sendTags(tagsToUpdate, context);
+      return reduceStatusCodes([status, result]);
     }
+    return StatusCodes.success;
   }
 }

@@ -72,7 +72,7 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
   Widget build(BuildContext context) {
     utils ??= InfoCardUtils(context, widget.date);
     return ListGroup(
-      pageKey: Keys.timetable,
+      loadingKeys: [Keys.timetable],
       title: 'Nächste Stunden - ${weekdays[utils.weekday]}',
       counter: _subjects.length > utils.cut ? _subjects.length - utils.cut : 0,
       heroId: utils.size == ScreenSize.small

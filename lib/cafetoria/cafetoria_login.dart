@@ -69,8 +69,7 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
         Static.storage.setString(Keys.cafetoriaId, idController.text);
         Static.storage
             .setString(Keys.cafetoriaPassword, passwordController.text);
-        await Static.tags
-            .syncTags(context, syncExams: false, syncSelections: false);
+        await Static.tags.syncTags(context);
         await Static.cafetoria.loadOnline(context, force: true);
         setState(() => loggingIn = false);
         Navigator.pop(context);

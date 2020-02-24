@@ -26,6 +26,18 @@ enum StatusCodes {
   failed,
 }
 
+/// Reduces multiple status codes to one
+StatusCodes reduceStatusCodes(List<StatusCodes> statusCodes) {
+  if (statusCodes
+      .map((e) => e == StatusCodes.success)
+      .reduce((v1, v2) => v1 || v2)) {
+    return StatusCodes.success;
+  } else if (statusCodes.contains(StatusCodes.offline)) {
+    return StatusCodes.offline;
+  }
+  return StatusCodes.failed;
+}
+
 // ignore: public_member_api_docs
 StatusCodes getStatusCode(int httpStatusCode) {
   switch (httpStatusCode) {

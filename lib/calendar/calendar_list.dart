@@ -39,7 +39,7 @@ class CalendarListState extends Interactor<CalendarList> {
                 title: page.title,
                 actions: const [],
                 sliver: true,
-                pageKey: Keys.calendar,
+                loadingKeys: [Keys.calendar],
               ),
             ],
             body: CustomRefreshIndicator(

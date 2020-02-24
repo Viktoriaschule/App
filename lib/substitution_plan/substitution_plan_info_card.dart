@@ -63,7 +63,7 @@ class _SubstitutionPlanInfoCardState
   Widget build(BuildContext context) {
     utils ??= InfoCardUtils(context, widget.date);
     return ListGroup(
-      pageKey: Keys.substitutionPlan,
+      loadingKeys: [Keys.substitutionPlan],
       heroId: getScreenSize(MediaQuery.of(context).size.width) ==
               ScreenSize.small
           ? Keys.substitutionPlan
