@@ -18,26 +18,12 @@ import 'package:viktoriaapp/widgets/custom_refresh_indicator.dart';
 
 // ignore: public_member_api_docs
 class AppPage extends StatefulWidget {
-  // ignore: public_member_api_docs
-  const AppPage({
-    this.page = 1,
-    this.loading = true,
-    Key key,
-  }) : super(key: key);
-
-  // ignore: public_member_api_docs
-  final int page;
-
-  // ignore: public_member_api_docs
-  final bool loading;
-
   @override
   State<StatefulWidget> createState() => _AppPageState();
 }
 
 class _AppPageState extends Interactor<AppPage>
     with SingleTickerProviderStateMixin, AfterLayoutMixin<AppPage> {
-  bool _loading;
   bool _permissionsGranted = true;
   bool _permissionsChecking = false;
   bool _canInstall = false;
@@ -57,9 +43,6 @@ class _AppPageState extends Interactor<AppPage>
 
   Future<StatusCodes> _fetchData(
       {bool force = false, bool showStatus = true}) async {
-    setState(() {
-      _loading = true;
-    });
     try {
       final result =
           await Static.tags.loadOnline(context, force: true, autoLogin: false);
@@ -79,114 +62,108 @@ class _AppPageState extends Interactor<AppPage>
           ));
         }
       } else {
+        // First sync the tags
+        await Static.tags.syncTags(context);
+
+        // Then check all updates (If there is something new to update)
         final storedUpdates = Static.updates.data ?? Updates.fromJson({});
         await Static.updates.loadOnline(context, force: true);
         final fetchedUpdates = Static.updates.data;
         Static.updates.parsedData = storedUpdates;
 
+        // Sync the local grade with the server
         Static.user.grade = fetchedUpdates.grade;
         final gradeChanged = Static.timetable.data?.grade != Static.user.grade;
 
         //TODO: Add old app dialog
 
-        // Update all changed data
-        if (force ||
-            storedUpdates.subjects != fetchedUpdates.subjects ||
-            !Static.subjects.hasLoadedData) {
-          if (await Static.subjects.loadOnline(context, force: force) ==
-              StatusCodes.success) {
-            Static.updates.data.subjects = fetchedUpdates.subjects;
-          }
-        }
-        if (force ||
-            storedUpdates.timetable != fetchedUpdates.timetable ||
-            gradeChanged ||
-            !Static.timetable.hasLoadedData) {
-          if (await Static.timetable.loadOnline(context, force: force) ==
-              StatusCodes.success) {
-            Static.updates.data.timetable = fetchedUpdates.timetable;
-          }
-        }
-        await Static.tags.syncTags(context);
-        if (mounted) {
-          setState(() {});
-        }
-        if (force ||
-            storedUpdates.substitutionPlan != fetchedUpdates.substitutionPlan ||
-            !Static.substitutionPlan.hasLoadedData) {
-          if (await Static.substitutionPlan.loadOnline(context, force: force) ==
-              StatusCodes.success) {
-            Static.updates.data.substitutionPlan =
-                fetchedUpdates.substitutionPlan;
-          }
-        }
-        if (mounted) {
-          setState(() {});
-        }
-        if (force ||
-            storedUpdates.calendar != fetchedUpdates.calendar ||
-            !Static.calendar.hasLoadedData) {
-          if (await Static.calendar.loadOnline(context, force: force) ==
-              StatusCodes.success) {
-            Static.updates.data.calendar = fetchedUpdates.calendar;
-          }
-        }
-        await Static.tags.syncTags(context);
-        if (mounted) {
-          setState(() {});
-        }
-        if (force ||
-            storedUpdates.cafetoria != fetchedUpdates.cafetoria ||
-            !Static.cafetoria.hasLoadedData ||
-            (Static.storage.getString(Keys.cafetoriaId) != null &&
-                Static.storage.getString(Keys.cafetoriaPassword) != null)) {
-          if (await Static.cafetoria.loadOnline(context, force: force) ==
-              StatusCodes.success) {
-            Static.updates.data.cafetoria = fetchedUpdates.cafetoria;
-          }
-        }
-        await Static.tags.syncTags(context);
-        if (mounted) {
-          setState(() {});
-        }
-        if (force ||
-            storedUpdates.aixformation != fetchedUpdates.aixformation ||
-            !Static.aiXformation.hasLoadedData) {
-          if (await Static.aiXformation.loadOnline(context, force: force) ==
-              StatusCodes.success) {
-            Static.updates.data.aixformation = fetchedUpdates.aixformation;
-          }
-        }
-        if (mounted) {
-          setState(() {
-            _loading = false;
-          });
+        // Define all download processes, but do not wait until they are completed
+        // The futures will run parallel and after starting all, the programm will wait until all are finished
+        final downloads = [
+          /// Download subject, timetable and substitution plan in the correct order
+          download(() async {
+            if (force ||
+                storedUpdates.subjects != fetchedUpdates.subjects ||
+                !Static.subjects.hasLoadedData) {
+              if (await Static.subjects.loadOnline(context, force: force) ==
+                  StatusCodes.success) {
+                Static.updates.data.subjects = fetchedUpdates.subjects;
+              }
+            }
+            if (force ||
+                storedUpdates.timetable != fetchedUpdates.timetable ||
+                gradeChanged ||
+                !Static.timetable.hasLoadedData) {
+              if (await Static.timetable.loadOnline(context, force: force) ==
+                  StatusCodes.success) {
+                Static.updates.data.timetable = fetchedUpdates.timetable;
+              }
+            }
+            if (force ||
+                storedUpdates.substitutionPlan !=
+                    fetchedUpdates.substitutionPlan ||
+                !Static.substitutionPlan.hasLoadedData) {
+              if (await Static.substitutionPlan
+                      .loadOnline(context, force: force) ==
+                  StatusCodes.success) {
+                Static.updates.data.substitutionPlan =
+                    fetchedUpdates.substitutionPlan;
+              }
+            }
+          }),
+          // Download the calendar
+          download(() async {
+            if (force ||
+                storedUpdates.calendar != fetchedUpdates.calendar ||
+                !Static.calendar.hasLoadedData) {
+              if (await Static.calendar.loadOnline(context, force: force) ==
+                  StatusCodes.success) {
+                Static.updates.data.calendar = fetchedUpdates.calendar;
+              }
+            }
+          }),
+          // Download the cafetoria
+          download(() async {
+            if (force ||
+                storedUpdates.cafetoria != fetchedUpdates.cafetoria ||
+                !Static.cafetoria.hasLoadedData ||
+                (Static.storage.getString(Keys.cafetoriaId) != null &&
+                    Static.storage.getString(Keys.cafetoriaPassword) != null)) {
+              if (await Static.cafetoria.loadOnline(context, force: force) ==
+                  StatusCodes.success) {
+                Static.updates.data.cafetoria = fetchedUpdates.cafetoria;
+              }
+            }
+          }),
+          // Download the aixformation
+          download(() async {
+            if (force ||
+                storedUpdates.aixformation != fetchedUpdates.aixformation ||
+                !Static.aiXformation.hasLoadedData) {
+              if (await Static.aiXformation.loadOnline(context, force: force) ==
+                  StatusCodes.success) {
+                Static.updates.data.aixformation = fetchedUpdates.aixformation;
+              }
+            }
+          }),
+        ];
+
+        // Wait until all futures are finished
+        // If a future is finished already, the await has no influence
+        for (final download in downloads) {
+          await download;
         }
       }
       return result;
     } on DioError {
-      if (mounted) {
-        setState(() {
-          _loading = false;
-        });
-      }
       return StatusCodes.failed;
     }
   }
 
+  Future<void> download(Future<void> Function() downloader) => downloader();
+
   Future _launchLogin() async {
     await Navigator.of(context).pushReplacementNamed('/${Keys.login}');
-  }
-
-  @override
-  void initState() {
-    _loading = widget.loading;
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -202,18 +179,16 @@ class _AppPageState extends Interactor<AppPage>
 
   @override
   Future afterFirstLayout(BuildContext context) async {
-    if (_loading) {
-      Static.updates.loadOffline(context);
-      if (Static.updates.data == null) {
-        Static.updates.parsedData = Updates.fromJson({});
-      }
-      Static.subjects.loadOffline(context);
-      Static.timetable.loadOffline(context);
-      Static.substitutionPlan.loadOffline(context);
-      Static.calendar.loadOffline(context);
-      Static.cafetoria.loadOffline(context);
-      Static.aiXformation.loadOffline(context);
+    Static.updates.loadOffline(context);
+    if (Static.updates.data == null) {
+      Static.updates.parsedData = Updates.fromJson({});
     }
+    Static.subjects.loadOffline(context);
+    Static.timetable.loadOffline(context);
+    Static.substitutionPlan.loadOffline(context);
+    Static.calendar.loadOffline(context);
+    Static.cafetoria.loadOffline(context);
+    Static.aiXformation.loadOffline(context);
 
     _pwa = PWA();
     if (Platform().isWeb) {
@@ -222,9 +197,8 @@ class _AppPageState extends Interactor<AppPage>
       _canInstall = _pwa.canInstall();
       setState(() {});
     }
-    if (_loading) {
-      await _fetchData();
-    }
+
+    await _fetchData();
   }
 
   @override
