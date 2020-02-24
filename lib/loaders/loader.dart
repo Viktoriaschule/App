@@ -46,7 +46,7 @@ abstract class Loader<LoaderType> {
   void loadOffline(BuildContext context) {
     if (hasStoredData) {
       parsedData = fromJSON(Static.storage.getJSON(key));
-      _sendLoadedEvent(context);
+      _sendLoadedEvent(Pages.of(context), EventBus.of(context));
     }
   }
 
@@ -97,7 +97,11 @@ abstract class Loader<LoaderType> {
     if (_loadedFromOnline && !force) {
       return LoaderResponse(statusCode: StatusCodes.success);
     }
-    _sendLoadingEvent(context);
+
+    final pages = context != null ? Pages.of(context) : null;
+    final eventBus = context != null ? EventBus.of(context) : null;
+
+    _sendLoadingEvent(pages, eventBus);
     username ??= Static.user.username;
     password ??= Static.user.password;
     const baseUrl = 'https://vsa.fingeg.de';
@@ -146,11 +150,11 @@ abstract class Loader<LoaderType> {
       if (response.statusCode == 401 && autoLogin && context != null) {
         await Navigator.of(context).pushReplacementNamed('/${Keys.login}');
       }
-      _sendLoadedEvent(context);
+      _sendLoadedEvent(pages, eventBus);
       return LoaderResponse(
           data: data, statusCode: getStatusCode(response.statusCode));
     } on DioError catch (e) {
-      _sendLoadedEvent(context);
+      _sendLoadedEvent(pages, eventBus);
       switch (e.type) {
         case DioErrorType.RESPONSE:
           if (e.response.statusCode == 401) {
@@ -173,36 +177,20 @@ abstract class Loader<LoaderType> {
   }
 
   /// Sets the page loading state
-  void _setLoading(BuildContext context, bool isLoading) {
-    if (context != null) {
-      Pages.of(context).setLoading(key, isLoading);
-      EventBus.of(context).publish(LoadingStatusChangedEvent(key));
-    }
+  void _setLoading(Pages pages, EventBus eventBus, bool isLoading) {
+    pages?.setLoading(key, isLoading);
+    eventBus?.publish(LoadingStatusChangedEvent(key));
   }
 
   // ignore: public_member_api_docs
-  void _sendLoadingEvent(BuildContext context) {
-    try {
-      _setLoading(context, true);
-      // ignore: avoid_catches_without_on_clauses
-    } catch (e) {
-      print(
-          'Cannot send start loading event. Event must be fired after init state and before dispose!');
-    }
+  void _sendLoadingEvent(Pages pages, EventBus eventBus) {
+    _setLoading(pages, eventBus, true);
   }
 
   // ignore: public_member_api_docs
-  void _sendLoadedEvent(BuildContext context) {
-    try {
-      if (context != null) {
-        EventBus.of(context).publish(event);
-        _setLoading(context, false);
-      }
-      // ignore: avoid_catches_without_on_clauses
-    } catch (e) {
-      print(
-          'Cannot send finished loading event. Event must be fired after init state and before dispose!');
-    }
+  void _sendLoadedEvent(Pages pages, EventBus eventBus) {
+    eventBus?.publish(event);
+    _setLoading(pages, eventBus, false);
   }
 
   // ignore: public_member_api_docs
