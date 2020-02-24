@@ -36,7 +36,7 @@ class _AiXformationPostState extends State<AiXformationPost> {
           title: Text(
             'AiXformation',
             style: TextStyle(
-              color: textColor(context),
+              color: ThemeWidget.of(context).textColor,
             ),
           ),
           elevation: 2,
@@ -44,7 +44,7 @@ class _AiXformationPostState extends State<AiXformationPost> {
             IconButton(
               icon: Icon(
                 Icons.open_in_new,
-                color: textColor(context),
+                color: ThemeWidget.of(context).textColor,
               ),
               onPressed: () => launch(widget.post.url),
             ),
@@ -52,7 +52,7 @@ class _AiXformationPostState extends State<AiXformationPost> {
               IconButton(
                 icon: Icon(
                   Icons.share,
-                  color: textColor(context),
+                  color: ThemeWidget.of(context).textColor,
                 ),
                 onPressed: () {
                   Share.share(widget.post.url);

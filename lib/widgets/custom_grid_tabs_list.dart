@@ -125,7 +125,7 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
                   child: Icon(
                     Icons.expand_more,
                     size: 30,
-                    color: textColor(context),
+                    color: ThemeWidget.of(context).textColor,
                   ),
                 ),
               ),

@@ -73,7 +73,7 @@ class CustomBottomNavigation extends StatelessWidget {
                     ),
                     child: Icon(
                       action.icon,
-                      color: textColorLight(context),
+                      color: ThemeWidget.of(context).textColorLight,
                     ),
                   ),
                 ),

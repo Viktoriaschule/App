@@ -56,7 +56,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                         color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.all(Radius.circular(24)),
                         border: Border.all(
-                          color: textColor(context),
+                          color: ThemeWidget.of(context).textColor,
                           width: getScreenSize(
                                       MediaQuery.of(context).size.width) ==
                                   ScreenSize.small
@@ -70,7 +70,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                             : Static.user.grade,
                         style: TextStyle(
                           fontSize: 22,
-                          color: textColor(context),
+                          color: ThemeWidget.of(context).textColor,
                           fontFamily: 'RobotoMono',
                         ),
                       ),
@@ -104,7 +104,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                         'Meine Vertretungen',
                         style: TextStyle(
                           fontSize: 16,
-                          color: textColor(context),
+                          color: ThemeWidget.of(context).textColor,
                         ),
                       ),
                     ),
@@ -116,7 +116,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                         'Weitere Vertretungen',
                         style: TextStyle(
                           fontSize: 16,
-                          color: textColor(context),
+                          color: ThemeWidget.of(context).textColor,
                         ),
                       ),
                     ),

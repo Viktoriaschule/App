@@ -1,13 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/pages.dart';
+import 'package:viktoriaapp/utils/static.dart';
+import 'package:viktoriaapp/utils/theme.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 import 'package:viktoriaapp/widgets/custom_button.dart';
 import 'package:viktoriaapp/widgets/list_group.dart';
 import 'package:viktoriaapp/widgets/size_limit.dart';
-import 'package:viktoriaapp/utils/static.dart';
-import 'package:viktoriaapp/utils/theme.dart';
 
 /// SettingsPage class
 /// describes the Settings widget
@@ -20,6 +22,8 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _substitutionPlanNotifications;
   bool _aiXformationNotifications;
   bool _cafetoriaNotifications;
+  bool _automaticDesign;
+  bool _darkMode;
 
   @override
   void initState() {
@@ -29,6 +33,8 @@ class _SettingsPageState extends State<SettingsPage> {
         Static.storage.getBool(Keys.aiXformationNotifications) ?? true;
     _cafetoriaNotifications =
         Static.storage.getBool(Keys.cafetoriaNotifications) ?? true;
+    _automaticDesign = Static.storage.getBool(Keys.automaticDesign) ?? true;
+    _darkMode = Static.storage.getBool(Keys.darkMode) ?? false;
     super.initState();
   }
 
@@ -53,7 +59,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: Text(
                             'Vertretungsplan',
                             style: TextStyle(
-                              color: textColor(context),
+                              color: ThemeWidget.of(context).textColor,
                             ),
                           ),
                           checkColor: lightColor,
@@ -75,7 +81,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: Text(
                             'AiXformation',
                             style: TextStyle(
-                              color: textColor(context),
+                              color: ThemeWidget.of(context).textColor,
                             ),
                           ),
                           checkColor: lightColor,
@@ -97,7 +103,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: Text(
                             'Cafétoria',
                             style: TextStyle(
-                              color: textColor(context),
+                              color: ThemeWidget.of(context).textColor,
                             ),
                           ),
                           checkColor: lightColor,
@@ -114,6 +120,52 @@ class _SettingsPageState extends State<SettingsPage> {
                               // ignore: empty_catches
                             } on DioError {}
                           },
+                        ),
+                      ],
+                    ),
+                    ListGroup(
+                      title: 'Design',
+                      children: [
+                        CheckboxListTile(
+                          title: Text(
+                            'Automatisch',
+                            style: TextStyle(
+                              color: ThemeWidget.of(context).textColor,
+                            ),
+                          ),
+                          checkColor: lightColor,
+                          activeColor: Theme.of(context).accentColor,
+                          value: _automaticDesign,
+                          onChanged: (value) async {
+                            setState(() {
+                              _automaticDesign = value;
+                              Static.storage
+                                  .setBool(Keys.automaticDesign, value);
+                              EventBus.of(context).publish(ThemeChangedEvent());
+                            });
+                          },
+                        ),
+                        CheckboxListTile(
+                          title: Text(
+                            'Dunkles Design',
+                            style: TextStyle(
+                              color: ThemeWidget.of(context).textColor,
+                            ),
+                          ),
+                          checkColor: lightColor,
+                          activeColor: Theme.of(context).accentColor,
+                          value: _darkMode,
+                          onChanged: !_automaticDesign
+                              ? (value) async {
+                                  setState(() {
+                                    _darkMode = value;
+                                    Static.storage
+                                        .setBool(Keys.darkMode, value);
+                                    EventBus.of(context)
+                                        .publish(ThemeChangedEvent());
+                                  });
+                                }
+                              : null,
                         ),
                       ],
                     ),
