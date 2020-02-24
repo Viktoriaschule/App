@@ -45,7 +45,7 @@ class Keys {
   static const String cafetoria = 'cafetoria';
 
   // ignore: public_member_api_docs
-  static const String substitutionPlan = 'substitutionplan';
+  static const String substitutionPlan = 'substitutionPlan';
 
   // ignore: public_member_api_docs
   static const String substitutionPlanNotification = 'substitution plan';

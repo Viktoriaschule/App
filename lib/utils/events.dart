@@ -1,6 +1,7 @@
 // ignore: public_member_api_docs
 import 'package:flutter/material.dart';
 
+// ignore: public_member_api_docs
 abstract class Event {}
 
 // ignore: public_member_api_docs
