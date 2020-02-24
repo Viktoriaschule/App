@@ -41,23 +41,33 @@ class _HomePageState extends Interactor<HomePage> {
     final size = getScreenSize(MediaQuery.of(context).size.width);
 
     // Get the date for the home page
-    final timetableView = TimetableInfoCard(date: day);
-    final substitutionPlanView = SubstitutionPlanInfoCard(date: day);
-    final aiXformationView = AiXformationInfoCard(date: day);
-    final cafetoriaView = CafetoriaInfoCard(date: day);
-    final calendarView = CalendarInfoCard(date: day);
+    final day = Static.selection.isSet() && Static.timetable.hasLoadedData
+        ? Static.timetable.data.initialDay(DateTime.now())
+        : monday(DateTime.now()).add(Duration(
+            days: (DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday) - 1,
+          ));
+
+    Widget timetableBuilder() => TimetableInfoCard(date: day);
+    Widget substitutionPlanBuilder() => SubstitutionPlanInfoCard(date: day);
+    Widget calendarBuilder() => CalendarInfoCard(date: day);
+    Widget cafetoriaBuilder() => CafetoriaInfoCard(date: day);
+    Widget aixformationBuilder() => AiXformationInfoCard(date: day);
+
+    final widgetBuilders = [
+      timetableBuilder,
+      substitutionPlanBuilder,
+      calendarBuilder,
+      cafetoriaBuilder,
+      aixformationBuilder,
+    ];
 
     if (size == ScreenSize.small) {
       return Container(
         color: Theme.of(context).backgroundColor,
-        child: Column(
-          children: [
-            timetableView,
-            substitutionPlanView,
-            calendarView,
-            cafetoriaView,
-            aiXformationView,
-          ],
+        child: ListView.builder(
+          padding: EdgeInsets.only(bottom: 10),
+          itemCount: widgetBuilders.length,
+          itemBuilder: (context, index) => widgetBuilders[index](),
         ),
       );
     }
@@ -68,8 +78,8 @@ class _HomePageState extends Interactor<HomePage> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              substitutionPlanView,
-              timetableView,
+              substitutionPlanBuilder(),
+              timetableBuilder(),
             ]
                 .map((x) => Expanded(
                       flex: 1,
@@ -86,8 +96,8 @@ class _HomePageState extends Interactor<HomePage> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              calendarView,
-              cafetoriaView,
+              calendarBuilder(),
+              cafetoriaBuilder(),
             ]
                 .map((x) => Expanded(
                       flex: 1,
@@ -104,7 +114,7 @@ class _HomePageState extends Interactor<HomePage> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              aiXformationView,
+              aixformationBuilder(),
             ]
                 .map((x) => Expanded(
                       flex: 1,
@@ -128,8 +138,8 @@ class _HomePageState extends Interactor<HomePage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              substitutionPlanView,
-              cafetoriaView,
+              substitutionPlanBuilder(),
+              cafetoriaBuilder(),
             ]
                 .map((x) => SizedBox(
                       height: (MediaQuery.of(context).size.height -
@@ -143,8 +153,8 @@ class _HomePageState extends Interactor<HomePage> {
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              timetableView,
-              calendarView,
+              timetableBuilder(),
+              calendarBuilder(),
             ]
                 .map((x) => SizedBox(
                       height: (MediaQuery.of(context).size.height -
@@ -157,7 +167,7 @@ class _HomePageState extends Interactor<HomePage> {
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height - _screenPadding,
-            child: aiXformationView,
+            child: aixformationBuilder(),
           ),
         ]
             .map((x) => Expanded(
