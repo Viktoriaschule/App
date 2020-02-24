@@ -72,7 +72,7 @@ class _AppPageState extends Interactor<AppPage>
         Static.updates.parsedData = storedUpdates;
 
         // Sync the local grade with the server
-        Static.user.grade = fetchedUpdates.grade;
+        Static.user.grade = fetchedUpdates.getUpdate(Keys.grade);
         final gradeChanged = Static.timetable.data?.grade != Static.user.grade;
 
         //TODO: Add old app dialog
@@ -82,77 +82,45 @@ class _AppPageState extends Interactor<AppPage>
         final downloads = [
           /// Download subject, timetable and substitution plan in the correct order
           download(() async {
-            if (force ||
-                storedUpdates.subjects != fetchedUpdates.subjects ||
-                !Static.subjects.hasLoadedData) {
-              if (await Static.subjects.loadOnline(context, force: force) ==
-                  StatusCodes.success) {
-                Static.updates.data.subjects = fetchedUpdates.subjects;
-              }
-            }
-            if (force ||
-                storedUpdates.timetable != fetchedUpdates.timetable ||
-                gradeChanged ||
-                !Static.timetable.hasLoadedData) {
-              if (await Static.timetable.loadOnline(context, force: force) ==
-                  StatusCodes.success) {
-                Static.updates.data.timetable = fetchedUpdates.timetable;
-              }
-            }
-            if (force ||
-                storedUpdates.substitutionPlan !=
-                    fetchedUpdates.substitutionPlan ||
-                !Static.substitutionPlan.hasLoadedData) {
-              if (await Static.substitutionPlan
-                      .loadOnline(context, force: force) ==
-                  StatusCodes.success) {
-                Static.updates.data.substitutionPlan =
-                    fetchedUpdates.substitutionPlan;
-              }
-            }
+            await Static.subjects.update(
+              context,
+              fetchedUpdates,
+              force: force,
+            );
+            await Static.timetable.update(
+              context,
+              fetchedUpdates,
+              force: force || gradeChanged,
+            );
+            await Static.substitutionPlan.update(
+              context,
+              fetchedUpdates,
+              force: force,
+            );
           }),
-          // Download the calendar
-          download(() async {
-            if (force ||
-                storedUpdates.calendar != fetchedUpdates.calendar ||
-                !Static.calendar.hasLoadedData) {
-              if (await Static.calendar.loadOnline(context, force: force) ==
-                  StatusCodes.success) {
-                Static.updates.data.calendar = fetchedUpdates.calendar;
-              }
-            }
-          }),
-          // Download the cafetoria
-          download(() async {
-            if (force ||
-                storedUpdates.cafetoria != fetchedUpdates.cafetoria ||
-                !Static.cafetoria.hasLoadedData ||
-                (Static.storage.getString(Keys.cafetoriaId) != null &&
-                    Static.storage.getString(Keys.cafetoriaPassword) != null)) {
-              if (await Static.cafetoria.loadOnline(context, force: force) ==
-                  StatusCodes.success) {
-                Static.updates.data.cafetoria = fetchedUpdates.cafetoria;
-              }
-            }
-          }),
-          // Download the aixformation
-          download(() async {
-            if (force ||
-                storedUpdates.aixformation != fetchedUpdates.aixformation ||
-                !Static.aiXformation.hasLoadedData) {
-              if (await Static.aiXformation.loadOnline(context, force: force) ==
-                  StatusCodes.success) {
-                Static.updates.data.aixformation = fetchedUpdates.aixformation;
-              }
-            }
-          }),
+          download(() => Static.calendar.update(
+                context,
+                fetchedUpdates,
+                force: force,
+              )),
+          download(
+            () => Static.cafetoria.update(
+              context,
+              fetchedUpdates,
+              force: force ||
+                  (Static.storage.getString(Keys.cafetoriaId) != null &&
+                      Static.storage.getString(Keys.cafetoriaPassword) != null),
+            ),
+          ),
+          download(() => Static.aiXformation.update(
+                context,
+                fetchedUpdates,
+                force: force,
+              )),
         ];
 
         // Wait until all futures are finished
-        // If a future is finished already, the await has no influence
-        for (final download in downloads) {
-          await download;
-        }
+        await Future.wait(downloads);
       }
       return result;
     } on DioError {

@@ -42,6 +42,20 @@ abstract class Loader<LoaderType> {
 
   bool _loadedFromOnline = false;
 
+  /// Update the loader if the update hash has changed
+  Future<StatusCodes> update(BuildContext context, Updates newUpdates,
+      {bool force = false}) async {
+    final hash = newUpdates.getUpdate(key);
+    if (force || Static.updates.data.getUpdate(key) != hash || !hasLoadedData) {
+      final status = await loadOnline(context, force: force);
+      if (status == StatusCodes.success) {
+        Static.updates.data.setUpdate(key, hash);
+      }
+      return status;
+    }
+    return StatusCodes.success;
+  }
+
   // ignore: public_member_api_docs
   void loadOffline(BuildContext context) {
     if (hasStoredData) {
