@@ -174,8 +174,10 @@ abstract class Loader<LoaderType> {
 
   /// Sets the page loading state
   void _setLoading(BuildContext context, bool isLoading) {
-    Pages.of(context).setLoading(key, isLoading);
-    EventBus.of(context).publish(LoadingStatusChangedEvent(key));
+    if (context != null) {
+      Pages.of(context).setLoading(key, isLoading);
+      EventBus.of(context).publish(LoadingStatusChangedEvent(key));
+    }
   }
 
   // ignore: public_member_api_docs
@@ -192,8 +194,10 @@ abstract class Loader<LoaderType> {
   // ignore: public_member_api_docs
   void _sendLoadedEvent(BuildContext context) {
     try {
-      EventBus.of(context).publish(event);
-      _setLoading(context, false);
+      if (context != null) {
+        EventBus.of(context).publish(event);
+        _setLoading(context, false);
+      }
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       print(
