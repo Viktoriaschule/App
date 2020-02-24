@@ -148,6 +148,7 @@ int weekNumber(DateTime date) {
 }
 
 /// Get the Monday of the week
+/// 
 /// Skips to next week when weekend
 DateTime monday(DateTime date) {
   var newDate = date.subtract(Duration(
