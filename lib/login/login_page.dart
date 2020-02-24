@@ -56,6 +56,8 @@ class _LoginPageState extends State<_LoginPage> {
         switch (result) {
           case StatusCodes.unauthorized:
             msg = 'Die Anmeldedaten sind falsch';
+            _passwordFieldController.clear();
+            FocusScope.of(context).requestFocus(_passwordFieldFocus);
             break;
           case StatusCodes.offline:
             msg = 'Du musst online sein';
@@ -66,8 +68,6 @@ class _LoginPageState extends State<_LoginPage> {
         Scaffold.of(context).showSnackBar(SnackBar(
           content: Text(msg),
         ));
-        _passwordFieldController.clear();
-        FocusScope.of(context).requestFocus(_passwordFieldFocus);
       }
     } on DioError {
       setState(() {
