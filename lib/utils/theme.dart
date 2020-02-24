@@ -67,10 +67,10 @@ class ThemeWidget extends InheritedWidget {
       context.dependOnInheritedWidgetOfExactType<ThemeWidget>();
 
   // ignore: public_member_api_docs
-  ThemeData get theme =>
-      _getBrightness() == Brightness.light ? _theme : _darkTheme;
+  ThemeData get theme => brightness == Brightness.light ? _theme : _darkTheme;
 
-  Brightness _getBrightness() {
+  /// Returns the current layout brightness
+  Brightness get brightness {
     if (Static.storage.getBool(Keys.automaticDesign) ?? true) {
       return Static.storage.getBool(Keys.platformBrightness) ?? false
           ? Brightness.dark
@@ -85,9 +85,9 @@ class ThemeWidget extends InheritedWidget {
   /// TODO: Remove the usage of these functions by using the theme
   /// Get the text color according to the theme
   Color get textColor =>
-      _getBrightness() == Brightness.light ? darkColor : Color(0xFFCCCCCC);
+      brightness == Brightness.light ? darkColor : Color(0xFFCCCCCC);
 
   /// Get the text color according to the theme
   Color get textColorLight =>
-      _getBrightness() == Brightness.light ? darkColorLight : Color(0xFFCCCCCC);
+      brightness == Brightness.light ? darkColorLight : Color(0xFFCCCCCC);
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:viktoriaapp/models/models.dart';
-import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs
 class CustomRefreshIndicator extends StatelessWidget {
@@ -39,9 +38,6 @@ class CustomRefreshIndicator extends StatelessWidget {
           });
           await Future.delayed(Duration(milliseconds: 200));
         },
-        color: MediaQuery.of(context).platformBrightness == Brightness.dark
-            ? lightColor
-            : null,
         child: child,
       );
 }

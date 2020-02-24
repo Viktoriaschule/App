@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart'
     show debugDefaultTargetPlatformOverride;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:viktoriaapp/app/app_page.dart';
@@ -46,16 +47,27 @@ class App extends StatefulWidget {
 
 class _AppState extends Interactor<App> {
   @override
-  Widget build(BuildContext context) => MaterialApp(
-        title: 'ViktoriaApp',
-        theme: ThemeWidget.of(context).theme,
-        routes: <String, WidgetBuilder>{
-          '/': (context) => AppPage(),
-          '/${Keys.login}': (context) => LoginPageWrapper(),
-        },
-        builder: (context, child) => Scaffold(
-          body: NotificationsWidget(
-            child: child,
+  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: ThemeWidget.of(context).brightness == Brightness.dark
+            ? SystemUiOverlayStyle.dark.copyWith(
+                systemNavigationBarColor:
+                    ThemeWidget.of(context).theme.snackBarTheme.backgroundColor,
+              )
+            : SystemUiOverlayStyle.light.copyWith(
+                systemNavigationBarColor:
+                    ThemeWidget.of(context).theme.backgroundColor,
+              ),
+        child: MaterialApp(
+          title: 'ViktoriaApp',
+          theme: ThemeWidget.of(context).theme,
+          routes: <String, WidgetBuilder>{
+            '/': (context) => AppPage(),
+            '/${Keys.login}': (context) => LoginPageWrapper(),
+          },
+          builder: (context, child) => Scaffold(
+            body: NotificationsWidget(
+              child: child,
+            ),
           ),
         ),
       );
