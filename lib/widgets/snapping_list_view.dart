@@ -121,9 +121,10 @@ class SnappingListScrollPhysics extends ScrollPhysics {
   @override
   SnappingListScrollPhysics applyTo(ScrollPhysics ancestor) =>
       SnappingListScrollPhysics(
-          parent: buildParent(ancestor),
-          mainAxisStartPadding: mainAxisStartPadding,
-          itemExtent: itemExtent);
+        parent: buildParent(ancestor),
+        mainAxisStartPadding: mainAxisStartPadding,
+        itemExtent: itemExtent,
+      );
 
   double _getItem(ScrollPosition position) =>
       (position.pixels - mainAxisStartPadding) / itemExtent;
