@@ -48,14 +48,14 @@ class _CalendarRowState extends State<CalendarRow>
           showSplit: widget.showSplit,
           leading: Icon(
             Icons.calendar_today,
-            color: ThemeWidget.of(context).textColorLight(),
+            color: ThemeWidget.of(context).textColorLight,
           ),
           title: '${widget.event.name}',
           titleOverflow: TextOverflow.visible,
           subtitle: Text(
             widget.event.dateString,
             style: TextStyle(
-                color: ThemeWidget.of(context).textColor(),
+                color: ThemeWidget.of(context).textColor,
                 fontWeight: FontWeight.w100),
           ),
           last: Platform().isMobile
@@ -81,7 +81,7 @@ class _CalendarRowState extends State<CalendarRow>
                   },
                   icon: Icon(
                     Icons.add,
-                    color: ThemeWidget.of(context).textColorLight(),
+                    color: ThemeWidget.of(context).textColorLight,
                   ),
                 )
               : null,

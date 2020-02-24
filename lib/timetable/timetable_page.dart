@@ -84,7 +84,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                             '${index + 1}',
                             style: TextStyle(
                               fontSize: 16,
-                              color: ThemeWidget.of(context).textColor(),
+                              color: ThemeWidget.of(context).textColor,
                             ),
                           ),
                         ),
@@ -98,7 +98,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                             'Termine',
                             style: TextStyle(
                               fontSize: 16,
-                              color: ThemeWidget.of(context).textColor(),
+                              color: ThemeWidget.of(context).textColor,
                             ),
                           ),
                         ),
@@ -110,7 +110,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                             'Cafétoria',
                             style: TextStyle(
                               fontSize: 16,
-                              color: ThemeWidget.of(context).textColor(),
+                              color: ThemeWidget.of(context).textColor,
                             ),
                           ),
                         ),

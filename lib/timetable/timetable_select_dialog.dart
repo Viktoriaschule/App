@@ -24,7 +24,7 @@ class TimetableSelectDialog extends StatelessWidget {
         title: Text(
           '${weekdays[weekday]} ${unit.unit + 1}.',
           style: TextStyle(
-            color: ThemeWidget.of(context).textColor(),
+            color: ThemeWidget.of(context).textColor,
           ),
         ),
         children: [

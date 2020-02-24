@@ -26,7 +26,7 @@ class CalendarEventDialog extends StatelessWidget {
         title: Text(
           date == null ? 'Termin' : outputDateFormat.format(date),
           style: TextStyle(
-            color: ThemeWidget.of(context).textColor(),
+            color: ThemeWidget.of(context).textColor,
           ),
         ),
         children: [

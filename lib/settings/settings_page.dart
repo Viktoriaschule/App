@@ -59,7 +59,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: Text(
                             'Vertretungsplan',
                             style: TextStyle(
-                              color: ThemeWidget.of(context).textColor(),
+                              color: ThemeWidget.of(context).textColor,
                             ),
                           ),
                           checkColor: lightColor,
@@ -81,7 +81,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: Text(
                             'AiXformation',
                             style: TextStyle(
-                              color: ThemeWidget.of(context).textColor(),
+                              color: ThemeWidget.of(context).textColor,
                             ),
                           ),
                           checkColor: lightColor,
@@ -103,7 +103,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: Text(
                             'Cafétoria',
                             style: TextStyle(
-                              color: ThemeWidget.of(context).textColor(),
+                              color: ThemeWidget.of(context).textColor,
                             ),
                           ),
                           checkColor: lightColor,
@@ -130,7 +130,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: Text(
                             'Automatisch',
                             style: TextStyle(
-                              color: ThemeWidget.of(context).textColor(),
+                              color: ThemeWidget.of(context).textColor,
                             ),
                           ),
                           checkColor: lightColor,
@@ -149,7 +149,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: Text(
                             'Dunkles Design',
                             style: TextStyle(
-                              color: ThemeWidget.of(context).textColor(),
+                              color: ThemeWidget.of(context).textColor,
                             ),
                           ),
                           checkColor: lightColor,

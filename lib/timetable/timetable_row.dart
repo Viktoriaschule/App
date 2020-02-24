@@ -52,7 +52,7 @@ class TimetableRow extends StatelessWidget {
                 (unit + 1).toString(),
                 style: TextStyle(
                   fontSize: 25,
-                  color: ThemeWidget.of(context).textColorLight(),
+                  color: ThemeWidget.of(context).textColorLight,
                   fontWeight: FontWeight.w100,
                 ),
               ),
@@ -71,14 +71,14 @@ class TimetableRow extends StatelessWidget {
               : null,
       titleColor:
           subject.subjectID == 'Mittagspause' || subject.subjectID == 'none'
-              ? ThemeWidget.of(context).textColor()
+              ? ThemeWidget.of(context).textColor
               : Theme.of(context).accentColor,
       subtitle:
           subject.subjectID != 'Mittagspause' && subject.subjectID != 'none'
               ? Text(
                   timeStr,
                   style: TextStyle(
-                    color: ThemeWidget.of(context).textColor(),
+                    color: ThemeWidget.of(context).textColor,
                     fontWeight: FontWeight.w100,
                   ),
                 )
@@ -100,7 +100,7 @@ class TimetableRow extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w300,
-                        color: ThemeWidget.of(context).textColor(),
+                        color: ThemeWidget.of(context).textColor,
                         fontFamily: 'RobotoMono',
                       ),
                     ),
@@ -120,7 +120,7 @@ class TimetableRow extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w300,
-                        color: ThemeWidget.of(context).textColor(),
+                        color: ThemeWidget.of(context).textColor,
                         fontFamily: 'RobotoMono',
                       ),
                     ),

@@ -48,7 +48,7 @@ class _AppState extends Interactor<App> {
   @override
   Widget build(BuildContext context) => MaterialApp(
         title: 'ViktoriaApp',
-        theme: ThemeWidget.of(context).getTheme(),
+        theme: ThemeWidget.of(context).theme,
         routes: <String, WidgetBuilder>{
           '/': (context) => AppPage(),
           '/${Keys.login}': (context) => LoginPageWrapper(),

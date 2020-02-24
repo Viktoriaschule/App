@@ -272,7 +272,7 @@ class _CalendarPageState extends Interactor<CalendarPage>
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color:
-                                    ThemeWidget.of(context).textColor(),
+                                    ThemeWidget.of(context).textColor,
                               ),
                             ),
                           ),
@@ -282,11 +282,11 @@ class _CalendarPageState extends Interactor<CalendarPage>
                             border: Border(
                               top: BorderSide(
                                 color: ThemeWidget.of(context)
-                                    .textColor()
+                                    .textColor
                                     .withOpacity(0.5),
                               ),
                               left: BorderSide(
-                                color: ThemeWidget.of(context).textColor().withOpacity(0.5),
+                                color: ThemeWidget.of(context).textColor.withOpacity(0.5),
                               ),
                             ),
                           ),

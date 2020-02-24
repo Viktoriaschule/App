@@ -59,11 +59,11 @@ class AiXformationRow extends StatelessWidget {
                         getLoadingPlaceholder(context),
                     errorWidget: (context, url, error) => Icon(
                       Icons.error,
-                      color: ThemeWidget.of(context).textColor(),
+                      color: ThemeWidget.of(context).textColor,
                     ),
                   ),
             title: post.title,
-            titleColor: ThemeWidget.of(context).textColor(),
+            titleColor: ThemeWidget.of(context).textColor,
             titleFontWeight: FontWeight.normal,
             subtitle: IconsTexts(
               icons: [

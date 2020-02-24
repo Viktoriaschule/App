@@ -103,7 +103,7 @@ class _ListGroupState extends Interactor<ListGroup>
                     widget.title,
                     style: TextStyle(
                       fontWeight: FontWeight.w100,
-                      color: ThemeWidget.of(context).textColor(),
+                      color: ThemeWidget.of(context).textColor,
                       fontSize: 18,
                     ),
                   ),
@@ -124,7 +124,7 @@ class _ListGroupState extends Interactor<ListGroup>
                             '+${widget.counter}',
                             style: TextStyle(
                               fontWeight: FontWeight.w100,
-                              color: ThemeWidget.of(context).textColor(),
+                              color: ThemeWidget.of(context).textColor,
                               fontSize: 18,
                             ),
                           )

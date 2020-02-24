@@ -32,7 +32,7 @@ class _CafetoriaRowState extends State<CafetoriaRow> {
   Widget build(BuildContext context) => CustomRow(
         leading: Icon(
           Icons.restaurant,
-          color: ThemeWidget.of(context).textColorLight(),
+          color: ThemeWidget.of(context).textColorLight,
         ),
         title: widget.menu.name,
         subtitle: IconsTexts(

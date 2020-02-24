@@ -79,14 +79,14 @@ class _CalendarGridItemState extends State<CalendarGridItem> {
                         (_isYesterday() && _isYesterdayInSameWeekAsToday())
                     ? Colors.blue.shade500
                     : ThemeWidget.of(context)
-                        .textColor()
+                        .textColor
                         .withOpacity(0.5),
               ),
               bottom: BorderSide(
                 color: _isToday() || _isTodayOneWeekAgo()
                     ? Colors.blue.shade500
                     : ThemeWidget.of(context)
-                        .textColor()
+                        .textColor
                         .withOpacity(0.5),
               ),
             ),
@@ -101,11 +101,11 @@ class _CalendarGridItemState extends State<CalendarGridItem> {
                       : Colors.red.withOpacity(0.5)
                   : !widget.main
                       ? ThemeWidget.of(context)
-                          .textColor()
+                          .textColor
                           .withOpacity(0.5)
                       : _isToday()
                           ? Colors.blue
-                          : ThemeWidget.of(context).textColor(),
+                          : ThemeWidget.of(context).textColor,
               fontWeight: widget.main ? FontWeight.bold : null,
             ),
           ),

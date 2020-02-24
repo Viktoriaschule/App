@@ -62,7 +62,7 @@ class SubstitutionPlanRow extends StatelessWidget {
                 (substitution.unit + 1).toString(),
                 style: TextStyle(
                   fontSize: 25,
-                  color: ThemeWidget.of(context).textColorLight(),
+                  color: ThemeWidget.of(context).textColorLight,
                   fontWeight: FontWeight.w100,
                 ),
               ),
@@ -83,7 +83,7 @@ class SubstitutionPlanRow extends StatelessWidget {
               Static.subjects.data.getSubject(substitution.original.subjectID),
               style: TextStyle(
                 decoration: TextDecoration.lineThrough,
-                color: ThemeWidget.of(context).textColorLight(),
+                color: ThemeWidget.of(context).textColorLight,
                 fontWeight: FontWeight.w100,
               ),
             )
@@ -114,7 +114,7 @@ class SubstitutionPlanRow extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w300,
-                      color: ThemeWidget.of(context).textColor(),
+                      color: ThemeWidget.of(context).textColor,
                       fontFamily: 'RobotoMono',
                     ),
                   ),
@@ -128,7 +128,7 @@ class SubstitutionPlanRow extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w300,
-                      color: ThemeWidget.of(context).textColor(),
+                      color: ThemeWidget.of(context).textColor,
                       decoration: TextDecoration.lineThrough,
                       fontFamily: 'RobotoMono',
                     ),
@@ -159,7 +159,7 @@ class SubstitutionPlanRow extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w300,
-                      color: ThemeWidget.of(context).textColor(),
+                      color: ThemeWidget.of(context).textColor,
                       fontFamily: 'RobotoMono',
                     ),
                   ),
@@ -172,7 +172,7 @@ class SubstitutionPlanRow extends StatelessWidget {
                         : '',
                     style: TextStyle(
                       fontSize: 14,
-                      color: ThemeWidget.of(context).textColor(),
+                      color: ThemeWidget.of(context).textColor,
                       decoration: TextDecoration.lineThrough,
                       fontWeight: FontWeight.w300,
                       fontFamily: 'RobotoMono',

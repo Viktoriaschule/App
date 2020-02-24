@@ -251,7 +251,7 @@ class _AppPageState extends Interactor<AppPage>
           child: Icon(
             Icons.notifications_off,
             size: 28,
-            color: ThemeWidget.of(context).textColor(),
+            color: ThemeWidget.of(context).textColor,
           ),
         ),
       if (_installing)
@@ -274,7 +274,7 @@ class _AppPageState extends Interactor<AppPage>
           child: Icon(
             MdiIcons.cellphoneArrowDown,
             size: 28,
-            color: ThemeWidget.of(context).textColor(),
+            color: ThemeWidget.of(context).textColor,
           ),
         ),
     ];
@@ -297,7 +297,7 @@ class _AppPageState extends Interactor<AppPage>
                 icon: Icon(
                   Icons.settings,
                   size: 28,
-                  color: ThemeWidget.of(context).textColor(),
+                  color: ThemeWidget.of(context).textColor,
                 ),
               ),
             ],
