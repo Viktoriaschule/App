@@ -2,7 +2,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:viktoriaapp/aixformation/aixformation_page.dart';
+import 'package:viktoriaapp/aixformation/aixformation_post.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_page.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
@@ -132,8 +132,10 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
   void _openCafetoria() =>
       EventBus.of(context).publish(PushMaterialPageRouteEvent(CafetoriaPage()));
 
-  void _openAiXformation(Post post) => EventBus.of(context)
-      .publish(PushMaterialPageRouteEvent(AiXformationPage()));
+  void _openAiXformation(Post post) =>
+      EventBus.of(context).publish(PushMaterialPageRouteEvent(AiXformationPost(
+        post: post,
+      )));
 
   @override
   Widget build(BuildContext context) => widget.child;

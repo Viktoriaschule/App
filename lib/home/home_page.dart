@@ -1,16 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/aixformation/aixformation_info_card.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_info_card.dart';
 import 'package:viktoriaapp/calendar/calendar_info_card.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_info_card.dart';
 import 'package:viktoriaapp/timetable/timetable_info_card.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
 import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends Interactor<HomePage> {
+  DateTime day;
+
+  DateTime getDay() => Static.timetable.hasLoadedData
+      ? Static.timetable.data.initialDay(DateTime.now())
+      : monday(DateTime.now()).add(Duration(
+          days: (DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday) - 1,
+        ));
+
+  @override
+  Subscription subscribeEvents(EventBus eventBus) => eventBus
+      .respond<TimetableUpdateEvent>((event) => setState(() => day = getDay()));
+
+  @override
+  void initState() {
+    day = getDay();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = getScreenSize(MediaQuery.of(context).size.width);
@@ -156,6 +181,5 @@ class HomePage extends StatelessWidget {
     return Container();
   }
 
-  // ignore: avoid_field_initializers_in_const_classes
   final _screenPadding = 110;
 }

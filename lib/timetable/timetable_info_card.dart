@@ -31,9 +31,6 @@ class TimetableInfoCard extends StatefulWidget {
 class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
   InfoCardUtils utils;
 
-  List<TimetableSubject> _subjects;
-  List<Substitution> _substitutions;
-
   List<TimetableSubject> getSubjects() => Static.timetable.hasLoadedData
       ? Static.timetable.data.days[widget.date.weekday - 1].units
           .map((unit) => Static.selection.getSelectedSubject(unit.subjects))
@@ -51,30 +48,19 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
   }
 
   @override
-  void initState() {
-    _subjects = getSubjects();
-    _substitutions = getSubstitutions();
-    super.initState();
-  }
-
-  @override
   Subscription subscribeEvents(EventBus eventBus) => eventBus
-      .respond<TimetableUpdateEvent>(update)
-      .respond<SubstitutionPlanUpdateEvent>(update);
-
-  // ignore: type_annotate_public_apis
-  void update(event) => setState(() {
-        _subjects = getSubjects();
-        _substitutions = getSubstitutions();
-      });
+      .respond<TimetableUpdateEvent>((event) => setState(() => null))
+      .respond<SubstitutionPlanUpdateEvent>((event) => setState(() => null));
 
   @override
   Widget build(BuildContext context) {
+    final subjects = getSubjects();
+    final substitutions = getSubstitutions();
     utils ??= InfoCardUtils(context, widget.date);
     return ListGroup(
       loadingKeys: [Keys.timetable],
-      title: 'Nächste Stunden - ${weekdays[utils.weekday]}',
-      counter: _subjects.length > utils.cut ? _subjects.length - utils.cut : 0,
+      title: 'Nächste Stunden - ${weekdays[widget.date.weekday - 1]}',
+      counter: subjects.length > utils.cut ? subjects.length - utils.cut : 0,
       heroId: utils.size == ScreenSize.small
           ? Keys.timetable
           : '${Keys.timetable}-${utils.weekday}',
@@ -94,14 +80,14 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (_subjects.isEmpty ||
+              if (subjects.isEmpty ||
                   !Static.timetable.hasLoadedData ||
                   !Static.selection.isSet())
                 EmptyList(title: 'Kein Stundenplan')
               else
-                ...(_subjects.length > utils.cut
-                        ? _subjects.sublist(0, utils.cut)
-                        : _subjects)
+                ...(subjects.length > utils.cut
+                        ? subjects.sublist(0, utils.cut)
+                        : subjects)
                     .map(
                   (subject) => Container(
                     margin: EdgeInsets.all(10),
@@ -110,7 +96,7 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
                         TimetableRow(
                           subject: subject,
                         ),
-                        ..._substitutions
+                        ...substitutions
                             .where((substitution) =>
                                 substitution.unit == subject.unit)
                             .map((substitution) => SubstitutionPlanRow(
