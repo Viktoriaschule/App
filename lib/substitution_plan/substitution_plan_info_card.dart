@@ -32,21 +32,11 @@ class _SubstitutionPlanInfoCardState
     extends Interactor<SubstitutionPlanInfoCard> {
   InfoCardUtils utils;
 
-  List<Substitution> _substitutions;
-  SubstitutionPlanDay _substitutionPlanDay;
-
   SubstitutionPlanDay getSpDay() =>
       Static.substitutionPlan.data?.getForDate(widget.date);
 
-  List<Substitution> getSubstitutions() =>
-      _substitutionPlanDay?.myChanges ?? [];
-
-  @override
-  void initState() {
-    _substitutionPlanDay = getSpDay();
-    _substitutions = getSubstitutions();
-    super.initState();
-  }
+  List<Substitution> getSubstitutions(SubstitutionPlanDay spDay) =>
+      spDay?.myChanges ?? [];
 
   @override
   Subscription subscribeEvents(EventBus eventBus) => eventBus
@@ -54,24 +44,23 @@ class _SubstitutionPlanInfoCardState
       .respond<SubstitutionPlanUpdateEvent>(update);
 
   // ignore: type_annotate_public_apis
-  void update(event) => setState(() {
-        _substitutionPlanDay = getSpDay();
-        _substitutions = getSubstitutions();
-      });
+  void update(event) => setState(() => null);
 
   @override
   Widget build(BuildContext context) {
+    final substitutionPlanDay = getSpDay();
+    final substitutions = getSubstitutions(substitutionPlanDay);
     utils ??= InfoCardUtils(context, widget.date);
     return ListGroup(
       loadingKeys: [Keys.substitutionPlan],
       heroId: getScreenSize(MediaQuery.of(context).size.width) ==
               ScreenSize.small
           ? Keys.substitutionPlan
-          : '${Keys.substitutionPlan}-${Static.substitutionPlan.data.days.indexOf(_substitutionPlanDay)}',
+          : '${Keys.substitutionPlan}-${Static.substitutionPlan.data.days.indexOf(substitutionPlanDay)}',
       heroIdNavigation: Keys.substitutionPlan,
       title: 'Nächste Vertretungen - ${weekdays[widget.date.weekday - 1]}',
-      counter: _substitutions.length > utils.cut
-          ? _substitutions.length - utils.cut
+      counter: substitutions.length > utils.cut
+          ? substitutions.length - utils.cut
           : 0,
       actions: [
         NavigationAction(Icons.expand_more, () {
@@ -83,7 +72,7 @@ class _SubstitutionPlanInfoCardState
         }),
       ],
       children: [
-        if (_substitutions.isEmpty)
+        if (substitutions.isEmpty)
           EmptyList(title: 'Keine Änderungen')
         else
           SizeLimit(
@@ -91,9 +80,9 @@ class _SubstitutionPlanInfoCardState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (Static.substitutionPlan.hasLoadedData)
-                  ...(_substitutions.length > utils.cut
-                          ? _substitutions.sublist(0, utils.cut)
-                          : _substitutions)
+                  ...(substitutions.length > utils.cut
+                          ? substitutions.sublist(0, utils.cut)
+                          : substitutions)
                       .map((substitution) => Container(
                             margin: EdgeInsets.all(10),
                             child: SubstitutionPlanRow(
