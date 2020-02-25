@@ -6,6 +6,7 @@ import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
 import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
+import 'package:viktoriaapp/widgets/custom_card.dart';
 import 'package:viktoriaapp/widgets/custom_grid.dart';
 import 'package:viktoriaapp/widgets/custom_hero.dart';
 import 'package:viktoriaapp/widgets/empty_list.dart';
@@ -204,7 +205,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                           type: MaterialType.transparency,
                           child: Center(
                             child: SizeLimit(
-                              child: Card(
+                              child: CustomCard(
                                 margin: EdgeInsets.all(10),
                                 child: Container(
                                   margin: EdgeInsets.all(10),

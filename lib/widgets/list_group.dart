@@ -8,6 +8,7 @@ import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/utils/theme.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
+import 'package:viktoriaapp/widgets/custom_card.dart';
 import 'package:viktoriaapp/widgets/custom_circular_progress_indicator.dart';
 import 'package:viktoriaapp/widgets/custom_hero.dart';
 
@@ -141,7 +142,7 @@ class _ListGroupState extends Interactor<ListGroup>
         ],
       ),
     );
-    return Card(
+    return CustomCard(
       margin: EdgeInsets.all(10),
       child: Column(
         children: <Widget>[
