@@ -47,7 +47,8 @@ class _AiXformationPostState extends State<AiXformationPost>
         await _flutterWebviewPlugin.evalJavascript(_CSStoJS([
           if (ThemeWidget.of(context).brightness == Brightness.dark) ...[
             'h1, h2, h3, h4, h5, h6, strong, b, p, i, a, span, div {color: #${_colorToHexString(ThemeWidget.of(context).textColor)} !important}',
-            'div {background-color: #${_colorToHexString(Theme.of(context).backgroundColor)} !important}',
+            'div, amp-user-notification {background-color: #${_colorToHexString(Theme.of(context).backgroundColor)} !important}',
+            'amp-user-notification {border: none !important}',
           ],
           'header, .p-menu {display: none}',
         ]));
