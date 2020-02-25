@@ -64,7 +64,8 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     switch (data[Keys.type]) {
       case Keys.substitutionPlanNotification:
         callback = () => _openSubstitutionPlan(int.parse(data['day']));
-        text = 'Neuer Vertretungsplan';
+        text =
+            'Neuer Vertretungsplan${Static.substitutionPlan.hasLoadedData ? ' für ${weekdays[Static.substitutionPlan.data.days[int.parse(data['day'])].date.weekday - 1]}' : ''}';
         break;
       case Keys.timetable:
         callback = _openTimetable;
