@@ -51,11 +51,8 @@ class _AppPageState extends Interactor<AppPage>
         await _launchLogin();
       } else if (result != StatusCodes.success) {
         if (showStatus) {
-          final msg = result == StatusCodes.offline
-              ? 'Du bist offline'
-              : 'Verbindung zum Server fehlgeschlagen';
           Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text(msg),
+            content: Text(getStatusCodeMsg(result)),
             action: SnackBarAction(
               label: 'OK',
               onPressed: () => null,
@@ -83,23 +80,23 @@ class _AppPageState extends Interactor<AppPage>
         // The futures will run parallel and after starting all, the programm will wait until all are finished
         final downloads = [
           /// Download subject, timetable and substitution plan in the correct order
-          () async {
-            await Static.subjects.update(
-              context,
-              fetchedUpdates,
-              force: force,
-            );
-            await Static.timetable.update(
-              context,
-              fetchedUpdates,
-              force: force || gradeChanged,
-            );
-            await Static.substitutionPlan.update(
-              context,
-              fetchedUpdates,
-              force: force,
-            );
-          }(),
+          (() async => reduceStatusCodes([
+                await Static.subjects.update(
+                  context,
+                  fetchedUpdates,
+                  force: force,
+                ),
+                await Static.timetable.update(
+                  context,
+                  fetchedUpdates,
+                  force: force || gradeChanged,
+                ),
+                await Static.substitutionPlan.update(
+                  context,
+                  fetchedUpdates,
+                  force: force,
+                ),
+              ]))(),
           Static.calendar.update(
             context,
             fetchedUpdates,
@@ -120,7 +117,19 @@ class _AppPageState extends Interactor<AppPage>
         ];
 
         // Wait until all futures are finished
-        await Future.wait(downloads);
+        final codes = await Future.wait(downloads);
+        final status = reduceStatusCodes(codes);
+        if (status != StatusCodes.success) {
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              content: Text(getStatusCodeMsg(status)),
+              action: SnackBarAction(
+                label: 'OK',
+                onPressed: () => null,
+              ),
+            ),
+          );
+        }
       }
       return result;
     } on DioError {

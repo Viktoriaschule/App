@@ -45,6 +45,18 @@ abstract class Loader<LoaderType> {
 
   bool _loadedFromOnline = false;
 
+  LoaderResponse<LoaderType> _fromJSON(String rawJson) {
+    try {
+      final data = fromJSON(json.decode(rawJson));
+      return LoaderResponse<LoaderType>(
+          data: data, statusCode: StatusCodes.success);
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e) {
+      return LoaderResponse<LoaderType>(
+          data: null, statusCode: StatusCodes.wrongFormat);
+    }
+  }
+
   /// Update the loader if the update hash has changed
   Future<StatusCodes> update(BuildContext context, Updates newUpdates,
       {bool force = false}) async {
@@ -62,7 +74,11 @@ abstract class Loader<LoaderType> {
   // ignore: public_member_api_docs
   void loadOffline(BuildContext context) {
     if (hasStoredData) {
-      parsedData = fromJSON(Static.storage.getJSON(key));
+      final parsed = _fromJSON(Static.storage.getString(key));
+      parsedData = parsed.data;
+      if (parsed.statusCode != StatusCodes.success) {
+        Static.storage.remove(key);
+      }
       _sendLoadedEvent(Pages.of(context), EventBus.of(context));
     }
   }
@@ -149,15 +165,17 @@ abstract class Loader<LoaderType> {
           '$baseUrl/$key',
         );
       }
-      final data = json.decode(response.toString());
       final successfully = response.statusCode == 200;
+      final statusCodes = [getStatusCode(response.statusCode)];
       if (store) {
         if (successfully) {
-          if (data != null) {
-            _rawData = response.toString();
-            parsedData = fromJSON(data);
+          _rawData = response.toString();
+          final parsed = _fromJSON(_rawData);
+          parsedData = parsed.data ?? parsedData;
+          statusCodes.add(parsed.statusCode);
+          if (parsed.statusCode == StatusCodes.success) {
+            save();
           }
-          save();
           _loadedFromOnline = true;
         } else {
           print('$key failed to load');
@@ -167,8 +185,18 @@ abstract class Loader<LoaderType> {
         await Navigator.of(context).pushReplacementNamed('/${Keys.login}');
       }
       _sendLoadedEvent(pages, eventBus);
+
+      dynamic data;
+      try {
+        data = json.decode(response.toString());
+        statusCodes.add(StatusCodes.success);
+        // ignore: avoid_catches_without_on_clauses
+      } catch (e) {
+        statusCodes.add(StatusCodes.wrongFormat);
+      }
+
       return LoaderResponse(
-          data: data, statusCode: getStatusCode(response.statusCode));
+          data: data, statusCode: reduceStatusCodes(statusCodes));
     } on DioError catch (e) {
       _sendLoadedEvent(pages, eventBus);
       switch (e.type) {

@@ -22,12 +22,9 @@ class CustomRefreshIndicator extends StatelessWidget {
           // ignore: unawaited_futures
           loadOnline().then((status) {
             if (status != StatusCodes.success) {
-              final msg = status == StatusCodes.offline
-                  ? 'Du bist offline'
-                  : 'Verbindung zum Server fehlgeschlagen';
               Scaffold.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(msg),
+                  content: Text(getStatusCodeMsg(status)),
                   action: SnackBarAction(
                     label: 'OK',
                     onPressed: () => null,

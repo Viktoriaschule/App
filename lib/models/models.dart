@@ -24,18 +24,39 @@ enum StatusCodes {
   offline,
   // ignore: public_member_api_docs
   failed,
+  // ignore: public_member_api_docs
+  wrongFormat,
 }
 
 /// Reduces multiple status codes to one
 StatusCodes reduceStatusCodes(List<StatusCodes> statusCodes) {
   if (statusCodes
       .map((e) => e == StatusCodes.success)
-      .reduce((v1, v2) => v1 || v2)) {
+      .reduce((v1, v2) => v1 && v2)) {
     return StatusCodes.success;
   } else if (statusCodes.contains(StatusCodes.offline)) {
     return StatusCodes.offline;
+  } else if (statusCodes.contains(StatusCodes.wrongFormat)) {
+    return StatusCodes.wrongFormat;
   }
   return StatusCodes.failed;
+}
+
+/// Returns the status msg for the user
+String getStatusCodeMsg(StatusCodes status) {
+  switch (status) {
+    case StatusCodes.offline:
+      return 'Du bist offline';
+    case StatusCodes.failed:
+      return 'Verbindung zum Server fehlgeschlagen';
+    case StatusCodes.wrongFormat:
+      return 'Serverfehler';
+    case StatusCodes.unauthorized:
+      return 'Login-Daten nicht korrekt';
+    case StatusCodes.success:
+      return 'Erfolgreich';
+  }
+  return null;
 }
 
 // ignore: public_member_api_docs
