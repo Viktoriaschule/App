@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:viktoriaapp/loaders/loader.dart';
 
 /// AiXformation class
 /// describes all posts
@@ -40,7 +41,6 @@ class Post {
     @required this.date,
     @required this.title,
     @required this.url,
-    @required this.imageUrl,
     @required this.author,
     @required this.tags,
   });
@@ -51,7 +51,6 @@ class Post {
         date: DateTime.parse(json['date']),
         title: json['title'],
         url: json['url'],
-        imageUrl: json['imageUrl'],
         author: json['author'],
         tags: json['tags'].cast<String>(),
       );
@@ -62,7 +61,6 @@ class Post {
         'date': date.toIso8601String(),
         'title': title,
         'url': url,
-        'imageUrl': imageUrl,
         'author': author,
         'tags': tags,
       };
@@ -80,11 +78,11 @@ class Post {
   final String url;
 
   // ignore: public_member_api_docs
-  final String imageUrl;
-
-  // ignore: public_member_api_docs
   final String author;
 
   // ignore: public_member_api_docs
   final List<String> tags;
+
+  // ignore: public_member_api_docs
+  String get imageUrl => '$baseUrl/aixformation/images/$id';
 }
