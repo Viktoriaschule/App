@@ -32,14 +32,15 @@ class _AppPageState extends Interactor<AppPage>
 
   @override
   Subscription subscribeEvents(EventBus eventBus) => eventBus
-      .respond<FetchAppDataEvent>((event) => _fetchData())
-      .respond<PushMaterialPageRouteEvent>(
-        (event) => Navigator.of(context).push(
+          .respond<FetchAppDataEvent>((event) => _fetchData())
+          .respond<PushMaterialPageRouteEvent>((event) {
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute<void>(
             builder: (context) => event.page,
           ),
-        ),
-      );
+          (r) => r.settings.name == '/',
+        );
+      });
 
   Future<StatusCodes> _fetchData(
       {bool force = false, bool showStatus = true}) async {
