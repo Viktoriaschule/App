@@ -214,6 +214,7 @@ abstract class Loader<LoaderType> {
 
   // ignore: public_member_api_docs
   void clear() {
+    _rawData = null;
     parsedData = null;
     _loadedFromOnline = false;
     save();

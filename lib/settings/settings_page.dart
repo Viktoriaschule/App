@@ -184,6 +184,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                         child: CustomButton(
                           onPressed: () {
                             Static.user.clear();
+                            Static.tags.clear();
                             Static.updates.clear();
                             Static.substitutionPlan.clear();
                             Static.timetable.clear();
