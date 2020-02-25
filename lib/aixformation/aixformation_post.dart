@@ -8,6 +8,7 @@ import 'package:viktoriaapp/aixformation/aixformation_utils.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 
 // ignore: public_member_api_docs
 class AiXformationPost extends StatefulWidget {
@@ -91,14 +92,9 @@ class _AiXformationPostState extends State<AiXformationPost>
             child: getLoadingPlaceholder(context),
           ),
         ),
-        appBar: AppBar(
-          title: Text(
-            'AiXformation',
-            style: TextStyle(
-              color: ThemeWidget.of(context).textColor,
-            ),
-          ),
-          elevation: 2,
+        appBar: CustomAppBar(
+          title: 'AiXformation',
+          loadingKeys: const [],
           actions: [
             IconButton(
               icon: Icon(
