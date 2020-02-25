@@ -1,25 +1,29 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:viktoriaapp/aixformation/aixformation_post.dart';
-import 'package:viktoriaapp/aixformation/aixformation_utils.dart';
-import 'package:viktoriaapp/plugins/platform/platform.dart';
-import 'package:viktoriaapp/widgets/custom_row.dart';
-import 'package:viktoriaapp/widgets/icons_texts.dart';
-import 'package:viktoriaapp/utils/theme.dart';
-import 'package:viktoriaapp/models/models.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:viktoriaapp/aixformation/aixformation_post.dart';
+import 'package:viktoriaapp/aixformation/aixformation_utils.dart';
+import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/widgets/custom_row.dart';
+import 'package:viktoriaapp/widgets/icons_texts.dart';
 
 // ignore: public_member_api_docs
 class AiXformationRow extends StatelessWidget {
   // ignore: public_member_api_docs
   const AiXformationRow({
     @required this.post,
+    @required this.posts,
     Key key,
   }) : super(key: key);
 
   // ignore: public_member_api_docs
   final Post post;
+
+  // ignore: public_member_api_docs
+  final List<Post> posts;
 
   @override
   Widget build(BuildContext context) => InkWell(
@@ -29,6 +33,7 @@ class AiXformationRow extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => AiXformationPost(
                   post: post,
+                  posts: posts,
                 ),
               ),
             );

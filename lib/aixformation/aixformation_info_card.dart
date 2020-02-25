@@ -31,6 +31,11 @@ class _AiXformationInfoCardState extends Interactor<AiXformationInfoCard> {
   @override
   Widget build(BuildContext context) {
     utils ??= InfoCardUtils(context, widget.date);
+    final List<Post> posts = Static.aiXformation.hasLoadedData
+        ? Static.aiXformation.data.posts.length > utils.cut
+            ? Static.aiXformation.data.posts.sublist(0, utils.cut)
+            : Static.aiXformation.data.posts
+        : [];
     return ListGroup(
       loadingKeys: [Keys.aiXformation],
       heroId: Keys.aiXformation,
@@ -50,13 +55,12 @@ class _AiXformationInfoCardState extends Interactor<AiXformationInfoCard> {
       children: [
         if (Static.aiXformation.hasLoadedData &&
             Static.aiXformation.data.posts.isNotEmpty)
-          ...(Static.aiXformation.data.posts.length > utils.cut
-                  ? Static.aiXformation.data.posts.sublist(0, utils.cut)
-                  : Static.aiXformation.data.posts)
+          ...posts
               .map((post) => Container(
                     margin: EdgeInsets.all(10),
                     child: AiXformationRow(
                       post: post,
+                      posts: posts,
                     ),
                   ))
               .toList()
