@@ -58,9 +58,7 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
           ? null
           : (loginStatus == StatusCodes.failed
               ? 'Serverfehler - Versuche es später nochmal'
-              : loginStatus == StatusCodes.offline
-                  ? 'Offline'
-                  : 'Login-Daten nicht korrekt');
+              : getStatusCodeMsg(loginStatus));
       _credentialsCorrect = loginStatus == StatusCodes.success;
       if (_formKey.currentState.validate()) {
         // Save correct credentials
@@ -69,8 +67,21 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
         Static.storage.setString(Keys.cafetoriaId, idController.text);
         Static.storage
             .setString(Keys.cafetoriaPassword, passwordController.text);
-        await Static.tags.syncTags(context);
-        await Static.cafetoria.loadOnline(context, force: true);
+        final status = reduceStatusCodes([
+          await Static.tags.syncTags(context),
+          await Static.cafetoria.loadOnline(context, force: true),
+        ]);
+        if (status != StatusCodes.success) {
+          Scaffold.of(context).showSnackBar(
+            SnackBar(
+              content: Text(getStatusCodeMsg(status)),
+              action: SnackBarAction(
+                label: 'OK',
+                onPressed: () => null,
+              ),
+            ),
+          );
+        }
         setState(() => loggingIn = false);
         Navigator.pop(context);
         // Update UI

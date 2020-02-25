@@ -53,6 +53,8 @@ class CafetoriaLoader extends Loader<Cafetoria> {
     );
     if (response.statusCode == StatusCodes.offline) {
       return StatusCodes.offline;
+    } else if (response.statusCode == StatusCodes.wrongFormat) {
+      return StatusCodes.wrongFormat;
     } else if (response.statusCode != StatusCodes.success) {
       return StatusCodes.failed;
     }
