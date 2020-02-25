@@ -48,7 +48,7 @@ class CafetoriaDay {
 
   /// Creates a cafetoria day from json map
   factory CafetoriaDay.fromJson(Map<String, dynamic> json) => CafetoriaDay(
-        date: DateTime.parse(json['date']),
+        date: DateTime.parse(json['date']).toLocal(),
         menus: json['menus']
             .map((day) => CafetoriaMenu.fromJson(day))
             .toList()
