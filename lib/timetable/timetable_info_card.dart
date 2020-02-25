@@ -49,6 +49,7 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
 
   @override
   Subscription subscribeEvents(EventBus eventBus) => eventBus
+      .respond<TagsUpdateEvent>((event) => setState(() => null))
       .respond<TimetableUpdateEvent>((event) => setState(() => null))
       .respond<SubstitutionPlanUpdateEvent>((event) => setState(() => null));
 

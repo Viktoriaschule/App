@@ -26,6 +26,7 @@ class TimetablePage extends StatefulWidget {
 class _TimetablePageState extends Interactor<TimetablePage> {
   @override
   Subscription subscribeEvents(EventBus eventBus) => eventBus
+      .respond<TagsUpdateEvent>((event) => setState(() => null))
       .respond<SubstitutionPlanUpdateEvent>((event) => setState(() => null))
       .respond<TimetableUpdateEvent>((event) => setState(() => null));
 

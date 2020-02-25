@@ -53,9 +53,15 @@ class _CafetoriaInfoCardState extends Interactor<CafetoriaInfoCard> {
   }
 
   @override
-  Subscription subscribeEvents(EventBus eventBus) =>
-      eventBus.respond<CafetoriaUpdateEvent>(
-          (event) => setState(() => _days = getDays()));
+  Subscription subscribeEvents(EventBus eventBus) => eventBus
+      .respond<CafetoriaUpdateEvent>((event) => update())
+      .respond<TagsUpdateEvent>((event) => update());
+
+  void update() {
+    setState(() {
+      _days = getDays();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
