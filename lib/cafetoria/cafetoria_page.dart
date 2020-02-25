@@ -25,8 +25,9 @@ class CafetoriaPage extends StatefulWidget {
 // ignore: public_member_api_docs
 class CafetoriaPageState extends Interactor<CafetoriaPage> {
   @override
-  Subscription subscribeEvents(EventBus eventBus) =>
-      eventBus.respond<CafetoriaUpdateEvent>((event) => setState(() => null));
+  Subscription subscribeEvents(EventBus eventBus) => eventBus
+      .respond<CafetoriaUpdateEvent>((event) => setState(() => null))
+      .respond<TagsUpdateEvent>((event) => setState(() => null));
 
   @override
   Widget build(BuildContext context) {

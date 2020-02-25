@@ -40,6 +40,7 @@ class _SubstitutionPlanInfoCardState
 
   @override
   Subscription subscribeEvents(EventBus eventBus) => eventBus
+      .respond<TagsUpdateEvent>(update)
       .respond<TimetableUpdateEvent>(update)
       .respond<SubstitutionPlanUpdateEvent>(update);
 

@@ -25,6 +25,7 @@ class SubstitutionPlanPage extends StatefulWidget {
 class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
   @override
   Subscription subscribeEvents(EventBus eventBus) => eventBus
+      .respond<TagsUpdateEvent>((event) => setState(() => null))
       .respond<SubstitutionPlanUpdateEvent>((event) => setState(() => null))
       .respond<TimetableUpdateEvent>((event) => setState(() => null));
 
