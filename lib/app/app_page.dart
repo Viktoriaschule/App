@@ -132,17 +132,6 @@ class _AppPageState extends Interactor<AppPage>
   }
 
   @override
-  void didChangeDependencies() {
-    if (Static.storage.getBool(Keys.platformBrightness) !=
-        (MediaQuery.of(context).platformBrightness == Brightness.dark)) {
-      Static.storage.setBool(Keys.platformBrightness,
-          MediaQuery.of(context).platformBrightness == Brightness.dark);
-      EventBus.of(context).publish(ThemeChangedEvent());
-    }
-    super.didChangeDependencies();
-  }
-
-  @override
   Future afterFirstLayout(BuildContext context) async {
     Static.updates.loadOffline(context);
     if (Static.updates.data == null) {

@@ -2,11 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/static.dart';
+import 'package:viktoriaapp/utils/theme.dart';
 import 'package:viktoriaapp/widgets/custom_button.dart';
 import 'package:viktoriaapp/widgets/custom_circular_progress_indicator.dart';
 import 'package:viktoriaapp/widgets/size_limit.dart';
-import 'package:viktoriaapp/utils/static.dart';
-import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs
 class _LoginPage extends StatefulWidget {
