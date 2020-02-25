@@ -10,6 +10,9 @@ import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs
+const baseUrl = 'https://viktoriaapp.fingeg.de';
+
+// ignore: public_member_api_docs
 abstract class Loader<LoaderType> {
   // ignore: public_member_api_docs
   Loader(this.key, this.event);
@@ -118,7 +121,6 @@ abstract class Loader<LoaderType> {
     _sendLoadingEvent(pages, eventBus);
     username ??= Static.user.username;
     password ??= Static.user.password;
-    const baseUrl = 'https://viktoriaapp.fingeg.de';
     try {
       if (username == null || password == null) {
         throw DioError(
