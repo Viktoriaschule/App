@@ -1,14 +1,13 @@
-import 'dart:async';
-
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:viktoriaapp/aixformation/aixformation_utils.dart';
-import 'package:viktoriaapp/plugins/platform/platform.dart';
-import 'package:viktoriaapp/utils/theme.dart';
-import 'package:viktoriaapp/models/models.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:viktoriaapp/aixformation/aixformation_utils.dart';
+import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/plugins/platform/platform.dart';
+import 'package:viktoriaapp/utils/theme.dart';
 
 // ignore: public_member_api_docs
 class AiXformationPost extends StatefulWidget {
@@ -25,13 +24,56 @@ class AiXformationPost extends StatefulWidget {
   _AiXformationPostState createState() => _AiXformationPostState();
 }
 
-class _AiXformationPostState extends State<AiXformationPost> {
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
-  bool _loaded = false;
+class _AiXformationPostState extends State<AiXformationPost>
+    with AfterLayoutMixin<AiXformationPost> {
+  final _flutterWebviewPlugin = FlutterWebviewPlugin();
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  void dispose() {
+    _flutterWebviewPlugin.dispose();
+    super.dispose();
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    _flutterWebviewPlugin.onUrlChanged.listen((url) async {
+      if (!url.contains(widget.post.url) && await canLaunch(url)) {
+        await launch(url);
+        _flutterWebviewPlugin.dispose();
+      }
+    });
+    _flutterWebviewPlugin.onStateChanged.listen((viewState) async {
+      if (viewState.type == WebViewState.finishLoad) {
+        await _flutterWebviewPlugin.evalJavascript(_CSStoJS([
+          if (ThemeWidget.of(context).brightness == Brightness.dark) ...[
+            'h1, h2, h3, h4, h5, h6, strong, b, p, i, a, span, div {color: #${_colorToHexString(ThemeWidget.of(context).textColor)} !important}',
+            'div {background-color: #${_colorToHexString(Theme.of(context).backgroundColor)} !important}',
+          ],
+          'header, .p-menu {display: none}',
+        ]));
+      }
+    });
+  }
+
+  String _colorToHexString(Color color) =>
+      color.value.toRadixString(16).substring(2);
+
+  // ignore: non_constant_identifier_names
+  String _CSStoJS(List<String> stylesheet) =>
+      'const sheet = new CSSStyleSheet();sheet.replaceSync("${stylesheet.join('')}");document.adoptedStyleSheets = [sheet];';
+
+  @override
+  Widget build(BuildContext context) => WebviewScaffold(
+        url: widget.post.url,
+        hidden: true,
+        scrollBar: false,
+        initialChild: Container(
+          height: double.infinity,
+          width: double.infinity,
+          child: Center(
+            child: getLoadingPlaceholder(context),
+          ),
+        ),
         appBar: AppBar(
           title: Text(
             'AiXformation',
@@ -57,29 +99,6 @@ class _AiXformationPostState extends State<AiXformationPost> {
                 onPressed: () {
                   Share.share(widget.post.url);
                 },
-              ),
-          ],
-        ),
-        body: Stack(
-          children: [
-            WebView(
-              initialUrl: widget.post.url,
-              javascriptMode: JavascriptMode.unrestricted,
-              onWebViewCreated: _controller.complete,
-              onPageFinished: (url) {
-                setState(() {
-                  _loaded = true;
-                });
-              },
-              gestureNavigationEnabled: true,
-            ),
-            if (!_loaded)
-              Container(
-                height: double.infinity,
-                width: double.infinity,
-                child: Center(
-                  child: getLoadingPlaceholder(context),
-                ),
               ),
           ],
         ),
