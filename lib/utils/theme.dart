@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs
@@ -90,4 +92,35 @@ class ThemeWidget extends InheritedWidget {
   /// Get the text color according to the theme
   Color get textColorLight =>
       brightness == Brightness.light ? darkColorLight : Color(0xFFCCCCCC);
+}
+
+// ignore: public_member_api_docs
+class ThemeUpdateWidget extends StatefulWidget {
+  // ignore: public_member_api_docs
+  const ThemeUpdateWidget({
+    Key key,
+    this.child,
+  }) : super(key: key);
+
+  // ignore: public_member_api_docs
+  final Widget child;
+
+  @override
+  _ThemeUpdateWidgetState createState() => _ThemeUpdateWidgetState();
+}
+
+class _ThemeUpdateWidgetState extends State<ThemeUpdateWidget> {
+  @override
+  Widget build(BuildContext context) => widget.child;
+
+  @override
+  void didChangeDependencies() {
+    if (Static.storage.getBool(Keys.platformBrightness) !=
+        (MediaQuery.of(context).platformBrightness == Brightness.dark)) {
+      Static.storage.setBool(Keys.platformBrightness,
+          MediaQuery.of(context).platformBrightness == Brightness.dark);
+      EventBus.of(context).publish(ThemeChangedEvent());
+    }
+    super.didChangeDependencies();
+  }
 }

@@ -118,7 +118,7 @@ abstract class Loader<LoaderType> {
     _sendLoadingEvent(pages, eventBus);
     username ??= Static.user.username;
     password ??= Static.user.password;
-    const baseUrl = 'https://vsa.fingeg.de';
+    const baseUrl = 'https://viktoriaapp.fingeg.de';
     try {
       if (username == null || password == null) {
         throw DioError(

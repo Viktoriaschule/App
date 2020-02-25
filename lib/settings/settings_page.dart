@@ -194,6 +194,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                             Static.storage
                                 .getKeys()
                                 .forEach(Static.storage.remove);
+                            EventBus.of(context).publish(ThemeChangedEvent());
                             Navigator.of(context).pushReplacementNamed('/');
                           },
                           child: Text(
