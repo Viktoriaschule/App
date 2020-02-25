@@ -175,8 +175,6 @@ abstract class Loader<LoaderType> {
           statusCodes.add(parsed.statusCode);
           if (parsed.statusCode == StatusCodes.success) {
             save();
-          } else if (!hasStoredData) {
-            Static.storage.remove(key);
           }
           _loadedFromOnline = true;
         } else {
