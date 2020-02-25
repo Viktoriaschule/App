@@ -50,6 +50,7 @@ class _AppState extends Interactor<App> {
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
         value: ThemeWidget.of(context).brightness == Brightness.dark
             ? SystemUiOverlayStyle.dark.copyWith(
+                statusBarIconBrightness: Brightness.light,
                 systemNavigationBarColor:
                     ThemeWidget.of(context).theme.snackBarTheme.backgroundColor,
               )
@@ -65,8 +66,10 @@ class _AppState extends Interactor<App> {
             '/${Keys.login}': (context) => LoginPageWrapper(),
           },
           builder: (context, child) => Scaffold(
-            body: NotificationsWidget(
-              child: child,
+            body: ThemeUpdateWidget(
+              child: NotificationsWidget(
+                child: child,
+              ),
             ),
           ),
         ),
