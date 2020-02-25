@@ -196,7 +196,8 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                                 .getKeys()
                                 .forEach(Static.storage.remove);
                             EventBus.of(context).publish(ThemeChangedEvent());
-                            Navigator.of(context).pushReplacementNamed('/');
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/${Keys.login}', (r) => false);
                           },
                           child: Text(
                             'Abmelden',
