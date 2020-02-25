@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/widgets/custom_row.dart';
 import 'package:viktoriaapp/utils/static.dart';
@@ -42,9 +43,7 @@ class TimetableRow extends StatelessWidget {
     final timeStr = '$startHour:$startMinute - $endHour:$endMinute';
     return CustomRow(
       splitColor: Colors.transparent,
-      showSplit: !(subject.subjectID == 'Mittagspause' ||
-              subject.subjectID == 'none') &&
-          showSplit,
+      showSplit: !(subject.subjectID == 'Mittagspause') && showSplit,
       leading: showUnit && unit != 5
           ? Align(
               alignment: Alignment(0.3, 0),
@@ -58,77 +57,75 @@ class TimetableRow extends StatelessWidget {
               ),
             )
           : null,
-      titleAlignment:
-          subject.subjectID == 'Mittagspause' || subject.subjectID == 'none'
-              ? CrossAxisAlignment.center
-              : CrossAxisAlignment.start,
-      title: Static.subjects.hasLoadedData
+      titleAlignment: subject.subjectID == 'Mittagspause'
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
+      title: Static.subjects.hasLoadedData && subject.subjectID != 'none'
           ? Static.subjects.data.getSubject(subject.subjectID)
-          : null,
+          : 'Nicht ausgewählt',
       titleFontWeight:
-          subject.subjectID == 'Mittagspause' || subject.subjectID == 'none'
-              ? FontWeight.w100
-              : null,
-      titleColor:
-          subject.subjectID == 'Mittagspause' || subject.subjectID == 'none'
-              ? ThemeWidget.of(context).textColor
-              : Theme.of(context).accentColor,
-      subtitle:
-          subject.subjectID != 'Mittagspause' && subject.subjectID != 'none'
-              ? Text(
-                  timeStr,
-                  style: TextStyle(
-                    color: ThemeWidget.of(context).textColor,
-                    fontWeight: FontWeight.w100,
+          subject.subjectID == 'Mittagspause' ? FontWeight.w100 : null,
+      titleColor: subject.subjectID == 'Mittagspause'
+          ? ThemeWidget.of(context).textColor
+          : Theme.of(context).accentColor,
+      subtitle: subject.subjectID != 'Mittagspause'
+          ? Text(
+              subject.subjectID != 'none' ? timeStr : 'Klicke zum Auswählen',
+              style: TextStyle(
+                color: ThemeWidget.of(context).textColor,
+                fontWeight: FontWeight.w100,
+              ),
+            )
+          : null,
+      last: subject.subjectID != 'none'
+          ? Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (subject.subjectID != 'Mittagspause')
+                  Container(
+                    width: 30,
+                    margin: EdgeInsets.only(right: 10),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (subject.teacherID != null)
+                          Text(
+                            '${subject.teacherID.toUpperCase()}\n',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300,
+                              color: ThemeWidget.of(context).textColor,
+                              fontFamily: 'RobotoMono',
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                )
-              : null,
-      last: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (subject.subjectID != 'Mittagspause' &&
-              subject.subjectID != 'none')
-            Container(
-              width: 30,
-              margin: EdgeInsets.only(right: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (subject.teacherID != null)
-                    Text(
-                      '${subject.teacherID.toUpperCase()}\n',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w300,
-                        color: ThemeWidget.of(context).textColor,
-                        fontFamily: 'RobotoMono',
-                      ),
+                if (subject.subjectID != 'Mittagspause')
+                  Container(
+                    width: 30,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (subject.roomID != null)
+                          Text(
+                            '${subject.roomID.toUpperCase()}\n',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300,
+                              color: ThemeWidget.of(context).textColor,
+                              fontFamily: 'RobotoMono',
+                            ),
+                          ),
+                      ],
                     ),
-                ],
-              ),
+                  ),
+              ],
+            )
+          : Icon(
+              MdiIcons.exclamation,
+              color: ThemeWidget.of(context).textColorLight,
             ),
-          if (subject.subjectID != 'Mittagspause' &&
-              subject.subjectID != 'none')
-            Container(
-              width: 30,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (subject.roomID != null)
-                    Text(
-                      '${subject.roomID.toUpperCase()}\n',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w300,
-                        color: ThemeWidget.of(context).textColor,
-                        fontFamily: 'RobotoMono',
-                      ),
-                    ),
-                ],
-              ),
-            ),
-        ],
-      ),
     );
   }
 }
