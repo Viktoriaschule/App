@@ -35,6 +35,7 @@ class _CustomCardState extends State<CustomCard>
         margin: widget.margin ?? cardTheme.margin ?? const EdgeInsets.all(4),
         child: AnimatedSize(
           vsync: this,
+          curve: Curves.fastOutSlowIn,
           duration: Duration(milliseconds: 200),
           child: Material(
             type: MaterialType.card,
