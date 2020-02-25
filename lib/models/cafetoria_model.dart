@@ -1,5 +1,3 @@
-import 'package:viktoriaapp/models/models.dart';
-
 /// Describes the login information...
 class CafetoriaLogin {
   // ignore: public_member_api_docs
@@ -50,7 +48,7 @@ class CafetoriaDay {
 
   /// Creates a cafetoria day from json map
   factory CafetoriaDay.fromJson(Map<String, dynamic> json) => CafetoriaDay(
-        date: parseDate(json['date']),
+        date: DateTime.parse(json['date']),
         menus: json['menus']
             .map((day) => CafetoriaMenu.fromJson(day))
             .toList()
