@@ -63,7 +63,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     String text;
     switch (data[Keys.type]) {
       case Keys.substitutionPlanNotification:
-        callback = _openSubstitutionPlan;
+        callback = () => _openSubstitutionPlan(int.parse(data['day']));
         text = 'Neuer Vertretungsplan';
         break;
       case Keys.timetable:
@@ -102,7 +102,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     switch (data['type']) {
       case Keys.substitutionPlanNotification:
         EventBus.of(context).publish(FetchAppDataEvent());
-        _openSubstitutionPlan();
+        _openSubstitutionPlan(int.parse(data['day']));
         break;
       case Keys.timetable:
         EventBus.of(context).publish(FetchAppDataEvent());
@@ -126,8 +126,10 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
   void _openTimetable() =>
       EventBus.of(context).publish(PushMaterialPageRouteEvent(TimetablePage()));
 
-  void _openSubstitutionPlan() => EventBus.of(context)
-      .publish(PushMaterialPageRouteEvent(SubstitutionPlanPage()));
+  void _openSubstitutionPlan(int day) => EventBus.of(context)
+          .publish(PushMaterialPageRouteEvent(SubstitutionPlanPage(
+        day: day,
+      )));
 
   void _openCafetoria() =>
       EventBus.of(context).publish(PushMaterialPageRouteEvent(CafetoriaPage()));
