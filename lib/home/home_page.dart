@@ -62,120 +62,121 @@ class _HomePageState extends Interactor<HomePage> {
     ];
 
     if (size == ScreenSize.small) {
-      return Container(
-        color: Theme.of(context).backgroundColor,
-        child: ListView.builder(
-          padding: EdgeInsets.only(bottom: 10),
-          itemCount: widgetBuilders.length,
-          itemBuilder: (context, index) => widgetBuilders[index](),
-        ),
+      return ListView.builder(
+        padding: EdgeInsets.only(bottom: 10),
+        itemCount: widgetBuilders.length,
+        itemBuilder: (context, index) => widgetBuilders[index](),
       );
     }
     if (size == ScreenSize.middle) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              substitutionPlanBuilder(),
-              timetableBuilder(),
-            ]
-                .map((x) => Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        height: (MediaQuery.of(context).size.height -
-                                _screenPadding) /
-                            3,
-                        child: x,
-                      ),
-                    ))
-                .toList()
-                .cast<Widget>(),
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              calendarBuilder(),
-              cafetoriaBuilder(),
-            ]
-                .map((x) => Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        height: (MediaQuery.of(context).size.height -
-                                _screenPadding) /
-                            3,
-                        child: x,
-                      ),
-                    ))
-                .toList()
-                .cast<Widget>(),
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              aixformationBuilder(),
-            ]
-                .map((x) => Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        height: (MediaQuery.of(context).size.height -
-                                _screenPadding) /
-                            3,
-                        child: x,
-                      ),
-                    ))
-                .toList()
-                .cast<Widget>(),
-          ),
-        ],
+      return SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                substitutionPlanBuilder(),
+                timetableBuilder(),
+              ]
+                  .map((x) => Expanded(
+                        flex: 1,
+                        child: SizedBox(
+                          height: (MediaQuery.of(context).size.height -
+                                  _screenPadding) /
+                              3,
+                          child: x,
+                        ),
+                      ))
+                  .toList()
+                  .cast<Widget>(),
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                calendarBuilder(),
+                cafetoriaBuilder(),
+              ]
+                  .map((x) => Expanded(
+                        flex: 1,
+                        child: SizedBox(
+                          height: (MediaQuery.of(context).size.height -
+                                  _screenPadding) /
+                              3,
+                          child: x,
+                        ),
+                      ))
+                  .toList()
+                  .cast<Widget>(),
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                aixformationBuilder(),
+              ]
+                  .map((x) => Expanded(
+                        flex: 1,
+                        child: SizedBox(
+                          height: (MediaQuery.of(context).size.height -
+                                  _screenPadding) /
+                              3,
+                          child: x,
+                        ),
+                      ))
+                  .toList()
+                  .cast<Widget>(),
+            ),
+          ],
+        ),
       );
     }
     if (size == ScreenSize.big) {
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              substitutionPlanBuilder(),
-              cafetoriaBuilder(),
-            ]
-                .map((x) => SizedBox(
-                      height: (MediaQuery.of(context).size.height -
-                              _screenPadding) /
-                          2,
-                      child: x,
-                    ))
-                .toList()
-                .cast<Widget>(),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              timetableBuilder(),
-              calendarBuilder(),
-            ]
-                .map((x) => SizedBox(
-                      height: (MediaQuery.of(context).size.height -
-                              _screenPadding) /
-                          2,
-                      child: x,
-                    ))
-                .toList()
-                .cast<Widget>(),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height - _screenPadding,
-            child: aixformationBuilder(),
-          ),
-        ]
-            .map((x) => Expanded(
-                  flex: 1,
-                  child: x,
-                ))
-            .toList()
-            .cast<Widget>(),
+      return SingleChildScrollView(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                substitutionPlanBuilder(),
+                cafetoriaBuilder(),
+              ]
+                  .map((x) => SizedBox(
+                        height: (MediaQuery.of(context).size.height -
+                                _screenPadding) /
+                            2,
+                        child: x,
+                      ))
+                  .toList()
+                  .cast<Widget>(),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                timetableBuilder(),
+                calendarBuilder(),
+              ]
+                  .map((x) => SizedBox(
+                        height: (MediaQuery.of(context).size.height -
+                                _screenPadding) /
+                            2,
+                        child: x,
+                      ))
+                  .toList()
+                  .cast<Widget>(),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height - _screenPadding,
+              child: aixformationBuilder(),
+            ),
+          ]
+              .map((x) => Expanded(
+                    flex: 1,
+                    child: x,
+                  ))
+              .toList()
+              .cast<Widget>(),
+        ),
       );
     }
     return Container();
