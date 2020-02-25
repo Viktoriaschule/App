@@ -6,11 +6,11 @@ import 'package:viktoriaapp/aixformation/aixformation_row.dart';
 import 'package:viktoriaapp/models/keys.dart';
 import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/pages.dart';
+import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 import 'package:viktoriaapp/widgets/custom_refresh_indicator.dart';
 import 'package:viktoriaapp/widgets/empty_list.dart';
 import 'package:viktoriaapp/widgets/size_limit.dart';
-import 'package:viktoriaapp/utils/static.dart';
 
 // ignore: public_member_api_docs
 class AiXformationPage extends StatefulWidget {
@@ -45,6 +45,7 @@ class AiXformationPageState extends Interactor<AiXformationPage> {
                             margin: EdgeInsets.all(10),
                             child: AiXformationRow(
                               post: post,
+                              posts: Static.aiXformation.data.posts,
                             ),
                           ),
                         ),

@@ -135,6 +135,9 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
   void _openAiXformation(Post post) =>
       EventBus.of(context).publish(PushMaterialPageRouteEvent(AiXformationPost(
         post: post,
+        posts: Static.aiXformation.hasLoadedData
+            ? Static.aiXformation.data.posts
+            : [],
       )));
 
   @override

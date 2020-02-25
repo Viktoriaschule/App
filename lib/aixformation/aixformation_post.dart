@@ -14,11 +14,15 @@ class AiXformationPost extends StatefulWidget {
   // ignore: public_member_api_docs
   const AiXformationPost({
     @required this.post,
+    @required this.posts,
     Key key,
   }) : super(key: key);
 
   // ignore: public_member_api_docs
   final Post post;
+
+  // ignore: public_member_api_docs
+  final List<Post> posts;
 
   @override
   _AiXformationPostState createState() => _AiXformationPostState();
@@ -27,6 +31,13 @@ class AiXformationPost extends StatefulWidget {
 class _AiXformationPostState extends State<AiXformationPost>
     with AfterLayoutMixin<AiXformationPost> {
   final _flutterWebviewPlugin = FlutterWebviewPlugin();
+  String _currentURL;
+
+  @override
+  void initState() {
+    _currentURL = widget.post.url;
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -37,10 +48,9 @@ class _AiXformationPostState extends State<AiXformationPost>
   @override
   void afterFirstLayout(BuildContext context) {
     _flutterWebviewPlugin.onUrlChanged.listen((url) async {
-      if (!url.contains(widget.post.url) && await canLaunch(url)) {
-        await launch(url);
-        _flutterWebviewPlugin.dispose();
-      }
+      setState(() {
+        _currentURL = url;
+      });
     });
     _flutterWebviewPlugin.onStateChanged.listen((viewState) async {
       if (viewState.type == WebViewState.finishLoad) {
@@ -49,6 +59,8 @@ class _AiXformationPostState extends State<AiXformationPost>
             'h1, h2, h3, h4, h5, h6, strong, b, p, i, a, span, div {color: #${_colorToHexString(ThemeWidget.of(context).textColor)} !important}',
             'div, amp-user-notification {background-color: #${_colorToHexString(Theme.of(context).backgroundColor)} !important}',
             'amp-user-notification {border: none !important}',
+            'footer {margin: 0 !important}',
+            'footer * {border: 0 !important}',
           ],
           'header, .p-menu {display: none}',
         ]));
@@ -68,6 +80,10 @@ class _AiXformationPostState extends State<AiXformationPost>
         url: widget.post.url,
         hidden: true,
         scrollBar: false,
+        invalidUrlRegex: '^(?!(${[
+          ...widget.posts,
+          widget.post
+        ].map((p) => p.url.replaceAll('/', '\\/')).join('|')}).*\$).*',
         initialChild: Container(
           height: double.infinity,
           width: double.infinity,
@@ -89,7 +105,7 @@ class _AiXformationPostState extends State<AiXformationPost>
                 Icons.open_in_new,
                 color: ThemeWidget.of(context).textColor,
               ),
-              onPressed: () => launch(widget.post.url),
+              onPressed: () => launch(_currentURL),
             ),
             if (Platform().isMobile)
               IconButton(
@@ -98,7 +114,7 @@ class _AiXformationPostState extends State<AiXformationPost>
                   color: ThemeWidget.of(context).textColor,
                 ),
                 onPressed: () {
-                  Share.share(widget.post.url);
+                  Share.share(_currentURL);
                 },
               ),
           ],
