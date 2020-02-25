@@ -73,12 +73,18 @@ class ThemeWidget extends InheritedWidget {
 
   /// Returns the current layout brightness
   Brightness get brightness {
-    if (Static.storage.getBool(Keys.automaticDesign) ?? true) {
-      return Static.storage.getBool(Keys.platformBrightness) ?? false
+    if (!Static.storage.has(Keys.automaticDesign) ||
+            Static.storage.getBool(Keys.automaticDesign) ??
+        true) {
+      return Static.storage.has(Keys.platformBrightness) &&
+                  Static.storage.getBool(Keys.platformBrightness) ??
+              false
           ? Brightness.dark
           : Brightness.light;
     }
-    if (Static.storage.getBool(Keys.darkMode) ?? false) {
+    if (Static.storage.has(Keys.darkMode) &&
+            Static.storage.getBool(Keys.darkMode) ??
+        false) {
       return Brightness.dark;
     }
     return Brightness.light;
@@ -109,18 +115,27 @@ class ThemeUpdateWidget extends StatefulWidget {
   _ThemeUpdateWidgetState createState() => _ThemeUpdateWidgetState();
 }
 
-class _ThemeUpdateWidgetState extends State<ThemeUpdateWidget> {
+class _ThemeUpdateWidgetState extends Interactor<ThemeUpdateWidget> {
   @override
   Widget build(BuildContext context) => widget.child;
 
   @override
   void didChangeDependencies() {
-    if (Static.storage.getBool(Keys.platformBrightness) !=
-        (MediaQuery.of(context).platformBrightness == Brightness.dark)) {
+    _update();
+    super.didChangeDependencies();
+  }
+
+  @override
+  Subscription subscribeEvents(EventBus eventBus) =>
+      eventBus.respond<ThemeChangedEvent>((event) => _update());
+
+  void _update() {
+    if (!Static.storage.has(Keys.platformBrightness) ||
+        Static.storage.getBool(Keys.platformBrightness) !=
+            (MediaQuery.of(context).platformBrightness == Brightness.dark)) {
       Static.storage.setBool(Keys.platformBrightness,
           MediaQuery.of(context).platformBrightness == Brightness.dark);
       EventBus.of(context).publish(ThemeChangedEvent());
     }
-    super.didChangeDependencies();
   }
 }
