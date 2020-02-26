@@ -69,87 +69,36 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
         loadingKeys: [Keys.substitutionPlan, Keys.timetable, Keys.tags],
         actions: <Widget>[
           if (Static.user.grade != null)
-            InkWell(
-              onTap: widget.grade == null
-                  ? () async {
-                      final String g = await showDialog(
-                        context: context,
-                        builder: (context) => SimpleDialog(
-                          titlePadding: EdgeInsets.all(0),
-                          title: Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 10),
-                              child: Text(
-                                'Klasse auswählen',
-                                style: TextStyle(fontWeight: FontWeight.w100),
-                              ),
-                            ),
+            Container(
+              width: 48,
+              child: DropdownButton<String>(
+                  underline: Container(),
+                  value: widget.grade ?? Static.user.grade,
+                  items: grades
+                      .map(
+                        (grade) => DropdownMenuItem(
+                          value: grade,
+                          child: Text(
+                            isSeniorGrade(grade) ? grade.toUpperCase() : grade,
+                            style: TextStyle(fontWeight: FontWeight.w100),
                           ),
-                          children: grades
-                              .map((e) => ListTile(
-                                    title: Text(
-                                        isSeniorGrade(e) ? e.toUpperCase() : e),
-                                    onTap: () {
-                                      Navigator.of(context).pop(e);
-                                    },
-                                  ))
-                              .toList()
-                              .cast<Widget>(),
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (grade) {
+                    if (grade != (widget.grade ?? Static.user.grade)) {
+                      final route = MaterialPageRoute<void>(
+                        builder: (context) => SubstitutionPlanPage(
+                          grade: grade,
                         ),
                       );
-                      if (g != null) {
-                        await Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (context) => SubstitutionPlanPage(
-                              grade: g,
-                            ),
-                          ),
-                        );
+                      if (widget.grade == null) {
+                        Navigator.of(context).push(route);
+                      } else {
+                        Navigator.of(context).pushReplacement(route);
                       }
                     }
-                  : null,
-              child: Container(
-                width: 48,
-                child: Center(
-                  child: Container(
-                    padding: EdgeInsets.all(7.5),
-                    decoration: BoxDecoration(
-                      boxShadow:
-                          ThemeWidget.of(context).brightness == Brightness.light
-                              ? [
-                                  BoxShadow(
-                                    color: Color(0xFFC8C8C8),
-                                    spreadRadius: 0.5,
-                                    blurRadius: 1,
-                                  ),
-                                ]
-                              : null,
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.all(Radius.circular(24)),
-                      border: widget.grade == null
-                          ? Border.all(
-                              color: ThemeWidget.of(context).textColor,
-                              width: getScreenSize(
-                                          MediaQuery.of(context).size.width) ==
-                                      ScreenSize.small
-                                  ? 0.5
-                                  : 1.25,
-                            )
-                          : null,
-                    ),
-                    child: Text(
-                      isSeniorGrade(widget.grade ?? Static.user.grade)
-                          ? (widget.grade ?? Static.user.grade).toUpperCase()
-                          : widget.grade ?? Static.user.grade,
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: ThemeWidget.of(context).textColor,
-                        fontFamily: 'RobotoMono',
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+                  }),
             ),
         ],
       ),
