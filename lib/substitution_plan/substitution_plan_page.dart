@@ -75,6 +75,8 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                   underline: Container(),
                   value: widget.grade ?? Static.user.grade,
                   items: grades
+                      .where(
+                          (g) => widget.grade == null || g != Static.user.grade)
                       .map(
                         (grade) => DropdownMenuItem(
                           value: grade,
