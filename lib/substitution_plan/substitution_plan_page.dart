@@ -23,11 +23,15 @@ class SubstitutionPlanPage extends StatefulWidget {
   const SubstitutionPlanPage({
     Key key,
     this.day,
+    this.grade,
   })  : assert(day == null || day == 0 || day == 1, 'day must be null, 0 or 1'),
         super(key: key);
 
   // ignore: public_member_api_docs
   final int day;
+
+  // ignore: public_member_api_docs
+  final String grade;
 
   @override
   _SubstitutionPlanPageState createState() => _SubstitutionPlanPageState();
@@ -47,28 +51,16 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
         Static.timetable.hasLoadedData) {
       final List<DateTime> dates =
           Static.substitutionPlan.data.days.map((e) => e.date).toList();
-      final List<int> diff = dates
-          .map((e) => (e.millisecondsSinceEpoch -
-                  monday(DateTime.now())
-                      .add(Duration(days: DateTime.now().weekday - 1))
-                      .millisecondsSinceEpoch)
-              .abs())
-          .toList();
-      if (diff[1] < diff[0]) {
+      final day = DateTime(
+        dates[0].year,
+        dates[0].month,
+        dates[0].day,
+      );
+      final lessonCount =
+          Static.timetable.data.days[day.weekday - 1].getUserLessonsCount();
+      if (DateTime.now()
+          .isAfter(day.add(Times.getUnitTimes(lessonCount - 1)[1]))) {
         nearestDay = 1;
-      }
-      if (nearestDay == 0) {
-        final day = DateTime(
-          dates[0].year,
-          dates[0].month,
-          dates[0].day,
-        );
-        final lessonCount =
-            Static.timetable.data.days[day.weekday - 1].getUserLessonsCount();
-        if (DateTime.now()
-            .isAfter(day.add(Times.getUnitTimes(lessonCount - 1)[1]))) {
-          nearestDay = 1;
-        }
       }
     }
     return Scaffold(
@@ -78,7 +70,44 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
         actions: <Widget>[
           if (Static.user.grade != null)
             InkWell(
-              onTap: () {},
+              onTap: widget.grade == null
+                  ? () async {
+                      final String g = await showDialog(
+                        context: context,
+                        builder: (context) => SimpleDialog(
+                          titlePadding: EdgeInsets.all(0),
+                          title: Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: Text(
+                                'Klasse auswählen',
+                                style: TextStyle(fontWeight: FontWeight.w100),
+                              ),
+                            ),
+                          ),
+                          children: grades
+                              .map((e) => ListTile(
+                                    title: Text(
+                                        isSeniorGrade(e) ? e.toUpperCase() : e),
+                                    onTap: () {
+                                      Navigator.of(context).pop(e);
+                                    },
+                                  ))
+                              .toList()
+                              .cast<Widget>(),
+                        ),
+                      );
+                      if (g != null) {
+                        await Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (context) => SubstitutionPlanPage(
+                              grade: g,
+                            ),
+                          ),
+                        );
+                      }
+                    }
+                  : null,
               child: Container(
                 width: 48,
                 child: Center(
@@ -97,19 +126,21 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                               : null,
                       color: Theme.of(context).primaryColor,
                       borderRadius: BorderRadius.all(Radius.circular(24)),
-                      border: Border.all(
-                        color: ThemeWidget.of(context).textColor,
-                        width:
-                            getScreenSize(MediaQuery.of(context).size.width) ==
-                                    ScreenSize.small
-                                ? 0.5
-                                : 1.25,
-                      ),
+                      border: widget.grade == null
+                          ? Border.all(
+                              color: ThemeWidget.of(context).textColor,
+                              width: getScreenSize(
+                                          MediaQuery.of(context).size.width) ==
+                                      ScreenSize.small
+                                  ? 0.5
+                                  : 1.25,
+                            )
+                          : null,
                     ),
                     child: Text(
-                      isSeniorGrade(Static.user.grade)
-                          ? Static.user.grade.toUpperCase()
-                          : Static.user.grade,
+                      isSeniorGrade(widget.grade ?? Static.user.grade)
+                          ? (widget.grade ?? Static.user.grade).toUpperCase()
+                          : widget.grade ?? Static.user.grade,
                       style: TextStyle(
                         fontSize: 22,
                         color: ThemeWidget.of(context).textColor,
@@ -143,98 +174,151 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                   height: 60,
                   color: Colors.transparent,
                 ),
-                Container(
-                  height: 60,
-                  child: Center(
-                    child: Text(
-                      'Meine Vertretungen',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: ThemeWidget.of(context).textColor,
+                if (widget.grade == null)
+                  Container(
+                    height: 60,
+                    child: Center(
+                      child: Text(
+                        'Meine Vertretungen',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: ThemeWidget.of(context).textColor,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Container(
-                  height: 60,
-                  child: Center(
-                    child: Text(
-                      'Weitere Vertretungen',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: ThemeWidget.of(context).textColor,
+                if (widget.grade == null)
+                  Container(
+                    height: 60,
+                    child: Center(
+                      child: Text(
+                        'Weitere Vertretungen',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: ThemeWidget.of(context).textColor,
+                        ),
                       ),
                     ),
                   ),
-                ),
+                if (widget.grade != null)
+                  Container(
+                    height: 60,
+                    child: Center(
+                      child: Text(
+                        'Vertretungen',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: ThemeWidget.of(context).textColor,
+                        ),
+                      ),
+                    ),
+                  ),
               ],
               children: List.generate(
                 2,
                 (index) {
-                  List<Substitution> myChanges = [];
-                  List<Substitution> notMyChanges = [];
-                  if (Static.substitutionPlan.hasLoadedData) {
-                    myChanges =
-                        Static.substitutionPlan.data.days[index].myChanges;
-                    notMyChanges =
-                        Static.substitutionPlan.data.days[index].otherChanges;
+                  List<Widget> items = [];
+                  if (widget.grade == null) {
+                    List<Substitution> myChanges = [];
+                    List<Substitution> notMyChanges = [];
+                    if (Static.substitutionPlan.hasLoadedData) {
+                      myChanges =
+                          Static.substitutionPlan.data.days[index].myChanges;
+                      notMyChanges =
+                          Static.substitutionPlan.data.days[index].otherChanges;
+                    }
+                    final myChangesWidget = myChanges.isEmpty
+                        ? EmptyList(title: 'Keine Änderungen')
+                        : Column(
+                            children: [
+                              ...myChanges
+                                  .map((change) => SizeLimit(
+                                        child: Container(
+                                          margin: EdgeInsets.all(10),
+                                          child: SubstitutionPlanRow(
+                                            substitution: change,
+                                          ),
+                                        ),
+                                      ))
+                                  .toList()
+                                  .cast<Widget>(),
+                            ],
+                          );
+                    final notMyChangesWidget = notMyChanges.isEmpty
+                        ? EmptyList(title: 'Keine Änderungen')
+                        : Column(
+                            children: [
+                              ...notMyChanges
+                                  .map((change) => SizeLimit(
+                                        child: Container(
+                                          margin: EdgeInsets.all(10),
+                                          child: SubstitutionPlanRow(
+                                            substitution: change,
+                                          ),
+                                        ),
+                                      ))
+                                  .toList()
+                                  .cast<Widget>(),
+                            ],
+                          );
+                    items = [
+                      if (getScreenSize(MediaQuery.of(context).size.width) !=
+                          ScreenSize.small)
+                        myChangesWidget
+                      else
+                        ListGroup(
+                          title: 'Meine Vertretungen',
+                          children: [
+                            myChangesWidget,
+                          ],
+                        ),
+                      if (getScreenSize(MediaQuery.of(context).size.width) !=
+                          ScreenSize.small)
+                        notMyChangesWidget
+                      else
+                        ListGroup(
+                          title: 'Weitere Vertretungen',
+                          children: [
+                            notMyChangesWidget,
+                          ],
+                        ),
+                    ];
+                  } else {
+                    List<Substitution> changes = [];
+                    if (Static.substitutionPlan.hasLoadedData) {
+                      changes = Static
+                          .substitutionPlan.data.days[index].data[widget.grade];
+                    }
+                    final changesWidget = changes.isEmpty
+                        ? EmptyList(title: 'Keine Änderungen')
+                        : Column(
+                            children: [
+                              ...changes
+                                  .map((change) => SizeLimit(
+                                        child: Container(
+                                          margin: EdgeInsets.all(10),
+                                          child: SubstitutionPlanRow(
+                                            substitution: change,
+                                          ),
+                                        ),
+                                      ))
+                                  .toList()
+                                  .cast<Widget>(),
+                            ],
+                          );
+                    items = [
+                      if (getScreenSize(MediaQuery.of(context).size.width) !=
+                          ScreenSize.small)
+                        changesWidget
+                      else
+                        ListGroup(
+                          title: 'Vertretungen',
+                          children: [
+                            changesWidget,
+                          ],
+                        ),
+                    ];
                   }
-                  final myChangesWidget = myChanges.isEmpty
-                      ? EmptyList(title: 'Keine Änderungen')
-                      : Column(
-                          children: [
-                            ...myChanges
-                                .map((change) => SizeLimit(
-                                      child: Container(
-                                        margin: EdgeInsets.all(10),
-                                        child: SubstitutionPlanRow(
-                                          substitution: change,
-                                        ),
-                                      ),
-                                    ))
-                                .toList()
-                                .cast<Widget>(),
-                          ],
-                        );
-                  final notMyChangesWidget = notMyChanges.isEmpty
-                      ? EmptyList(title: 'Keine Änderungen')
-                      : Column(
-                          children: [
-                            ...notMyChanges
-                                .map((change) => SizeLimit(
-                                      child: Container(
-                                        margin: EdgeInsets.all(10),
-                                        child: SubstitutionPlanRow(
-                                          substitution: change,
-                                        ),
-                                      ),
-                                    ))
-                                .toList()
-                                .cast<Widget>(),
-                          ],
-                        );
-                  final items = [
-                    if (getScreenSize(MediaQuery.of(context).size.width) !=
-                        ScreenSize.small)
-                      myChangesWidget
-                    else
-                      ListGroup(
-                        title: 'Meine Vertretungen',
-                        children: [
-                          myChangesWidget,
-                        ],
-                      ),
-                    if (getScreenSize(MediaQuery.of(context).size.width) !=
-                        ScreenSize.small)
-                      notMyChangesWidget
-                    else
-                      ListGroup(
-                        title: 'Weitere Vertretungen',
-                        children: [
-                          notMyChangesWidget,
-                        ],
-                      ),
-                  ];
                   return [
                     CustomHero(
                       tag: getScreenSize(MediaQuery.of(context).size.width) ==
