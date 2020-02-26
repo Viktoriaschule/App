@@ -40,8 +40,6 @@ class _TimetablePageState extends Interactor<TimetablePage> {
           tag: Keys.timetable,
           child: Static.timetable.hasLoadedData &&
                   Static.substitutionPlan.hasLoadedData &&
-                  Static.cafetoria.hasLoadedData &&
-                  Static.calendar.hasLoadedData &&
                   Static.selection.isSet()
               ? Material(
                   type: MaterialType.transparency,
@@ -116,20 +114,16 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                     append: List.generate(5, (weekday) {
                       final day =
                           monday(DateTime.now()).add(Duration(days: weekday));
-                      final cafetoriaView = Static.cafetoria.hasLoadedData
-                          ? CafetoriaInfoCard(
-                              date: day,
-                              showNavigation: false,
-                              isSingleDay: true,
-                            )
-                          : Container();
-                      final calendarView = Static.calendar.hasLoadedData
-                          ? CalendarInfoCard(
-                              date: day,
-                              showNavigation: false,
-                              isSingleDay: true,
-                            )
-                          : Container();
+                      final cafetoriaView = CafetoriaInfoCard(
+                        date: day,
+                        showNavigation: false,
+                        isSingleDay: true,
+                      );
+                      final calendarView = CalendarInfoCard(
+                        date: day,
+                        showNavigation: false,
+                        isSingleDay: true,
+                      );
                       return [
                         calendarView,
                         cafetoriaView,
