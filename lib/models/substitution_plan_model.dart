@@ -7,6 +7,18 @@ class SubstitutionPlan {
   // ignore: public_member_api_docs
   SubstitutionPlan({@required this.days});
 
+  // ignore: public_member_api_docs
+  factory SubstitutionPlan.fromJSON(List<dynamic> json) {
+    if (Static.timetable.data != null) {
+      Static.timetable.data.resetAllSubstitutions();
+    }
+    return SubstitutionPlan(
+      days: json
+          .map<SubstitutionPlanDay>((day) => SubstitutionPlanDay.fromJson(day))
+          .toList(),
+    );
+  }
+
   /// All substitution plan days
   final List<SubstitutionPlanDay> days;
 
