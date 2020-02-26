@@ -80,7 +80,10 @@ class SubstitutionPlanRow extends StatelessWidget {
                       .getSubject(substitution.original.subjectID) &&
               infoText.isNotEmpty
           ? Text(
-              Static.subjects.data.getSubject(substitution.original.subjectID),
+              substitution.original.subjectID != substitution.changed.subjectID
+                  ? Static.subjects.data
+                      .getSubject(substitution.original.subjectID)
+                  : '',
               style: TextStyle(
                 decoration: TextDecoration.lineThrough,
                 color: ThemeWidget.of(context).textColorLight,
