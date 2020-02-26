@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/substitution_plan/substitution_list.dart';
 import 'package:viktoriaapp/substitution_plan/substitution_plan_page.dart';
-import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
 import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/info_card.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
@@ -81,17 +81,11 @@ class _SubstitutionPlanInfoCardState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (Static.substitutionPlan.hasLoadedData)
-                  ...(substitutions.length > utils.cut
-                          ? substitutions.sublist(0, utils.cut)
-                          : substitutions)
-                      .map((substitution) => Container(
-                            margin: EdgeInsets.all(10),
-                            child: SubstitutionPlanRow(
-                              substitution: substitution,
-                            ),
-                          ))
-                      .toList()
-                      .cast<Widget>()
+                  SubstitutionList(
+                    substitutions: substitutions.length > utils.cut
+                        ? substitutions.sublist(0, utils.cut)
+                        : substitutions,
+                  ),
               ],
             ),
           ),
