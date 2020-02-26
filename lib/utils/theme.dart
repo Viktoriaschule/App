@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/plugins/platform/platform.dart';
 import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/static.dart';
 
@@ -27,7 +28,7 @@ ThemeData get _theme => ThemeData(
         color: darkColor,
       ),
       cardTheme: CardTheme(
-        elevation: 5,
+        elevation: Platform().isWeb ? 2 : 5,
       ),
       cardColor: lightColor,
       backgroundColor: lightBackgroundColor,
