@@ -6,7 +6,6 @@ export 'cafetoria_model.dart';
 export 'calendar_model.dart';
 export 'keys.dart';
 export 'selection.dart';
-export 'subject_row_details.dart';
 export 'substitution_plan_model.dart';
 export 'tags_model.dart';
 export 'times.dart';
