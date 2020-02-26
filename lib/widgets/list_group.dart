@@ -94,9 +94,8 @@ class _ListGroupState extends Interactor<ListGroup>
       child: Column(
         children: [
           Container(
-            height: 40,
             margin: EdgeInsets.only(bottom: 10),
-            padding: EdgeInsets.only(left: 20, right: 10),
+            padding: EdgeInsets.only(top: 15, left: 20, right: 10),
             child: Row(
               children: <Widget>[
                 Expanded(
