@@ -101,11 +101,11 @@ class _CustomGridState extends State<CustomGrid>
           body: TabBarView(
             controller: _tabController,
             children: widget.children
-                .map((tab) =>  CustomGridTabsList(
-                        tab: tab,
-                        append: widget.append,
-                        onRefresh:widget.onRefresh,
-                        children: widget.children,
+                .map((tab) => CustomGridTabsList(
+                      tab: tab,
+                      append: widget.append,
+                      onRefresh: widget.onRefresh,
+                      children: widget.children,
                     ))
                 .toList(),
           ),
@@ -159,7 +159,6 @@ class _CustomGridState extends State<CustomGrid>
                         child = Container(
                           margin: EdgeInsets.only(top: 20, bottom: 10),
                           alignment: Alignment.topCenter,
-                          color: Theme.of(context).primaryColor,
                           child: Text(
                             widget.columnPrepend[column - 1],
                             style: TextStyle(
