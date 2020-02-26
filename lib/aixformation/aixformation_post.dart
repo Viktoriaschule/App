@@ -57,13 +57,14 @@ class _AiXformationPostState extends State<AiXformationPost>
       if (viewState.type == WebViewState.finishLoad) {
         await _flutterWebviewPlugin.evalJavascript(_CSStoJS([
           if (ThemeWidget.of(context).brightness == Brightness.dark) ...[
-            'h1, h2, h3, h4, h5, h6, strong, b, p, i, a, span, div {color: #${_colorToHexString(ThemeWidget.of(context).textColor)} !important}',
-            'div, amp-user-notification {background-color: #${_colorToHexString(Theme.of(context).backgroundColor)} !important}',
+            'h1, h2, h3, h4, h5, h6, strong, b, p, i, a, span, div, figcaption, button {color: #${_colorToHexString(ThemeWidget.of(context).textColor)} !important}',
+            'div, amp-user-notification, article, textarea, .mh-footer {background-color: #${_colorToHexString(Theme.of(context).backgroundColor)} !important}',
             'amp-user-notification {border: none !important}',
             'footer {margin: 0 !important}',
             'footer * {border: 0 !important}',
+            'button {background-color: #${_colorToHexString(Theme.of(context).primaryColor)} !important}'
           ],
-          'header, .p-menu {display: none}',
+          'header, .p-menu, .mh-subheader, .mh-header, .mh-header-nav-mobile, .mh-footer-nav-mobile, .search-form {display: none !important}',
         ]));
       }
     });
