@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:viktoriaapp/models/models.dart';
-import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
+import 'package:viktoriaapp/substitution_plan/substitution_list.dart';
 import 'package:viktoriaapp/utils/events.dart';
 import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
@@ -180,38 +180,10 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                     }
                     final myChangesWidget = myChanges.isEmpty
                         ? EmptyList(title: 'Keine Änderungen')
-                        : Column(
-                            children: [
-                              ...myChanges
-                                  .map((change) => SizeLimit(
-                                        child: Container(
-                                          margin: EdgeInsets.all(10),
-                                          child: SubstitutionPlanRow(
-                                            substitution: change,
-                                          ),
-                                        ),
-                                      ))
-                                  .toList()
-                                  .cast<Widget>(),
-                            ],
-                          );
+                        : SubstitutionList(substitutions: myChanges);
                     final notMyChangesWidget = notMyChanges.isEmpty
                         ? EmptyList(title: 'Keine Änderungen')
-                        : Column(
-                            children: [
-                              ...notMyChanges
-                                  .map((change) => SizeLimit(
-                                        child: Container(
-                                          margin: EdgeInsets.all(10),
-                                          child: SubstitutionPlanRow(
-                                            substitution: change,
-                                          ),
-                                        ),
-                                      ))
-                                  .toList()
-                                  .cast<Widget>(),
-                            ],
-                          );
+                        : SubstitutionList(substitutions: notMyChanges);
                     items = [
                       if (getScreenSize(MediaQuery.of(context).size.width) !=
                           ScreenSize.small)
@@ -242,21 +214,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                     }
                     final changesWidget = changes.isEmpty
                         ? EmptyList(title: 'Keine Änderungen')
-                        : Column(
-                            children: [
-                              ...changes
-                                  .map((change) => SizeLimit(
-                                        child: Container(
-                                          margin: EdgeInsets.all(10),
-                                          child: SubstitutionPlanRow(
-                                            substitution: change,
-                                          ),
-                                        ),
-                                      ))
-                                  .toList()
-                                  .cast<Widget>(),
-                            ],
-                          );
+                        : SubstitutionList(substitutions: changes);
                     items = [
                       if (getScreenSize(MediaQuery.of(context).size.width) !=
                           ScreenSize.small)
