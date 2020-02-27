@@ -37,8 +37,6 @@ class CustomGridTabsList extends StatefulWidget {
 }
 
 class _CustomGridTabsListState extends State<CustomGridTabsList> {
-  ScrollController _scrollControllerContent;
-  ScrollController _scrollControllerAppend;
   ScrollController _scrollControllerSnapping;
   double _offset = 0;
 
@@ -50,7 +48,6 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
           _offset = _scrollControllerSnapping.offset;
         });
       });
-    _scrollControllerContent = ScrollController()..addListener(() {});
     super.initState();
   }
 

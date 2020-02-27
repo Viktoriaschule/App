@@ -28,6 +28,7 @@ class CustomListView extends StatefulWidget {
   /// Whether the list view is in the top or not
   final bool isTop;
 
+  // ignore: public_member_api_docs
   final Future<StatusCodes> Function() loadOnline;
 
   @override
