@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:viktoriaapp/models/models.dart';
+import 'package:viktoriaapp/widgets/custom_refresh_indicator.dart';
 
 /// A list view that allows to scroll a parent after reach the borders
 class CustomListView extends StatefulWidget {
@@ -10,6 +12,7 @@ class CustomListView extends StatefulWidget {
     @required this.children,
     this.height,
     this.isTop = true,
+    this.loadOnline,
     Key key,
   }) : super(key: key);
 
@@ -24,6 +27,8 @@ class CustomListView extends StatefulWidget {
 
   /// Whether the list view is in the top or not
   final bool isTop;
+
+  final Future<StatusCodes> Function() loadOnline;
 
   @override
   _CustomListViewState createState() => _CustomListViewState();
@@ -52,7 +57,7 @@ class _CustomListViewState extends State<CustomListView>
       final current = widget.scrollControllerParent.offset;
 
       // Get the new offset. The offset must be min zero and max the page height
-      final newOffset =
+      final double newOffset =
           max(min(current + notification.overscroll, widget.height), 0);
 
       // Update the parent list view
@@ -72,17 +77,26 @@ class _CustomListViewState extends State<CustomListView>
   }
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-        height: widget.height,
-        child: NotificationListener<ScrollNotification>(
-          onNotification: _scrollUpdate,
-          child: NotificationListener<OverscrollIndicatorNotification>(
-            onNotification: _onOverscroll,
-            child: ListView(
-              padding: EdgeInsets.only(bottom: 20),
-              children: widget.children,
-            ),
-          ),
-        ),
+  Widget build(BuildContext context) {
+    Widget child = ListView(
+      padding: EdgeInsets.only(bottom: 20),
+      children: widget.children,
+    );
+    if (widget.loadOnline != null) {
+      child = CustomRefreshIndicator(
+        loadOnline: widget.loadOnline,
+        child: child,
       );
+    }
+    return SizedBox(
+      height: widget.height,
+      child: NotificationListener<ScrollNotification>(
+        onNotification: _scrollUpdate,
+        child: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: _onOverscroll,
+          child: child,
+        ),
+      ),
+    );
+  }
 }

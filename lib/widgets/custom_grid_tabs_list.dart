@@ -88,28 +88,26 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
               Container(
                 color: Theme.of(context).backgroundColor,
                 height: constraints.maxHeight,
-                child: CustomRefreshIndicator(
-                  loadOnline: widget.onRefresh,
-                  child: SnappingListView(
-                    controller: _scrollControllerSnapping,
-                    scrollDirection: Axis.vertical,
-                    itemExtent: constraints.maxHeight,
-                    children: [
-                      CustomListView(
-                        height: constraints.maxHeight,
-                        scrollControllerParent: _scrollControllerSnapping,
-                        isTop: true,
-                        children: [content],
-                      ),
-                      CustomListView(
-                        height: constraints.maxHeight,
-                        scrollControllerParent: _scrollControllerSnapping,
-                        isTop: false,
-                        children:
-                            widget.append[widget.children.indexOf(widget.tab)],
-                      ),
-                    ],
-                  ),
+                child: SnappingListView(
+                  controller: _scrollControllerSnapping,
+                  scrollDirection: Axis.vertical,
+                  itemExtent: constraints.maxHeight,
+                  children: [
+                    CustomListView(
+                      loadOnline: widget.onRefresh,
+                      height: constraints.maxHeight,
+                      scrollControllerParent: _scrollControllerSnapping,
+                      isTop: true,
+                      children: [content],
+                    ),
+                    CustomListView(
+                      height: constraints.maxHeight,
+                      scrollControllerParent: _scrollControllerSnapping,
+                      isTop: false,
+                      children:
+                          widget.append[widget.children.indexOf(widget.tab)],
+                    ),
+                  ],
                 ),
               ),
               Container(
