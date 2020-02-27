@@ -39,7 +39,7 @@ class SubstitutionPlanRow extends StatelessWidget {
     switch (substitution.type) {
       case 2:
         infoText.add(
-            Static.subjects.data.getSubject(substitution.changed.subjectID));
+            '${Static.subjects.data.getSubject(substitution.changed.subjectID)} Klausur');
         break;
       case 1:
         infoText.add('Freistunde');
