@@ -37,6 +37,7 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
           .where((subject) =>
               subject != null &&
               subject.subjectID != 'Mittagspause' &&
+              subject.subjectID != 'Freistunde' &&
               DateTime.now().isBefore(
                   widget.date.add(Times.getUnitTimes(subject.unit)[1])))
           .toList()
