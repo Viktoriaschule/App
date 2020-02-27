@@ -1,7 +1,6 @@
 import 'package:viktoriaapp/loaders/loader.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/events.dart';
-import 'package:viktoriaapp/utils/static.dart';
 
 /// SubstitutionPlanLoader class
 class SubstitutionPlanLoader extends Loader<SubstitutionPlan> {

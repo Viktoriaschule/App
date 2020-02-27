@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:viktoriaapp/models/models.dart';
 import 'package:viktoriaapp/utils/theme.dart';
+import 'package:viktoriaapp/widgets/custom_list_view.dart';
 import 'package:viktoriaapp/widgets/custom_refresh_indicator.dart';
 import 'package:viktoriaapp/widgets/snapping_list_view.dart';
 
@@ -36,15 +37,15 @@ class CustomGridTabsList extends StatefulWidget {
 }
 
 class _CustomGridTabsListState extends State<CustomGridTabsList> {
-  ScrollController _scrollController;
+  ScrollController _scrollControllerSnapping;
   double _offset = 0;
 
   @override
   void initState() {
-    _scrollController = ScrollController()
+    _scrollControllerSnapping = ScrollController()
       ..addListener(() {
         setState(() {
-          _offset = _scrollController.offset;
+          _offset = _scrollControllerSnapping.offset;
         });
       });
     super.initState();
@@ -52,7 +53,7 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _scrollControllerSnapping.dispose();
     super.dispose();
   }
 
@@ -64,8 +65,7 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
               ...widget.tab,
             ],
           );
-          final animationProgress = double.parse(
-              (_offset / constraints.maxHeight).toStringAsPrecision(3));
+          final animationProgress = _offset / constraints.maxHeight;
           if (widget.append == null) {
             return Container(
               color: Theme.of(context).backgroundColor,
@@ -85,62 +85,53 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
               Container(
                 color: Theme.of(context).backgroundColor,
                 height: constraints.maxHeight,
-                child: CustomRefreshIndicator(
-                  loadOnline: widget.onRefresh,
-                  child: SnappingListView(
-                    controller: _scrollController,
-                    scrollDirection: Axis.vertical,
-                    itemExtent: constraints.maxHeight,
-                    children: [
-                      SingleChildScrollView(
-                        child: Container(
-                          height: constraints.maxHeight,
-                          child: Column(
-                            children: [content],
-                          ),
-                        ),
-                      ),
-                      SingleChildScrollView(
-                        child: Container(
-                          height: constraints.maxHeight,
-                          child: Column(
-                            children: [
-                              ...widget
-                                  .append[widget.children.indexOf(widget.tab)],
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                child: SnappingListView(
+                  controller: _scrollControllerSnapping,
+                  scrollDirection: Axis.vertical,
+                  itemExtent: constraints.maxHeight,
+                  children: [
+                    CustomListView(
+                      loadOnline: widget.onRefresh,
+                      height: constraints.maxHeight,
+                      scrollControllerParent: _scrollControllerSnapping,
+                      isTop: true,
+                      children: [content],
+                    ),
+                    CustomListView(
+                      height: constraints.maxHeight,
+                      scrollControllerParent: _scrollControllerSnapping,
+                      isTop: false,
+                      children:
+                          widget.append[widget.children.indexOf(widget.tab)],
+                    ),
+                  ],
                 ),
               ),
-              if (widget.append != null)
-                Container(
-                  alignment: Alignment.bottomCenter,
-                  child: GestureDetector(
-                    onTap: () {
-                      _scrollController.animateTo(
-                        animationProgress < 0.5
-                            ? _scrollController.position.maxScrollExtent
-                            : 0,
-                        duration: Duration(milliseconds: 250),
-                        curve: Curves.easeInOutCubic,
-                      );
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(7.5),
-                      child: Transform.rotate(
-                        angle: animationProgress * pi,
-                        child: Icon(
-                          Icons.expand_more,
-                          size: 30,
-                          color: ThemeWidget.of(context).textColor,
-                        ),
+              Container(
+                alignment: Alignment.bottomCenter,
+                child: GestureDetector(
+                  onTap: () {
+                    _scrollControllerSnapping.animateTo(
+                      animationProgress < 0.5
+                          ? _scrollControllerSnapping.position.maxScrollExtent
+                          : 0,
+                      duration: Duration(milliseconds: 250),
+                      curve: Curves.easeInOutCubic,
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(7.5),
+                    child: Transform.rotate(
+                      angle: animationProgress * pi,
+                      child: Icon(
+                        Icons.expand_more,
+                        size: 30,
+                        color: ThemeWidget.of(context).textColor,
                       ),
                     ),
                   ),
                 ),
+              ),
             ],
           );
         },
