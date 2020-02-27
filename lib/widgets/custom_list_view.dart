@@ -80,7 +80,6 @@ class _CustomListViewState extends State<CustomListView>
   @override
   Widget build(BuildContext context) {
     Widget child = ListView(
-      padding: EdgeInsets.only(bottom: 20),
       children: widget.children,
     );
     if (widget.loadOnline != null) {
