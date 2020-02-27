@@ -42,11 +42,6 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
           .toList()
       : [];
 
-  List<Substitution> getSubstitutions() {
-    final spDay = Static.substitutionPlan.data?.getForDate(widget.date);
-    return spDay?.myChanges ?? [];
-  }
-
   @override
   Subscription subscribeEvents(EventBus eventBus) => eventBus
       .respond<TagsUpdateEvent>((event) => setState(() => null))
@@ -56,7 +51,6 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
   @override
   Widget build(BuildContext context) {
     final subjects = getSubjects();
-    final substitutions = getSubstitutions();
     utils ??= InfoCardUtils(context, widget.date);
     return ListGroup(
       loadingKeys: [Keys.timetable],
@@ -89,8 +83,9 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
                 ...(subjects.length > utils.cut
                         ? subjects.sublist(0, utils.cut)
                         : subjects)
-                    .map(
-                  (subject) => Container(
+                    .map((subject) {
+                  final substitutions = subject.getSubstitutions(widget.date);
+                  return Container(
                     margin: EdgeInsets.all(10),
                     child: Column(
                       children: [
@@ -100,17 +95,23 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
                         ...substitutions
                             .where((substitution) =>
                                 substitution.unit == subject.unit)
-                            .map((substitution) => SubstitutionPlanRow(
+                            .map((substitution) => Padding(
+                                padding: EdgeInsets.only(
+                                    top:
+                                        substitutions.indexOf(substitution) == 0
+                                            ? 0
+                                            : 5),
+                                child: SubstitutionPlanRow(
                                   substitution: substitution,
                                   showUnit: false,
                                   keepPadding: true,
-                                ))
+                                )))
                             .toList()
                             .cast<Widget>(),
                       ],
                     ),
-                  ),
-                ),
+                  );
+                }),
             ],
           ),
         ),

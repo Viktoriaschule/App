@@ -134,11 +134,13 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                       5,
                       (weekday) =>
                           Static.timetable.data.days[weekday].units.map((unit) {
+                        final day =
+                            monday(DateTime.now()).add(Duration(days: weekday));
                         final subject =
                             Static.selection.getSelectedSubject(unit.subjects);
                         // ignore: omit_local_variable_types
                         final List<Substitution> substitutions =
-                            subject?.substitutions ?? [];
+                            subject?.getSubstitutions(day) ?? [];
                         return SizeLimit(
                           child: InkWell(
                             onTap: () async {
@@ -190,16 +192,23 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                                         ScreenSize.big,
                                   ),
                                   ...substitutions
-                                      .map(
-                                          (substitution) => SubstitutionPlanRow(
-                                                substitution: substitution,
-                                                showUnit: false,
-                                                keepPadding: getScreenSize(
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width) !=
-                                                    ScreenSize.big,
-                                              ))
+                                      .map((substitution) => Padding(
+                                            padding: EdgeInsets.only(
+                                                top: substitutions.indexOf(
+                                                            substitution) ==
+                                                        0
+                                                    ? 0
+                                                    : 5),
+                                            child: SubstitutionPlanRow(
+                                              substitution: substitution,
+                                              showUnit: false,
+                                              keepPadding: getScreenSize(
+                                                      MediaQuery.of(context)
+                                                          .size
+                                                          .width) !=
+                                                  ScreenSize.big,
+                                            ),
+                                          ))
                                       .toList()
                                       .cast<Widget>(),
                                 ],

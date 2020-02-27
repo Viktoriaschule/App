@@ -35,18 +35,6 @@ class Timetable {
     }
   }
 
-  /// Resets all selection in the timetable
-  void resetAllSubstitutions() {
-    for (final day in days) {
-      for (final unit in day.units) {
-        unit.substitutions = [];
-        for (final subject in unit.subjects) {
-          subject.substitutions = [];
-        }
-      }
-    }
-  }
-
   /// Returns all timetable subjects
   List<TimetableSubject> getAllSubjects() => days
       .map((d) => d.units.map((u) => u.subjects).toList())
@@ -248,14 +236,14 @@ class TimetableSubject {
   /// The day index of the subject (0 to 4)
   final int day;
 
-  /// All substitution for this subject
-  List<Substitution> substitutions = [];
-
-  /// Returns all changes with this subject id
-  List<Substitution> getSubstitutions() => [
-        ...?substitutions,
-        ...?Static.timetable.data.days[day].units[unit].substitutions
-      ];
+  /// Returns all substitutions with this subject id
+  List<Substitution> getSubstitutions(DateTime date) =>
+      Static.substitutionPlan.data
+          ?.getForDate(date)
+          ?.myChanges
+          ?.where((s) => s.unit == unit)
+          ?.toList() ??
+      [];
 
   /// Check if the exams is already set
   bool get examIsSet => Static.storage.getBool(Keys.exam(subjectID)) != null;
