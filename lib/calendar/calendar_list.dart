@@ -4,11 +4,11 @@ import 'package:viktoriaapp/calendar/calendar_page.dart';
 import 'package:viktoriaapp/calendar/calendar_row.dart';
 import 'package:viktoriaapp/models/keys.dart';
 import 'package:viktoriaapp/utils/events.dart';
+import 'package:viktoriaapp/utils/pages.dart';
+import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
 import 'package:viktoriaapp/widgets/custom_hero.dart';
-import 'package:viktoriaapp/utils/static.dart';
-import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/widgets/custom_refresh_indicator.dart';
 import 'package:viktoriaapp/widgets/empty_list.dart';
 
@@ -27,9 +27,11 @@ class CalendarListState extends Interactor<CalendarList> {
   @override
   Widget build(BuildContext context) {
     final page = Pages.of(context).pages[Keys.calendar];
-    final events = Static.calendar.data.getEventsForTimeSpan(
-        DateTime.now(), DateTime.now().add(Duration(days: 6000)))
-      ..sort((a, b) => a.start.compareTo(b.start));
+    final events = Static.calendar.hasLoadedData
+        ? (Static.calendar.data.getEventsForTimeSpan(
+            DateTime.now(), DateTime.now().add(Duration(days: 6000)))
+          ..sort((a, b) => a.start.compareTo(b.start)))
+        : [];
     return Column(
       children: <Widget>[
         Expanded(
@@ -56,7 +58,7 @@ class CalendarListState extends Interactor<CalendarList> {
                         ),
                       ),
                     )
-                  : EmptyList(title: 'Keine Termine'),
+                  : EmptyList(title: 'Keine Kalender'),
             ),
           ),
         ),

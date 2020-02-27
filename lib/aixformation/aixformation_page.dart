@@ -33,7 +33,8 @@ class AiXformationPageState extends Interactor<AiXformationPage> {
           body: CustomRefreshIndicator(
             loadOnline: () =>
                 Static.aiXformation.loadOnline(context, force: true),
-            child: Static.aiXformation.data.posts.isNotEmpty
+            child: Static.aiXformation.hasLoadedData &&
+                    Static.aiXformation.data.posts.isNotEmpty
                 ? ListView.builder(
                     padding: EdgeInsets.only(bottom: 10),
                     itemCount: Static.aiXformation.data.posts.length,

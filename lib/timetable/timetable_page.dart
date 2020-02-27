@@ -8,13 +8,14 @@ import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
 import 'package:viktoriaapp/timetable/timetable_row.dart';
 import 'package:viktoriaapp/timetable/timetable_select_dialog.dart';
 import 'package:viktoriaapp/utils/events.dart';
+import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/utils/screen_sizes.dart';
 import 'package:viktoriaapp/utils/static.dart';
 import 'package:viktoriaapp/utils/theme.dart';
-import 'package:viktoriaapp/utils/pages.dart';
 import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 import 'package:viktoriaapp/widgets/custom_grid.dart';
 import 'package:viktoriaapp/widgets/custom_hero.dart';
+import 'package:viktoriaapp/widgets/empty_list.dart';
 import 'package:viktoriaapp/widgets/size_limit.dart';
 
 // ignore: public_member_api_docs
@@ -210,7 +211,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                     ),
                   ),
                 )
-              : Container(),
+              : EmptyList(title: 'Kein Stundenplan'),
         ),
       );
 }
