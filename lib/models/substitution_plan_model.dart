@@ -8,16 +8,12 @@ class SubstitutionPlan {
   SubstitutionPlan({@required this.days});
 
   // ignore: public_member_api_docs
-  factory SubstitutionPlan.fromJSON(List<dynamic> json) {
-    if (Static.timetable.data != null) {
-      Static.timetable.data.resetAllSubstitutions();
-    }
-    return SubstitutionPlan(
-      days: json
-          .map<SubstitutionPlanDay>((day) => SubstitutionPlanDay.fromJson(day))
-          .toList(),
-    );
-  }
+  factory SubstitutionPlan.fromJSON(List<dynamic> json) => SubstitutionPlan(
+        days: json
+            .map<SubstitutionPlanDay>(
+                (day) => SubstitutionPlanDay.fromJson(day))
+            .toList(),
+      );
 
   /// All substitution plan days
   final List<SubstitutionPlanDay> days;
@@ -26,14 +22,6 @@ class SubstitutionPlan {
   void updateFilter() {
     for (final day in days) {
       day.filterSubstitutions();
-    }
-  }
-
-  /// Inserts the substitution plan into the timetable
-  void insert() {
-    Static.timetable.data.resetAllSubstitutions();
-    for (final day in days) {
-      day.insertInTimetable();
     }
   }
 
@@ -63,7 +51,6 @@ class SubstitutionPlanDay {
       return;
     }
     sort();
-    insertInTimetable();
     filterSubstitutions();
     filterUnparsed();
   }
@@ -124,36 +111,6 @@ class SubstitutionPlanDay {
       substitutions.sort(
           (s1, s2) => s1.unit < s2.unit ? -1 : s1.unit == s2.unit ? 0 : 1);
     });
-  }
-
-  /// Insert the substitutions into the timetable
-  void insertInTimetable() {
-    final List<TimetableSubject> subjects =
-        Static.timetable.data.getAllSubjects();
-    final List<String> subjectsIds = subjects.map((s) => s.id).toList();
-    final List<String> subjectsCourseIDs =
-        subjects.map((s) => s.courseID).toList();
-
-    filteredGrade = Static.timetable.data.grade;
-    for (final substitution in data[filteredGrade]) {
-      if (substitution.id != null && subjectsIds.contains(substitution.id)) {
-        subjects[subjectsIds.indexOf(substitution.id)]
-            .addSubstitution(substitution);
-      } else if (substitution.courseID != null &&
-          subjectsCourseIDs.contains(substitution.courseID)) {
-        final List<TimetableSubject> _subjects =
-            subjects.where((s) => s.courseID == substitution.courseID).toList();
-        if (_subjects.isNotEmpty) {
-          if (Static.timetable.data.days[date.weekday - 1].units.length <=
-              substitution.unit) {
-            return;
-          }
-          Static.timetable.data.days[date.weekday - 1].units[substitution.unit]
-              .substitutions
-              .add(substitution);
-        }
-      }
-    }
   }
 
   /// Set the unparsed filtered lists
