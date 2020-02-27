@@ -94,47 +94,61 @@ class _ListGroupState extends Interactor<ListGroup>
       child: Column(
         children: [
           Container(
-            margin: EdgeInsets.only(bottom: 10),
-            padding: EdgeInsets.only(top: 15, left: 20, right: 10),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Text(
-                    widget.title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w100,
-                      color: ThemeWidget.of(context).textColor,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 31,
-                  child: AnimatedCrossFade(
-                    duration: Duration(milliseconds: 100),
-                    firstChild: Container(
-                      margin: EdgeInsets.all(5.5),
-                      child: CustomCircularProgressIndicator(
-                        height: 20,
-                        width: 20,
+            padding: EdgeInsets.only(left: 20, right: 10),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: 31),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(top: 10),
+                      child: Text(
+                        widget.title,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w100,
+                          color: ThemeWidget.of(context).textColor,
+                          fontSize: 18,
+                        ),
                       ),
                     ),
-                    secondChild: widget.counter > 0
-                        ? Text(
-                            '+${widget.counter}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w100,
-                              color: ThemeWidget.of(context).textColor,
-                              fontSize: 18,
-                            ),
-                          )
-                        : Container(),
-                    crossFadeState: widget.loadingKeys != null && _isLoading
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
                   ),
-                ),
-              ],
+                  Container(
+                    margin: EdgeInsets.only(top: 10),
+                    width: 31,
+                    height: 31,
+                    child: Stack(
+                      children: [
+                        AnimatedOpacity(
+                          duration: Duration(milliseconds: 100),
+                          opacity:
+                              widget.loadingKeys != null && _isLoading ? 1 : 0,
+                          child: Center(
+                            child: CustomCircularProgressIndicator(
+                              height: 20,
+                              width: 20,
+                            ),
+                          ),
+                        ),
+                        AnimatedOpacity(
+                          duration: Duration(milliseconds: 100),
+                          opacity:
+                              widget.loadingKeys != null && _isLoading ? 0 : 1,
+                          child: Center(
+                            child: Text(
+                              '+${widget.counter}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w100,
+                                color: ThemeWidget.of(context).textColor,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           ...widget.children,
