@@ -141,6 +141,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                         // ignore: omit_local_variable_types
                         final List<Substitution> substitutions =
                             subject?.getSubstitutions(day) ?? [];
+                        if (substitutions.isNotEmpty) substitutions.add(substitutions[0]);
                         return SizeLimit(
                           child: InkWell(
                             onTap: () async {
