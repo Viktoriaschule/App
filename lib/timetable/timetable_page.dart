@@ -211,7 +211,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                     ),
                   ),
                 )
-              : EmptyList(title: 'Kein Stundenplan'),
+              : Center(child: EmptyList(title: 'Kein Stundenplan')),
         ),
       );
 }

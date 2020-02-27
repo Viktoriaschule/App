@@ -273,7 +273,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                 },
               ),
             )
-          : EmptyList(title: 'Keine Vertretungsplan'),
+          : Center(child: EmptyList(title: 'Kein Vertretungsplan')),
     );
   }
 }
