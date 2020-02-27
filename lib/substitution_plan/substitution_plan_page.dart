@@ -68,7 +68,9 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
         title: Pages.of(context).pages[Keys.substitutionPlan].title,
         loadingKeys: [Keys.substitutionPlan, Keys.timetable, Keys.tags],
         actions: <Widget>[
-          if (Static.user.grade != null)
+          if (Static.user.grade != null &&
+              Static.timetable.hasLoadedData &&
+              Static.substitutionPlan.hasLoadedData)
             Container(
               width: 48,
               child: DropdownButton<String>(
@@ -271,7 +273,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                 },
               ),
             )
-          : Container(),
+          : Center(child: EmptyList(title: 'Kein Vertretungsplan')),
     );
   }
 }

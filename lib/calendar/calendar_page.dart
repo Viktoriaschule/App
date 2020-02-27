@@ -12,6 +12,7 @@ import 'package:viktoriaapp/widgets/custom_app_bar.dart';
 import 'package:viktoriaapp/widgets/custom_bottom_navigation.dart';
 import 'package:viktoriaapp/widgets/custom_hero.dart';
 import 'package:viktoriaapp/widgets/custom_refresh_indicator.dart';
+import 'package:viktoriaapp/widgets/empty_list.dart';
 
 // ignore: public_member_api_docs
 class CalendarPage extends StatefulWidget {
@@ -37,29 +38,31 @@ class _CalendarPageState extends Interactor<CalendarPage>
       eventBus.respond<CalendarUpdateEvent>((event) => setState(update));
 
   void update() {
-    events = Static.calendar.data.getEventsForTimeSpan(
-        DateTime.now(), DateTime.now().add(Duration(days: 730)))
-      ..sort((a, b) {
-        if (b.end == null) {
-          return 1;
-        }
-        if (a.end == null) {
-          return 1;
-        }
-        return b.end.millisecondsSinceEpoch
-            .compareTo(a.end.millisecondsSinceEpoch);
-      });
-    lastEvent = events[0].end;
-    events.sort((a, b) => a.start.millisecondsSinceEpoch
-        .compareTo(b.start.millisecondsSinceEpoch));
-    firstEvent = events[0].start;
-    controller = TabController(
-      length: lastEvent.month -
-          firstEvent.month +
-          1 +
-          (lastEvent.year - firstEvent.year) * 12,
-      vsync: this,
-    );
+    if (Static.calendar.hasLoadedData) {
+      events = Static.calendar.data.getEventsForTimeSpan(
+          DateTime.now(), DateTime.now().add(Duration(days: 730)))
+        ..sort((a, b) {
+          if (b.end == null) {
+            return 1;
+          }
+          if (a.end == null) {
+            return 1;
+          }
+          return b.end.millisecondsSinceEpoch
+              .compareTo(a.end.millisecondsSinceEpoch);
+        });
+      lastEvent = events[0].end;
+      events.sort((a, b) => a.start.millisecondsSinceEpoch
+          .compareTo(b.start.millisecondsSinceEpoch));
+      firstEvent = events[0].start;
+      controller = TabController(
+        length: lastEvent.month -
+            firstEvent.month +
+            1 +
+            (lastEvent.year - firstEvent.year) * 12,
+        vsync: this,
+      );
+    }
   }
 
   @override
@@ -212,139 +215,151 @@ class _CalendarPageState extends Interactor<CalendarPage>
         body: Column(
           children: <Widget>[
             Expanded(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  const otherPadding = 0.0;
-                  const monthHeight = 40.0;
-                  final height =
-                      constraints.maxHeight - otherPadding - monthHeight - 5;
-                  final width = constraints.maxWidth - otherPadding * 2 - 1;
-                  final tabs = [];
-                  for (var i = 0;
-                      i <
-                          lastEvent.month -
-                              firstEvent.month +
-                              1 +
-                              (lastEvent.year - firstEvent.year) * 12;
-                      i++) {
-                    final month = (i + firstEvent.month - 1) % 12;
-                    final year =
-                        firstEvent.year + ((i + firstEvent.month - 1) ~/ 12);
-                    final days = daysInMonth(month, year);
-                    final firstDayInMonth = DateTime(year, month + 1, 1);
-                    final items = [];
-                    for (var j = 0; j < firstDayInMonth.weekday - 1; j++) {
-                      final date = firstDayInMonth.subtract(
-                          Duration(days: firstDayInMonth.weekday - 1 - j));
-                      items.add(CalendarGridItem(date: date, main: false));
-                    }
-                    for (var k = 0; k < days; k++) {
-                      final date = firstDayInMonth.add(Duration(days: k));
-                      items.add(CalendarGridItem(date: date, main: true));
-                    }
-                    var l = 0;
-                    while (items.length < 42) {
-                      final date = DateTime(firstDayInMonth.year,
-                              firstDayInMonth.month + 1, 1)
-                          .add(Duration(days: l++));
-                      items.add(CalendarGridItem(date: date, main: false));
-                    }
-                    final rows = [];
-                    for (var m = 0; m < 6; m++) {
-                      final column = [];
-                      for (var n = 0; n < 7; n++) {
-                        column.add(items[m * 7 + n]);
-                      }
-                      rows.add(column);
-                    }
-                    tabs.add(Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Container(
-                          height: monthHeight,
-                          width: constraints.maxWidth,
-                          padding: EdgeInsets.all(10),
-                          child: Center(
-                            child: Text(
-                              '${months[month]} $year',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: ThemeWidget.of(context).textColor,
+              child: Static.calendar.hasLoadedData
+                  ? LayoutBuilder(
+                      builder: (context, constraints) {
+                        const otherPadding = 0.0;
+                        const monthHeight = 40.0;
+                        final height = constraints.maxHeight -
+                            otherPadding -
+                            monthHeight -
+                            5;
+                        final width =
+                            constraints.maxWidth - otherPadding * 2 - 1;
+                        final tabs = [];
+                        for (var i = 0;
+                            i <
+                                lastEvent.month -
+                                    firstEvent.month +
+                                    1 +
+                                    (lastEvent.year - firstEvent.year) * 12;
+                            i++) {
+                          final month = (i + firstEvent.month - 1) % 12;
+                          final year = firstEvent.year +
+                              ((i + firstEvent.month - 1) ~/ 12);
+                          final days = daysInMonth(month, year);
+                          final firstDayInMonth = DateTime(year, month + 1, 1);
+                          final items = [];
+                          for (var j = 0;
+                              j < firstDayInMonth.weekday - 1;
+                              j++) {
+                            final date = firstDayInMonth.subtract(Duration(
+                                days: firstDayInMonth.weekday - 1 - j));
+                            items
+                                .add(CalendarGridItem(date: date, main: false));
+                          }
+                          for (var k = 0; k < days; k++) {
+                            final date = firstDayInMonth.add(Duration(days: k));
+                            items.add(CalendarGridItem(date: date, main: true));
+                          }
+                          var l = 0;
+                          while (items.length < 42) {
+                            final date = DateTime(firstDayInMonth.year,
+                                    firstDayInMonth.month + 1, 1)
+                                .add(Duration(days: l++));
+                            items
+                                .add(CalendarGridItem(date: date, main: false));
+                          }
+                          final rows = [];
+                          for (var m = 0; m < 6; m++) {
+                            final column = [];
+                            for (var n = 0; n < 7; n++) {
+                              column.add(items[m * 7 + n]);
+                            }
+                            rows.add(column);
+                          }
+                          tabs.add(Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Container(
+                                height: monthHeight,
+                                width: constraints.maxWidth,
+                                padding: EdgeInsets.all(10),
+                                child: Center(
+                                  child: Text(
+                                    '${months[month]} $year',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: ThemeWidget.of(context).textColor,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border(
-                              top: BorderSide(
-                                color: ThemeWidget.of(context)
-                                    .textColor
-                                    .withOpacity(0.5),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    top: BorderSide(
+                                      color: ThemeWidget.of(context)
+                                          .textColor
+                                          .withOpacity(0.5),
+                                    ),
+                                    left: BorderSide(
+                                      color: ThemeWidget.of(context)
+                                          .textColor
+                                          .withOpacity(0.5),
+                                    ),
+                                  ),
+                                ),
+                                margin: EdgeInsets.only(
+                                  right: otherPadding,
+                                  bottom: otherPadding,
+                                  left: otherPadding,
+                                ),
+                                child: Column(
+                                  children: rows
+                                      .map((row) => Stack(
+                                            children: <Widget>[
+                                              Row(
+                                                children: row
+                                                    .map((item) => SizedBox(
+                                                          width: width / 7,
+                                                          height: height / 6,
+                                                          child: item,
+                                                        ))
+                                                    .toList()
+                                                    .cast<Widget>(),
+                                              ),
+                                              ...getEventViewsForWeek(
+                                                  row[0].date,
+                                                  row[6].date,
+                                                  width,
+                                                  height)
+                                            ],
+                                          ))
+                                      .toList(),
+                                ),
                               ),
-                              left: BorderSide(
-                                color: ThemeWidget.of(context)
-                                    .textColor
-                                    .withOpacity(0.5),
-                              ),
-                            ),
-                          ),
-                          margin: EdgeInsets.only(
-                            right: otherPadding,
-                            bottom: otherPadding,
-                            left: otherPadding,
-                          ),
-                          child: Column(
-                            children: rows
-                                .map((row) => Stack(
-                                      children: <Widget>[
-                                        Row(
-                                          children: row
-                                              .map((item) => SizedBox(
-                                                    width: width / 7,
-                                                    height: height / 6,
-                                                    child: item,
-                                                  ))
-                                              .toList()
-                                              .cast<Widget>(),
-                                        ),
-                                        ...getEventViewsForWeek(row[0].date,
-                                            row[6].date, width, height)
-                                      ],
-                                    ))
-                                .toList(),
-                          ),
-                        ),
-                      ],
-                    ));
-                  }
-                  return Container(
-                    height: constraints.maxHeight,
-                    child: CustomRefreshIndicator(
-                      loadOnline: () =>
-                          Static.calendar.loadOnline(context, force: true),
-                      child: SingleChildScrollView(
-                        physics: AlwaysScrollableScrollPhysics(),
-                        child: Container(
+                            ],
+                          ));
+                        }
+                        return Container(
                           height: constraints.maxHeight,
-                          child: CustomHero(
-                            //tag: Keys.calendar, //TODO: Fix animation
-                            child: Material(
-                              type: MaterialType.transparency,
-                              child: TabBarView(
-                                controller: controller,
-                                children: tabs.cast<Widget>(),
+                          child: CustomRefreshIndicator(
+                            loadOnline: () => Static.calendar
+                                .loadOnline(context, force: true),
+                            child: SingleChildScrollView(
+                              physics: AlwaysScrollableScrollPhysics(),
+                              child: Container(
+                                height: constraints.maxHeight,
+                                child: CustomHero(
+                                  //tag: Keys.calendar, //TODO: Fix animation
+                                  child: Material(
+                                    type: MaterialType.transparency,
+                                    child: TabBarView(
+                                      controller: controller,
+                                      children: tabs.cast<Widget>(),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+                        );
+                      },
+                    )
+                  : EmptyList(title: 'Keine Kalender'),
             ),
             CustomHero(
               tag: Keys.navigation(Keys.calendar),

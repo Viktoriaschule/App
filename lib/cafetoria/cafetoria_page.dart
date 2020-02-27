@@ -109,7 +109,9 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
                       ),
                     );
                   })
-              : EmptyList(title: 'Keine Menüs'),
+              : Center(
+                  child: EmptyList(title: 'Keine Menüs'),
+                ),
         ),
       ),
     );
