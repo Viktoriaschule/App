@@ -135,7 +135,7 @@ class _ListGroupState extends Interactor<ListGroup>
                               widget.loadingKeys != null && _isLoading ? 0 : 1,
                           child: Center(
                             child: Text(
-                              '+${widget.counter}',
+                              widget.counter > 0 ? '+${widget.counter}' : '',
                               style: TextStyle(
                                 fontWeight: FontWeight.w100,
                                 color: ThemeWidget.of(context).textColor,
