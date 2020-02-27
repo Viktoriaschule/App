@@ -90,9 +90,10 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
                     margin: EdgeInsets.all(10),
                     child: Column(
                       children: [
-                        TimetableRow(
-                          subject: subject,
-                        ),
+                        if (substitutions.isEmpty)
+                          TimetableRow(
+                            subject: subject,
+                          ),
                         ...substitutions
                             .where((substitution) =>
                                 substitution.unit == subject.unit)
@@ -104,7 +105,8 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
                                             : 5),
                                 child: SubstitutionPlanRow(
                                   substitution: substitution,
-                                  showUnit: false,
+                                  showUnit:
+                                      substitutions.indexOf(substitution) == 0,
                                   keepPadding: true,
                                 )))
                             .toList()

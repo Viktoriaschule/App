@@ -173,24 +173,25 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                               margin: EdgeInsets.all(10),
                               child: Column(
                                 children: [
-                                  TimetableRow(
-                                    subject: subject ??
-                                        TimetableSubject(
-                                          unit: unit.unit,
-                                          subjectID: 'none',
-                                          teacherID: null,
-                                          roomID: null,
-                                          courseID: '',
-                                          id: '',
-                                          day: weekday,
-                                          block: '',
-                                        ),
-                                    showUnit: getScreenSize(
-                                            MediaQuery.of(context)
-                                                .size
-                                                .width) !=
-                                        ScreenSize.big,
-                                  ),
+                                  if (substitutions.isEmpty)
+                                    TimetableRow(
+                                      subject: subject ??
+                                          TimetableSubject(
+                                            unit: unit.unit,
+                                            subjectID: 'none',
+                                            teacherID: null,
+                                            roomID: null,
+                                            courseID: '',
+                                            id: '',
+                                            day: weekday,
+                                            block: '',
+                                          ),
+                                      showUnit: getScreenSize(
+                                              MediaQuery.of(context)
+                                                  .size
+                                                  .width) !=
+                                          ScreenSize.big,
+                                    ),
                                   ...substitutions
                                       .map((substitution) => Padding(
                                             padding: EdgeInsets.only(
@@ -201,7 +202,9 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                                                     : 5),
                                             child: SubstitutionPlanRow(
                                               substitution: substitution,
-                                              showUnit: false,
+                                              showUnit: substitutions
+                                                      .indexOf(substitution) ==
+                                                  0,
                                               keepPadding: getScreenSize(
                                                       MediaQuery.of(context)
                                                           .size
