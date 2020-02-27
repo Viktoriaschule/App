@@ -138,8 +138,7 @@ class SubstitutionPlanDay {
     for (final substitution in data[filteredGrade]) {
       if (substitution.id != null && subjectsIds.contains(substitution.id)) {
         subjects[subjectsIds.indexOf(substitution.id)]
-            .substitutions
-            .add(substitution);
+            .addSubstitution(substitution);
       } else if (substitution.courseID != null &&
           subjectsCourseIDs.contains(substitution.courseID)) {
         final List<TimetableSubject> _subjects =

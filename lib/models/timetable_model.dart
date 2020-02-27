@@ -41,7 +41,7 @@ class Timetable {
       for (final unit in day.units) {
         unit.substitutions = [];
         for (final subject in unit.subjects) {
-          subject.substitutions = [];
+          subject.clearSubstitutions();
         }
       }
     }
@@ -248,14 +248,27 @@ class TimetableSubject {
   /// The day index of the subject (0 to 4)
   final int day;
 
-  /// All substitution for this subject
-  List<Substitution> substitutions = [];
+  final List<Substitution> _substitutions = [];
 
-  /// Returns all changes with this subject id
-  List<Substitution> getSubstitutions() => [
-        ...?substitutions,
-        ...?Static.timetable.data.days[day].units[unit].substitutions
-      ];
+  // ignore: public_member_api_docs
+  void clearSubstitutions() => _substitutions.clear();
+
+  /// Set all substitutions for this subject
+  void addSubstitution(Substitution substitution) =>
+      _substitutions.add(substitution);
+
+  /// Returns all substitutions with this subject id
+  List<Substitution> get substitutions {
+    final ttUnit = Static.timetable.data.days[day].units[unit];
+    final ttCourse = ttUnit != null
+        ? Static.selection.getSelectedSubject(ttUnit.subjects)?.courseID
+        : null;
+    return [
+      ..._substitutions,
+      if (ttUnit != null)
+        ...ttUnit.substitutions.where((s) => s.courseID == ttCourse).toList()
+    ];
+  }
 
   /// Check if the exams is already set
   bool get examIsSet => Static.storage.getBool(Keys.exam(subjectID)) != null;

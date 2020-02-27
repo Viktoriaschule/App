@@ -100,11 +100,13 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
                         ...substitutions
                             .where((substitution) =>
                                 substitution.unit == subject.unit)
-                            .map((substitution) => SubstitutionPlanRow(
+                            .map((substitution) => Padding(
+                              padding: EdgeInsets.only(top: substitutions.indexOf(substitution) == 0 ? 0 : 5),
+                              child: SubstitutionPlanRow(
                                   substitution: substitution,
                                   showUnit: false,
                                   keepPadding: true,
-                                ))
+                                )))
                             .toList()
                             .cast<Widget>(),
                       ],

@@ -189,16 +189,18 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                                         ScreenSize.big,
                                   ),
                                   ...substitutions
-                                      .map(
-                                          (substitution) => SubstitutionPlanRow(
-                                                substitution: substitution,
-                                                showUnit: false,
-                                                keepPadding: getScreenSize(
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width) !=
-                                                    ScreenSize.big,
-                                              ))
+                                      .map((substitution) => Padding(
+                                            padding: EdgeInsets.only(top: substitutions.indexOf(substitution) == 0 ? 0 : 5),
+                                            child: SubstitutionPlanRow(
+                                              substitution: substitution,
+                                              showUnit: false,
+                                              keepPadding: getScreenSize(
+                                                      MediaQuery.of(context)
+                                                          .size
+                                                          .width) !=
+                                                  ScreenSize.big,
+                                            ),
+                                          ))
                                       .toList()
                                       .cast<Widget>(),
                                 ],
