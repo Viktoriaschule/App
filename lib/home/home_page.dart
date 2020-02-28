@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
@@ -19,6 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends Interactor<HomePage> {
   DateTime day;
+  Future<void> timeUpdates = Future.delayed(Duration(seconds: 0));
 
   DateTime getDay() => Static.timetable.hasLoadedData
       ? Static.timetable.data.initialDay(DateTime.now())
@@ -27,12 +30,63 @@ class _HomePageState extends Interactor<HomePage> {
         ));
 
   @override
-  Subscription subscribeEvents(EventBus eventBus) => eventBus
-      .respond<TimetableUpdateEvent>((event) => setState(() => day = getDay()));
+  Subscription subscribeEvents(EventBus eventBus) =>
+      eventBus.respond<TimetableUpdateEvent>((event) => update());
+
+  void update() => setState(() {
+        day = getDay();
+        timeUpdate();
+      });
+
+  /// Cancel the time updater
+  Future<void> cancelTimeUpdate() async {
+    try {
+      // After updating the timeout the future will directly stops
+      await timeUpdates.timeout(Duration(seconds: 0));
+      // Wait until the future is finished
+      await timeUpdates;
+    } on TimeoutException {
+      // An await throws a timeout when the future was finished after a timeout, so catch them
+      return;
+    }
+  }
+
+  /// Update the time automatically
+  Future<void> timeUpdate() async {
+    if (Static.timetable.hasLoadedData) {
+      final subjects =
+          Static.timetable.data.days[day.weekday - 1].getFutureSubjects(day);
+      if (subjects.isNotEmpty) {
+        // First cancel the current updater
+        await cancelTimeUpdate();
+
+        // Get the duration until the next unit ends
+        final duration = Times.getUnitTimes(subjects[0].unit)[1];
+        final now = DateTime.now();
+        final end = DateTime(
+            day.year, day.month, day.day, 0, duration.inMinutes, 10, 0, 0);
+
+        // Set the new updater
+        timeUpdates = Future.delayed(end.difference(now)).then((_) {
+          if (mounted) {
+            update();
+            timeUpdate();
+          }
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    cancelTimeUpdate();
+    super.dispose();
+  }
 
   @override
   void initState() {
     day = getDay();
+    timeUpdate();
     super.initState();
   }
 

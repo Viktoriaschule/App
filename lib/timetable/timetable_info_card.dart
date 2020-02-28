@@ -31,18 +31,6 @@ class TimetableInfoCard extends StatefulWidget {
 class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
   InfoCardUtils utils;
 
-  List<TimetableSubject> getSubjects() => Static.timetable.hasLoadedData
-      ? Static.timetable.data.days[widget.date.weekday - 1].units
-          .map((unit) => Static.selection.getSelectedSubject(unit.subjects))
-          .where((subject) =>
-              subject != null &&
-              subject.subjectID != 'Mittagspause' &&
-              subject.subjectID != 'Freistunde' &&
-              DateTime.now().isBefore(
-                  widget.date.add(Times.getUnitTimes(subject.unit)[1])))
-          .toList()
-      : [];
-
   @override
   Subscription subscribeEvents(EventBus eventBus) => eventBus
       .respond<TagsUpdateEvent>((event) => setState(() => null))
@@ -51,7 +39,10 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
 
   @override
   Widget build(BuildContext context) {
-    final subjects = getSubjects();
+    final subjects = Static.timetable.hasLoadedData
+        ? Static.timetable.data.days[widget.date.weekday - 1]
+            .getFutureSubjects(widget.date)
+        : [];
     utils ??= InfoCardUtils(context, widget.date);
     return ListGroup(
       loadingKeys: [Keys.timetable],
