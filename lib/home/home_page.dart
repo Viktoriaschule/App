@@ -64,7 +64,7 @@ class _HomePageState extends Interactor<HomePage> {
         final duration = Times.getUnitTimes(subjects[0].unit)[1];
         final now = DateTime.now();
         final end = DateTime(
-            day.year, day.month, day.day, 0, duration.inMinutes, 10, 0, 0);
+            day.year, day.month, day.day, 0, duration.inMinutes, 0, 0, 0);
 
         // Set the new updater
         timeUpdates = Future.delayed(end.difference(now)).then((_) {
