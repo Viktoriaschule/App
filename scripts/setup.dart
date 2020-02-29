@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'command.dart';
-import 'generate.dart' as generate;
+import 'icons.dart' as icons;
 
 Future main(List<String> arguments) async {
   var logDebug = false;
@@ -37,5 +37,5 @@ Future main(List<String> arguments) async {
     log: logDebug,
   );
 
-  await generate.main(arguments);
+  await icons.main(arguments);
 }
