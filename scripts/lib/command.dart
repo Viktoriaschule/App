@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+// ignore: public_member_api_docs
 Future<dynamic> runCommand(String cmd, List<String> attributes,
     {String dir, bool log, bool runInShell}) async {
   print('Run: $cmd${dir != null ? ' ($dir)' : ''}');

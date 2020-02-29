@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-
-import 'command.dart';
+import 'package:scripts/command.dart';
 
 Future main(List<String> arguments) async {
   var logDebug = false;
