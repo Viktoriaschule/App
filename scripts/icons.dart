@@ -80,17 +80,7 @@ Future main(List<String> arguments) async {
     'flutter',
     ['pub', 'get'],
     log: logDebug,
-  );
-  await runCommand(
-    'flutter',
-    [
-      'pub',
-      'run',
-      'flutter_launcher_icons:main',
-      '-f',
-      'icons_white.yaml',
-    ],
-    log: logDebug,
+    dir: 'app_frame',
   );
   await runCommand(
     'flutter',
@@ -102,12 +92,11 @@ Future main(List<String> arguments) async {
       'icons_green.yaml',
     ],
     log: logDebug,
+    dir: 'app_frame',
   );
 
-  //await Directory('go/assets/').create();
   await File('images/logo_white.png')
-      .copy('android/app/src/main/res/drawable/logo_white.png');
-  //await File('images/logo_green.png').copy('go/assets/icon.png');
+      .copy('app_frame/android/app/src/main/res/drawable/logo_white.png');
 }
 
 Future<List<int>> post(String url, Map<String, dynamic> body) async =>

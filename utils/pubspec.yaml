@@ -1,0 +1,24 @@
+name: utils
+
+environment:
+  sdk: ">=2.3.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_messaging:
+  js:
+  shared_preferences:
+  encrypt:
+  crypto:
+  flutter_event_bus:
+  intl:
+  dio:
+  aixformation:
+    path: ../features/aixformation
+  cafetoria:
+    path: ../features/cafetoria
+  calendar:
+    path: ../features/calendar
+  substitution_plan:
+    path: ../features/substitution_plan

@@ -1,0 +1,21 @@
+name: timetable
+
+environment:
+  sdk: ">=2.3.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dio:
+  material_design_icons_flutter:
+  flutter_event_bus:
+  substitution_plan:
+    path: ../substitution_plan
+  calendar:
+    path: ../calendar
+  cafetoria:
+    path: ../cafetoria
+  utils:
+    path: ../../utils
+  widgets:
+    path: ../../widgets

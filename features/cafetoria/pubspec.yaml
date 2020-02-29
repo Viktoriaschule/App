@@ -1,0 +1,14 @@
+name: cafetoria
+
+environment:
+  sdk: ">=2.3.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  url_launcher:
+  material_design_icons_flutter:
+  utils:
+    path: ../../utils
+  widgets:
+    path: ../../widgets
