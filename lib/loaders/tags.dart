@@ -156,13 +156,13 @@ class TagsLoader extends Loader<Tags> {
   }
 
   /// Sync the tags
-  Future<StatusCodes> syncTags(BuildContext context,
+  Future<StatusCode> syncTags(BuildContext context,
       {bool checkSync = true}) async {
     // Get all server tags...
     final status = await loadOnline(context, force: true);
     final Tags allTags = parsedData;
     if (allTags == null) {
-      return reduceStatusCodes([status, StatusCodes.failed]);
+      return reduceStatusCodes([status, StatusCode.failed]);
     }
 
     if (checkSync) {
@@ -252,6 +252,6 @@ class TagsLoader extends Loader<Tags> {
       final result = await sendTags(tagsToUpdate, context);
       return reduceStatusCodes([status, result]);
     }
-    return StatusCodes.success;
+    return StatusCode.success;
   }
 }

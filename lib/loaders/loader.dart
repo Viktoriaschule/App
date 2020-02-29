@@ -49,26 +49,26 @@ abstract class Loader<LoaderType> {
     try {
       final data = fromJSON(json.decode(rawJson));
       return LoaderResponse<LoaderType>(
-          data: data, statusCode: StatusCodes.success);
+          data: data, statusCode: StatusCode.success);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
       return LoaderResponse<LoaderType>(
-          data: null, statusCode: StatusCodes.wrongFormat);
+          data: null, statusCode: StatusCode.wrongFormat);
     }
   }
 
   /// Update the loader if the update hash has changed
-  Future<StatusCodes> update(BuildContext context, Updates newUpdates,
+  Future<StatusCode> update(BuildContext context, Updates newUpdates,
       {bool force = false}) async {
     final hash = newUpdates.getUpdate(key);
     if (force || Static.updates.data.getUpdate(key) != hash || !hasLoadedData) {
       final status = await loadOnline(context, force: force);
-      if (status == StatusCodes.success) {
+      if (status == StatusCode.success) {
         Static.updates.data.setUpdate(key, hash);
       }
       return status;
     }
-    return StatusCodes.success;
+    return StatusCode.success;
   }
 
   // ignore: public_member_api_docs
@@ -76,7 +76,7 @@ abstract class Loader<LoaderType> {
     if (hasStoredData) {
       final parsed = _fromJSON(Static.storage.getString(key));
       parsedData = parsed.data;
-      if (parsed.statusCode != StatusCodes.success) {
+      if (parsed.statusCode != StatusCode.success) {
         Static.storage.remove(key);
       }
       _sendLoadedEvent(Pages.of(context), EventBus.of(context));
@@ -84,7 +84,7 @@ abstract class Loader<LoaderType> {
   }
 
   /// Download the data from the api and returns the status code
-  Future<StatusCodes> loadOnline(BuildContext context,
+  Future<StatusCode> loadOnline(BuildContext context,
           {String username,
           String password,
           bool force = false,
@@ -128,7 +128,7 @@ abstract class Loader<LoaderType> {
       bool store = true,
       bool autoLogin = true}) async {
     if (_loadedFromOnline && !force) {
-      return LoaderResponse(statusCode: StatusCodes.success);
+      return LoaderResponse(statusCode: StatusCode.success);
     }
 
     final pages = context != null ? Pages.of(context) : null;
@@ -173,7 +173,7 @@ abstract class Loader<LoaderType> {
           final parsed = _fromJSON(_rawData);
           parsedData = parsed.data ?? parsedData;
           statusCodes.add(parsed.statusCode);
-          if (parsed.statusCode == StatusCodes.success) {
+          if (parsed.statusCode == StatusCode.success) {
             save();
           }
           _loadedFromOnline = true;
@@ -189,10 +189,10 @@ abstract class Loader<LoaderType> {
       dynamic data;
       try {
         data = json.decode(response.toString());
-        statusCodes.add(StatusCodes.success);
+        statusCodes.add(StatusCode.success);
         // ignore: avoid_catches_without_on_clauses
       } catch (e) {
-        statusCodes.add(StatusCodes.wrongFormat);
+        statusCodes.add(StatusCode.wrongFormat);
       }
 
       return LoaderResponse(
@@ -206,16 +206,16 @@ abstract class Loader<LoaderType> {
               await Navigator.of(context)
                   .pushReplacementNamed('/${Keys.login}');
             }
-            return LoaderResponse(statusCode: StatusCodes.unauthorized);
+            return LoaderResponse(statusCode: StatusCode.unauthorized);
           }
-          return LoaderResponse(statusCode: StatusCodes.failed);
+          return LoaderResponse(statusCode: StatusCode.failed);
         case DioErrorType.DEFAULT:
           if (e.error is SocketException) {
-            return LoaderResponse(statusCode: StatusCodes.offline);
+            return LoaderResponse(statusCode: StatusCode.offline);
           }
-          return LoaderResponse(statusCode: StatusCodes.failed);
+          return LoaderResponse(statusCode: StatusCode.failed);
         default:
-          return LoaderResponse(statusCode: StatusCodes.failed);
+          return LoaderResponse(statusCode: StatusCode.failed);
       }
     }
   }
@@ -267,5 +267,5 @@ class LoaderResponse<T> {
   final T data;
 
   // ignore: public_member_api_docs
-  final StatusCodes statusCode;
+  final StatusCode statusCode;
 }

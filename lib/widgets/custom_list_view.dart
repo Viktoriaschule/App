@@ -29,7 +29,7 @@ class CustomListView extends StatefulWidget {
   final bool isTop;
 
   // ignore: public_member_api_docs
-  final Future<StatusCodes> Function() loadOnline;
+  final Future<StatusCode> Function() loadOnline;
 
   @override
   _CustomListViewState createState() => _CustomListViewState();

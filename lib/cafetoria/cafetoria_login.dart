@@ -54,12 +54,12 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
       setState(() => loggingIn = true);
       final loginStatus = await Static.cafetoria
           .checkLogin(idController.text, passwordController.text, context);
-      failMsg = loginStatus == StatusCodes.success
+      failMsg = loginStatus == StatusCode.success
           ? null
-          : (loginStatus == StatusCodes.failed
+          : (loginStatus == StatusCode.failed
               ? 'Serverfehler - Versuche es später nochmal'
               : getStatusCodeMsg(loginStatus));
-      _credentialsCorrect = loginStatus == StatusCodes.success;
+      _credentialsCorrect = loginStatus == StatusCode.success;
       if (_formKey.currentState.validate()) {
         // Save correct credentials
         Static.storage.setString(
@@ -71,7 +71,7 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
           await Static.tags.syncTags(context),
           await Static.cafetoria.loadOnline(context, force: true),
         ]);
-        if (status != StatusCodes.success) {
+        if (status != StatusCode.success) {
           Scaffold.of(context).showSnackBar(
             SnackBar(
               content: Text(getStatusCodeMsg(status)),
@@ -197,11 +197,11 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
                                       await Static.cafetoria.logout(context);
                                   setState(() => loggingOut = false);
                                   switch (status) {
-                                    case StatusCodes.success:
+                                    case StatusCode.success:
                                       Navigator.pop(context);
                                       widget.onFinished();
                                       return;
-                                    case StatusCodes.offline:
+                                    case StatusCode.offline:
                                       failMsg = 'Offline';
                                       break;
                                     default:

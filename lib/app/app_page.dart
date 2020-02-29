@@ -42,14 +42,14 @@ class _AppPageState extends Interactor<AppPage>
         );
       });
 
-  Future<StatusCodes> _fetchData(
+  Future<StatusCode> _fetchData(
       {bool force = false, bool showStatus = true}) async {
     try {
       final result =
           await Static.tags.loadOnline(context, force: true, autoLogin: false);
-      if (result == StatusCodes.unauthorized) {
+      if (result == StatusCode.unauthorized) {
         await _launchLogin();
-      } else if (result != StatusCodes.success) {
+      } else if (result != StatusCode.success) {
         if (showStatus) {
           Scaffold.of(context).showSnackBar(SnackBar(
             content: Text(getStatusCodeMsg(result)),
@@ -119,7 +119,7 @@ class _AppPageState extends Interactor<AppPage>
         // Wait until all futures are finished
         final codes = await Future.wait(downloads);
         final status = reduceStatusCodes(codes);
-        if (status != StatusCodes.success) {
+        if (status != StatusCode.success) {
           Scaffold.of(context).showSnackBar(
             SnackBar(
               content: Text(getStatusCodeMsg(status)),
@@ -133,7 +133,7 @@ class _AppPageState extends Interactor<AppPage>
       }
       return result;
     } on DioError {
-      return StatusCodes.failed;
+      return StatusCode.failed;
     }
   }
 

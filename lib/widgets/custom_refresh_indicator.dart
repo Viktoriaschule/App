@@ -11,7 +11,7 @@ class CustomRefreshIndicator extends StatelessWidget {
   }) : super(key: key);
 
   // ignore: public_member_api_docs
-  final Future<StatusCodes> Function() loadOnline;
+  final Future<StatusCode> Function() loadOnline;
 
   // ignore: public_member_api_docs
   final Widget child;
@@ -21,7 +21,7 @@ class CustomRefreshIndicator extends StatelessWidget {
         onRefresh: () async {
           // ignore: unawaited_futures
           loadOnline().then((status) {
-            if (status != StatusCodes.success) {
+            if (status != StatusCode.success) {
               Scaffold.of(context).showSnackBar(
                 SnackBar(
                   content: Text(getStatusCodeMsg(status)),
