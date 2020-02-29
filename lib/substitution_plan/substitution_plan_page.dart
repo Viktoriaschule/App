@@ -194,7 +194,13 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                         ListGroup(
                           title: 'Meine Vertretungen',
                           children: [
-                            myChangesWidget,
+                            Container(
+                              margin: EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                              ),
+                              child: myChangesWidget,
+                            ),
                           ],
                         ),
                       if (getScreenSize(MediaQuery.of(context).size.width) !=
@@ -204,7 +210,13 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                         ListGroup(
                           title: 'Weitere Vertretungen',
                           children: [
-                            notMyChangesWidget,
+                            Container(
+                              margin: EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                              ),
+                              child: notMyChangesWidget,
+                            ),
                           ],
                         ),
                     ];
@@ -225,7 +237,13 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                         ListGroup(
                           title: 'Vertretungen',
                           children: [
-                            changesWidget,
+                            Container(
+                              margin: EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                              ),
+                              child: changesWidget,
+                            ),
                           ],
                         ),
                     ];
