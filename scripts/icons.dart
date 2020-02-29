@@ -36,8 +36,9 @@ Future main(List<String> arguments) async {
             '',
           ))
       .group(0);
-  final logoGreenG =
-      RegExp('<g.*<\/g>').firstMatch(logoGreen.replaceAll('\n', '')).group(0);
+  final logoGreenG = RegExp('<g.*<\/g>')
+      .firstMatch(logoGreen.replaceAll(RegExp('\n|\r'), ''))
+      .group(0);
 
   final managementLogo = [
     '<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">',
