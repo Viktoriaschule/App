@@ -65,12 +65,16 @@ class Device {
 
   // ignore: public_member_api_docs
   final String os;
+
   // ignore: public_member_api_docs
   final String name;
+
   // ignore: public_member_api_docs
   final String appVersion;
+
   // ignore: public_member_api_docs
   final DeviceSettings deviceSettings;
+
   // ignore: public_member_api_docs
   final String firebaseId;
 
@@ -127,6 +131,7 @@ class CafetoriaTags {
 
   // ignore: public_member_api_docs
   final String id;
+
   // ignore: public_member_api_docs
   final String password;
 
