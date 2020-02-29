@@ -88,14 +88,23 @@ Future main(List<String> arguments) async {
       'run',
       'flutter_launcher_icons:main',
       '-f',
+      'icons_white.yaml',
+    ],
+    log: logDebug,
+    dir: 'app_frame',
+  );
+  await runCommand(
+    'flutter',
+    [
+      'pub',
+      'run',
+      'flutter_launcher_icons:main',
+      '-f',
       'icons_green.yaml',
     ],
     log: logDebug,
     dir: 'app_frame',
   );
-
-  await File('images/logo_white.png')
-      .copy('app_frame/android/app/src/main/res/drawable/logo_white.png');
 }
 
 Future<List<int>> post(String url, Map<String, dynamic> body) async =>
