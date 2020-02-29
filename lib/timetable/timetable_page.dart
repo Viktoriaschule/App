@@ -33,24 +33,9 @@ class _TimetablePageState extends Interactor<TimetablePage> {
 
   @override
   Widget build(BuildContext context) {
-    var dayOffset = 0;
-    final _date = DateTime.now();
-    var _day = DateTime(
-      _date.year,
-      _date.month,
-      _date.day,
-    );
-    final lessonCount =
-        Static.timetable.data.days[_day.weekday - 1].getUserLessonsCount();
-    if (DateTime.now()
-        .isAfter(_day.add(Times.getUnitTimes(lessonCount - 1)[1]))) {
-      _day = _day.add(Duration(days: 1));
-      dayOffset++;
-    }
-    if (_day.weekday > 5) {
-      dayOffset += monday(_day).difference(_day).inDays;
-    }
-    dayOffset = dayOffset + _date.weekday - 1;
+    final _monday = monday(Static.timetable.hasLoadedData
+        ? Static.timetable.data.initialDay(DateTime.now())
+        : DateTime.now());
     return Scaffold(
       appBar: CustomAppBar(
         title: Pages.of(context).pages[Keys.timetable].title,
@@ -131,8 +116,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                     ),
                   ],
                   append: List.generate(5, (weekday) {
-                    final day = monday(DateTime.now())
-                        .add(Duration(days: weekday + dayOffset));
+                    final day = _monday.add(Duration(days: weekday));
                     final cafetoriaView = CafetoriaInfoCard(
                       date: day,
                       showNavigation: false,
@@ -152,8 +136,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                     5,
                     (weekday) =>
                         Static.timetable.data.days[weekday].units.map((unit) {
-                      final day = monday(DateTime.now())
-                          .add(Duration(days: weekday + dayOffset));
+                      final day = _monday.add(Duration(days: weekday));
                       final subject =
                           Static.selection.getSelectedSubject(unit.subjects);
                       // ignore: omit_local_variable_types
