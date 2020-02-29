@@ -30,7 +30,7 @@ class CustomGridTabsList extends StatefulWidget {
   final List<List<Widget>> append;
 
   // ignore: public_member_api_docs
-  final Future<StatusCodes> Function() onRefresh;
+  final Future<StatusCode> Function() onRefresh;
 
   @override
   _CustomGridTabsListState createState() => _CustomGridTabsListState();

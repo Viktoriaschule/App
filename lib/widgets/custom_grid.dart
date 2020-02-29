@@ -42,7 +42,7 @@ class CustomGrid extends StatefulWidget {
   final int initialHorizontalIndex;
 
   // ignore: public_member_api_docs
-  final Future<StatusCodes> Function() onRefresh;
+  final Future<StatusCode> Function() onRefresh;
 
   @override
   _CustomGridState createState() => _CustomGridState();

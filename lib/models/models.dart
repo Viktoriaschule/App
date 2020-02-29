@@ -14,7 +14,7 @@ export 'updates_model.dart';
 export 'user.dart';
 
 /// Http status codes
-enum StatusCodes {
+enum StatusCode {
   // ignore: public_member_api_docs
   success,
   // ignore: public_member_api_docs
@@ -28,45 +28,45 @@ enum StatusCodes {
 }
 
 /// Reduces multiple status codes to one
-StatusCodes reduceStatusCodes(List<StatusCodes> statusCodes) {
+StatusCode reduceStatusCodes(List<StatusCode> statusCodes) {
   if (statusCodes
-      .map((e) => e == StatusCodes.success)
+      .map((e) => e == StatusCode.success)
       .reduce((v1, v2) => v1 && v2)) {
-    return StatusCodes.success;
-  } else if (statusCodes.contains(StatusCodes.offline)) {
-    return StatusCodes.offline;
-  } else if (statusCodes.contains(StatusCodes.wrongFormat)) {
-    return StatusCodes.wrongFormat;
+    return StatusCode.success;
+  } else if (statusCodes.contains(StatusCode.offline)) {
+    return StatusCode.offline;
+  } else if (statusCodes.contains(StatusCode.wrongFormat)) {
+    return StatusCode.wrongFormat;
   }
-  return StatusCodes.failed;
+  return StatusCode.failed;
 }
 
 /// Returns the status msg for the user
-String getStatusCodeMsg(StatusCodes status) {
+String getStatusCodeMsg(StatusCode status) {
   switch (status) {
-    case StatusCodes.offline:
+    case StatusCode.offline:
       return 'Du bist offline';
-    case StatusCodes.failed:
+    case StatusCode.failed:
       return 'Verbindung zum Server fehlgeschlagen';
-    case StatusCodes.wrongFormat:
+    case StatusCode.wrongFormat:
       return 'Serverfehler';
-    case StatusCodes.unauthorized:
+    case StatusCode.unauthorized:
       return 'Login-Daten nicht korrekt';
-    case StatusCodes.success:
+    case StatusCode.success:
       return 'Erfolgreich';
   }
   return null;
 }
 
 // ignore: public_member_api_docs
-StatusCodes getStatusCode(int httpStatusCode) {
+StatusCode getStatusCode(int httpStatusCode) {
   switch (httpStatusCode) {
     case 401:
-      return StatusCodes.unauthorized;
+      return StatusCode.unauthorized;
     case 200:
-      return StatusCodes.success;
+      return StatusCode.success;
     default:
-      return StatusCodes.failed;
+      return StatusCode.failed;
   }
 }
 

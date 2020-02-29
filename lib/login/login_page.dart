@@ -46,7 +46,7 @@ class _LoginPageState extends State<_LoginPage> {
       setState(() {
         _checkingLogin = false;
       });
-      if (result == StatusCodes.success) {
+      if (result == StatusCode.success) {
         Static.user.username = _usernameFieldController.text;
         Static.user.password = _passwordFieldController.text;
         await Navigator.of(context).pushReplacementNamed('/');
@@ -54,12 +54,12 @@ class _LoginPageState extends State<_LoginPage> {
       } else {
         String msg;
         switch (result) {
-          case StatusCodes.unauthorized:
+          case StatusCode.unauthorized:
             msg = 'Die Anmeldedaten sind falsch';
             _passwordFieldController.clear();
             FocusScope.of(context).requestFocus(_passwordFieldFocus);
             break;
-          case StatusCodes.offline:
+          case StatusCode.offline:
             msg = 'Du musst online sein';
             break;
           default:
