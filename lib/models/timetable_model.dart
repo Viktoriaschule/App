@@ -121,6 +121,19 @@ class TimetableDay {
     return 0;
   }
 
+  /// Returns all future subject for this day
+  List<TimetableSubject> getFutureSubjects(DateTime date) => units != null
+      ? units
+          .map((unit) => unit.getSelected())
+          .where((subject) =>
+              subject != null &&
+              subject.subjectID != 'Mittagspause' &&
+              subject.subjectID != 'Freistunde' &&
+              DateTime.now()
+                  .isBefore(date.add(Times.getUnitTimes(subject.unit)[1])))
+          .toList()
+      : [];
+
   /// Set the default selections...
   Future setSelections(int day) async {
     for (int i = 0; i < units.length; i++) {
