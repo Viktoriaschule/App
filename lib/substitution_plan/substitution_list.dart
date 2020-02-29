@@ -30,17 +30,7 @@ class SubstitutionList extends StatelessWidget {
   Widget build(BuildContext context) {
     int lastUnit = -1;
     return Column(
-      children: (substitutions
-            ..sort((a, b) {
-              var r = a.unit.compareTo(b.unit);
-              if (r == 0) {
-                r = a.courseID.compareTo(b.courseID);
-              }
-              if (r == 0) {
-                r = b.type.compareTo(a.type);
-              }
-              return r;
-            }))
+      children: substitutions
           .map((s) {
             final c = SizeLimit(
               child: Container(
