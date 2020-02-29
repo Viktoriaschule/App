@@ -4,7 +4,7 @@ import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/cafetoria/cafetoria_info_card.dart';
 import 'package:viktoriaapp/calendar/calendar_info_card.dart';
 import 'package:viktoriaapp/models/models.dart';
-import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
+import 'package:viktoriaapp/substitution_plan/substitution_list.dart';
 import 'package:viktoriaapp/timetable/timetable_row.dart';
 import 'package:viktoriaapp/timetable/timetable_select_dialog.dart';
 import 'package:viktoriaapp/utils/events.dart';
@@ -193,28 +193,14 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                                                 .width) !=
                                         ScreenSize.big,
                                   ),
-                                ...substitutions
-                                    .map((substitution) => Padding(
-                                          padding: EdgeInsets.only(
-                                              top: substitutions.indexOf(
-                                                          substitution) ==
-                                                      0
-                                                  ? 0
-                                                  : 5),
-                                          child: SubstitutionPlanRow(
-                                            substitution: substitution,
-                                            showUnit: substitutions
-                                                    .indexOf(substitution) ==
-                                                0,
-                                            keepPadding: getScreenSize(
-                                                    MediaQuery.of(context)
-                                                        .size
-                                                        .width) !=
-                                                ScreenSize.big,
-                                          ),
-                                        ))
-                                    .toList()
-                                    .cast<Widget>(),
+                                SubstitutionList(
+                                  substitutions: substitutions
+                                      .where((substitution) =>
+                                          substitution.unit == subject.unit)
+                                      .toList(),
+                                  keepPadding: true,
+                                  topPadding: false,
+                                ),
                               ],
                             ),
                           ),

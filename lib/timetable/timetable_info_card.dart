@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:viktoriaapp/models/models.dart';
-import 'package:viktoriaapp/substitution_plan/substitution_plan_row.dart';
+import 'package:viktoriaapp/substitution_plan/substitution_list.dart';
 import 'package:viktoriaapp/timetable/timetable_page.dart';
 import 'package:viktoriaapp/timetable/timetable_row.dart';
 import 'package:viktoriaapp/utils/events.dart';
@@ -85,23 +85,14 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
                           TimetableRow(
                             subject: subject,
                           ),
-                        ...substitutions
-                            .where((substitution) =>
-                                substitution.unit == subject.unit)
-                            .map((substitution) => Padding(
-                                padding: EdgeInsets.only(
-                                    top:
-                                        substitutions.indexOf(substitution) == 0
-                                            ? 0
-                                            : 5),
-                                child: SubstitutionPlanRow(
-                                  substitution: substitution,
-                                  showUnit:
-                                      substitutions.indexOf(substitution) == 0,
-                                  keepPadding: true,
-                                )))
-                            .toList()
-                            .cast<Widget>(),
+                        SubstitutionList(
+                          substitutions: substitutions
+                              .where((substitution) =>
+                                  substitution.unit == subject.unit)
+                              .toList(),
+                          keepPadding: true,
+                          topPadding: false,
+                        ),
                       ],
                     ),
                   );
