@@ -10,23 +10,15 @@ import 'timetable_page.dart';
 import 'timetable_row.dart';
 
 // ignore: public_member_api_docs
-class TimetableInfoCard extends StatefulWidget {
+class TimetableInfoCard extends InfoCard {
   // ignore: public_member_api_docs
-  const TimetableInfoCard({
-    @required this.date,
-    Key key,
-  }) : super(key: key);
-
-  // ignore: public_member_api_docs
-  final DateTime date;
+  const TimetableInfoCard({DateTime date}) : super(date: date);
 
   @override
   _TimetableInfoCardState createState() => _TimetableInfoCardState();
 }
 
-class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
-  InfoCardUtils utils;
-
+class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
   @override
   Subscription subscribeEvents(EventBus eventBus) => eventBus
       .respond<TagsUpdateEvent>((event) => setState(() => null))
@@ -34,13 +26,12 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
       .respond<SubstitutionPlanUpdateEvent>((event) => setState(() => null));
 
   @override
-  Widget build(BuildContext context) {
+  ListGroup getListGroup(BuildContext context, InfoCardUtils utils) {
     final loader = TimetableWidget.of(context).feature.loader;
     final subjects = loader.hasLoadedData
         ? loader.data.days[widget.date.weekday - 1]
             .getFutureSubjects(widget.date, loader.data.selection)
         : [];
-    utils ??= InfoCardUtils(context, widget.date);
     return ListGroup(
       loadingKeys: [TimetableKeys.timetable],
       title: 'Nächste Stunden - ${weekdays[widget.date.weekday - 1]}',

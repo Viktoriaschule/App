@@ -7,6 +7,7 @@ import 'package:timetable/src/timetable_loader.dart';
 import 'package:timetable/src/timetable_notifications.dart';
 import 'package:timetable/src/timetable_page.dart';
 import 'package:utils/utils.dart';
+import 'package:widgets/widgets.dart';
 
 export 'src/timetable_info_card.dart';
 export 'src/timetable_loader.dart';
@@ -35,7 +36,7 @@ class TimetableFeature implements Feature {
   final TagsHandler tagsHandler = null;
 
   @override
-  Widget getInfoCard(DateTime date) => TimetableInfoCard(date: date);
+  InfoCard getInfoCard(DateTime date) => TimetableInfoCard(date: date);
 
   @override
   Widget getPage() => TimetablePage();

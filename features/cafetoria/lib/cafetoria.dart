@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 import 'package:cafetoria/src/cafetoria_keys.dart';
 import 'package:cafetoria/src/cafetoria_loader.dart';
+import 'package:widgets/widgets.dart';
 
 export 'src/cafetoria_info_card.dart';
 export 'src/cafetoria_keys.dart';
@@ -36,7 +37,7 @@ class CafetoriaFeature implements Feature {
   final CafetoriaTagsHandler tagsHandler = CafetoriaTagsHandler();
 
   @override
-  Widget getInfoCard(DateTime date) => CafetoriaInfoCard(date: date);
+  InfoCard getInfoCard(DateTime date) => CafetoriaInfoCard(date: date);
 
   @override
   Widget getPage() => CafetoriaPage();

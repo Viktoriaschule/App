@@ -11,17 +11,13 @@ import 'calendar_page.dart';
 import 'calendar_row.dart';
 
 // ignore: public_member_api_docs
-class CalendarInfoCard extends StatefulWidget {
+class CalendarInfoCard extends InfoCard {
   // ignore: public_member_api_docs
   const CalendarInfoCard({
-    @required this.date,
+    @required DateTime date,
     this.showNavigation = true,
     this.isSingleDay = false,
-    Key key,
-  }) : super(key: key);
-
-  // ignore: public_member_api_docs
-  final DateTime date;
+  }) : super(date: date);
 
   // ignore: public_member_api_docs
   final bool showNavigation;
@@ -33,7 +29,7 @@ class CalendarInfoCard extends StatefulWidget {
   _CalendarInfoCardState createState() => _CalendarInfoCardState();
 }
 
-class _CalendarInfoCardState extends Interactor<CalendarInfoCard> {
+class _CalendarInfoCardState extends InfoCardState<CalendarInfoCard> {
   InfoCardUtils utils;
 
   List<CalendarEvent> getEvents(CalendarLoader loader) => loader.hasLoadedData
@@ -51,8 +47,7 @@ class _CalendarInfoCardState extends Interactor<CalendarInfoCard> {
       eventBus.respond<CalendarUpdateEvent>((event) => setState(() => null));
 
   @override
-  Widget build(BuildContext context) {
-    utils ??= InfoCardUtils(context, widget.date);
+  ListGroup getListGroup(BuildContext context, InfoCardUtils utils) {
     final loader = CalendarWidget.of(context).feature.loader;
     final _events = getEvents(loader);
     return ListGroup(

@@ -10,15 +10,11 @@ import 'substitution_plan_model.dart';
 import 'substitution_plan_page.dart';
 
 // ignore: public_member_api_docs
-class SubstitutionPlanInfoCard extends StatefulWidget {
+class SubstitutionPlanInfoCard extends InfoCard {
   // ignore: public_member_api_docs
   const SubstitutionPlanInfoCard({
-    @required this.date,
-    Key key,
-  }) : super(key: key);
-
-  // ignore: public_member_api_docs
-  final DateTime date;
+    @required DateTime date,
+  }) : super(date: date);
 
   @override
   _SubstitutionPlanInfoCardState createState() =>
@@ -26,7 +22,7 @@ class SubstitutionPlanInfoCard extends StatefulWidget {
 }
 
 class _SubstitutionPlanInfoCardState
-    extends Interactor<SubstitutionPlanInfoCard> {
+    extends InfoCardState<SubstitutionPlanInfoCard> {
   InfoCardUtils utils;
 
   SubstitutionPlanDay getSpDay(SubstitutionPlan data) =>
@@ -45,11 +41,11 @@ class _SubstitutionPlanInfoCardState
   void update(event) => setState(() => null);
 
   @override
-  Widget build(BuildContext context) {
+  ListGroup getListGroup(BuildContext context, InfoCardUtils utils) {
     final loader = SubstitutionPlanWidget.of(context).feature.loader;
     final substitutionPlanDay = getSpDay(loader.data);
     final substitutions = getSubstitutions(substitutionPlanDay);
-    utils ??= InfoCardUtils(context, widget.date);
+
     return ListGroup(
       loadingKeys: const [SubstitutionPlanKeys.substitutionPlan],
       heroId: getScreenSize(MediaQuery.of(context).size.width) ==

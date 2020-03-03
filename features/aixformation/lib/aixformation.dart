@@ -7,6 +7,7 @@ import 'package:aixformation/src/aixformation_notifications.dart';
 import 'package:aixformation/src/aixformation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
+import 'package:widgets/widgets.dart';
 
 export 'src/aixformation_info_card.dart';
 export 'src/aixformation_loader.dart';
@@ -36,7 +37,7 @@ class AiXformationFeature implements Feature {
   final TagsHandler tagsHandler = null;
 
   @override
-  Widget getInfoCard(DateTime date) => AiXformationInfoCard(date: date);
+  InfoCard getInfoCard(DateTime date) => AiXformationInfoCard(date: date);
 
   @override
   Widget getPage() => AiXformationPage();

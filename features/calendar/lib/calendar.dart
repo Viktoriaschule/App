@@ -6,6 +6,7 @@ import 'package:calendar/src/calendar_loader.dart';
 import 'package:calendar/src/calendar_page.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
+import 'package:widgets/widgets.dart';
 
 export 'src/calendar_info_card.dart';
 export 'src/calendar_loader.dart';
@@ -32,7 +33,7 @@ class CalendarFeature implements Feature {
   final TagsHandler tagsHandler = null;
 
   @override
-  Widget getInfoCard(DateTime date) => CalendarInfoCard(date: date);
+  InfoCard getInfoCard(DateTime date) => CalendarInfoCard(date: date);
 
   @override
   Widget getPage() => CalendarPage();

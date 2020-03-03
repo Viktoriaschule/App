@@ -3,6 +3,7 @@ import 'package:utils/src/feature_utils/feature_widget.dart';
 import 'package:utils/src/feature_utils/notifications.dart';
 import 'package:utils/src/feature_utils/tags.dart';
 import 'package:utils/src/loader.dart';
+import 'package:widgets/widgets.dart';
 
 export 'feature_widget.dart';
 export 'keys.dart';
@@ -47,7 +48,7 @@ abstract class Feature {
 
   //TODO: Replace with InfoCard type
   /// The information card of this feature for the home page of the app
-  Widget getInfoCard(DateTime date);
+  InfoCard getInfoCard(DateTime date);
 
   /// The custom page for this feature
   Widget getPage();

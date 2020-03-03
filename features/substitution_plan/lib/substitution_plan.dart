@@ -8,6 +8,7 @@ import 'package:substitution_plan/src/substitution_plan_notifications.dart';
 import 'package:substitution_plan/src/substitution_plan_page.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
+import 'package:widgets/widgets.dart';
 
 export 'src/substitution_list.dart';
 export 'src/substitution_plan_info_card.dart';
@@ -37,7 +38,7 @@ class SubstitutionPlanFeature implements Feature {
   final TagsHandler tagsHandler = null;
 
   @override
-  Widget getInfoCard(DateTime date) => SubstitutionPlanInfoCard(date: date);
+  InfoCard getInfoCard(DateTime date) => SubstitutionPlanInfoCard(date: date);
 
   @override
   Widget getPage() => SubstitutionPlanPage();

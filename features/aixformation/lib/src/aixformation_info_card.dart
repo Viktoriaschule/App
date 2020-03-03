@@ -10,34 +10,29 @@ import 'aixformation_page.dart';
 import 'aixformation_row.dart';
 
 // ignore: public_member_api_docs
-class AiXformationInfoCard extends StatefulWidget {
+class AiXformationInfoCard extends InfoCard {
   // ignore: public_member_api_docs
-  const AiXformationInfoCard({
-    @required this.date,
-    Key key,
-  }) : super(key: key);
-
-  // ignore: public_member_api_docs
-  final DateTime date;
+  const AiXformationInfoCard({@required DateTime date}) : super(date: date);
 
   @override
   _AiXformationInfoCardState createState() => _AiXformationInfoCardState();
 }
 
-class _AiXformationInfoCardState extends Interactor<AiXformationInfoCard> {
-  InfoCardUtils utils;
+class _AiXformationInfoCardState extends InfoCardState<AiXformationInfoCard> {
+  @override
+  Subscription subscribeEvents(EventBus eventBus) => eventBus
+      .respond<AiXformationUpdateEvent>((event) => setState(() => null));
 
   @override
-  Widget build(BuildContext context) {
+  ListGroup getListGroup(BuildContext context, InfoCardUtils utils) {
     final loader = AiXFormationWidget.of(context).feature.loader;
-    utils ??= InfoCardUtils(context, widget.date);
     final List<Post> posts = loader.hasLoadedData
         ? loader.data.posts.length > utils.cut
             ? loader.data.posts.sublist(0, utils.cut)
             : loader.data.posts
         : [];
     return ListGroup(
-      loadingKeys: [AiXformationKeys.aiXformation],
+      loadingKeys: const [AiXformationKeys.aiXformation],
       heroId: AiXformationKeys.aiXformation,
       actions: [
         NavigationAction(Icons.expand_more, () {
@@ -67,8 +62,4 @@ class _AiXformationInfoCardState extends Interactor<AiXformationInfoCard> {
       ],
     );
   }
-
-  @override
-  Subscription subscribeEvents(EventBus eventBus) => eventBus
-      .respond<AiXformationUpdateEvent>((event) => setState(() => null));
 }
