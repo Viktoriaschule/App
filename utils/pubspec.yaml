@@ -1,7 +1,7 @@
 name: utils
 
 environment:
-  sdk: ">=2.3.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -14,6 +14,7 @@ dependencies:
   flutter_event_bus:
   intl:
   dio:
+  package_info:
   aixformation:
     path: ../features/aixformation
   cafetoria:

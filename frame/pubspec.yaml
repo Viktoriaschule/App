@@ -1,0 +1,35 @@
+name: frame
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  material_design_icons_flutter:
+  after_layout:
+  dio:
+  flutter_event_bus:
+  aixformation:
+    path: ../features/aixformation
+  cafetoria:
+    path: ../features/cafetoria
+  calendar:
+    path: ../features/calendar
+  substitution_plan:
+    path: ../features/substitution_plan
+  timetable:
+    path: ../features/timetable
+  utils:
+    path: ../utils
+  widgets:
+    path: ../widgets
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  plugin:
+    androidPackage: app.viktoria.schule.frame
+    pluginClass: FramePlugin

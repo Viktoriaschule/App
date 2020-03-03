@@ -1,0 +1,33 @@
+name: viktoriaapp
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  frame:
+    path: ../../frame
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons:
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: Ubuntu
+      fonts:
+        - asset: packages/frame/fonts/Ubuntu-Regular.ttf
+        - asset: packages/frame/fonts/Ubuntu-Italic.ttf
+          style: italic
+        - asset: packages/frame/fonts/Ubuntu-Light.ttf
+          weight: 100
+        - asset: packages/frame/fonts/Ubuntu-Bold.ttf
+          weight: 700
+    - family: RobotoMono
+      fonts:
+        - asset: packages/frame/fonts/RobotoMono-Light.ttf
+          weight: 200

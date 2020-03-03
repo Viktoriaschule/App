@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'package:package_info/package_info.dart';
 
 import '../utils.dart';
 import 'crypt.dart';
@@ -24,12 +24,9 @@ class TagsLoader extends Loader<Tags> {
   /// Initialize device tags
   Future syncDevice(BuildContext context) async {
     final String id = await Static.firebaseMessaging.getToken();
-    final String appVersion = (await rootBundle.loadString('pubspec.yaml'))
-        .split('\n')
-        .where((line) => line.startsWith('version'))
-        .toList()[0]
-        .split(':')[1]
-        .trim();
+    final packageInfo = await PackageInfo.fromPlatform();
+    final String appVersion =
+        '${packageInfo.version}+${packageInfo.buildNumber}';
     final String os = Platform().platformName;
     if (id != null) {
       final Device device = Device(
