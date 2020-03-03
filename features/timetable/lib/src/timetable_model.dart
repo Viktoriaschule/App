@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:substitution_plan/substitution_plan.dart';
+import 'package:timetable/src/timetable_keys.dart';
 import 'package:utils/utils.dart';
 
 /// Describes the whole timetable
@@ -29,10 +30,13 @@ class Timetable {
   /// The grade of the timetable
   String grade;
 
+  /// The user timetable selection
+  Selection selection;
+
   /// Set all default selections...
   void setAllSelections() {
     for (int i = 0; i < days.length; i++) {
-      days[i].setSelections(days.indexOf(days[i]));
+      days[i].setSelections(days.indexOf(days[i]), selection);
     }
   }
 
@@ -45,7 +49,8 @@ class Timetable {
 
   /// return all selected subjects
   List<TimetableSubject> getAllSelectedSubjects() => days
-      .map((day) => day.units.map((unit) => unit.getSelected()).toList())
+      .map((day) =>
+          day.units.map((unit) => unit.getSelected(selection)).toList())
       .toList()
       .reduce((i1, i2) => List.from(i1)..addAll(i2))
       .where((subject) => subject != null && subject.unit != 5)
@@ -71,7 +76,7 @@ class Timetable {
     if (monday(date).isAfter(date)) {
       day = monday(date);
     }
-    final lessonCount = days[day.weekday - 1].getUserLessonsCount();
+    final lessonCount = days[day.weekday - 1].getUserLessonsCount(selection);
     if (date.isAfter(day.add(Times.getUnitTimes(lessonCount - 1)[1]))) {
       day = day.add(Duration(days: 1));
     }
@@ -108,11 +113,11 @@ class TimetableDay {
   /// Returns the lessons on this day for the user
   ///
   /// Without free lesson in the end
-  int getUserLessonsCount() {
+  int getUserLessonsCount(Selection selection) {
     for (int i = units.length - 1; i >= 0; i--) {
       final TimetableUnit unit = units[i];
       final TimetableSubject selected =
-          Static.selection.getSelectedSubject(unit.subjects);
+          selection.getSelectedSubject(unit.subjects);
 
       // If nothing  or a subject (not lunchtime and free lesson) selected return the index...
       if ((selected == null || selected.subjectID != 'Freistunde') && i != 5) {
@@ -123,22 +128,24 @@ class TimetableDay {
   }
 
   /// Returns all future subject for this day
-  List<TimetableSubject> getFutureSubjects(DateTime date) => units != null
-      ? units
-          .map((unit) => unit.getSelected())
-          .where((subject) =>
-              subject != null &&
-              subject.subjectID != 'Mittagspause' &&
-              subject.subjectID != 'Freistunde' &&
-              DateTime.now()
-                  .isBefore(date.add(Times.getUnitTimes(subject.unit)[1])))
-          .toList()
-      : [];
+  List<TimetableSubject> getFutureSubjects(
+          DateTime date, Selection selection) =>
+      units != null
+          ? units
+              .map((unit) => unit.getSelected(selection))
+              .where((subject) =>
+                  subject != null &&
+                  subject.subjectID != 'Mittagspause' &&
+                  subject.subjectID != 'Freistunde' &&
+                  DateTime.now()
+                      .isBefore(date.add(Times.getUnitTimes(subject.unit)[1])))
+              .toList()
+          : [];
 
   /// Set the default selections...
-  Future setSelections(int day) async {
+  Future setSelections(int day, Selection selection) async {
     for (int i = 0; i < units.length; i++) {
-      units[i].setSelection(day, i);
+      units[i].setSelection(day, i, selection);
     }
   }
 
@@ -187,16 +194,16 @@ class TimetableUnit {
   String get block => subjects.isNotEmpty ? subjects[0].block : null;
 
   /// Set the default selection
-  void setSelection(int day, int unit) {
+  void setSelection(int day, int unit, Selection selection) {
     if (subjects.length == 1) {
-      Static.selection
-          .setSelectedSubject(subjects[0], null, defaultSelection: true);
+      selection.setSelectedSubject(subjects[0], null, null, null,
+          defaultSelection: true);
     }
   }
 
   /// Return the selected subject
-  TimetableSubject getSelected() =>
-      Static.selection.getSelectedSubject(subjects);
+  TimetableSubject getSelected(Selection selection) =>
+      selection.getSelectedSubject(subjects);
 }
 
 /// Describes a subject of a timetable unit
@@ -251,8 +258,9 @@ class TimetableSubject {
   final int day;
 
   /// Returns all substitutions with this subject id
-  List<Substitution> getSubstitutions(DateTime date) =>
-      Static.substitutionPlan.data
+  List<Substitution> getSubstitutions(
+          DateTime date, SubstitutionPlan substitutionPlan) =>
+      substitutionPlan
           ?.getForDate(date)
           ?.myChanges
           ?.where((s) => s.unit == unit)
@@ -260,16 +268,18 @@ class TimetableSubject {
       [];
 
   /// Check if the exams is already set
-  bool get examIsSet => Static.storage.getBool(Keys.exam(subjectID)) != null;
+  bool get examIsSet =>
+      Static.storage.getBool(TimetableKeys.exam(subjectID)) != null;
 
   /// Get writing exams
-  bool get writeExams => Static.storage.getBool(Keys.exam(subjectID)) ?? true;
+  bool get writeExams =>
+      Static.storage.getBool(TimetableKeys.exam(subjectID)) ?? true;
 
   /// Set writing exams
   set writeExams(bool write) {
-    Static.storage.setBool(Keys.exam(subjectID), write);
-    Static.storage.setString(
-        Keys.examTimestamp(subjectID), DateTime.now().toIso8601String());
+    Static.storage.setBool(TimetableKeys.exam(subjectID), write);
+    Static.storage.setString(TimetableKeys.examTimestamp(subjectID),
+        DateTime.now().toIso8601String());
   }
 }
 
@@ -284,7 +294,7 @@ class Selection {
       }
 
       final String selected =
-          Static.storage.getString(Keys.selection(subjects[0].block));
+          Static.storage.getString(TimetableKeys.selection(subjects[0].block));
       if (selected != null) {
         final pSubjects =
             subjects.where((s) => s.courseID == selected).toList();
@@ -310,28 +320,29 @@ class Selection {
   }
 
   /// Set the selected subject
-  void setSelectedSubject(TimetableSubject selected, BuildContext context,
+  void setSelectedSubject(TimetableSubject selected, EventBus eventBus,
+      SubstitutionPlan substitutionPlan, Timetable timetable,
       {bool defaultSelection = false}) {
     // If it is a new selection update it
-    if (Static.storage.getString(Keys.selection(selected.block)) !=
+    if (Static.storage.getString(TimetableKeys.selection(selected.block)) !=
         selected.courseID) {
-      Static.storage
-          .setString(Keys.selection(selected.block), selected.courseID);
-      Static.storage.setString(Keys.selectionTimestamp(selected.block),
+      Static.storage.setString(
+          TimetableKeys.selection(selected.block), selected.courseID);
+      Static.storage.setString(TimetableKeys.selectionTimestamp(selected.block),
           DateTime.now().toIso8601String());
-      if (Static.substitutionPlan.hasLoadedData) {
-        Static.substitutionPlan.data.updateFilter();
+      if (substitutionPlan != null) {
+        substitutionPlan.updateFilter(timetable);
       }
     }
     if (!defaultSelection) {
-      EventBus.of(context).publish(TimetableUpdateEvent());
+      eventBus.publish(TimetableUpdateEvent());
     }
   }
 
   /// Checks if the user set any selections yet
   bool isSet() => Static.storage
       .getKeys()
-      .where((key) => key.startsWith(Keys.selection('')))
+      .where((key) => key.startsWith(TimetableKeys.selection('')))
       .isNotEmpty;
 
   /// Clears all selections
@@ -339,7 +350,8 @@ class Selection {
     Static.storage
         .getKeys()
         .where((key) =>
-            key.startsWith(Keys.selection('')) || key.startsWith(Keys.exam('')))
+            key.startsWith(TimetableKeys.selection('')) ||
+            key.startsWith(TimetableKeys.exam('')))
         .forEach((key) => Static.storage.setString(key, null));
   }
 

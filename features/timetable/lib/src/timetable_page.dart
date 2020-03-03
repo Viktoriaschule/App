@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:substitution_plan/substitution_plan.dart';
+import 'package:timetable/src/timetable_keys.dart';
+import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
@@ -26,34 +28,39 @@ class _TimetablePageState extends Interactor<TimetablePage> {
 
   @override
   Widget build(BuildContext context) {
-    final _monday = monday(Static.timetable.hasLoadedData
-        ? Static.timetable.data.initialDay(DateTime.now())
+    final loader = TimetableWidget.of(context).feature.loader;
+    final substitutionPlanFeature = SubstitutionPlanWidget.of(context).feature;
+    final _monday = monday(loader.hasLoadedData
+        ? loader.data.initialDay(DateTime.now())
         : DateTime.now());
     return Scaffold(
       appBar: CustomAppBar(
-        title: Pages.of(context).pages[Keys.timetable].title,
-        loadingKeys: [Keys.timetable, Keys.substitutionPlan, Keys.tags],
+        title: Pages.of(context).pages[TimetableKeys.timetable].title,
+        loadingKeys: [
+          TimetableKeys.timetable,
+          substitutionPlanFeature.featureKey,
+          Keys.tags
+        ],
       ),
       body: CustomHero(
-        tag: Keys.timetable,
-        child: Static.timetable.hasLoadedData &&
-                Static.substitutionPlan.hasLoadedData &&
-                Static.selection.isSet()
+        tag: TimetableKeys.timetable,
+        child: loader.hasLoadedData &&
+                substitutionPlanFeature.loader.hasLoadedData &&
+                loader.data.selection.isSet()
             ? Material(
                 type: MaterialType.transparency,
                 child: CustomGrid(
                   onRefresh: () async {
                     final results = [
                       await Static.tags.syncTags(context),
-                      await Static.timetable.loadOnline(context, force: true),
-                      await Static.substitutionPlan
+                      await loader.loadOnline(context, force: true),
+                      await substitutionPlanFeature.loader
                           .loadOnline(context, force: true),
                     ];
                     return reduceStatusCodes(results);
                   },
                   initialHorizontalIndex:
-                      Static.timetable.data.initialDay(DateTime.now()).weekday -
-                          1,
+                      loader.data.initialDay(DateTime.now()).weekday - 1,
                   type: getScreenSize(MediaQuery.of(context).size.width) ==
                           ScreenSize.big
                       ? CustomGridType.grid
@@ -127,14 +134,15 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                   }),
                   children: List.generate(
                     5,
-                    (weekday) =>
-                        Static.timetable.data.days[weekday].units.map((unit) {
+                    (weekday) => loader.data.days[weekday].units.map((unit) {
                       final day = _monday.add(Duration(days: weekday));
-                      final subject =
-                          Static.selection.getSelectedSubject(unit.subjects);
+                      final subject = loader.data.selection
+                          .getSelectedSubject(unit.subjects);
                       // ignore: omit_local_variable_types
                       final List<Substitution> substitutions =
-                          subject?.getSubstitutions(day) ?? [];
+                          subject?.getSubstitutions(
+                                  day, substitutionPlanFeature.loader.data) ??
+                              [];
                       return SizeLimit(
                         child: InkWell(
                           onTap: () async {
@@ -151,11 +159,15 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                               if (selection == null) {
                                 return;
                               }
-                              Static.selection
-                                  .setSelectedSubject(selection, context);
+                              loader.data.selection.setSelectedSubject(
+                                selection,
+                                EventBus.of(context),
+                                substitutionPlanFeature.loader.data,
+                                loader.data,
+                              );
                               setState(() {});
                               try {
-                                await Static.selection.save(context);
+                                await loader.data.selection.save(context);
                                 if (mounted) {
                                   setState(() {});
                                 }

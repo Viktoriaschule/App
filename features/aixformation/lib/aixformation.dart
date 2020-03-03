@@ -42,7 +42,7 @@ class AiXformationFeature implements Feature {
   Widget getPage() => AiXformationPage();
 
   @override
-  FeatureWidget<AiXformationFeature> getFeatureWidget(Widget child) =>
+  AiXFormationWidget getFeatureWidget(Widget child) =>
       AiXFormationWidget(feature: this, child: child);
 }
 

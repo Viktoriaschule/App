@@ -38,7 +38,7 @@ class CalendarFeature implements Feature {
   Widget getPage() => CalendarPage();
 
   @override
-  FeatureWidget<CalendarFeature> getFeatureWidget(Widget child) =>
+  CalendarWidget getFeatureWidget(Widget child) =>
       CalendarWidget(feature: this, child: child);
 }
 

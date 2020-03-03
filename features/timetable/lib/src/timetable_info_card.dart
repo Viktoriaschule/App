@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:substitution_plan/substitution_plan.dart';
+import 'package:timetable/src/timetable_keys.dart';
+import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
@@ -33,19 +35,20 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
 
   @override
   Widget build(BuildContext context) {
-    final subjects = Static.timetable.hasLoadedData
-        ? Static.timetable.data.days[widget.date.weekday - 1]
-            .getFutureSubjects(widget.date)
+    final loader = TimetableWidget.of(context).feature.loader;
+    final subjects = loader.hasLoadedData
+        ? loader.data.days[widget.date.weekday - 1]
+            .getFutureSubjects(widget.date, loader.data.selection)
         : [];
     utils ??= InfoCardUtils(context, widget.date);
     return ListGroup(
-      loadingKeys: [Keys.timetable],
+      loadingKeys: [TimetableKeys.timetable],
       title: 'Nächste Stunden - ${weekdays[widget.date.weekday - 1]}',
       counter: subjects.length > utils.cut ? subjects.length - utils.cut : 0,
       heroId: utils.size == ScreenSize.small
-          ? Keys.timetable
-          : '${Keys.timetable}-${utils.weekday}',
-      heroIdNavigation: Keys.timetable,
+          ? TimetableKeys.timetable
+          : '${TimetableKeys.timetable}-${utils.weekday}',
+      heroIdNavigation: TimetableKeys.timetable,
       actions: [
         NavigationAction(
           Icons.expand_more,
@@ -62,9 +65,12 @@ class _TimetableInfoCardState extends Interactor<TimetableInfoCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (subjects.isEmpty ||
-                  !Static.timetable.hasLoadedData ||
-                  !Static.selection.isSet())
-                EmptyList(title: 'Kein Stundenplan')
+                  !loader.hasLoadedData ||
+                  !loader.data.selection.isSet())
+                EmptyList(
+                    title: loader.data.selection.isSet()
+                        ? 'Kein Stundenplan'
+                        : 'Keine Stunden ausgewählt')
               else
                 ...(subjects.length > utils.cut
                         ? subjects.sublist(0, utils.cut)

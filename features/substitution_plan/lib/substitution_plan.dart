@@ -6,6 +6,7 @@ import 'package:substitution_plan/src/substitution_plan_keys.dart';
 import 'package:substitution_plan/src/substitution_plan_loader.dart';
 import 'package:substitution_plan/src/substitution_plan_notifications.dart';
 import 'package:substitution_plan/src/substitution_plan_page.dart';
+import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 
 export 'src/substitution_list.dart';
@@ -23,7 +24,7 @@ class SubstitutionPlanFeature implements Feature {
   final String featureKey = SubstitutionPlanKeys.substitutionPlan;
 
   @override
-  final List<Feature> dependsOn = const [];
+  final List<Feature> dependsOn = [TimetableFeature()];
 
   @override
   final SubstitutionPlanLoader loader = SubstitutionPlanLoader();
@@ -42,7 +43,7 @@ class SubstitutionPlanFeature implements Feature {
   Widget getPage() => SubstitutionPlanPage();
 
   @override
-  FeatureWidget<SubstitutionPlanFeature> getFeatureWidget(Widget child) =>
+  SubstitutionPlanWidget getFeatureWidget(Widget child) =>
       SubstitutionPlanWidget(feature: this, child: child);
 }
 

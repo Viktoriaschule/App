@@ -14,6 +14,7 @@ class CafetoriaLoader extends Loader<Cafetoria> {
 
   @override
   bool get forceUpdate =>
+      // Always update the data if there are cafetoria credentials
       Static.storage.getString(CafetoriaKeys.cafetoriaId) != null &&
       Static.storage.getString(CafetoriaKeys.cafetoriaPassword) != null;
 
