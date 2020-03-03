@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:utils/utils.dart';
 import 'package:timetable/timetable.dart';
 
 /// Describes the substitution plan
@@ -18,10 +17,17 @@ class SubstitutionPlan {
   /// All substitution plan days
   final List<SubstitutionPlanDay> days;
 
-  /// Updates the substitution plan filter
-  void updateFilter() {
+  /// Sync the substitution plan with the given timetable
+  void syncWithTimetable(Timetable timetable) {
     for (final day in days) {
-      day.filterSubstitutions();
+      day.syncWithTimetable(timetable);
+    }
+  }
+
+  /// Updates the substitution plan filter
+  void updateFilter(Timetable timetable) {
+    for (final day in days) {
+      day.filterSubstitutions(timetable);
     }
   }
 
@@ -51,8 +57,6 @@ class SubstitutionPlanDay {
       return;
     }
     sort();
-    filterSubstitutions();
-    filterUnparsed();
   }
 
   /// Create substitution from json map
@@ -105,6 +109,12 @@ class SubstitutionPlanDay {
   /// The current user grade
   String filteredGrade;
 
+  /// Synchronize the substitution plan with the given timetable
+  void syncWithTimetable(Timetable timetable) {
+    filterSubstitutions(timetable);
+    filterUnparsed(timetable);
+  }
+
   /// Sorts all substitutions by the unit, courseID and type
   void sort() {
     data.forEach((grade, substitutions) {
@@ -122,10 +132,10 @@ class SubstitutionPlanDay {
   }
 
   /// Set the unparsed filtered lists
-  List<String> filterUnparsed({String grade}) {
+  List<String> filterUnparsed(Timetable timetable, {String grade}) {
     myUnparsed = [];
     if (grade == null) {
-      filteredGrade = Static.timetable.data.grade;
+      filteredGrade = timetable.grade;
       myUnparsed..addAll(unparsed[filteredGrade])..addAll(unparsed['other']);
       return null;
     }
@@ -133,18 +143,18 @@ class SubstitutionPlanDay {
   }
 
   /// Set the filtered lists
-  void filterSubstitutions() {
+  void filterSubstitutions(Timetable timetable) {
     myChanges = [];
     otherChanges = [];
     undefinedChanges = [];
 
     final List<TimetableSubject> selectedSubjects =
-        Static.timetable.data.getAllSelectedSubjects();
+        timetable.getAllSelectedSubjects();
     final List<String> selectedIds = selectedSubjects.map((s) => s.id).toList();
     final List<String> selectedCourseIds =
         selectedSubjects.map((s) => s.courseID).toList();
 
-    filteredGrade = Static.timetable.data.grade;
+    filteredGrade = timetable.grade;
     for (final substitution in data[filteredGrade]) {
       if (substitution.id == null && substitution.courseID == null) {
         undefinedChanges.add(substitution);
@@ -227,10 +237,10 @@ class Substitution {
   bool get sure => id != null && courseID != null;
 
   /// Returns the timetable unit for this substitution
-  TimetableUnit get timetableUnit {
+  TimetableUnit getTimetableUnit(Timetable timetable) {
     if (id != null) {
       final fragments = id.split('-').sublist(2, 5).map(int.parse).toList();
-      return Static.timetable.data.days[fragments[0]].units[fragments[1]];
+      return timetable.days[fragments[0]].units[fragments[1]];
     }
     return null;
   }

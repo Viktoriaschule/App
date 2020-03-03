@@ -1,3 +1,5 @@
+import 'package:calendar/calendar.dart';
+import 'package:calendar/src/calendar_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
@@ -34,10 +36,8 @@ class CalendarInfoCard extends StatefulWidget {
 class _CalendarInfoCardState extends Interactor<CalendarInfoCard> {
   InfoCardUtils utils;
 
-  List<CalendarEvent> _events;
-
-  List<CalendarEvent> getEvents() => Static.calendar.hasLoadedData
-      ? (Static.calendar.data.getEventsForTimeSpan(
+  List<CalendarEvent> getEvents(CalendarLoader loader) => loader.hasLoadedData
+      ? (loader.data.getEventsForTimeSpan(
               widget.date,
               widget.isSingleDay
                   ? widget.date
@@ -47,23 +47,18 @@ class _CalendarInfoCardState extends Interactor<CalendarInfoCard> {
       : [];
 
   @override
-  void initState() {
-    _events = getEvents();
-    super.initState();
-  }
-
-  @override
   Subscription subscribeEvents(EventBus eventBus) =>
-      eventBus.respond<CalendarUpdateEvent>(
-          (event) => setState(() => _events = getEvents()));
+      eventBus.respond<CalendarUpdateEvent>((event) => setState(() => null));
 
   @override
   Widget build(BuildContext context) {
     utils ??= InfoCardUtils(context, widget.date);
+    final loader = CalendarWidget.of(context).feature.loader;
+    final _events = getEvents(loader);
     return ListGroup(
-      loadingKeys: [Keys.calendar],
+      loadingKeys: const [CalendarKeys.calendar],
       showNavigation: widget.showNavigation,
-      heroId: Keys.calendar,
+      heroId: CalendarKeys.calendar,
       title: widget.isSingleDay
           ? 'Termine - ${weekdays[widget.date.weekday - 1]}'
           : 'Kalender',
@@ -90,7 +85,7 @@ class _CalendarInfoCardState extends Interactor<CalendarInfoCard> {
         })
       ],
       children: [
-        if (!Static.calendar.hasLoadedData || _events.isEmpty)
+        if (!loader.hasLoadedData || _events.isEmpty)
           EmptyList(title: 'Keine Termine')
         else
           SizeLimit(

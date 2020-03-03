@@ -1,8 +1,8 @@
+import 'package:cafetoria/cafetoria.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
-//TODO: Check what happens when offline
 /// Cafetoria login data
 class CafetoriaLogin extends StatefulWidget {
   // ignore: public_member_api_docs
@@ -46,11 +46,11 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
   bool loggingOut = false;
 
   /// Checks the login
-  Future<void> checkForm() async {
+  Future<void> checkForm(CafetoriaLoader loader) async {
     if (!loggingIn) {
       setState(() => loggingIn = true);
-      final loginStatus = await Static.cafetoria
-          .checkLogin(idController.text, passwordController.text, context);
+      final loginStatus = await loader.checkLogin(
+          idController.text, passwordController.text, context);
       failMsg = loginStatus == StatusCode.success
           ? null
           : (loginStatus == StatusCode.failed
@@ -60,13 +60,13 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
       if (_formKey.currentState.validate()) {
         // Save correct credentials
         Static.storage.setString(
-            Keys.cafetoriaModified, DateTime.now().toIso8601String());
-        Static.storage.setString(Keys.cafetoriaId, idController.text);
-        Static.storage
-            .setString(Keys.cafetoriaPassword, passwordController.text);
+            CafetoriaKeys.cafetoriaModified, DateTime.now().toIso8601String());
+        Static.storage.setString(CafetoriaKeys.cafetoriaId, idController.text);
+        Static.storage.setString(
+            CafetoriaKeys.cafetoriaPassword, passwordController.text);
         final status = reduceStatusCodes([
           await Static.tags.syncTags(context),
-          await Static.cafetoria.loadOnline(context, force: true),
+          await loader.loadOnline(context, force: true),
         ]);
         if (status != StatusCode.success) {
           Scaffold.of(context).showSnackBar(
@@ -92,8 +92,8 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
 
   @override
   void initState() {
-    id = Static.storage.getString(Keys.cafetoriaId);
-    password = Static.storage.getString(Keys.cafetoriaPassword);
+    id = Static.storage.getString(CafetoriaKeys.cafetoriaId);
+    password = Static.storage.getString(CafetoriaKeys.cafetoriaPassword);
     idController.text = id ?? '';
     super.initState();
   }
@@ -106,131 +106,133 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
   }
 
   @override
-  Widget build(BuildContext context) => SimpleDialog(
-        titlePadding: EdgeInsets.all(0),
-        title: Center(
-          child: Padding(
-            padding: EdgeInsets.only(top: 10),
-            child: Text(
-              'Cafétoria Login',
-              style: TextStyle(fontWeight: FontWeight.w100),
-            ),
+  Widget build(BuildContext context) {
+    final loader = CafetoriaWidget.of(context).feature.loader;
+    return SimpleDialog(
+      titlePadding: EdgeInsets.all(0),
+      title: Center(
+        child: Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: Text(
+            'Cafétoria Login',
+            style: TextStyle(fontWeight: FontWeight.w100),
           ),
         ),
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    controller: idController,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Id muss angegeben sein';
-                      }
-                      if (!_credentialsCorrect) {
-                        return failMsg;
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(hintText: 'Keyfob-ID'),
-                    onFieldSubmitted: (value) {
-                      FocusScope.of(context).requestFocus(_focus);
-                    },
+      ),
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  controller: idController,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Id muss angegeben sein';
+                    }
+                    if (!_credentialsCorrect) {
+                      return failMsg;
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(hintText: 'Keyfob-ID'),
+                  onFieldSubmitted: (value) {
+                    FocusScope.of(context).requestFocus(_focus);
+                  },
+                ),
+                TextFormField(
+                  controller: passwordController,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Password kann nicht leer sein';
+                    }
+                    if (!_credentialsCorrect) {
+                      return failMsg;
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Keyfob-Pin',
                   ),
-                  TextFormField(
-                    controller: passwordController,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return 'Password kann nicht leer sein';
-                      }
-                      if (!_credentialsCorrect) {
-                        return failMsg;
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Keyfob-Pin',
-                    ),
-                    onFieldSubmitted: (value) {
-                      checkForm();
-                    },
-                    obscureText: true,
-                    focusNode: _focus,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Row(
-                      children: [
+                  onFieldSubmitted: (value) {
+                    checkForm(loader);
+                  },
+                  obscureText: true,
+                  focusNode: _focus,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: CustomButton(
+                          onPressed: () => checkForm(loader),
+                          enabled: !loggingOut,
+                          child: loggingIn
+                              ? CustomCircularProgressIndicator(
+                                  height: 25,
+                                  width: 25,
+                                  color: Theme.of(context).primaryColor,
+                                )
+                              : Text(
+                                  'Anmelden',
+                                  style: TextStyle(
+                                    color: darkColor,
+                                  ),
+                                ),
+                        ),
+                      ),
+                      if (loggedIn)
+                        Padding(padding: EdgeInsets.only(right: 20)),
+                      if (loggedIn)
                         Expanded(
                           child: CustomButton(
-                            onPressed: checkForm,
-                            enabled: !loggingOut,
-                            child: loggingIn
+                            onPressed: () async {
+                              if (!loggingOut) {
+                                setState(() => loggingOut = true);
+                                final status = await loader.logout(context);
+                                setState(() => loggingOut = false);
+                                switch (status) {
+                                  case StatusCode.success:
+                                    Navigator.pop(context);
+                                    widget.onFinished();
+                                    return;
+                                  case StatusCode.offline:
+                                    failMsg = 'Offline';
+                                    break;
+                                  default:
+                                    failMsg =
+                                        'Serverfehler - Versuche es später nochmal';
+                                }
+                                _credentialsCorrect = false;
+                                _formKey.currentState.validate();
+                              }
+                            },
+                            enabled: !loggingIn,
+                            child: loggingOut
                                 ? CustomCircularProgressIndicator(
                                     height: 25,
                                     width: 25,
                                     color: Theme.of(context).primaryColor,
                                   )
                                 : Text(
-                                    'Anmelden',
+                                    'Abmelden',
                                     style: TextStyle(
                                       color: darkColor,
                                     ),
                                   ),
                           ),
                         ),
-                        if (loggedIn)
-                          Padding(padding: EdgeInsets.only(right: 20)),
-                        if (loggedIn)
-                          Expanded(
-                            child: CustomButton(
-                              onPressed: () async {
-                                if (!loggingOut) {
-                                  setState(() => loggingOut = true);
-                                  final status =
-                                      await Static.cafetoria.logout(context);
-                                  setState(() => loggingOut = false);
-                                  switch (status) {
-                                    case StatusCode.success:
-                                      Navigator.pop(context);
-                                      widget.onFinished();
-                                      return;
-                                    case StatusCode.offline:
-                                      failMsg = 'Offline';
-                                      break;
-                                    default:
-                                      failMsg =
-                                          'Serverfehler - Versuche es später nochmal';
-                                  }
-                                  _credentialsCorrect = false;
-                                  _formKey.currentState.validate();
-                                }
-                              },
-                              enabled: !loggingIn,
-                              child: loggingOut
-                                  ? CustomCircularProgressIndicator(
-                                      height: 25,
-                                      width: 25,
-                                      color: Theme.of(context).primaryColor,
-                                    )
-                                  : Text(
-                                      'Abmelden',
-                                      style: TextStyle(
-                                        color: darkColor,
-                                      ),
-                                    ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                    ],
+                  ),
+                )
+              ],
             ),
-          )
-        ],
-      );
+          ),
+        )
+      ],
+    );
+  }
 }

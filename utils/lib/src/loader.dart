@@ -37,6 +37,9 @@ abstract class Loader<LoaderType> {
   // ignore: public_member_api_docs
   LoaderType get data => parsedData;
 
+  /// If the loader must be updated
+  bool get forceUpdate => false;
+
   /// The raw downloaded json string
   String _rawData;
 
@@ -58,7 +61,10 @@ abstract class Loader<LoaderType> {
   Future<StatusCode> update(BuildContext context, Updates newUpdates,
       {bool force = false}) async {
     final hash = newUpdates.getUpdate(key);
-    if (force || Static.updates.data.getUpdate(key) != hash || !hasLoadedData) {
+    if (force ||
+        forceUpdate ||
+        Static.updates.data.getUpdate(key) != hash ||
+        !hasLoadedData) {
       final status = await loadOnline(context, force: force);
       if (status == StatusCode.success) {
         Static.updates.data.setUpdate(key, hash);
@@ -71,11 +77,13 @@ abstract class Loader<LoaderType> {
   // ignore: public_member_api_docs
   void loadOffline(BuildContext context) {
     if (hasStoredData) {
+      preLoad(context);
       final parsed = _fromJSON(Static.storage.getString(key));
       parsedData = parsed.data;
       if (parsed.statusCode != StatusCode.success) {
         Static.storage.remove(key);
       }
+      afterLoad();
       _sendLoadedEvent(Pages.of(context), EventBus.of(context));
     }
   }
@@ -115,6 +123,14 @@ abstract class Loader<LoaderType> {
           store: false,
           autoLogin: autoLogin);
 
+  /// A function that can be override to process some operations with a valid context before the load function starts
+  void preLoad(BuildContext context) => {};
+
+  /// A function that can be override to process some custom loader operation after the load function finished
+  ///
+  /// This function will be called after the download finished, but before the finished loading event will be fired
+  void afterLoad() => {};
+
   /// Download the data from the api and returns the status code
   Future<LoaderResponse> _load(BuildContext context,
       {String username,
@@ -131,7 +147,12 @@ abstract class Loader<LoaderType> {
     final pages = context != null ? Pages.of(context) : null;
     final eventBus = context != null ? EventBus.of(context) : null;
 
+    // Inform the gui about this loading process
     _sendLoadingEvent(pages, eventBus);
+
+    // Run the pre load for custom loader operations
+    preLoad(context);
+
     username ??= Static.user.username;
     password ??= Static.user.password;
     try {
@@ -181,7 +202,6 @@ abstract class Loader<LoaderType> {
       if (response.statusCode == 401 && autoLogin && context != null) {
         await Navigator.of(context).pushReplacementNamed('/${Keys.login}');
       }
-      _sendLoadedEvent(pages, eventBus);
 
       dynamic data;
       try {
@@ -192,9 +212,13 @@ abstract class Loader<LoaderType> {
         statusCodes.add(StatusCode.wrongFormat);
       }
 
+      afterLoad();
+      _sendLoadedEvent(pages, eventBus);
+
       return LoaderResponse(
           data: data, statusCode: reduceStatusCodes(statusCodes));
     } on DioError catch (e) {
+      afterLoad();
       _sendLoadedEvent(pages, eventBus);
       switch (e.type) {
         case DioErrorType.RESPONSE:

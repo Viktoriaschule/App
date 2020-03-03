@@ -1,8 +1,10 @@
+import 'package:aixformation/aixformation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'aixformation_keys.dart';
 import 'aixformation_model.dart';
 import 'aixformation_page.dart';
 import 'aixformation_row.dart';
@@ -27,15 +29,16 @@ class _AiXformationInfoCardState extends Interactor<AiXformationInfoCard> {
 
   @override
   Widget build(BuildContext context) {
+    final loader = AiXFormationWidget.of(context).feature.loader;
     utils ??= InfoCardUtils(context, widget.date);
-    final List<Post> posts = Static.aiXformation.hasLoadedData
-        ? Static.aiXformation.data.posts.length > utils.cut
-            ? Static.aiXformation.data.posts.sublist(0, utils.cut)
-            : Static.aiXformation.data.posts
+    final List<Post> posts = loader.hasLoadedData
+        ? loader.data.posts.length > utils.cut
+            ? loader.data.posts.sublist(0, utils.cut)
+            : loader.data.posts
         : [];
     return ListGroup(
-      loadingKeys: [Keys.aiXformation],
-      heroId: Keys.aiXformation,
+      loadingKeys: [AiXformationKeys.aiXformation],
+      heroId: AiXformationKeys.aiXformation,
       actions: [
         NavigationAction(Icons.expand_more, () {
           Navigator.of(context).push(
@@ -46,12 +49,9 @@ class _AiXformationInfoCardState extends Interactor<AiXformationInfoCard> {
         }),
       ],
       title: 'AiXformation',
-      counter: Static.aiXformation.hasLoadedData
-          ? Static.aiXformation.data.posts.length - utils.cut
-          : 0,
+      counter: loader.hasLoadedData ? loader.data.posts.length - utils.cut : 0,
       children: [
-        if (Static.aiXformation.hasLoadedData &&
-            Static.aiXformation.data.posts.isNotEmpty)
+        if (loader.hasLoadedData && loader.data.posts.isNotEmpty)
           ...posts
               .map((post) => Container(
                     margin: EdgeInsets.all(10),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'package:substitution_plan/src/substitution_plan_keys.dart';
+import 'package:substitution_plan/substitution_plan.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
@@ -27,8 +29,8 @@ class _SubstitutionPlanInfoCardState
     extends Interactor<SubstitutionPlanInfoCard> {
   InfoCardUtils utils;
 
-  SubstitutionPlanDay getSpDay() =>
-      Static.substitutionPlan.data?.getForDate(widget.date);
+  SubstitutionPlanDay getSpDay(SubstitutionPlan data) =>
+      data?.getForDate(widget.date);
 
   List<Substitution> getSubstitutions(SubstitutionPlanDay spDay) =>
       spDay?.myChanges ?? [];
@@ -44,16 +46,17 @@ class _SubstitutionPlanInfoCardState
 
   @override
   Widget build(BuildContext context) {
-    final substitutionPlanDay = getSpDay();
+    final loader = SubstitutionPlanWidget.of(context).feature.loader;
+    final substitutionPlanDay = getSpDay(loader.data);
     final substitutions = getSubstitutions(substitutionPlanDay);
     utils ??= InfoCardUtils(context, widget.date);
     return ListGroup(
-      loadingKeys: [Keys.substitutionPlan],
+      loadingKeys: const [SubstitutionPlanKeys.substitutionPlan],
       heroId: getScreenSize(MediaQuery.of(context).size.width) ==
               ScreenSize.small
-          ? Keys.substitutionPlan
-          : '${Keys.substitutionPlan}-${Static.substitutionPlan.data.days.indexOf(substitutionPlanDay)}',
-      heroIdNavigation: Keys.substitutionPlan,
+          ? SubstitutionPlanKeys.substitutionPlan
+          : '${SubstitutionPlanKeys.substitutionPlan}-${loader.data.days.indexOf(substitutionPlanDay)}',
+      heroIdNavigation: SubstitutionPlanKeys.substitutionPlan,
       title: 'Nächste Vertretungen - ${weekdays[widget.date.weekday - 1]}',
       counter: substitutions.length > utils.cut
           ? substitutions.length - utils.cut
@@ -75,7 +78,7 @@ class _SubstitutionPlanInfoCardState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (Static.substitutionPlan.hasLoadedData)
+                if (loader.hasLoadedData)
                   SubstitutionList(
                     substitutions: substitutions.length > utils.cut
                         ? substitutions.sublist(0, utils.cut)

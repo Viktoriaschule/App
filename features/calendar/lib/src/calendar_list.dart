@@ -1,3 +1,5 @@
+import 'package:calendar/calendar.dart';
+import 'package:calendar/src/calendar_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
@@ -20,9 +22,9 @@ class CalendarListState extends Interactor<CalendarList> {
 
   @override
   Widget build(BuildContext context) {
-    final page = Pages.of(context).pages[Keys.calendar];
-    final events = Static.calendar.hasLoadedData
-        ? (Static.calendar.data.getEventsForTimeSpan(
+    final loader = CalendarWidget.of(context).feature.loader;
+    final events = loader.hasLoadedData
+        ? (loader.data.getEventsForTimeSpan(
             DateTime.now(), DateTime.now().add(Duration(days: 6000)))
           ..sort((a, b) => a.start.compareTo(b.start)))
         : [];
@@ -32,15 +34,14 @@ class CalendarListState extends Interactor<CalendarList> {
           child: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
               CustomAppBar(
-                title: page.title,
+                title: CalendarWidget.of(context).feature.name,
                 actions: const [],
                 sliver: true,
-                loadingKeys: [Keys.calendar],
+                loadingKeys: const [CalendarKeys.calendar],
               ),
             ],
             body: CustomRefreshIndicator(
-              loadOnline: () =>
-                  Static.calendar.loadOnline(context, force: true),
+              loadOnline: () => loader.loadOnline(context, force: true),
               child: events.isNotEmpty
                   ? ListView.builder(
                       padding: EdgeInsets.only(bottom: 10),
@@ -57,7 +58,7 @@ class CalendarListState extends Interactor<CalendarList> {
           ),
         ),
         CustomHero(
-          tag: Keys.navigation(Keys.calendar),
+          tag: Keys.navigation(CalendarKeys.calendar),
           child: Material(
             type: MaterialType.transparency,
             child: CustomBottomNavigation(

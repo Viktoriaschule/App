@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'package:substitution_plan/src/substitution_plan_keys.dart';
+import 'package:substitution_plan/substitution_plan.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
@@ -36,18 +39,18 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
 
   @override
   Widget build(BuildContext context) {
+    final loader = SubstitutionPlanWidget.of(context).feature.loader;
+    final timetableLoader = TimetableWidget.of(context).feature.loader;
     int nearestDay = 0;
-    if (Static.substitutionPlan.hasLoadedData &&
-        Static.timetable.hasLoadedData) {
-      final List<DateTime> dates =
-          Static.substitutionPlan.data.days.map((e) => e.date).toList();
+    if (loader.hasLoadedData && timetableLoader.hasLoadedData) {
+      final List<DateTime> dates = loader.data.days.map((e) => e.date).toList();
       final day = DateTime(
         dates[0].year,
         dates[0].month,
         dates[0].day,
       );
-      final lessonCount =
-          Static.timetable.data.days[day.weekday - 1].getUserLessonsCount();
+      final lessonCount = timetableLoader.data.days[day.weekday - 1]
+          .getUserLessonsCount(timetableLoader.data.selection);
       if (DateTime.now()
           .isAfter(day.add(Times.getUnitTimes(lessonCount - 1)[1]))) {
         nearestDay = 1;
@@ -55,12 +58,16 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
     }
     return Scaffold(
       appBar: CustomAppBar(
-        title: Pages.of(context).pages[Keys.substitutionPlan].title,
-        loadingKeys: [Keys.substitutionPlan, Keys.timetable, Keys.tags],
+        title: SubstitutionPlanWidget.of(context).feature.name,
+        loadingKeys: [
+          SubstitutionPlanKeys.substitutionPlan,
+          TimetableWidget.of(context).feature.featureKey,
+          Keys.tags
+        ],
         actions: <Widget>[
           if (Static.user.grade != null &&
-              Static.timetable.hasLoadedData &&
-              Static.substitutionPlan.hasLoadedData)
+              timetableLoader.hasLoadedData &&
+              loader.hasLoadedData)
             Container(
               width: 48,
               child: DropdownButton<String>(
@@ -96,20 +103,19 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
             ),
         ],
       ),
-      body: Static.timetable.hasLoadedData &&
-              Static.substitutionPlan.hasLoadedData
+      body: timetableLoader.hasLoadedData && loader.hasLoadedData
           ? CustomGrid(
               onRefresh: () async => reduceStatusCodes([
                 await Static.tags.syncTags(context),
-                await Static.timetable.loadOnline(context, force: true),
-                await Static.substitutionPlan.loadOnline(context, force: true),
+                await timetableLoader.loadOnline(context, force: true),
+                await loader.loadOnline(context, force: true),
               ]),
               initialHorizontalIndex: widget.day ?? nearestDay,
               type: getScreenSize(MediaQuery.of(context).size.width) ==
                       ScreenSize.small
                   ? CustomGridType.tabs
                   : CustomGridType.grid,
-              columnPrepend: Static.substitutionPlan.data.days
+              columnPrepend: loader.data.days
                   .map((day) => weekdays[day.date.weekday - 1])
                   .toList(),
               childrenRowPrepend: [
@@ -164,11 +170,9 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                   if (widget.grade == null) {
                     List<Substitution> myChanges = [];
                     List<Substitution> notMyChanges = [];
-                    if (Static.substitutionPlan.hasLoadedData) {
-                      myChanges =
-                          Static.substitutionPlan.data.days[index].myChanges;
-                      notMyChanges =
-                          Static.substitutionPlan.data.days[index].otherChanges;
+                    if (loader.hasLoadedData) {
+                      myChanges = loader.data.days[index].myChanges;
+                      notMyChanges = loader.data.days[index].otherChanges;
                     }
                     final myChangesWidget = myChanges.isEmpty
                         ? EmptyList(title: 'Keine Änderungen')
@@ -212,9 +216,8 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                     ];
                   } else {
                     List<Substitution> changes = [];
-                    if (Static.substitutionPlan.hasLoadedData) {
-                      changes = Static
-                          .substitutionPlan.data.days[index].data[widget.grade];
+                    if (loader.hasLoadedData) {
+                      changes = loader.data.days[index].data[widget.grade];
                     }
                     final changesWidget = changes.isEmpty
                         ? EmptyList(title: 'Keine Änderungen')
@@ -242,8 +245,8 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                     CustomHero(
                       tag: getScreenSize(MediaQuery.of(context).size.width) ==
                               ScreenSize.small
-                          ? Keys.substitutionPlan
-                          : '${Keys.substitutionPlan}-$index',
+                          ? SubstitutionPlanKeys.substitutionPlan
+                          : '${SubstitutionPlanKeys.substitutionPlan}-$index',
                       child: Material(
                         type: MaterialType.transparency,
                         child: Center(
@@ -258,14 +261,10 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                                     Icons.timer,
                                   ],
                                   texts: [
-                                    outputDateFormat.format(Static
-                                        .substitutionPlan
-                                        .data
-                                        .days[index]
-                                        .date),
+                                    outputDateFormat
+                                        .format(loader.data.days[index].date),
                                     timeago.format(
-                                      Static.substitutionPlan.data.days[index]
-                                          .updated,
+                                      loader.data.days[index].updated,
                                       locale: 'de',
                                     ),
                                   ],

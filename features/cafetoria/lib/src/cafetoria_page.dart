@@ -1,3 +1,4 @@
+import 'package:cafetoria/cafetoria.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
@@ -24,17 +25,17 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
 
   @override
   Widget build(BuildContext context) {
-    final page = Pages.of(context).pages[Keys.cafetoria];
-    final days =
-        (Static.cafetoria.data.days..sort((a, b) => a.date.compareTo(b.date)));
+    final name = CafetoriaWidget.of(context).feature.name;
+    final loader = CafetoriaWidget.of(context).feature.loader;
+    final days = (loader.data.days..sort((a, b) => a.date.compareTo(b.date)));
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           CustomAppBar(
-            title: Static.cafetoria.data.saldo != null
-                ? '${page.title} (${Static.cafetoria.data.saldo}€)'
-                : page.title,
-            loadingKeys: [Keys.cafetoria, Keys.tags],
+            title: loader.data.saldo != null
+                ? '$name (${loader.data.saldo}€)'
+                : name,
+            loadingKeys: [CafetoriaKeys.cafetoria, Keys.tags],
             actions: [
               IconButton(
                 onPressed: () async {
@@ -71,7 +72,7 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
         body: CustomRefreshIndicator(
           loadOnline: () async => reduceStatusCodes([
             await Static.tags.syncTags(context),
-            await Static.cafetoria.loadOnline(context, force: true),
+            await loader.loadOnline(context, force: true),
           ]),
           child: days.isNotEmpty
               ? ListView.builder(
@@ -81,7 +82,8 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
                     final day = days[index];
                     return SizeLimit(
                       child: ListGroup(
-                        heroId: '${Keys.cafetoria}-${days.indexOf(day)}',
+                        heroId:
+                            '${CafetoriaKeys.cafetoria}-${days.indexOf(day)}',
                         title:
                             // ignore: lines_longer_than_80_chars
                             '${weekdays[day.date.weekday - 1]} ${shortOutputDateFormat.format(day.date)}',

@@ -1,3 +1,4 @@
+import 'package:calendar/calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 
@@ -53,11 +54,15 @@ class _CalendarGridItemState extends State<CalendarGridItem> {
   @override
   Widget build(BuildContext context) => InkWell(
         onTap: () {
-          final events = Static.calendar.data.getEventsForTimeSpan(
-              widget.date,
-              widget.date
-                  .add(Duration(days: 1))
-                  .subtract(Duration(seconds: 1)));
+          final events = CalendarWidget.of(context)
+              .feature
+              .loader
+              .data
+              .getEventsForTimeSpan(
+                  widget.date,
+                  widget.date
+                      .add(Duration(days: 1))
+                      .subtract(Duration(seconds: 1)));
           if (events.isNotEmpty) {
             showDialog(
               context: context,

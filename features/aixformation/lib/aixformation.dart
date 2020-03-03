@@ -1,7 +1,59 @@
 library aixformation;
 
+import 'package:aixformation/src/aixformation_info_card.dart';
+import 'package:aixformation/src/aixformation_keys.dart';
+import 'package:aixformation/src/aixformation_loader.dart';
+import 'package:aixformation/src/aixformation_notifications.dart';
+import 'package:aixformation/src/aixformation_page.dart';
+import 'package:flutter/material.dart';
+import 'package:utils/utils.dart';
+
 export 'src/aixformation_info_card.dart';
 export 'src/aixformation_loader.dart';
 export 'src/aixformation_model.dart';
 export 'src/aixformation_page.dart';
 export 'src/aixformation_post.dart';
+
+/// The aixformation feature
+class AiXformationFeature implements Feature {
+  @override
+  final String name = 'Aixformation';
+
+  @override
+  final String featureKey = AiXformationKeys.aiXformation;
+
+  @override
+  final List<Feature> dependsOn = const [];
+
+  @override
+  final AiXformationLoader loader = AiXformationLoader();
+
+  @override
+  final AiXformationNotificationsHandler notificationsHandler =
+      AiXformationNotificationsHandler();
+
+  @override
+  final TagsHandler tagsHandler = null;
+
+  @override
+  Widget getInfoCard(DateTime date) => AiXformationInfoCard(date: date);
+
+  @override
+  Widget getPage() => AiXformationPage();
+
+  @override
+  FeatureWidget<AiXformationFeature> getFeatureWidget(Widget child) =>
+      AiXFormationWidget(feature: this, child: child);
+}
+
+// ignore: public_member_api_docs
+class AiXFormationWidget extends FeatureWidget<AiXformationFeature> {
+  // ignore: public_member_api_docs
+  const AiXFormationWidget(
+      {@required Widget child, @required AiXformationFeature feature})
+      : super(child: child, feature: feature);
+
+  /// Find the closest [AiXFormationWidget] from ancestor tree.
+  static AiXFormationWidget of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<AiXFormationWidget>();
+}
