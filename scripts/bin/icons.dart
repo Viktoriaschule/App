@@ -61,25 +61,57 @@ Future main(List<String> arguments) async {
     'https://fingeg.de/converter/png?width=1024&height=1024',
     {'img': logoGreen},
   ));
+  await File('images/logo_green_16x16.png').writeAsBytes(await post(
+    'https://fingeg.de/converter/png?width=16&height=16',
+    {'img': logoGreen},
+  ));
   await File('images/logo_green_192x192.png').writeAsBytes(await post(
     'https://fingeg.de/converter/png?width=192&height=192',
+    {'img': logoGreen},
+  ));
+  await File('images/logo_green_512x512.png').writeAsBytes(await post(
+    'https://fingeg.de/converter/png?width=512&height=512',
     {'img': logoGreen},
   ));
   await File('images/logo_management.png').writeAsBytes(await post(
     'https://fingeg.de/converter/png?width=1024&height=1024',
     {'img': managementLogo},
   ));
+  await File('images/logo_management_16x16.png').writeAsBytes(await post(
+    'https://fingeg.de/converter/png?width=16&height=16',
+    {'img': managementLogo},
+  ));
   await File('images/logo_management_192x192.png').writeAsBytes(await post(
     'https://fingeg.de/converter/png?width=192&height=192',
     {'img': managementLogo},
   ));
+  await File('images/logo_management_512x512.png').writeAsBytes(await post(
+    'https://fingeg.de/converter/png?width=512&height=512',
+    {'img': managementLogo},
+  ));
+
+  final webDirectory = Directory('apps/viktoriaapp/web');
+  if (!webDirectory.existsSync()) {
+    webDirectory.createSync();
+  }
+  final webIconsDirectory = Directory('${webDirectory.path}/icons');
+  if (!webIconsDirectory.existsSync()) {
+    webIconsDirectory.createSync();
+  }
+
+  await File('images/logo_green_192x192.png')
+      .copy('apps/viktoriaapp/web/icons/Icon-192.png');
+  await File('images/logo_green_512x512.png')
+      .copy('apps/viktoriaapp/web/icons/Icon-512.png');
+  await File('images/logo_green_16x16.png')
+      .copy('apps/viktoriaapp/web/favicon.png');
 
   // Create app icons
   await runCommand(
     'flutter',
     ['pub', 'get'],
     log: logDebug,
-    dir: 'app_frame',
+    dir: 'apps/viktoriaapp',
   );
   await runCommand(
     'flutter',
@@ -91,7 +123,7 @@ Future main(List<String> arguments) async {
       'icons_white.yaml',
     ],
     log: logDebug,
-    dir: 'app_frame',
+    dir: 'apps/viktoriaapp',
   );
   await runCommand(
     'flutter',
@@ -103,7 +135,7 @@ Future main(List<String> arguments) async {
       'icons_green.yaml',
     ],
     log: logDebug,
-    dir: 'app_frame',
+    dir: 'apps/viktoriaapp',
   );
 }
 

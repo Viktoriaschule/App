@@ -24,6 +24,8 @@ doc/
 
 images/*
 !images/logo_white.svg
+**/web/icons/*
+**/web/*.png
 **/android/app/src/main/res/mipmap-*/
 **/android/app/src/main/res/drawable/*.png
 **/android/key.properties

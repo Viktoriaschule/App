@@ -28,6 +28,7 @@ abstract class FirebaseMessagingBase {
   /// Sets up [MessageHandler] for incoming messages.
   void configure({
     MessageHandler onMessage,
+    MessageHandler onBackgroundMessage,
     MessageHandler onLaunch,
     MessageHandler onResume,
   });

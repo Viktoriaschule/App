@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+    <meta name="description" content="A new Flutter project.">
+
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="viktoriaapp">
+    <link rel="apple-touch-icon" href="/icons/Icon-192.png">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/png" href="/favicon.png"/>
+
+    <title>ViktoriaApp</title>
+    <link rel="manifest" href="/manifest.json">
+
+    <meta name="description" content="Eine App für die Viktoriaschule"/>
+    <meta name="keywords" content="Viktorischule,Aachen,ViktoriaApp">
+    <meta name="author" content="Jan-Luca Döen, Finn Gegenmantel">
+    <meta name="theme-color" content="#64A441"/>
+    <script src="https://www.gstatic.com/firebasejs/6.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.6.2/firebase-messaging.js"></script>
+</head>
+<body>
+<script>
+    if (window.location.hash.length > 2) {
+        window.location.hash = '#/';
+        window.location.reload();
+    }
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('/flutter_service_worker.js');
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyBnMSYwjFbC3lRPzOfinBAu_78pybo7jPg",
+                authDomain: "ginko-project.firebaseapp.com",
+                databaseURL: "https://ginko-project.firebaseio.com",
+                projectId: "ginko-project",
+                storageBucket: "",
+                messagingSenderId: "324907216916",
+                appId: "1:324907216916:web:5a3512edd37931c6"
+            };
+            firebase.initializeApp(firebaseConfig);
+            navigator.serviceWorker.register('sw.js')
+                .then((registration) => {
+                    if (firebase.messaging() != null) {
+                        firebase.messaging().useServiceWorker(registration);
+                    }
+                });
+
+        });
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            window.deferredPrompt = e;
+        });
+    }
+</script>
+<script src="main.dart.js" type="application/javascript"></script>
+</body>
+</html>

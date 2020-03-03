@@ -36,6 +36,9 @@ class Messaging {
 class FirebaseMessaging extends FirebaseMessagingBase {
   Messaging _messaging;
   MessageHandler _onMessage;
+
+  // TODO: figure out what to do with onBackgroundMessage
+  MessageHandler _onBackgroundMessage;
   MessageHandler _onLaunch;
   MessageHandler _onResume;
 
@@ -63,11 +66,14 @@ class FirebaseMessaging extends FirebaseMessagingBase {
   }
 
   @override
-  void configure(
-      {MessageHandler onMessage,
-      MessageHandler onLaunch,
-      MessageHandler onResume}) {
+  void configure({
+    MessageHandler onMessage,
+    MessageHandler onBackgroundMessage,
+    MessageHandler onLaunch,
+    MessageHandler onResume,
+  }) {
     _onMessage = onMessage;
+    _onBackgroundMessage = onBackgroundMessage;
     _onLaunch = onLaunch;
     _onResume = onResume;
     _messaging = messaging();

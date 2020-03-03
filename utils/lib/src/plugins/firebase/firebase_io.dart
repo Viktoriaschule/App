@@ -27,12 +27,15 @@ class FirebaseMessaging extends FirebaseMessagingBase {
 
   @override
   @override
-  void configure(
-          {MessageHandler onMessage,
-          MessageHandler onLaunch,
-          MessageHandler onResume}) =>
+  void configure({
+    MessageHandler onMessage,
+    MessageHandler onBackgroundMessage,
+    MessageHandler onLaunch,
+    MessageHandler onResume,
+  }) =>
       firebaseMessaging.configure(
         onMessage: onMessage,
+        onBackgroundMessage: onBackgroundMessage,
         onLaunch: onLaunch,
         onResume: onResume,
       );
