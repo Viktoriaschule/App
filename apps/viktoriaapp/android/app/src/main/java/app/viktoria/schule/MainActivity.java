@@ -1,13 +1,37 @@
 package app.viktoria.schule;
 
+import android.content.Intent;
 import androidx.annotation.NonNull;
+import app.viktoria.schule.frame.FramePlugin;
+import app.viktoria.schule.frame.OnLaunchCallback;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
+import static app.viktoria.schule.frame.FramePlugin.sendMessageFromIntent;
+
 public class MainActivity extends FlutterActivity {
+    private FlutterEngine flutterEngine;
+
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
+        this.flutterEngine = flutterEngine;
         GeneratedPluginRegistrant.registerWith(flutterEngine);
+        FramePlugin.onLaunchCallback = new OnLaunchCallBackImpl();
     }
+
+    @Override
+    protected void onNewIntent(@NonNull Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        sendMessageFromIntent(flutterEngine.getDartExecutor(), "onResume", intent);
+    }
+
+    class OnLaunchCallBackImpl implements OnLaunchCallback {
+        @Override
+        public void onLaunch() {
+            sendMessageFromIntent(flutterEngine.getDartExecutor(), "onLaunch", getIntent());
+        }
+    }
+
 }

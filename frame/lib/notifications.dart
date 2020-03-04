@@ -25,128 +25,141 @@ class NotificationsWidget extends StatefulWidget {
 
 class _NotificationsWidgetState extends State<NotificationsWidget>
     with AfterLayoutMixin<NotificationsWidget> {
-  final _methodChannel = MethodChannel('frame');
+  static MethodChannel methodChannel = MethodChannel('frame');
 
   /// Register everything needed for notifications
   Future _registerNotifications(BuildContext context) async {
     if (Platform().isMobile || Platform().isWeb) {
       Static.firebaseMessaging.configure(
-          onLaunch: (data) async {
-            print('onLaunch: $data');
-            await _backgroundNotification(context, data);
-          },
-          onResume: (data) async {
-            print('onResume: $data');
-            await _backgroundNotification(context, data);
-          },
-          onMessage: (data) async {
-            print('onMessage: $data');
-            await _foregroundNotification(context, data);
-          },
-          onBackgroundMessage:
-              _NotificationsWidgetState.handleBackgroundNotification);
+        onLaunch: handleOnLaunchResumeNotification,
+        onResume: handleOnLaunchResumeNotification,
+        onMessage: handleOnMessageNotification,
+        onBackgroundMessage:
+            _NotificationsWidgetState.handleOnBackgroundMessageNotification,
+      );
     }
     if (Platform().isAndroid) {
-      await _methodChannel.invokeMethod('init');
+      await methodChannel.invokeMethod('init');
     }
   }
 
-  static Future<dynamic> handleBackgroundNotification(
-      Map<String, dynamic> data) async {
-    print('onBackgroundMessage: $data');
+  Future handleOnLaunchResumeNotification(
+    Map<String, dynamic> data,
+  ) async {
+    EventBus.of(context).publish(FetchAppDataEvent());
+    final Map<String, VoidCallback> callbacks = {
+      Keys.substitutionPlanNotification: () => _openSubstitutionPlan(
+          data['day'] != null ? int.parse(data['day']) : 0),
+      Keys.timetable: _openTimetable,
+      Keys.cafetoria: _openCafetoria,
+      // ignore: missing_required_param
+      Keys.aiXformation: () => _openAiXformation(Post(url: data['url'])),
+    };
+    callbacks[data['type']]();
+  }
+
+  Future<dynamic> handleOnMessageNotification(
+    Map<String, dynamic> d,
+  ) async {
+    try {
+      final Map<String, dynamic> data = Map<String, dynamic>.from(d['data']);
+      if (data['action'] != 'update') {
+        return;
+      }
+      final Map<String, VoidCallback> callbacks = {
+        Keys.substitutionPlanNotification: () => _openSubstitutionPlan(
+            data['day'] != null ? int.parse(data['day']) : 0),
+        Keys.timetable: _openTimetable,
+        Keys.cafetoria: _openCafetoria,
+        // ignore: missing_required_param
+        Keys.aiXformation: () => _openAiXformation(Post(url: data['url'])),
+      };
+      final Map<String, String> texts = {
+        Keys.substitutionPlanNotification:
+            'Neuer Vertretungsplan${Static.substitutionPlan.hasLoadedData && Static.substitutionPlan.data.days.isNotEmpty ? ' für ${weekdays[Static.substitutionPlan.data.days[data['day'] != null ? int.parse(data['day']) : 0].date.weekday - 1]}' : ''}',
+        Keys.timetable: 'Neuer Stundenplan',
+        Keys.cafetoria: 'Neue Cafetoria-Menüs',
+        Keys.aiXformation: 'Neuer AiXformation-Artikel',
+      };
+      EventBus.of(context).publish(FetchAppDataEvent());
+      Scaffold.of(context).showSnackBar(SnackBar(
+        action: SnackBarAction(
+          label: 'Öffnen',
+          onPressed: callbacks[data['type']],
+        ),
+        content: Text(texts[data['type']]),
+      ));
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
     return;
   }
 
-  Future _foregroundNotification(
-    BuildContext context,
-    Map<String, dynamic> data,
+  // This needs to be a static function otherwise it can't be called
+  static Future<dynamic> handleOnBackgroundMessageNotification(
+    Map<String, dynamic> d,
   ) async {
-    if (data['action'] != 'update') {
-      return;
-    }
-    VoidCallback callback;
-    String text;
-    switch (data[Keys.type]) {
-      case Keys.substitutionPlanNotification:
-        callback = () => _openSubstitutionPlan(int.parse(data['day']));
-        text =
-            'Neuer Vertretungsplan${Static.substitutionPlan.hasLoadedData ? ' für ${weekdays[Static.substitutionPlan.data.days[int.parse(data['day'])].date.weekday - 1]}' : ''}';
-        break;
-      case Keys.timetable:
-        callback = _openTimetable;
-        text = 'Neuer Stundenplan';
-        break;
-      case Keys.cafetoria:
-        callback = _openCafetoria;
-        text = 'Neue Cafetoria-Menüs';
-        break;
-      case Keys.aiXformation:
-        // ignore: missing_required_param
-        callback = () => _openAiXformation(Post(url: data['url']));
-        text = 'Neuer AiXformation-Artikel';
-        break;
-      default:
-        print('Got unknown notification: $data');
+    final Map<String, dynamic> data = d['data'].cast<String, dynamic>();
+    try {
+      if (data['action'] == 'update') {
         return;
+      }
+      if (Platform().isAndroid) {
+        final Map<String, int> groups = {
+          'substitution plan':
+              data['weekday'] != null ? int.parse(data['weekday']) : 0,
+          'cafetoria': 5,
+          'aixformation': 6,
+          'timetable': 7,
+        };
+        await methodChannel.invokeMethod(
+          'notification',
+          {
+            'body': data['body'],
+            'bigBody': data['bigBody'],
+            'title': data['title'],
+            'group': groups[data['type']],
+            'data': data,
+          },
+        );
+      }
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
     }
-    Scaffold.of(context).showSnackBar(SnackBar(
-      action: SnackBarAction(
-        label: 'Öffnen',
-        onPressed: () async {
-          EventBus.of(context).publish(FetchAppDataEvent());
-          callback();
-        },
-      ),
-      content: Text(text),
-    ));
-  }
-
-  Future _backgroundNotification(
-    BuildContext context,
-    Map<String, dynamic> data,
-  ) async {
-    switch (data['type']) {
-      case Keys.substitutionPlanNotification:
-        EventBus.of(context).publish(FetchAppDataEvent());
-        _openSubstitutionPlan(int.parse(data['day']));
-        break;
-      case Keys.timetable:
-        EventBus.of(context).publish(FetchAppDataEvent());
-        _openTimetable();
-        break;
-      case Keys.cafetoria:
-        EventBus.of(context).publish(FetchAppDataEvent());
-        _openCafetoria();
-        break;
-      case Keys.aiXformation:
-        EventBus.of(context).publish(FetchAppDataEvent());
-        // ignore: missing_required_param
-        _openAiXformation(Post(url: data['url']));
-        break;
-      default:
-        print('Got unknown notification: $data');
-        break;
-    }
+    return;
   }
 
   void _openTimetable() =>
-      EventBus.of(context).publish(PushMaterialPageRouteEvent(TimetablePage()));
+      EventBus.of(context).publish(PushMaterialPageRouteEvent(
+        TimetablePage(),
+      ));
 
-  void _openSubstitutionPlan(int day) => EventBus.of(context)
-          .publish(PushMaterialPageRouteEvent(SubstitutionPlanPage(
-        day: day,
-      )));
+  void _openSubstitutionPlan(int day) =>
+      EventBus.of(context).publish(PushMaterialPageRouteEvent(
+        SubstitutionPlanPage(
+          day: day,
+        ),
+      ));
 
   void _openCafetoria() =>
-      EventBus.of(context).publish(PushMaterialPageRouteEvent(CafetoriaPage()));
+      EventBus.of(context).publish(PushMaterialPageRouteEvent(
+        CafetoriaPage(),
+      ));
 
+  // TODO: Only shows a screen with no content and not even the app bar
   void _openAiXformation(Post post) =>
-      EventBus.of(context).publish(PushMaterialPageRouteEvent(AiXformationPost(
-        post: post,
-        posts: Static.aiXformation.hasLoadedData
-            ? Static.aiXformation.data.posts
-            : [],
-      )));
+      EventBus.of(context).publish(PushMaterialPageRouteEvent(
+        AiXformationPost(
+          post: post,
+          posts: Static.aiXformation.hasLoadedData
+              ? Static.aiXformation.data.posts
+              : [],
+        ),
+      ));
 
   @override
   Widget build(BuildContext context) => widget.child;
