@@ -1,5 +1,6 @@
 package app.viktoria.schule;
 
+import app.viktoria.schule.frame.FramePlugin;
 import io.flutter.app.FlutterApplication;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.PluginRegistrantCallback;
@@ -16,6 +17,7 @@ public class Application extends FlutterApplication implements PluginRegistrantC
     @Override
     public void registerWith(PluginRegistry registry) {
         FirebaseCloudMessagingPluginRegistrant.registerWith(registry);
+        FramePluginRegistrant.registerWith(registry);
     }
 }
 
@@ -29,6 +31,24 @@ class FirebaseCloudMessagingPluginRegistrant {
 
     private static boolean alreadyRegisteredWith(PluginRegistry registry) {
         final String key = FirebaseCloudMessagingPluginRegistrant.class.getCanonicalName();
+        if (registry.hasPlugin(key)) {
+            return true;
+        }
+        registry.registrarFor(key);
+        return false;
+    }
+}
+
+class FramePluginRegistrant {
+    public static void registerWith(PluginRegistry registry) {
+        if (alreadyRegisteredWith(registry)) {
+            return;
+        }
+        FramePlugin.registerWith(registry.registrarFor("dexterous.com/flutter/local_notifications"));
+    }
+
+    private static boolean alreadyRegisteredWith(PluginRegistry registry) {
+        final String key = FramePluginRegistrant.class.getCanonicalName();
         if (registry.hasPlugin(key)) {
             return true;
         }
