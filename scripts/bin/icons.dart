@@ -1,18 +1,14 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:scripts/command.dart';
+import 'package:process_run/process_run.dart';
+import 'package:scripts/base_dir.dart';
 
 Future main(List<String> arguments) async {
-  var logDebug = false;
-  if (arguments.isNotEmpty) {
-    logDebug = arguments[0] == '-d' || arguments[0] == '--debug';
-  }
-
   // Copy the white svg to a green svg
-  final fileLogoWhite = File('images/logo_white.svg');
-  final fileLogoGreen = File('images/logo_green.svg');
-  final fileLogoManagement = File('images/logo_management.svg');
+  final fileLogoWhite = File('$baseDir/images/logo_white.svg');
+  final fileLogoGreen = File('$baseDir/images/logo_green.svg');
+  final fileLogoManagement = File('$baseDir/images/logo_management.svg');
 
   final logoWhite = await fileLogoWhite.readAsString();
   final logoGreen = logoWhite.replaceAll('ffffff', '5bc638');
@@ -52,45 +48,50 @@ Future main(List<String> arguments) async {
 
   await fileLogoManagement.writeAsString(managementLogo);
 
+  print('Converting SVGs to PNGs...');
+
   // Create PNGs from SVGs
-  await File('images/logo_white.png').writeAsBytes(await post(
+  await File('$baseDir/images/logo_white.png').writeAsBytes(await post(
     'https://fingeg.de/converter/png?width=1024&height=1024',
     {'img': logoWhite},
   ));
-  await File('images/logo_green.png').writeAsBytes(await post(
+  await File('$baseDir/images/logo_green.png').writeAsBytes(await post(
     'https://fingeg.de/converter/png?width=1024&height=1024',
     {'img': logoGreen},
   ));
-  await File('images/logo_green_16x16.png').writeAsBytes(await post(
+  await File('$baseDir/images/logo_green_16x16.png').writeAsBytes(await post(
     'https://fingeg.de/converter/png?width=16&height=16',
     {'img': logoGreen},
   ));
-  await File('images/logo_green_192x192.png').writeAsBytes(await post(
+  await File('$baseDir/images/logo_green_192x192.png').writeAsBytes(await post(
     'https://fingeg.de/converter/png?width=192&height=192',
     {'img': logoGreen},
   ));
-  await File('images/logo_green_512x512.png').writeAsBytes(await post(
+  await File('$baseDir/images/logo_green_512x512.png').writeAsBytes(await post(
     'https://fingeg.de/converter/png?width=512&height=512',
     {'img': logoGreen},
   ));
-  await File('images/logo_management.png').writeAsBytes(await post(
+  await File('$baseDir/images/logo_management.png').writeAsBytes(await post(
     'https://fingeg.de/converter/png?width=1024&height=1024',
     {'img': managementLogo},
   ));
-  await File('images/logo_management_16x16.png').writeAsBytes(await post(
+  await File('$baseDir/images/logo_management_16x16.png')
+      .writeAsBytes(await post(
     'https://fingeg.de/converter/png?width=16&height=16',
     {'img': managementLogo},
   ));
-  await File('images/logo_management_192x192.png').writeAsBytes(await post(
+  await File('$baseDir/images/logo_management_192x192.png')
+      .writeAsBytes(await post(
     'https://fingeg.de/converter/png?width=192&height=192',
     {'img': managementLogo},
   ));
-  await File('images/logo_management_512x512.png').writeAsBytes(await post(
+  await File('$baseDir/images/logo_management_512x512.png')
+      .writeAsBytes(await post(
     'https://fingeg.de/converter/png?width=512&height=512',
     {'img': managementLogo},
   ));
 
-  final webDirectory = Directory('apps/viktoriaapp/web');
+  final webDirectory = Directory('$baseDir/apps/viktoriaapp/web');
   if (!webDirectory.existsSync()) {
     webDirectory.createSync();
   }
@@ -99,21 +100,23 @@ Future main(List<String> arguments) async {
     webIconsDirectory.createSync();
   }
 
-  await File('images/logo_green_192x192.png')
-      .copy('apps/viktoriaapp/web/icons/Icon-192.png');
-  await File('images/logo_green_512x512.png')
-      .copy('apps/viktoriaapp/web/icons/Icon-512.png');
-  await File('images/logo_green_16x16.png')
-      .copy('apps/viktoriaapp/web/favicon.png');
+  print('Creating app icons...');
+
+  await File('$baseDir/images/logo_green_192x192.png')
+      .copy('$baseDir/apps/viktoriaapp/web/icons/Icon-192.png');
+  await File('$baseDir/images/logo_green_512x512.png')
+      .copy('$baseDir/apps/viktoriaapp/web/icons/Icon-512.png');
+  await File('$baseDir/images/logo_green_16x16.png')
+      .copy('$baseDir/apps/viktoriaapp/web/favicon.png');
 
   // Create app icons
-  await runCommand(
+  await run(
     'flutter',
     ['pub', 'get'],
-    log: logDebug,
-    dir: 'apps/viktoriaapp',
+    workingDirectory: '$baseDir/apps/viktoriaapp',
+    verbose: true,
   );
-  await runCommand(
+  await run(
     'flutter',
     [
       'pub',
@@ -122,10 +125,10 @@ Future main(List<String> arguments) async {
       '-f',
       'icons_white.yaml',
     ],
-    log: logDebug,
-    dir: 'apps/viktoriaapp',
+    workingDirectory: '$baseDir/apps/viktoriaapp',
+    verbose: true,
   );
-  await runCommand(
+  await run(
     'flutter',
     [
       'pub',
@@ -134,8 +137,8 @@ Future main(List<String> arguments) async {
       '-f',
       'icons_green.yaml',
     ],
-    log: logDebug,
-    dir: 'apps/viktoriaapp',
+    workingDirectory: '$baseDir/apps/viktoriaapp',
+    verbose: true,
   );
 }
 

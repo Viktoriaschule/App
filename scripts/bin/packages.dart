@@ -1,9 +1,10 @@
 import 'dart:io';
 
-import 'package:scripts/command.dart';
+import 'package:process_run/cmd_run.dart';
+import 'package:scripts/base_dir.dart';
 
 Future main(List<String> arguments) async {
-  await checkDir('.');
+  await checkDir(baseDir);
 }
 
 Future checkDir(String path) async {
@@ -16,7 +17,15 @@ Future checkDir(String path) async {
         !pathFragments[pathFragments.length - 1].startsWith('.')) {
       if (pubspec.existsSync()) {
         print('Run flutter pub get in ${dir.path}');
-        await runCommand('flutter', ['pub', 'get'], log: true, dir: dir.path);
+        await run(
+          'flutter',
+          [
+            'pub',
+            'get',
+          ],
+          workingDirectory: dir.path,
+          verbose: true,
+        );
       } else {
         await checkDir(dir.path);
       }

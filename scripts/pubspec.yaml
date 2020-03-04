@@ -2,3 +2,4 @@ name: scripts
 
 dependencies:
   dio:
+  process_run:
