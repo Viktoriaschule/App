@@ -26,7 +26,7 @@ class AiXformationPageState extends Interactor<AiXformationPage> {
           CustomAppBar(
             title: AiXFormationWidget.of(context).feature.name,
             sliver: true,
-            loadingKeys: const [AiXformationKeys.aiXformation],
+            loadingKeys: const [AiXformationKeys.aixformation],
           ),
         ],
         body: CustomRefreshIndicator(

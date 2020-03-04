@@ -39,7 +39,7 @@ class _CalendarPageState extends Interactor<CalendarPage>
   void update(CalendarLoader loader) {
     if (loader.hasLoadedData) {
       events = loader.data.getEventsSince(DateTime.now());
-      lastEvent = events[0].end;
+      lastEvent = events[events.length - 1].end;
       events.sort((a, b) => a.start.millisecondsSinceEpoch
           .compareTo(b.start.millisecondsSinceEpoch));
       firstEvent = events[0].start;

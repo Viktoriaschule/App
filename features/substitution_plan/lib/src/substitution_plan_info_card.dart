@@ -73,16 +73,19 @@ class _SubstitutionPlanInfoCardState
           EmptyList(title: 'Keine Änderungen')
         else
           SizeLimit(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (loader.hasLoadedData)
-                  SubstitutionList(
-                    substitutions: substitutions.length > utils.cut
-                        ? substitutions.sublist(0, utils.cut)
-                        : substitutions,
-                  ),
-              ],
+            child: Container(
+              margin: EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (loader.hasLoadedData)
+                    SubstitutionList(
+                      substitutions: substitutions.length > utils.cut
+                          ? substitutions.sublist(0, utils.cut)
+                          : substitutions,
+                    ),
+                ],
+              ),
             ),
           ),
       ],

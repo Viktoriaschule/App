@@ -33,8 +33,8 @@ class _AiXformationInfoCardState extends InfoCardState<AiXformationInfoCard> {
             : loader.data.posts
         : [];
     return ListGroup(
-      loadingKeys: const [AiXformationKeys.aiXformation],
-      heroId: AiXformationKeys.aiXformation,
+      loadingKeys: const [AiXformationKeys.aixformation],
+      heroId: AiXformationKeys.aixformation,
       actions: [
         NavigationAction(Icons.expand_more, () {
           Navigator.of(context).push(

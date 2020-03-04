@@ -18,6 +18,6 @@ void main() => startApp(
         ['timetable', 'substitutionPlan'],
         ['calendar'],
         ['cafetoria'],
-        ['aiXformation'],
+        ['aixformation'],
       ],
     );

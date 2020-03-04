@@ -22,7 +22,7 @@ class AiXformationFeature implements Feature {
   final String name = 'Aixformation';
 
   @override
-  final String featureKey = AiXformationKeys.aiXformation;
+  final String featureKey = AiXformationKeys.aixformation;
 
   @override
   final List<Feature> dependsOn = const [];

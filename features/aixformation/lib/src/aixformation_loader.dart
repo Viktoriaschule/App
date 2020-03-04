@@ -8,7 +8,7 @@ import 'aixformation_model.dart';
 class AiXformationLoader extends Loader<AiXformation> {
   // ignore: public_member_api_docs
   AiXformationLoader()
-      : super(AiXformationKeys.aiXformation, AiXformationUpdateEvent());
+      : super(AiXformationKeys.aixformation, AiXformationUpdateEvent());
 
   @override
   // ignore: type_annotate_public_apis, always_declare_return_types
