@@ -12,6 +12,9 @@ import 'calendar_model.dart';
 
 // ignore: public_member_api_docs
 class CalendarPage extends StatefulWidget {
+  // ignore: public_member_api_docs
+  const CalendarPage({Key key}) : super(key: key);
+
   @override
   _CalendarPageState createState() => _CalendarPageState();
 }
@@ -35,17 +38,7 @@ class _CalendarPageState extends Interactor<CalendarPage>
 
   void update(CalendarLoader loader) {
     if (loader.hasLoadedData) {
-      events = loader.data.getEventsSince(DateTime.now())
-        ..sort((a, b) {
-          if (b.end == null) {
-            return 1;
-          }
-          if (a.end == null) {
-            return 1;
-          }
-          return b.end.millisecondsSinceEpoch
-              .compareTo(a.end.millisecondsSinceEpoch);
-        });
+      events = loader.data.getEventsSince(DateTime.now());
       lastEvent = events[0].end;
       events.sort((a, b) => a.start.millisecondsSinceEpoch
           .compareTo(b.start.millisecondsSinceEpoch));

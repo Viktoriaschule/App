@@ -39,7 +39,10 @@ class CafetoriaLoader extends Loader<Cafetoria> {
         CafetoriaKeys.cafetoriaModified, DateTime.now().toIso8601String());
 
     // Sync login data
-    await Static.tags.syncTags(context);
+    await Static.tags.syncToServer(
+      context,
+      [CafetoriaWidget.of(context).feature],
+    );
     final status = await loadOnline(context, force: true);
 
     // If the logout was not successfully, restore data

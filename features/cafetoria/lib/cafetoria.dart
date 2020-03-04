@@ -41,11 +41,14 @@ class CafetoriaFeature implements Feature {
   InfoCard getInfoCard(DateTime date) => CafetoriaInfoCard(date: date);
 
   @override
-  Widget getPage() => CafetoriaPage();
+  Widget getPage() => CafetoriaPage(key: ValueKey(featureKey));
 
   @override
-  CafetoriaWidget getFeatureWidget(Widget child) =>
-      CafetoriaWidget(feature: this, child: child);
+  CafetoriaWidget getFeatureWidget(Widget child) => CafetoriaWidget(
+        feature: this,
+        key: ValueKey(featureKey),
+        child: child,
+      );
 
   @override
   DateTime getHomePageDate() {
@@ -60,17 +63,18 @@ class CafetoriaFeature implements Feature {
   }
 
   @override
-  Duration durationToHomePageDateUpdate() => DateTime.now().difference(
+  Duration durationToHomePageDateUpdate() =>
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-          .add(Duration(days: 1)));
+          .add(Duration(days: 1))
+          .difference(DateTime.now());
 }
 
 // ignore: public_member_api_docs
 class CafetoriaWidget extends FeatureWidget<CafetoriaFeature> {
   // ignore: public_member_api_docs
   const CafetoriaWidget(
-      {@required Widget child, @required CafetoriaFeature feature})
-      : super(child: child, feature: feature);
+      {@required Widget child, @required CafetoriaFeature feature, Key key})
+      : super(child: child, feature: feature, key: key);
 
   /// Find the closest [CafetoriaWidget] from ancestor tree.
   static CafetoriaWidget of(BuildContext context) =>

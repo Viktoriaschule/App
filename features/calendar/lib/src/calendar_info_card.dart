@@ -32,11 +32,8 @@ class CalendarInfoCard extends InfoCard {
 class _CalendarInfoCardState extends InfoCardState<CalendarInfoCard> {
   InfoCardUtils utils;
 
-  List<CalendarEvent> getEvents(CalendarLoader loader) => loader.hasLoadedData
-      ? (loader.data.getEventsSince(widget.date)
-            ..sort((a, b) => a.start.compareTo(b.start)))
-          .toList()
-      : [];
+  List<CalendarEvent> getEvents(CalendarLoader loader) =>
+      loader.hasLoadedData ? loader.data.getEventsSince(widget.date) : [];
 
   @override
   Subscription subscribeEvents(EventBus eventBus) =>

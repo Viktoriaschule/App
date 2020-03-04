@@ -6,6 +6,7 @@ import 'package:timetable/src/timetable_keys.dart';
 import 'package:timetable/src/timetable_loader.dart';
 import 'package:timetable/src/timetable_notifications.dart';
 import 'package:timetable/src/timetable_page.dart';
+import 'package:timetable/src/timetable_tags.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
@@ -34,17 +35,20 @@ class TimetableFeature implements Feature {
       TimetableNotificationsHandler();
 
   @override
-  final TagsHandler tagsHandler = null;
+  final TimetableTagsHandler tagsHandler = TimetableTagsHandler();
 
   @override
   InfoCard getInfoCard(DateTime date) => TimetableInfoCard(date: date);
 
   @override
-  Widget getPage() => TimetablePage();
+  Widget getPage() => TimetablePage(key: ValueKey(featureKey));
 
   @override
-  TimetableWidget getFeatureWidget(Widget child) =>
-      TimetableWidget(feature: this, child: child);
+  TimetableWidget getFeatureWidget(Widget child) => TimetableWidget(
+        feature: this,
+        key: ValueKey(featureKey),
+        child: child,
+      );
 
   @override
   DateTime getHomePageDate() =>
@@ -80,8 +84,8 @@ class TimetableFeature implements Feature {
 class TimetableWidget extends FeatureWidget<TimetableFeature> {
   // ignore: public_member_api_docs
   const TimetableWidget(
-      {@required Widget child, @required TimetableFeature feature})
-      : super(child: child, feature: feature);
+      {@required Widget child, @required TimetableFeature feature, Key key})
+      : super(child: child, feature: feature, key: key);
 
   /// Find the closest [TimetableWidget] from ancestor tree.
   static TimetableWidget of(BuildContext context) =>

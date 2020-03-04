@@ -5,8 +5,8 @@ import 'package:utils/utils.dart';
 
 import 'timetable_events.dart';
 
-/// The cafetoria tags synchronization
-class CafetoriaTagsHandler extends TagsHandler {
+/// The timetable tags synchronization
+class TimetableTagsHandler extends TagsHandler {
   @override
   void syncFromServer(Tags tags, BuildContext context) {
     // Sync selections

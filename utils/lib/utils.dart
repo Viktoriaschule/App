@@ -43,6 +43,9 @@ enum StatusCode {
 
 /// Reduces multiple status codes to one
 StatusCode reduceStatusCodes(List<StatusCode> statusCodes) {
+  if (statusCodes.isEmpty) {
+    return StatusCode.success;
+  }
   if (statusCodes
       .map((e) => e == StatusCode.success)
       .reduce((v1, v2) => v1 && v2)) {

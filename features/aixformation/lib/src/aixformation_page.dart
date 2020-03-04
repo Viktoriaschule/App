@@ -9,6 +9,8 @@ import 'aixformation_row.dart';
 
 // ignore: public_member_api_docs
 class AiXformationPage extends StatefulWidget {
+  // ignore: public_member_api_docs
+  const AiXformationPage({Key key}) : super(key: key);
   @override
   AiXformationPageState createState() => AiXformationPageState();
 }

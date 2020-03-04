@@ -42,11 +42,15 @@ class SubstitutionPlanFeature implements Feature {
   InfoCard getInfoCard(DateTime date) => SubstitutionPlanInfoCard(date: date);
 
   @override
-  Widget getPage() => SubstitutionPlanPage();
+  Widget getPage() => SubstitutionPlanPage(key: ValueKey(featureKey));
 
   @override
   SubstitutionPlanWidget getFeatureWidget(Widget child) =>
-      SubstitutionPlanWidget(feature: this, child: child);
+      SubstitutionPlanWidget(
+        feature: this,
+        key: ValueKey(featureKey),
+        child: child,
+      );
 
   @override
   DateTime getHomePageDate() =>
@@ -57,7 +61,7 @@ class SubstitutionPlanFeature implements Feature {
   @override
   Duration durationToHomePageDateUpdate() {
     final now = DateTime.now();
-    return now.difference(DateTime(now.year, now.month, now.day + 1));
+    return DateTime(now.year, now.month, now.day + 1).difference(now);
   }
 }
 
@@ -65,8 +69,10 @@ class SubstitutionPlanFeature implements Feature {
 class SubstitutionPlanWidget extends FeatureWidget<SubstitutionPlanFeature> {
   // ignore: public_member_api_docs
   const SubstitutionPlanWidget(
-      {@required Widget child, @required SubstitutionPlanFeature feature})
-      : super(child: child, feature: feature);
+      {@required Widget child,
+      @required SubstitutionPlanFeature feature,
+      Key key})
+      : super(child: child, feature: feature, key: key);
 
   /// Find the closest [SubstitutionPlanWidget] from ancestor tree.
   static SubstitutionPlanWidget of(BuildContext context) =>

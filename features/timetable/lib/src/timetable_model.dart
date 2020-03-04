@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:substitution_plan/substitution_plan.dart';
 import 'package:timetable/src/timetable_keys.dart';
+import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 
 import 'timetable_events.dart';
@@ -33,7 +34,7 @@ class Timetable {
   String grade;
 
   /// The user timetable selection
-  Selection selection;
+  Selection selection = Selection();
 
   /// Set all default selections...
   void setAllSelections() {
@@ -358,5 +359,8 @@ class Selection {
   }
 
   /// Saves the selections to the server
-  Future<void> save(BuildContext context) => Static.tags.syncTags(context);
+  Future<void> save(BuildContext context) => Static.tags.syncToServer(
+        context,
+        [TimetableWidget.of(context).feature],
+      );
 }

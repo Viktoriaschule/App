@@ -13,6 +13,9 @@ import 'cafetoria_row.dart';
 
 // ignore: public_member_api_docs
 class CafetoriaPage extends StatefulWidget {
+  // ignore: public_member_api_docs
+  const CafetoriaPage({Key key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => CafetoriaPageState();
 }
@@ -72,7 +75,10 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
         ],
         body: CustomRefreshIndicator(
           loadOnline: () async => reduceStatusCodes([
-            await Static.tags.syncTags(context),
+            await Static.tags.syncToServer(
+              context,
+              [CafetoriaWidget.of(context).feature],
+            ),
             await loader.loadOnline(context, force: true),
           ]),
           child: days.isNotEmpty

@@ -41,11 +41,14 @@ class AiXformationFeature implements Feature {
   InfoCard getInfoCard(DateTime date) => AiXformationInfoCard(date: date);
 
   @override
-  Widget getPage() => AiXformationPage();
+  Widget getPage() => AiXformationPage(key: ValueKey(featureKey));
 
   @override
-  AiXFormationWidget getFeatureWidget(Widget child) =>
-      AiXFormationWidget(feature: this, child: child);
+  AiXFormationWidget getFeatureWidget(Widget child) => AiXFormationWidget(
+        feature: this,
+        key: ValueKey(featureKey),
+        child: child,
+      );
 
   @override
   DateTime getHomePageDate() =>
@@ -61,8 +64,8 @@ class AiXformationFeature implements Feature {
 class AiXFormationWidget extends FeatureWidget<AiXformationFeature> {
   // ignore: public_member_api_docs
   const AiXFormationWidget(
-      {@required Widget child, @required AiXformationFeature feature})
-      : super(child: child, feature: feature);
+      {@required Widget child, @required AiXformationFeature feature, Key key})
+      : super(child: child, feature: feature, key: key);
 
   /// Find the closest [AiXFormationWidget] from ancestor tree.
   static AiXFormationWidget of(BuildContext context) =>

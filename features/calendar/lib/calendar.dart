@@ -37,11 +37,14 @@ class CalendarFeature implements Feature {
   InfoCard getInfoCard(DateTime date) => CalendarInfoCard(date: date);
 
   @override
-  Widget getPage() => CalendarPage();
+  Widget getPage() => CalendarPage(key: ValueKey(featureKey));
 
   @override
-  CalendarWidget getFeatureWidget(Widget child) =>
-      CalendarWidget(feature: this, child: child);
+  CalendarWidget getFeatureWidget(Widget child) => CalendarWidget(
+        feature: this,
+        key: ValueKey(featureKey),
+        child: child,
+      );
 
   @override
   DateTime getHomePageDate() {
@@ -57,7 +60,7 @@ class CalendarFeature implements Feature {
     if (loader.hasLoadedData && loader.data.events.isNotEmpty) {
       final events = loader.data.getEventsSince(DateTime.now());
       return events.isNotEmpty
-          ? DateTime.now().difference(events.first.end)
+          ? events.first.end.difference(DateTime.now())
           : null;
     }
     return null;
@@ -68,8 +71,8 @@ class CalendarFeature implements Feature {
 class CalendarWidget extends FeatureWidget<CalendarFeature> {
   // ignore: public_member_api_docs
   const CalendarWidget(
-      {@required Widget child, @required CalendarFeature feature})
-      : super(child: child, feature: feature);
+      {@required Widget child, @required CalendarFeature feature, Key key})
+      : super(child: child, feature: feature, key: key);
 
   /// Find the closest [CalendarWidget] from ancestor tree.
   static CalendarWidget of(BuildContext context) =>

@@ -31,7 +31,7 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
     final subjects = loader.hasLoadedData
         ? loader.data.days[widget.date.weekday - 1]
             .getFutureSubjects(widget.date, loader.data.selection)
-        : [];
+        : <TimetableSubject>[];
     return ListGroup(
       loadingKeys: [TimetableKeys.timetable],
       title: 'Nächste Stunden - ${weekdays[widget.date.weekday - 1]}',
@@ -59,7 +59,7 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
                   !loader.hasLoadedData ||
                   !loader.data.selection.isSet())
                 EmptyList(
-                    title: loader.data.selection.isSet()
+                    title: loader.data?.selection?.isSet() ?? true
                         ? 'Kein Stundenplan'
                         : 'Keine Stunden ausgewählt')
               else
@@ -67,7 +67,11 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
                         ? subjects.sublist(0, utils.cut)
                         : subjects)
                     .map((subject) {
-                  final substitutions = subject.getSubstitutions(widget.date);
+                  final spLoader =
+                      SubstitutionPlanWidget.of(context).feature.loader;
+                  final substitutions = spLoader.hasLoadedData
+                      ? subject.getSubstitutions(widget.date, spLoader.data)
+                      : [];
                   return Container(
                     margin: EdgeInsets.all(10),
                     child: Column(

@@ -23,10 +23,8 @@ class CalendarListState extends Interactor<CalendarList> {
   @override
   Widget build(BuildContext context) {
     final loader = CalendarWidget.of(context).feature.loader;
-    final events = loader.hasLoadedData
-        ? (loader.data.getEventsSince(DateTime.now())
-          ..sort((a, b) => a.start.compareTo(b.start)))
-        : [];
+    final events =
+        loader.hasLoadedData ? loader.data.getEventsSince(DateTime.now()) : [];
     return Column(
       children: <Widget>[
         Expanded(

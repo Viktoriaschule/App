@@ -52,6 +52,7 @@ abstract class Loader<LoaderType> {
           data: data, statusCode: StatusCode.success);
       // ignore: avoid_catches_without_on_clauses
     } catch (e) {
+      print('Failed to parse $key: $e');
       return LoaderResponse<LoaderType>(
           data: null, statusCode: StatusCode.wrongFormat);
     }
@@ -210,32 +211,41 @@ abstract class Loader<LoaderType> {
         // ignore: avoid_catches_without_on_clauses
       } catch (e) {
         statusCodes.add(StatusCode.wrongFormat);
+        print('Failed parse $key: $e');
       }
 
       afterLoad();
       _sendLoadedEvent(pages, eventBus);
-
-      return LoaderResponse(
-          data: data, statusCode: reduceStatusCodes(statusCodes));
+      final status = reduceStatusCodes(statusCodes);
+      if (status != StatusCode.success) {
+        print(
+            'Did not successfully updated $key: $status (http: ${response.statusCode})');
+      }
+      return LoaderResponse(data: data, statusCode: status);
     } on DioError catch (e) {
       afterLoad();
       _sendLoadedEvent(pages, eventBus);
       switch (e.type) {
         case DioErrorType.RESPONSE:
           if (e.response.statusCode == 401) {
+            print('Failed to load $key: Unauthorized');
             if (autoLogin && context != null) {
               await Navigator.of(context)
                   .pushReplacementNamed('/${Keys.login}');
             }
             return LoaderResponse(statusCode: StatusCode.unauthorized);
           }
+          print('Failed to load $key: ${e.type}:\n${e.error}');
           return LoaderResponse(statusCode: StatusCode.failed);
         case DioErrorType.DEFAULT:
           if (e.error is SocketException) {
+            print('Failed to load $key: offline');
             return LoaderResponse(statusCode: StatusCode.offline);
           }
+          print('Failed to load $key: ${e.type}:\n${e.error}');
           return LoaderResponse(statusCode: StatusCode.failed);
         default:
+          print('Failed to load $key: ${e.type}:\n${e.error}');
           return LoaderResponse(statusCode: StatusCode.failed);
       }
     }

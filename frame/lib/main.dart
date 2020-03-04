@@ -6,8 +6,11 @@ import 'package:utils/utils.dart';
 import 'app_frame.dart';
 
 /// Start the app
-Future startApp(
-    {@required String name, @required List<Feature> features}) async {
+Future startApp({
+  @required String name,
+  @required List<Feature> features,
+  @required List<List<String>> downloadOrder,
+}) async {
   if (Platform().isDesktop) {
     debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   }
@@ -22,5 +25,6 @@ Future startApp(
   runApp(AppFrame(
     appName: name,
     features: features,
+    downloadOrder: downloadOrder,
   ));
 }

@@ -181,7 +181,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                             Static.tags.clear();
                             Static.updates.clear();
                             // Clear the data of all features
-                            Features.of(context)
+                            FeaturesWidget.of(context)
                                 .features
                                 .forEach((f) => f.loader.clear());
                             Static.subjects.clear();

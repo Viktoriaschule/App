@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:frame/home/home_page.dart';
 import 'package:frame/settings/settings_page.dart';
+import 'package:frame/utils/features.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
@@ -54,7 +55,10 @@ class _AppPageState extends Interactor<AppPage>
       } else {
         // First sync the tags
         await Static.tags.syncDevice(context);
-        await Static.tags.syncTags(context);
+        await Static.tags.syncToServer(
+          context,
+          FeaturesWidget.of(context).features,
+        );
 
         // Then check all updates (If there is something new to update)
         final storedUpdates = Static.updates.data ?? Updates.fromJson({});
@@ -65,53 +69,26 @@ class _AppPageState extends Interactor<AppPage>
         // Sync the local grade with the server
         Static.user.grade = fetchedUpdates.getUpdate(Keys.grade);
 
+        //TODO: Move to feature without gui
+        await Static.subjects.update(context, fetchedUpdates, force: force);
+
         //TODO: Add old app dialog
 
         // Define all download processes, but do not wait until they are completed
-        // The futures will run parallel and after starting all, the programm will wait until all are finished
-        final features =
-        final downloads = [
-          /// Download subject, timetable and substitution plan in the correct order
-          (() async => reduceStatusCodes([
-                await Static.subjects.update(
-                  context,
-                  fetchedUpdates,
-                  force: force,
-                ),
-                await Static.timetable.update(
-                  context,
-                  fetchedUpdates,
-                  force: force || gradeChanged,
-                ),
-                await Static.substitutionPlan.update(
-                  context,
-                  fetchedUpdates,
-                  force: force,
-                ),
-              ]))(),
-          Static.calendar.update(
-            context,
-            fetchedUpdates,
-            force: force,
-          ),
-          Static.cafetoria.update(
-            context,
-            fetchedUpdates,
-            force: force ||
-                (Static.storage.getString(Keys.cafetoriaId) != null &&
-                    Static.storage.getString(Keys.cafetoriaPassword) != null),
-          ),
-          Static.aiXformation.update(
-            context,
-            fetchedUpdates,
-            force: force,
-          ),
-        ];
+        // The futures will run parallel and after starting all, the program will wait until all are finished
+        final downloads = FeaturesWidget.of(context).downloadOrder.map(
+            (downloader) => Future.wait(downloader
+                .map((key) => FeaturesWidget.of(context)
+                    .getFeature(key)
+                    .loader
+                    .update(context, fetchedUpdates, force: force))
+                .toList()));
 
         // Wait until all futures are finished
         final codes = await Future.wait(downloads);
-        final status = reduceStatusCodes(codes);
+        final status = reduceStatusCodes(codes.map(reduceStatusCodes).toList());
         if (status != StatusCode.success) {
+          //TODO: Show which download failed
           Scaffold.of(context).showSnackBar(
             SnackBar(
               content: Text(getStatusCodeMsg(status)),
@@ -125,6 +102,7 @@ class _AppPageState extends Interactor<AppPage>
       }
       return result;
     } on DioError {
+      print('Failed to fetch data');
       return StatusCode.failed;
     }
   }
@@ -140,11 +118,14 @@ class _AppPageState extends Interactor<AppPage>
       Static.updates.parsedData = Updates.fromJson({});
     }
     Static.subjects.loadOffline(context);
-    Static.timetable.loadOffline(context);
-    Static.substitutionPlan.loadOffline(context);
-    Static.calendar.loadOffline(context);
-    Static.cafetoria.loadOffline(context);
-    Static.aiXformation.loadOffline(context);
+
+    /// Load all features with the offline date
+    FeaturesWidget.of(context).downloadOrder.forEach((downloader) => downloader
+        // ignore: avoid_function_literals_in_foreach_calls
+        .forEach((key) => FeaturesWidget.of(context)
+            .getFeature(key)
+            .loader
+            .loadOffline(context)));
 
     _pwa = PWA();
     if (Platform().isWeb) {

@@ -14,4 +14,10 @@ void main() => startApp(
         CafetoriaFeature(),
         AiXformationFeature(),
       ],
+      downloadOrder: [
+        ['timetable', 'substitutionPlan'],
+        ['calendar'],
+        ['cafetoria'],
+        ['aiXformation'],
+      ],
     );

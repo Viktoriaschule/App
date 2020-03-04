@@ -13,8 +13,9 @@ import 'package:flutter/material.dart';
 /// {@end-tool}
 abstract class FeatureWidget<Feature> extends InheritedWidget {
   // ignore: public_member_api_docs
-  const FeatureWidget({@required this.feature, @required Widget child})
-      : super(child: child);
+  const FeatureWidget(
+      {@required this.feature, @required Widget child, @required Key key})
+      : super(child: child, key: key);
 
   // ignore: public_member_api_docs
   final Feature feature;

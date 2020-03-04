@@ -15,6 +15,9 @@ import 'timetable_select_dialog.dart';
 
 // ignore: public_member_api_docs
 class TimetablePage extends StatefulWidget {
+  // ignore: public_member_api_docs
+  const TimetablePage({Key key}) : super(key: key);
+
   @override
   _TimetablePageState createState() => _TimetablePageState();
 }
@@ -52,7 +55,10 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                 child: CustomGrid(
                   onRefresh: () async {
                     final results = [
-                      await Static.tags.syncTags(context),
+                      await Static.tags.syncToServer(
+                        context,
+                        [TimetableWidget.of(context).feature],
+                      ),
                       await loader.loadOnline(context, force: true),
                       await substitutionPlanFeature.loader
                           .loadOnline(context, force: true),
@@ -117,19 +123,19 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                   ],
                   append: List.generate(5, (weekday) {
                     final day = _monday.add(Duration(days: weekday));
-                    final cafetoriaView = CafetoriaInfoCard(
-                      date: day,
-                      showNavigation: false,
-                      isSingleDay: true,
-                    );
-                    final calendarView = CalendarInfoCard(
-                      date: day,
-                      showNavigation: false,
-                      isSingleDay: true,
-                    );
                     return [
-                      calendarView,
-                      cafetoriaView,
+                      if (CafetoriaWidget.of(context) != null)
+                        CafetoriaInfoCard(
+                          date: day,
+                          showNavigation: false,
+                          isSingleDay: true,
+                        ),
+                      if (CalendarWidget.of(context) != null)
+                        CalendarInfoCard(
+                          date: day,
+                          showNavigation: false,
+                          isSingleDay: true,
+                        ),
                     ].map((x) => SizeLimit(child: x)).toList().cast<Widget>();
                   }),
                   children: List.generate(

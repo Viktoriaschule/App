@@ -58,11 +58,10 @@ class _CalendarGridItemState extends State<CalendarGridItem> {
               .feature
               .loader
               .data
-              .getEventsForTimeSpan(
-                  widget.date,
-                  widget.date
-                      .add(Duration(days: 1))
-                      .subtract(Duration(seconds: 1)));
+              .getEventsSince(widget.date)
+              .where((event) => event.start.isBefore(widget.date
+                  .add(Duration(days: 1))
+                  .subtract(Duration(seconds: 1))));
           if (events.isNotEmpty) {
             showDialog(
               context: context,

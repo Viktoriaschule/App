@@ -65,7 +65,10 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
         Static.storage.setString(
             CafetoriaKeys.cafetoriaPassword, passwordController.text);
         final status = reduceStatusCodes([
-          await Static.tags.syncTags(context),
+          await Static.tags.syncToServer(
+            context,
+            [CafetoriaWidget.of(context).feature],
+          ),
           await loader.loadOnline(context, force: true),
         ]);
         if (status != StatusCode.success) {

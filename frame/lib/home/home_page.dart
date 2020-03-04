@@ -1,13 +1,10 @@
 import 'dart:async';
 
-import 'package:aixformation/aixformation.dart';
-import 'package:cafetoria/cafetoria.dart';
-import 'package:calendar/calendar.dart';
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:frame/utils/features.dart';
-import 'package:substitution_plan/substitution_plan.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 
@@ -17,7 +14,7 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends Interactor<HomePage> {
+class _HomePageState extends Interactor<HomePage> with AfterLayoutMixin {
   DateTime day;
   Future<void> timeUpdates = Future.delayed(Duration(seconds: 0));
   List<Feature> features;
@@ -39,7 +36,10 @@ class _HomePageState extends Interactor<HomePage> {
   Subscription subscribeEvents(EventBus eventBus) =>
       eventBus.respond<TimetableUpdateEvent>((event) => update());
 
-  void update() => setState(timeUpdate);
+  void update() {
+    setState(() => null);
+    timeUpdate();
+  }
 
   /// Cancel the time updater
   Future<void> cancelTimeUpdate() async {
@@ -56,27 +56,33 @@ class _HomePageState extends Interactor<HomePage> {
 
   /// Update the time automatically
   Future<void> timeUpdate() async {
-    // Get the closest duration
-    Duration duration;
-    for (final feature in features) {
-      final d = feature.durationToHomePageDateUpdate();
-      if (duration == null || duration.inSeconds > d.inSeconds) {
-        duration = d;
-      }
-    }
-
-    // Only set if there is any feature that wants to update after s specific time
-    if (duration != null) {
-      // First cancel the current updater
-      await cancelTimeUpdate();
-
-      // Set the new updater
-      timeUpdates = Future.delayed(duration).then((_) {
-        if (mounted) {
-          update();
-          timeUpdate();
+    if (features != null) {
+      // Get the closest duration
+      Duration duration;
+      for (final feature in features) {
+        final d = feature.durationToHomePageDateUpdate();
+        if (d != null &&
+            (duration == null || duration.inSeconds > d.inSeconds)) {
+          if (d.inSeconds < 0) {
+            print('Error in ${feature.name} time update duration: $duration');
+          } else {
+            duration = d;
+          }
         }
-      });
+      }
+
+      // Only set if there is any feature that wants to update after s specific time
+      if (duration != null) {
+        // First cancel the current updater
+        await cancelTimeUpdate();
+
+        // Set the new updater
+        timeUpdates = Future.delayed(duration).then((_) {
+          if (mounted) {
+            update();
+          }
+        });
+      }
     }
   }
 
@@ -87,39 +93,31 @@ class _HomePageState extends Interactor<HomePage> {
   }
 
   @override
-  void initState() {
+  void afterFirstLayout(BuildContext context) {
+    features = FeaturesWidget.of(context).features;
     timeUpdate();
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = getScreenSize(MediaQuery.of(context).size.width);
-
+    //final size = getScreenSize(MediaQuery.of(context).size.width);
     // Get the date for the home page
-    final day = getDay(Features.of(context).features);
+    final day = getDay(features ?? FeaturesWidget.of(context).features);
 
-    Widget timetableBuilder() => TimetableInfoCard(date: day);
-    Widget substitutionPlanBuilder() => SubstitutionPlanInfoCard(date: day);
-    Widget calendarBuilder() => CalendarInfoCard(date: day);
-    Widget cafetoriaBuilder() => CafetoriaInfoCard(date: day);
-    Widget aixformationBuilder() => AiXformationInfoCard(date: day);
+    final widgetBuilders = FeaturesWidget.of(context)
+        .features
+        .map((f) => () => f.getInfoCard(day))
+        .toList();
 
-    final widgetBuilders = [
-      timetableBuilder,
-      substitutionPlanBuilder,
-      calendarBuilder,
-      cafetoriaBuilder,
-      aixformationBuilder,
-    ];
-
-    if (size == ScreenSize.small) {
-      return ListView.builder(
-        padding: EdgeInsets.only(bottom: 10),
-        itemCount: widgetBuilders.length,
-        itemBuilder: (context, index) => widgetBuilders[index](),
-      );
-    }
+    //TODO: if (size == ScreenSize.small) {
+    return ListView.builder(
+      padding: EdgeInsets.only(bottom: 10),
+      itemCount: widgetBuilders.length,
+      itemBuilder: (context, index) => widgetBuilders[index](),
+    );
+    //}
+    //TODO: Add other screen sizes
+    /*
     if (size == ScreenSize.middle) {
       return SingleChildScrollView(
         child: Column(
@@ -231,8 +229,9 @@ class _HomePageState extends Interactor<HomePage> {
         ),
       );
     }
-    return Container();
+    /return Container();
+    */
   }
 
-  final _screenPadding = 110;
+  // final _screenPadding = 110;
 }

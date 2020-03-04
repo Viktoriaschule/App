@@ -107,7 +107,10 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
       body: timetableLoader.hasLoadedData && loader.hasLoadedData
           ? CustomGrid(
               onRefresh: () async => reduceStatusCodes([
-                await Static.tags.syncTags(context),
+                await Static.tags.syncToServer(
+                  context,
+                  [SubstitutionPlanWidget.of(context).feature],
+                ),
                 await timetableLoader.loadOnline(context, force: true),
                 await loader.loadOnline(context, force: true),
               ]),

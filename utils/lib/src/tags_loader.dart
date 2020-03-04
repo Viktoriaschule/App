@@ -41,16 +41,16 @@ class TagsLoader extends Loader<Tags> {
             axfNotifications:
                 Static.storage.getBool(Keys.aiXformationNotifications) ?? true,
           ));
-      await sendTags({'device': device.toMap()}, context);
+      await _sendTags({'device': device.toMap()}, context);
     }
   }
 
   /// Synchronize local data with server tags
-  Future<void> syncWithTags(
-      {BuildContext context,
-      Tags tags,
-      bool autoSync = true,
-      bool forceSync = false}) async {
+  Future<void> _syncFromServer(
+    BuildContext context,
+    Tags tags,
+    List<Feature> features,
+  ) async {
     if (tags == null) {
       await loadOnline(context, force: true);
       tags = parsedData;
@@ -62,18 +62,19 @@ class TagsLoader extends Loader<Tags> {
       // Set the user group (1 (pupil); 2 (teacher); 4 (developer); 8 (other))
       Static.user.group = tags.group;
 
-      //TODO: Sync all feature tags loader if the tags are initialized
-
-    } else if (autoSync) {
-      await syncTags(context, checkSync: false);
+      for (final feature in features) {
+        if (feature.tagsHandler != null) {
+          feature.tagsHandler.syncFromServer(tags, context);
+        }
+      }
     }
-    return;
   }
 
   /// Send tags to server
-  Future sendTags(Map<String, dynamic> tags, BuildContext context) async {
+  Future<StatusCode> _sendTags(
+      Map<String, dynamic> tags, BuildContext context) async {
     try {
-      await loadOnline(
+      return await loadOnline(
         context,
         force: true,
         body: tags,
@@ -81,31 +82,41 @@ class TagsLoader extends Loader<Tags> {
         store: false,
       );
       // ignore: empty_catches
-    } on DioError {}
+    } on DioError {
+      return StatusCode.failed;
+    }
   }
 
-  /// Sync the tags
-  Future<StatusCode> syncTags(BuildContext context,
+  /// Sync the tags to the server
+  Future<StatusCode> syncToServer(BuildContext context, List<Feature> features,
       {bool checkSync = true}) async {
     // Get all server tags...
     final status = await loadOnline(context, force: true);
     final Tags allTags = parsedData;
     if (allTags == null) {
+      print('Failed to load tags: $status');
       return reduceStatusCodes([status, StatusCode.failed]);
     }
 
     if (checkSync) {
-      await syncWithTags(context: context, tags: allTags, autoSync: false);
+      await _syncFromServer(context, allTags, features);
     }
 
     // Get all changed tags
     final Map<String, dynamic> tagsToUpdate = {};
 
-    ///TODO: Get all tags to sync from each feature
+    for (final feature in features) {
+      if (feature.tagsHandler != null) {
+        final _tags = feature.tagsHandler.syncToServer(allTags);
+        for (final key in _tags.keys) {
+          tagsToUpdate[key] = _tags[key];
+        }
+      }
+    }
 
     if (tagsToUpdate.keys.isNotEmpty &&
         tagsToUpdate.values.where((v) => v != null).isNotEmpty) {
-      final result = await sendTags(tagsToUpdate, context);
+      final result = await _sendTags(tagsToUpdate, context);
       return reduceStatusCodes([status, result]);
     }
     return StatusCode.success;
