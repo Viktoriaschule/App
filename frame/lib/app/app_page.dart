@@ -76,17 +76,31 @@ class _AppPageState extends Interactor<AppPage>
 
         // Define all download processes, but do not wait until they are completed
         // The futures will run parallel and after starting all, the program will wait until all are finished
-        final downloads = FeaturesWidget.of(context).downloadOrder.map(
-            (downloader) => Future.wait(downloader
-                .map((key) => FeaturesWidget.of(context)
-                    .getFeature(key)
-                    .loader
-                    .update(context, fetchedUpdates, force: force))
-                .toList()));
+        final downloads = FeaturesWidget.of(context)
+            .downloadOrder
+            .map<Future<StatusCode>>((downloader) {
+          final downloads = downloader
+              .map((key) => FeaturesWidget.of(context).getFeature(key).loader)
+              .toList();
+          // If there is only one downloader return directly
+          if (downloads.length == 1) {
+            return downloads.first
+                .update(context, fetchedUpdates, force: force);
+          }
+          // If there is more than one, download them in the correct order
+          return () async {
+            final statusCodes = <StatusCode>[];
+            for (final downloader in downloads) {
+              statusCodes.add(await downloader.update(context, fetchedUpdates,
+                  force: force));
+            }
+            return reduceStatusCodes(statusCodes);
+          }();
+        }).toList();
 
         // Wait until all futures are finished
         final codes = await Future.wait(downloads);
-        final status = reduceStatusCodes(codes.map(reduceStatusCodes).toList());
+        final status = reduceStatusCodes(codes.toList());
         if (status != StatusCode.success) {
           //TODO: Show which download failed
           Scaffold.of(context).showSnackBar(

@@ -71,7 +71,7 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
                       SubstitutionPlanWidget.of(context).feature.loader;
                   final substitutions = spLoader.hasLoadedData
                       ? subject.getSubstitutions(widget.date, spLoader.data)
-                      : [];
+                      : <Substitution>[];
                   return Container(
                     margin: EdgeInsets.all(10),
                     child: Column(

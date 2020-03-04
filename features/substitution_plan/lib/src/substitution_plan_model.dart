@@ -95,16 +95,16 @@ class SubstitutionPlanDay {
   final bool isEmpty;
 
   /// The filtered substitutions for the user
-  List<Substitution> myChanges;
+  List<Substitution> myChanges = [];
 
   /// The undefined filtered substitutions
-  List<Substitution> undefinedChanges;
+  List<Substitution> undefinedChanges = [];
 
   /// The other filtered substitutions
-  List<Substitution> otherChanges;
+  List<Substitution> otherChanges = [];
 
   /// The filtered unparsed substitutions
-  List<String> myUnparsed;
+  List<String> myUnparsed = [];
 
   /// The current user grade
   String filteredGrade;
