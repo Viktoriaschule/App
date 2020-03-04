@@ -9,7 +9,6 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.6.1'
-        classpath 'com.google.gms:google-services:4.3.3'
     }
 }
 
@@ -21,7 +20,6 @@ rootProject.allprojects {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 28
@@ -37,8 +35,4 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
-}
-
-dependencies {
-    implementation 'com.google.firebase:firebase-messaging:20.1.1'
 }

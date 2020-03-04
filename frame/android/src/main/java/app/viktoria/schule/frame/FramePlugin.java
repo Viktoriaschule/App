@@ -83,12 +83,11 @@ public class FramePlugin implements FlutterPlugin, MethodCallHandler {
         } else if (call.method.equals("notification")) {
             try {
                 Map<String, Object> data = (Map<String, Object>) call.arguments;
-                Map<String, Object> rawData = (Map<String, Object>) data.get("data");
 
                 Intent intent = new Intent(applicationContext, Class.forName(applicationContext.getPackageName() + ".MainActivity"));
-                for (int i = 0; i < rawData.keySet().size() - 1; i++) {
-                    String key = rawData.keySet().toArray()[i].toString();
-                    intent.putExtra(key, String.valueOf(rawData.get(key)));
+                for (int i = 0; i < data.keySet().size(); i++) {
+                    String key = data.keySet().toArray()[i].toString();
+                    intent.putExtra(key, String.valueOf(data.get(key)));
                 }
 
                 int uniqueInt = (int) (System.currentTimeMillis() & 0xfffffff);
