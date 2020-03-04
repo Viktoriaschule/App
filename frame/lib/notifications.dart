@@ -117,11 +117,8 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
         await methodChannel.invokeMethod(
           'notification',
           {
-            'body': data['body'],
-            'bigBody': data['bigBody'],
-            'title': data['title'],
+            ...data,
             'group': groups[data['type']],
-            'data': data,
           },
         );
       }
