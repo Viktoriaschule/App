@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'package:substitution_plan/src/substitution_plan_events.dart';
 import 'package:substitution_plan/src/substitution_plan_keys.dart';
 import 'package:substitution_plan/substitution_plan.dart';
+import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 

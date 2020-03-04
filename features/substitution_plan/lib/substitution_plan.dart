@@ -11,6 +11,7 @@ import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 export 'src/substitution_list.dart';
+export 'src/substitution_plan_events.dart';
 export 'src/substitution_plan_info_card.dart';
 export 'src/substitution_plan_loader.dart';
 export 'src/substitution_plan_model.dart';
@@ -46,6 +47,18 @@ class SubstitutionPlanFeature implements Feature {
   @override
   SubstitutionPlanWidget getFeatureWidget(Widget child) =>
       SubstitutionPlanWidget(feature: this, child: child);
+
+  @override
+  DateTime getHomePageDate() =>
+      loader.hasLoadedData && loader.data.days.isNotEmpty
+          ? loader.data.days.first.date
+          : null;
+
+  @override
+  Duration durationToHomePageDateUpdate() {
+    final now = DateTime.now();
+    return now.difference(DateTime(now.year, now.month, now.day + 1));
+  }
 }
 
 // ignore: public_member_api_docs

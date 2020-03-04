@@ -64,12 +64,12 @@ class _AppPageState extends Interactor<AppPage>
 
         // Sync the local grade with the server
         Static.user.grade = fetchedUpdates.getUpdate(Keys.grade);
-        final gradeChanged = Static.timetable.data?.grade != Static.user.grade;
 
         //TODO: Add old app dialog
 
         // Define all download processes, but do not wait until they are completed
         // The futures will run parallel and after starting all, the programm will wait until all are finished
+        final features =
         final downloads = [
           /// Download subject, timetable and substitution plan in the correct order
           (() async => reduceStatusCodes([

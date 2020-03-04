@@ -1,6 +1,7 @@
 import 'package:timetable/src/timetable_keys.dart';
 import 'package:utils/utils.dart';
 
+import 'timetable_events.dart';
 import 'timetable_model.dart';
 
 /// TimetableLoader class

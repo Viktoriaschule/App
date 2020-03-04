@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+export 'src/calendar_events.dart';
 export 'src/calendar_info_card.dart';
 export 'src/calendar_loader.dart';
 export 'src/calendar_page.dart';
@@ -41,6 +42,26 @@ class CalendarFeature implements Feature {
   @override
   CalendarWidget getFeatureWidget(Widget child) =>
       CalendarWidget(feature: this, child: child);
+
+  @override
+  DateTime getHomePageDate() {
+    if (loader.hasLoadedData && loader.data.events.isNotEmpty) {
+      final events = loader.data.getEventsSince(DateTime.now());
+      return events.isNotEmpty ? events.first.start : null;
+    }
+    return null;
+  }
+
+  @override
+  Duration durationToHomePageDateUpdate() {
+    if (loader.hasLoadedData && loader.data.events.isNotEmpty) {
+      final events = loader.data.getEventsSince(DateTime.now());
+      return events.isNotEmpty
+          ? DateTime.now().difference(events.first.end)
+          : null;
+    }
+    return null;
+  }
 }
 
 // ignore: public_member_api_docs

@@ -3,6 +3,7 @@ import 'package:utils/src/feature_utils/feature_widget.dart';
 import 'package:utils/src/feature_utils/notifications.dart';
 import 'package:utils/src/feature_utils/tags.dart';
 import 'package:utils/src/loader.dart';
+import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 export 'feature_widget.dart';
@@ -45,6 +46,13 @@ abstract class Feature {
   ///
   /// If the feature does not handle any tags, the handler should be null
   final TagsHandler tagsHandler;
+
+  /// If the feature wants to control the date for the home page,
+  /// it have to return a date, otherwise, return null
+  DateTime getHomePageDate();
+
+  /// Returns the duration between the current moment and the next `getHomePageDate()` update
+  Duration durationToHomePageDateUpdate();
 
   //TODO: Replace with InfoCard type
   /// The information card of this feature for the home page of the app

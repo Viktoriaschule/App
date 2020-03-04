@@ -2,6 +2,7 @@ import 'package:cafetoria/cafetoria.dart';
 import 'package:flutter/widgets.dart';
 import 'package:utils/utils.dart';
 
+import 'cafetoria_events.dart';
 import 'cafetoria_model.dart';
 
 /// CafetoriaLoader class

@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'cafetoria_events.dart';
 import 'cafetoria_login.dart' as dialog;
 import 'cafetoria_row.dart';
 

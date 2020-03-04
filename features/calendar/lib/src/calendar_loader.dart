@@ -1,6 +1,7 @@
 import 'package:calendar/src/calendar_keys.dart';
 import 'package:utils/utils.dart';
 
+import 'calendar_events.dart';
 import 'calendar_model.dart';
 
 /// CalendarLoader class

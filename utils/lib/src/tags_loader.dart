@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:package_info/package_info.dart';
 
 import '../utils.dart';

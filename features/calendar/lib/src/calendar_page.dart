@@ -35,8 +35,7 @@ class _CalendarPageState extends Interactor<CalendarPage>
 
   void update(CalendarLoader loader) {
     if (loader.hasLoadedData) {
-      events = loader.data.getEventsForTimeSpan(
-          DateTime.now(), DateTime.now().add(Duration(days: 730)))
+      events = loader.data.getEventsSince(DateTime.now())
         ..sort((a, b) {
           if (b.end == null) {
             return 1;

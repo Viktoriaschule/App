@@ -1,9 +1,9 @@
 import 'package:aixformation/aixformation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'aixformation_events.dart';
 import 'aixformation_keys.dart';
 import 'aixformation_row.dart';
 

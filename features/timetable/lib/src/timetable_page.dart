@@ -35,7 +35,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
         : DateTime.now());
     return Scaffold(
       appBar: CustomAppBar(
-        title: Pages.of(context).pages[TimetableKeys.timetable].title,
+        title: TimetableWidget.of(context).feature.name,
         loadingKeys: [
           TimetableKeys.timetable,
           substitutionPlanFeature.featureKey,

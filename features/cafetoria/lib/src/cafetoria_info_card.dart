@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'cafetoria_events.dart';
 import 'cafetoria_keys.dart';
 import 'cafetoria_model.dart';
 import 'cafetoria_page.dart';

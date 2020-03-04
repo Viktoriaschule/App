@@ -10,6 +10,7 @@ import 'package:cafetoria/src/cafetoria_keys.dart';
 import 'package:cafetoria/src/cafetoria_loader.dart';
 import 'package:widgets/widgets.dart';
 
+export 'src/cafetoria_events.dart';
 export 'src/cafetoria_info_card.dart';
 export 'src/cafetoria_keys.dart';
 export 'src/cafetoria_loader.dart';
@@ -45,6 +46,23 @@ class CafetoriaFeature implements Feature {
   @override
   CafetoriaWidget getFeatureWidget(Widget child) =>
       CafetoriaWidget(feature: this, child: child);
+
+  @override
+  DateTime getHomePageDate() {
+    if (loader.hasLoadedData) {
+      final now = DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day);
+      final days =
+          loader.data.days.where((day) => day.date.isAfter(now)).toList();
+      return days.isNotEmpty ? days.first.date : null;
+    }
+    return null;
+  }
+
+  @override
+  Duration durationToHomePageDateUpdate() => DateTime.now().difference(
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
+          .add(Duration(days: 1)));
 }
 
 // ignore: public_member_api_docs

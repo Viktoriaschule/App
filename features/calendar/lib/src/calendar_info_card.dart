@@ -33,11 +33,7 @@ class _CalendarInfoCardState extends InfoCardState<CalendarInfoCard> {
   InfoCardUtils utils;
 
   List<CalendarEvent> getEvents(CalendarLoader loader) => loader.hasLoadedData
-      ? (loader.data.getEventsForTimeSpan(
-              widget.date,
-              widget.isSingleDay
-                  ? widget.date
-                  : widget.date.add(Duration(days: 730)))
+      ? (loader.data.getEventsSince(widget.date)
             ..sort((a, b) => a.start.compareTo(b.start)))
           .toList()
       : [];

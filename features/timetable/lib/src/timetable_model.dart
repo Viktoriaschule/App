@@ -4,6 +4,8 @@ import 'package:substitution_plan/substitution_plan.dart';
 import 'package:timetable/src/timetable_keys.dart';
 import 'package:utils/utils.dart';
 
+import 'timetable_events.dart';
+
 /// Describes the whole timetable
 class Timetable {
   // ignore: public_member_api_docs

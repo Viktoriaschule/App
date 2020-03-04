@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
 
+import 'cafetoria_events.dart';
+
 /// The cafetoria tags synchronization
 class CafetoriaTagsHandler extends TagsHandler {
   @override

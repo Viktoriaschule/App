@@ -24,8 +24,7 @@ class CalendarListState extends Interactor<CalendarList> {
   Widget build(BuildContext context) {
     final loader = CalendarWidget.of(context).feature.loader;
     final events = loader.hasLoadedData
-        ? (loader.data.getEventsForTimeSpan(
-            DateTime.now(), DateTime.now().add(Duration(days: 6000)))
+        ? (loader.data.getEventsSince(DateTime.now())
           ..sort((a, b) => a.start.compareTo(b.start)))
         : [];
     return Column(

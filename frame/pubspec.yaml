@@ -10,16 +10,6 @@ dependencies:
   after_layout:
   dio:
   flutter_event_bus:
-  aixformation:
-    path: ../features/aixformation
-  cafetoria:
-    path: ../features/cafetoria
-  calendar:
-    path: ../features/calendar
-  substitution_plan:
-    path: ../features/substitution_plan
-  timetable:
-    path: ../features/timetable
   utils:
     path: ../utils
   widgets:

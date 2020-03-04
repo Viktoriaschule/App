@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+export 'src/aixformation_events.dart';
 export 'src/aixformation_info_card.dart';
 export 'src/aixformation_loader.dart';
 export 'src/aixformation_model.dart';
@@ -45,6 +46,15 @@ class AiXformationFeature implements Feature {
   @override
   AiXFormationWidget getFeatureWidget(Widget child) =>
       AiXFormationWidget(feature: this, child: child);
+
+  @override
+  DateTime getHomePageDate() =>
+      loader.hasLoadedData && loader.data.posts.isNotEmpty
+          ? loader.data.posts.first.date
+          : null;
+
+  @override
+  Duration durationToHomePageDateUpdate() => null;
 }
 
 // ignore: public_member_api_docs
