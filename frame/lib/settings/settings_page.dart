@@ -13,9 +13,6 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends Interactor<SettingsPage> {
-  bool _substitutionPlanNotifications;
-  bool _aiXformationNotifications;
-  bool _cafetoriaNotifications;
   bool _automaticDesign;
   bool _darkMode;
 
@@ -23,13 +20,10 @@ class _SettingsPageState extends Interactor<SettingsPage> {
   Subscription subscribeEvents(EventBus eventBus) =>
       eventBus.respond<TagsUpdateEvent>((event) => setState(_init));
 
+  bool getNotifications(String key) =>
+      Static.storage.getBool(Keys.notifications(key)) ?? true;
+
   void _init() {
-    _substitutionPlanNotifications =
-        Static.storage.getBool(Keys.substitutionPlanNotifications) ?? true;
-    _aiXformationNotifications =
-        Static.storage.getBool(Keys.aiXformationNotifications) ?? true;
-    _cafetoriaNotifications =
-        Static.storage.getBool(Keys.cafetoriaNotifications) ?? true;
     _automaticDesign = Static.storage.getBool(Keys.automaticDesign) ?? true;
     _darkMode = Static.storage.getBool(Keys.darkMode) ?? false;
   }
@@ -41,171 +35,134 @@ class _SettingsPageState extends Interactor<SettingsPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: CustomAppBar(
-          title: Pages.of(context).pages[Keys.settings].title,
-          loadingKeys: [Keys.tags],
-        ),
-        body: Material(
-          child: Center(
-            child: SizeLimit(
-              child: Scrollbar(
-                child: ListView(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.all(5),
-                  children: [
+  Widget build(BuildContext context) {
+    final notificationFeatures = FeaturesWidget.of(context)
+        .features
+        .where((f) => f.notificationsHandler != null)
+        .toList();
+    return Scaffold(
+      appBar: CustomAppBar(
+        title: Pages.of(context).pages[Keys.settings].title,
+        loadingKeys: [Keys.tags],
+      ),
+      body: Material(
+        child: Center(
+          child: SizeLimit(
+            child: Scrollbar(
+              child: ListView(
+                shrinkWrap: true,
+                padding: EdgeInsets.all(5),
+                children: [
+                  if (notificationFeatures.isNotEmpty)
                     ListGroup(
                       title: 'Benachrichtigungen',
-                      children: [
-                        CheckboxListTile(
-                          title: Text(
-                            'Vertretungsplan',
-                            style: TextStyle(
-                              color: ThemeWidget.of(context).textColor,
+                      children: notificationFeatures
+                          .map(
+                            (feature) => CheckboxListTile(
+                              title: Text(
+                                feature.name,
+                                style: TextStyle(
+                                  color: ThemeWidget.of(context).textColor,
+                                ),
+                              ),
+                              checkColor: lightColor,
+                              activeColor: Theme.of(context).accentColor,
+                              value: getNotifications(feature.featureKey),
+                              onChanged: (value) async {
+                                setState(() {
+                                  Static.storage.setBool(
+                                      Keys.notifications(feature.featureKey),
+                                      value);
+                                });
+                                try {
+                                  await Static.tags.syncDevice(context);
+                                  // ignore: empty_catches
+                                } on DioError {}
+                              },
                             ),
-                          ),
-                          checkColor: lightColor,
-                          activeColor: Theme.of(context).accentColor,
-                          value: _substitutionPlanNotifications,
-                          onChanged: (value) async {
-                            setState(() {
-                              _substitutionPlanNotifications = value;
-                              Static.storage.setBool(
-                                  Keys.substitutionPlanNotifications, value);
-                            });
-                            try {
-                              await Static.tags.syncDevice(context);
-                              // ignore: empty_catches
-                            } on DioError {}
-                          },
-                        ),
-                        CheckboxListTile(
-                          title: Text(
-                            'AiXformation',
-                            style: TextStyle(
-                              color: ThemeWidget.of(context).textColor,
-                            ),
-                          ),
-                          checkColor: lightColor,
-                          activeColor: Theme.of(context).accentColor,
-                          value: _aiXformationNotifications,
-                          onChanged: (value) async {
-                            setState(() {
-                              _aiXformationNotifications = value;
-                              Static.storage.setBool(
-                                  Keys.aiXformationNotifications, value);
-                            });
-                            try {
-                              await Static.tags.syncDevice(context);
-                              // ignore: empty_catches
-                            } on DioError {}
-                          },
-                        ),
-                        CheckboxListTile(
-                          title: Text(
-                            'Cafétoria',
-                            style: TextStyle(
-                              color: ThemeWidget.of(context).textColor,
-                            ),
-                          ),
-                          checkColor: lightColor,
-                          activeColor: Theme.of(context).accentColor,
-                          value: _cafetoriaNotifications,
-                          onChanged: (value) async {
-                            setState(() {
-                              _cafetoriaNotifications = value;
-                              Static.storage
-                                  .setBool(Keys.cafetoriaNotifications, value);
-                            });
-                            try {
-                              await Static.tags.syncDevice(context);
-                              // ignore: empty_catches
-                            } on DioError {}
-                          },
-                        ),
-                      ],
+                          )
+                          .toList(),
                     ),
-                    ListGroup(
-                      title: 'Design',
-                      children: [
-                        CheckboxListTile(
-                          title: Text(
-                            'Automatisch',
-                            style: TextStyle(
-                              color: ThemeWidget.of(context).textColor,
-                            ),
+                  ListGroup(
+                    title: 'Design',
+                    children: [
+                      CheckboxListTile(
+                        title: Text(
+                          'Automatisch',
+                          style: TextStyle(
+                            color: ThemeWidget.of(context).textColor,
                           ),
-                          checkColor: lightColor,
-                          activeColor: Theme.of(context).accentColor,
-                          value: _automaticDesign,
-                          onChanged: (value) async {
-                            setState(() {
-                              _automaticDesign = value;
-                              Static.storage
-                                  .setBool(Keys.automaticDesign, value);
-                              EventBus.of(context).publish(ThemeChangedEvent());
-                            });
-                          },
                         ),
-                        CheckboxListTile(
-                          title: Text(
-                            'Dunkles Design',
-                            style: TextStyle(
-                              color: ThemeWidget.of(context).textColor,
-                            ),
-                          ),
-                          checkColor: lightColor,
-                          activeColor: Theme.of(context).accentColor,
-                          value: _darkMode,
-                          onChanged: !_automaticDesign
-                              ? (value) async {
-                                  setState(() {
-                                    _darkMode = value;
-                                    Static.storage
-                                        .setBool(Keys.darkMode, value);
-                                    EventBus.of(context)
-                                        .publish(ThemeChangedEvent());
-                                  });
-                                }
-                              : null,
-                        ),
-                      ],
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 20, left: 5, right: 5),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: CustomButton(
-                          onPressed: () {
-                            Static.user.clear();
-                            Static.tags.clear();
-                            Static.updates.clear();
-                            // Clear the data of all features
-                            FeaturesWidget.of(context)
-                                .features
-                                .forEach((f) => f.loader.clear());
-                            Static.subjects.clear();
-                            Static.storage
-                                .getKeys()
-                                .forEach(Static.storage.remove);
+                        checkColor: lightColor,
+                        activeColor: Theme.of(context).accentColor,
+                        value: _automaticDesign,
+                        onChanged: (value) async {
+                          setState(() {
+                            _automaticDesign = value;
+                            Static.storage.setBool(Keys.automaticDesign, value);
                             EventBus.of(context).publish(ThemeChangedEvent());
-                            Navigator.of(context).pushNamedAndRemoveUntil(
-                                '/${Keys.login}', (r) => false);
-                          },
-                          child: Text(
-                            'Abmelden',
-                            style: TextStyle(
-                              color: darkColor,
-                            ),
+                          });
+                        },
+                      ),
+                      CheckboxListTile(
+                        title: Text(
+                          'Dunkles Design',
+                          style: TextStyle(
+                            color: ThemeWidget.of(context).textColor,
+                          ),
+                        ),
+                        checkColor: lightColor,
+                        activeColor: Theme.of(context).accentColor,
+                        value: _darkMode,
+                        onChanged: !_automaticDesign
+                            ? (value) async {
+                                setState(() {
+                                  _darkMode = value;
+                                  Static.storage.setBool(Keys.darkMode, value);
+                                  EventBus.of(context)
+                                      .publish(ThemeChangedEvent());
+                                });
+                              }
+                            : null,
+                      ),
+                    ],
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 20, left: 5, right: 5),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: CustomButton(
+                        onPressed: () {
+                          Static.user.clear();
+                          Static.tags.clear();
+                          Static.updates.clear();
+                          // Clear the data of all features
+                          FeaturesWidget.of(context)
+                              .features
+                              .forEach((f) => f.loader.clear());
+                          Static.subjects.clear();
+                          Static.storage
+                              .getKeys()
+                              .forEach(Static.storage.remove);
+                          EventBus.of(context).publish(ThemeChangedEvent());
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              '/${Keys.login}', (r) => false);
+                        },
+                        child: Text(
+                          'Abmelden',
+                          style: TextStyle(
+                            color: darkColor,
                           ),
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 }

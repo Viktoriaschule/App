@@ -23,6 +23,9 @@ class Keys {
   static String navigation(String key) => '$key-navigation';
 
   // ignore: public_member_api_docs
+  static String notifications(String featureKey) => 'notifications-$featureKey';
+
+  // ignore: public_member_api_docs
   static const String substitutionPlanNotification = 'substitution plan';
 
   // ignore: public_member_api_docs
@@ -30,16 +33,6 @@ class Keys {
 
   // ignore: public_member_api_docs
   static const String settings = 'settings';
-
-  // ignore: public_member_api_docs
-  static const String substitutionPlanNotifications =
-      'substitutionplannotifications';
-
-  // ignore: public_member_api_docs
-  static const String aiXformationNotifications = 'aixformationnotifications';
-
-  // ignore: public_member_api_docs
-  static const String cafetoriaNotifications = 'cafetorianotifications';
 
   // ignore: public_member_api_docs
   static const String type = 'type';

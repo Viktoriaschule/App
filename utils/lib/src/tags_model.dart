@@ -59,7 +59,7 @@ class Device {
         os: json['os'],
         name: json['name'],
         appVersion: json['appVersion'],
-        deviceSettings: DeviceSettings.fromJson(json['settings']),
+        deviceSettings: json['settings'],
         firebaseId: json['firebaseId'],
       );
 
@@ -73,48 +73,19 @@ class Device {
   final String appVersion;
 
   // ignore: public_member_api_docs
-  final DeviceSettings deviceSettings;
+  final Map<String, bool> deviceSettings;
 
   // ignore: public_member_api_docs
   final String firebaseId;
 
   /// Convert a device to a json map
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toMap() =>
+      {
         'os': os,
         'name': name,
         'appVersion': appVersion,
         'firebaseId': firebaseId,
-        'settings': deviceSettings.toMap(),
-      };
-}
-
-/// Describes all settings to sync for this device
-class DeviceSettings {
-  // ignore: public_member_api_docs
-  const DeviceSettings(
-      {this.spNotifications, this.axfNotifications, this.cafNotifications});
-
-  // ignore: public_member_api_docs
-  factory DeviceSettings.fromJson(Map<String, dynamic> json) => DeviceSettings(
-        spNotifications: json['spNotifications'],
-        axfNotifications: json['axfNotifications'],
-        cafNotifications: json['cafNotifications'],
-      );
-
-  /// Receiving substitution plan notifications
-  final bool spNotifications;
-
-  /// Receiving aixformation notifications
-  final bool axfNotifications;
-
-  /// Receiving cafetoria notifications
-  final bool cafNotifications;
-
-  /// Converts the device settings to a json map
-  Map<String, dynamic> toMap() => {
-        'spNotifications': spNotifications,
-        'axfNotifications': axfNotifications,
-        'cafNotifications': cafNotifications,
+        'settings': deviceSettings,
       };
 }
 

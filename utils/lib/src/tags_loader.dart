@@ -26,21 +26,21 @@ class TagsLoader extends Loader<Tags> {
     final String appVersion =
         '${packageInfo.version}+${packageInfo.buildNumber}';
     final String os = Platform().platformName;
+    final Map<String, bool> notifications = {};
+    Static.storage
+        .getKeys()
+        .where((key) => key.startsWith(Keys.notifications('')))
+        .forEach(
+            (key) => notifications[key] = Static.storage.getBool(key) ?? true);
+    print(notifications);
     if (id != null) {
       final Device device = Device(
-          firebaseId: id,
-          appVersion: appVersion.isEmpty ? null : appVersion,
-          os: os,
-          name: '-',
-          deviceSettings: DeviceSettings(
-            spNotifications:
-                Static.storage.getBool(Keys.substitutionPlanNotifications) ??
-                    true,
-            cafNotifications:
-                Static.storage.getBool(Keys.cafetoriaNotifications) ?? true,
-            axfNotifications:
-                Static.storage.getBool(Keys.aiXformationNotifications) ?? true,
-          ));
+        firebaseId: id,
+        appVersion: appVersion.isEmpty ? null : appVersion,
+        os: os,
+        name: '-',
+        deviceSettings: notifications,
+      );
       await _sendTags({'device': device.toMap()}, context);
     }
   }

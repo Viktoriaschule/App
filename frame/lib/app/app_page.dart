@@ -126,6 +126,7 @@ class _AppPageState extends Interactor<AppPage>
 
   @override
   Future afterFirstLayout(BuildContext context) async {
+    final scaffold = Scaffold.of(context);
     Static.updates.loadOffline(context);
     if (Static.updates.data == null) {
       Static.updates.parsedData = Updates.fromJson({});
@@ -142,7 +143,7 @@ class _AppPageState extends Interactor<AppPage>
     await _loadData(online: false);
     final onlineStatusCode = await _fetchData();
     if (onlineStatusCode != StatusCode.success) {
-      Scaffold.of(context).showSnackBar(
+      scaffold.showSnackBar(
         SnackBar(
           content: Text(getStatusCodeMsg(onlineStatusCode)),
           action: SnackBarAction(
