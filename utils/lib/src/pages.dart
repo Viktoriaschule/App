@@ -19,12 +19,7 @@ class Pages extends InheritedWidget {
 
   /// All pages in this app
   final Map<String, Page> pages = {
-    '${Keys.substitutionPlan}': Page('Vertretungsplan'),
-    '${Keys.cafetoria}': Page('Cafétoria'),
-    '${Keys.aiXformation}': Page('AiXformation'),
-    '${Keys.calendar}': Page('Kalender'),
     '${Keys.settings}': Page('Einstellungen'),
-    '${Keys.timetable}': Page('Stundenplan'),
     '${Keys.home}': Page('Startseite'),
   };
 

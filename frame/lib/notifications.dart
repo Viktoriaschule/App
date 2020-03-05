@@ -1,11 +1,8 @@
 import 'package:after_layout/after_layout.dart';
-import 'package:aixformation/aixformation.dart';
-import 'package:cafetoria/cafetoria.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:substitution_plan/substitution_plan.dart';
-import 'package:timetable/timetable.dart';
+import 'package:frame/utils/features.dart';
 import 'package:utils/utils.dart';
 
 // ignore: public_member_api_docs
@@ -27,6 +24,19 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     with AfterLayoutMixin<NotificationsWidget> {
   static MethodChannel methodChannel = MethodChannel('frame');
 
+  NotificationsHandler _getNotificationHandler(
+      BuildContext context, String type) {
+    final features = FeaturesWidget.of(context)
+        .features
+        .where((f) => f.featureKey == type)
+        .toList();
+    if (features.isNotEmpty && features.first.notificationsHandler != null) {
+      return features.first.notificationsHandler;
+    }
+    print('There is no notification handler for a \'$type\' notification');
+    return null;
+  }
+
   /// Register everything needed for notifications
   Future _registerNotifications(BuildContext context) async {
     if (Platform().isMobile || Platform().isWeb) {
@@ -47,15 +57,10 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     Map<String, dynamic> data,
   ) async {
     EventBus.of(context).publish(FetchAppDataEvent());
-    final Map<String, VoidCallback> callbacks = {
-      Keys.substitutionPlanNotification: () => _openSubstitutionPlan(
-          data['day'] != null ? int.parse(data['day']) : 0),
-      Keys.timetable: _openTimetable,
-      Keys.cafetoria: _openCafetoria,
-      // ignore: missing_required_param
-      Keys.aiXformation: () => _openAiXformation(Post(url: data['url'])),
-    };
-    callbacks[data['type']]();
+    final handler = _getNotificationHandler(context, data['type']);
+    if (handler != null) {
+      handler.open(data, context);
+    }
   }
 
   Future<dynamic> handleOnMessageNotification(
@@ -66,29 +71,17 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
       if (data['action'] != 'update') {
         return;
       }
-      final Map<String, VoidCallback> callbacks = {
-        Keys.substitutionPlanNotification: () => _openSubstitutionPlan(
-            data['day'] != null ? int.parse(data['day']) : 0),
-        Keys.timetable: _openTimetable,
-        Keys.cafetoria: _openCafetoria,
-        // ignore: missing_required_param
-        Keys.aiXformation: () => _openAiXformation(Post(url: data['url'])),
-      };
-      final Map<String, String> texts = {
-        Keys.substitutionPlanNotification:
-            'Neuer Vertretungsplan${Static.substitutionPlan.hasLoadedData && Static.substitutionPlan.data.days.isNotEmpty ? ' für ${weekdays[Static.substitutionPlan.data.days[data['day'] != null ? int.parse(data['day']) : 0].date.weekday - 1]}' : ''}',
-        Keys.timetable: 'Neuer Stundenplan',
-        Keys.cafetoria: 'Neue Cafetoria-Menüs',
-        Keys.aiXformation: 'Neuer AiXformation-Artikel',
-      };
-      EventBus.of(context).publish(FetchAppDataEvent());
-      Scaffold.of(context).showSnackBar(SnackBar(
-        action: SnackBarAction(
-          label: 'Öffnen',
-          onPressed: callbacks[data['type']],
-        ),
-        content: Text(texts[data['type']]),
-      ));
+      final handler = _getNotificationHandler(context, d['type']);
+      if (handler != null) {
+        EventBus.of(context).publish(FetchAppDataEvent());
+        Scaffold.of(context).showSnackBar(SnackBar(
+          action: SnackBarAction(
+            label: 'Öffnen',
+            onPressed: () => handler.open(d, context),
+          ),
+          content: Text(handler.getSnackBarText(d, context)),
+        ));
+      }
       // ignore: avoid_catches_without_on_clauses
     } catch (e, stacktrace) {
       print(e);
@@ -107,6 +100,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
         return;
       }
       if (Platform().isAndroid) {
+        //TODO: Set the group on the server, because in a static function without context, the function cannot call any feature
         final Map<String, int> groups = {
           'substitution plan':
               data['weekday'] != null ? int.parse(data['weekday']) : 0,
@@ -129,34 +123,6 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     }
     return;
   }
-
-  void _openTimetable() =>
-      EventBus.of(context).publish(PushMaterialPageRouteEvent(
-        TimetablePage(),
-      ));
-
-  void _openSubstitutionPlan(int day) =>
-      EventBus.of(context).publish(PushMaterialPageRouteEvent(
-        SubstitutionPlanPage(
-          day: day,
-        ),
-      ));
-
-  void _openCafetoria() =>
-      EventBus.of(context).publish(PushMaterialPageRouteEvent(
-        CafetoriaPage(),
-      ));
-
-  // TODO: Only shows a screen with no content and not even the app bar
-  void _openAiXformation(Post post) =>
-      EventBus.of(context).publish(PushMaterialPageRouteEvent(
-        AiXformationPost(
-          post: post,
-          posts: Static.aiXformation.hasLoadedData
-              ? Static.aiXformation.data.posts
-              : [],
-        ),
-      ));
 
   @override
   Widget build(BuildContext context) => widget.child;

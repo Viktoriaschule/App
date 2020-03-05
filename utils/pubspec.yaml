@@ -23,3 +23,5 @@ dependencies:
     path: ../features/calendar
   substitution_plan:
     path: ../features/substitution_plan
+  widgets:
+    path: ../widgets

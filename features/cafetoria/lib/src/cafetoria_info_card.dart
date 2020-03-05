@@ -1,76 +1,61 @@
+import 'package:cafetoria/cafetoria.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'cafetoria_events.dart';
+import 'cafetoria_keys.dart';
 import 'cafetoria_model.dart';
 import 'cafetoria_page.dart';
 import 'cafetoria_row.dart';
 
 // ignore: public_member_api_docs
-class CafetoriaInfoCard extends StatefulWidget {
+class CafetoriaInfoCard extends InfoCard {
   // ignore: public_member_api_docs
   const CafetoriaInfoCard({
-    @required this.date,
-    this.showNavigation = true,
+    @required DateTime date,
     this.isSingleDay = false,
-    Key key,
-  }) : super(key: key);
-
-  // ignore: public_member_api_docs
-  final DateTime date;
+    this.showNavigation = true,
+  }) : super(date: date);
 
   // ignore: public_member_api_docs
   final bool showNavigation;
 
-  // ignore: public_member_api_docs
+  /// If this card is only for a single day
   final bool isSingleDay;
 
   @override
   _CafetoriaInfoCardState createState() => _CafetoriaInfoCardState();
 }
 
-class _CafetoriaInfoCardState extends Interactor<CafetoriaInfoCard> {
+class _CafetoriaInfoCardState extends InfoCardState<CafetoriaInfoCard> {
   InfoCardUtils utils;
 
-  List<CafetoriaDay> _days;
-
-  List<CafetoriaDay> getDays() => Static.cafetoria.hasLoadedData
-      ? (Static.cafetoria.data.days.toList()
-            ..sort((a, b) => a.date.compareTo(b.date)))
+  List<CafetoriaDay> getDays(CafetoriaLoader loader) => loader.hasLoadedData
+      ? (loader.data.days.toList()..sort((a, b) => a.date.compareTo(b.date)))
           .toList()
       : [];
 
   @override
-  void initState() {
-    _days = getDays();
-    super.initState();
-  }
-
-  @override
   Subscription subscribeEvents(EventBus eventBus) => eventBus
-      .respond<CafetoriaUpdateEvent>((event) => update())
-      .respond<TagsUpdateEvent>((event) => update());
-
-  void update() {
-    setState(() {
-      _days = getDays();
-    });
-  }
+      .respond<CafetoriaUpdateEvent>((event) => setState(() => null))
+      .respond<TagsUpdateEvent>((event) => setState(() => null));
 
   @override
-  Widget build(BuildContext context) {
-    utils ??= InfoCardUtils(context, widget.date);
+  ListGroup getListGroup(BuildContext context, InfoCardUtils utils) {
+    final loader = CafetoriaWidget.of(context).feature.loader;
+    final _days = getDays(loader);
     final afterDays = _days
         .where(
             (d) => d.date.isAfter(widget.date.subtract(Duration(seconds: 1))))
         .toList();
     return ListGroup(
-      loadingKeys: [Keys.cafetoria],
+      loadingKeys: const [CafetoriaKeys.cafetoria],
       showNavigation: widget.showNavigation,
-      heroId: '${Keys.cafetoria}-0',
-      heroIdNavigation: Keys.cafetoria,
+      heroId: '${CafetoriaKeys.cafetoria}-0',
+      heroIdNavigation: CafetoriaKeys.cafetoria,
       actions: [
         NavigationAction(Icons.list, () {
           Navigator.of(context).push(
@@ -83,13 +68,12 @@ class _CafetoriaInfoCardState extends Interactor<CafetoriaInfoCard> {
           await launch('https://www.opc-asp.de/vs-aachen/');
         }),
       ],
-      title: !Static.cafetoria.hasLoadedData ||
-              Static.cafetoria.data.saldo == null
+      title: !loader.hasLoadedData || loader.data.saldo == null
           ? 'Cafétoria - ${weekdays[widget.date.weekday - 1]}'
-          : 'Cafétoria - ${weekdays[widget.date.weekday - 1]} (${Static.cafetoria.data.saldo}€) ',
+          : 'Cafétoria - ${weekdays[widget.date.weekday - 1]} (${loader.data.saldo}€) ',
       counter: _days.length - 1,
       children: [
-        if (!Static.cafetoria.hasLoadedData ||
+        if (!loader.hasLoadedData ||
             afterDays.isEmpty ||
             afterDays.first.menus.isEmpty)
           EmptyList(title: 'Keine Menüs')

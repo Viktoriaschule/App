@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 export 'src/crypt.dart';
 export 'src/events.dart';
+export 'src/feature_utils/feature.dart';
 export 'src/info_card_utils.dart';
 export 'src/keys.dart';
 export 'src/loader.dart';
@@ -16,6 +17,7 @@ export 'src/plugins/storage/storage.dart';
 export 'src/screen_sizes.dart';
 export 'src/static.dart';
 export 'src/tags_loader.dart';
+export 'src/tags_model.dart';
 export 'src/theme.dart';
 export 'src/times.dart';
 export 'src/updates.dart';
@@ -41,6 +43,9 @@ enum StatusCode {
 
 /// Reduces multiple status codes to one
 StatusCode reduceStatusCodes(List<StatusCode> statusCodes) {
+  if (statusCodes.isEmpty) {
+    return StatusCode.success;
+  }
   if (statusCodes
       .map((e) => e == StatusCode.success)
       .reduce((v1, v2) => v1 && v2)) {

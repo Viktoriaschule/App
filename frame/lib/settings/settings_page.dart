@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'package:frame/utils/features.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
@@ -179,11 +180,10 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                             Static.user.clear();
                             Static.tags.clear();
                             Static.updates.clear();
-                            Static.substitutionPlan.clear();
-                            Static.timetable.clear();
-                            Static.calendar.clear();
-                            Static.aiXformation.clear();
-                            Static.cafetoria.clear();
+                            // Clear the data of all features
+                            FeaturesWidget.of(context)
+                                .features
+                                .forEach((f) => f.loader.clear());
                             Static.subjects.clear();
                             Static.storage
                                 .getKeys()

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
@@ -47,6 +48,7 @@ class SubstitutionPlanRow extends StatelessWidget {
     if (substitution.info != null) {
       infoText.add(substitution.info);
     }
+    final timetable = TimetableWidget.of(context).feature.loader.data;
     return CustomRow(
       heroTag: substitution,
       splitColor: substitution.type == 1
@@ -88,7 +90,9 @@ class SubstitutionPlanRow extends StatelessWidget {
       last: Row(
         children: [
           if (substitution.type != 1 ||
-              (substitution.timetableUnit?.subjects
+              (substitution
+                          .getTimetableUnit(timetable)
+                          ?.subjects
                           ?.where((s) =>
                               Static.subjects.data.getSubject(s.subjectID) ==
                               Static.subjects.data
@@ -134,7 +138,9 @@ class SubstitutionPlanRow extends StatelessWidget {
               ),
             ),
           if (substitution.type != 1 ||
-              (substitution.timetableUnit?.subjects
+              (substitution
+                          .getTimetableUnit(timetable)
+                          ?.subjects
                           ?.where((s) =>
                               Static.subjects.data.getSubject(s.subjectID) ==
                               Static.subjects.data

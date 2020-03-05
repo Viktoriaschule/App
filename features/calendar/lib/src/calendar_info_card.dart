@@ -1,3 +1,5 @@
+import 'package:calendar/calendar.dart';
+import 'package:calendar/src/calendar_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
@@ -9,17 +11,13 @@ import 'calendar_page.dart';
 import 'calendar_row.dart';
 
 // ignore: public_member_api_docs
-class CalendarInfoCard extends StatefulWidget {
+class CalendarInfoCard extends InfoCard {
   // ignore: public_member_api_docs
   const CalendarInfoCard({
-    @required this.date,
+    @required DateTime date,
     this.showNavigation = true,
     this.isSingleDay = false,
-    Key key,
-  }) : super(key: key);
-
-  // ignore: public_member_api_docs
-  final DateTime date;
+  }) : super(date: date);
 
   // ignore: public_member_api_docs
   final bool showNavigation;
@@ -31,39 +29,29 @@ class CalendarInfoCard extends StatefulWidget {
   _CalendarInfoCardState createState() => _CalendarInfoCardState();
 }
 
-class _CalendarInfoCardState extends Interactor<CalendarInfoCard> {
+class _CalendarInfoCardState extends InfoCardState<CalendarInfoCard> {
   InfoCardUtils utils;
 
-  List<CalendarEvent> _events;
-
-  List<CalendarEvent> getEvents() => Static.calendar.hasLoadedData
-      ? (Static.calendar.data.getEventsForTimeSpan(
-              widget.date,
-              widget.isSingleDay
-                  ? widget.date
-                  : widget.date.add(Duration(days: 730)))
-            ..sort((a, b) => a.start.compareTo(b.start)))
-          .toList()
-      : [];
-
-  @override
-  void initState() {
-    _events = getEvents();
-    super.initState();
-  }
+  List<CalendarEvent> getEvents(CalendarLoader loader) =>
+      loader.hasLoadedData ? loader.data.getEventsSince(widget.date) : [];
 
   @override
   Subscription subscribeEvents(EventBus eventBus) =>
-      eventBus.respond<CalendarUpdateEvent>(
-          (event) => setState(() => _events = getEvents()));
+      eventBus.respond<CalendarUpdateEvent>((event) => setState(() => null));
 
   @override
-  Widget build(BuildContext context) {
-    utils ??= InfoCardUtils(context, widget.date);
+  ListGroup getListGroup(BuildContext context, InfoCardUtils utils) {
+    final loader = CalendarWidget.of(context).feature.loader;
+    final _events = getEvents(loader)
+        .where((event) =>
+            !widget.isSingleDay ||
+            event.start.isBefore(DateTime.now()) ||
+            event.start == DateTime.now())
+        .toList();
     return ListGroup(
-      loadingKeys: [Keys.calendar],
+      loadingKeys: const [CalendarKeys.calendar],
       showNavigation: widget.showNavigation,
-      heroId: Keys.calendar,
+      heroId: CalendarKeys.calendar,
       title: widget.isSingleDay
           ? 'Termine - ${weekdays[widget.date.weekday - 1]}'
           : 'Kalender',
@@ -90,7 +78,7 @@ class _CalendarInfoCardState extends Interactor<CalendarInfoCard> {
         })
       ],
       children: [
-        if (!Static.calendar.hasLoadedData || _events.isEmpty)
+        if (!loader.hasLoadedData || _events.isEmpty)
           EmptyList(title: 'Keine Termine')
         else
           SizeLimit(
