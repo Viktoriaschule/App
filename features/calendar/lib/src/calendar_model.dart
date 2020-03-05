@@ -21,35 +21,11 @@ class Calendar {
   /// All events
   final List<CalendarEvent> events;
 
-  /// Get all events that overlap with a certain time span
-  List<CalendarEvent> getEventsForTimeSpan(DateTime start, DateTime end) =>
-      events.where((event) {
-        if (event.start == start &&
-            (event.end == end ||
-                event.end.isAfter(end) ||
-                event.end.isBefore(end))) {
-          return true;
-        }
-        if (event.end == end &&
-            (event.start == start ||
-                event.start.isAfter(start) ||
-                event.start.isBefore(start))) {
-          return true;
-        }
-        if (event.start.isBefore(start) && event.end.isAfter(end)) {
-          return true;
-        }
-        if (event.start.isAfter(start) && event.end.isBefore(end)) {
-          return true;
-        }
-        if (event.start.isAfter(start) && event.start.isBefore(end)) {
-          return true;
-        }
-        if (event.end.isAfter(start) && event.end.isBefore(end)) {
-          return true;
-        }
-        return false;
-      }).toList();
+  /// Returns all events since the given data
+  List<CalendarEvent> getEventsSince(DateTime start) => events
+      .where((event) => event.start == start || event.start.isAfter(start))
+      .toList()
+        ..sort((e1, e2) => e1.start.compareTo(e2.start));
 }
 
 /// Describes a calendar event...
