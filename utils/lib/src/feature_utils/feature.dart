@@ -20,7 +20,6 @@ abstract class Feature {
     @required this.name,
     @required this.notificationsHandler,
     @required this.tagsHandler,
-    this.dependsOn = const [],
   });
 
   /// The key that should be used for this feature
@@ -32,7 +31,7 @@ abstract class Feature {
   final String name;
 
   /// A list of all features that must be included and loaded first to use this feature
-  final List<Feature> dependsOn;
+  List<String> dependsOn(BuildContext context);
 
   /// The loader with all data for this feature
   final Loader loader;

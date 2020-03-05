@@ -26,7 +26,9 @@ class SubstitutionPlanFeature implements Feature {
   final String featureKey = SubstitutionPlanKeys.substitutionPlan;
 
   @override
-  final List<Feature> dependsOn = [TimetableFeature()];
+  List<String> dependsOn(BuildContext context) => [
+        TimetableWidget.of(context).feature.featureKey,
+      ];
 
   @override
   final SubstitutionPlanLoader loader = SubstitutionPlanLoader();

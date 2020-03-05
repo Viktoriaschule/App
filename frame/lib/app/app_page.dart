@@ -35,8 +35,10 @@ class _AppPageState extends Interactor<AppPage>
         );
       });
 
-  Future<StatusCode> _fetchData(
-      {bool force = false, bool showStatus = true}) async {
+  Future<StatusCode> _fetchData({
+    bool force = false,
+    bool showStatus = true,
+  }) async {
     try {
       final result =
           await Static.tags.loadOnline(context, force: true, autoLogin: false);
@@ -74,51 +76,48 @@ class _AppPageState extends Interactor<AppPage>
 
         //TODO: Add old app dialog
 
-        // Define all download processes, but do not wait until they are completed
-        // The futures will run parallel and after starting all, the program will wait until all are finished
-        final downloads = FeaturesWidget.of(context)
-            .downloadOrder
-            .map<Future<StatusCode>>((downloader) {
-          final downloads = downloader
-              .map((key) => FeaturesWidget.of(context).getFeature(key).loader)
-              .toList();
-          // If there is only one downloader return directly
-          if (downloads.length == 1) {
-            return downloads.first
-                .update(context, fetchedUpdates, force: force);
-          }
-          // If there is more than one, download them in the correct order
-          return () async {
-            final statusCodes = <StatusCode>[];
-            for (final downloader in downloads) {
-              statusCodes.add(await downloader.update(context, fetchedUpdates,
-                  force: force));
-            }
-            return reduceStatusCodes(statusCodes);
-          }();
-        }).toList();
-
-        // Wait until all futures are finished
-        final codes = await Future.wait(downloads);
-        final status = reduceStatusCodes(codes.toList());
-        if (status != StatusCode.success) {
-          //TODO: Show which download failed
-          Scaffold.of(context).showSnackBar(
-            SnackBar(
-              content: Text(getStatusCodeMsg(status)),
-              action: SnackBarAction(
-                label: 'OK',
-                onPressed: () => null,
-              ),
-            ),
-          );
-        }
+        return _loadData(
+          online: true,
+          force: force,
+        );
       }
       return result;
     } on DioError {
       print('Failed to fetch data');
       return StatusCode.failed;
     }
+  }
+
+  Future<StatusCode> _loadData({
+    @required bool online,
+    bool force = false,
+  }) async {
+    final List<StatusCode> statusCodes = [];
+    final List<String> loaded = [];
+
+    Future loadFeature(Feature feature) async {
+      if (!loaded.contains(feature.featureKey)) {
+        final dependsOn = feature.dependsOn(context);
+        if (dependsOn != null && dependsOn.isNotEmpty) {
+          for (final depends in dependsOn) {
+            await loadFeature(FeaturesWidget.of(context).getFeature(depends));
+          }
+        }
+        if (online) {
+          statusCodes.add(await feature.loader.update(
+            context,
+            Static.updates.data,
+            force: force,
+          ));
+        } else {
+          statusCodes.add(feature.loader.loadOffline(context));
+        }
+        loaded.add(feature.featureKey);
+      }
+    }
+
+    FeaturesWidget.of(context).features.forEach(loadFeature);
+    return reduceStatusCodes(statusCodes);
   }
 
   Future _launchLogin() async {
@@ -133,14 +132,6 @@ class _AppPageState extends Interactor<AppPage>
     }
     Static.subjects.loadOffline(context);
 
-    /// Load all features with the offline date
-    FeaturesWidget.of(context).downloadOrder.forEach((downloader) => downloader
-        // ignore: avoid_function_literals_in_foreach_calls
-        .forEach((key) => FeaturesWidget.of(context)
-            .getFeature(key)
-            .loader
-            .loadOffline(context)));
-
     _pwa = PWA();
     if (Platform().isWeb) {
       _permissionsGranted =
@@ -148,8 +139,19 @@ class _AppPageState extends Interactor<AppPage>
       _canInstall = _pwa.canInstall();
       setState(() {});
     }
-
-    await _fetchData();
+    await _loadData(online: false);
+    final onlineStatusCode = await _fetchData();
+    if (onlineStatusCode != StatusCode.success) {
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text(getStatusCodeMsg(onlineStatusCode)),
+          action: SnackBarAction(
+            label: 'OK',
+            onPressed: () => null,
+          ),
+        ),
+      );
+    }
   }
 
   @override

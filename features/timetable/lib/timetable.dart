@@ -25,7 +25,7 @@ class TimetableFeature implements Feature {
   final String featureKey = TimetableKeys.timetable;
 
   @override
-  final List<Feature> dependsOn = const [];
+  List<String> dependsOn(BuildContext context) => null;
 
   @override
   final TimetableLoader loader = TimetableLoader();

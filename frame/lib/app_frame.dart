@@ -11,7 +11,6 @@ class AppFrame extends StatelessWidget {
   const AppFrame({
     @required this.appName,
     @required this.features,
-    @required this.downloadOrder,
     Key key,
   }) : super(key: key);
 
@@ -21,14 +20,10 @@ class AppFrame extends StatelessWidget {
   /// All features in the app
   final List<Feature> features;
 
-  /// The feature download order
-  final List<List<String>> downloadOrder;
-
   @override
   Widget build(BuildContext context) => EventBusWidget(
         child: Features(
           features: features,
-          downloadOrder: downloadOrder,
           child: Pages(
             child: ThemeWidget(
               child: App(

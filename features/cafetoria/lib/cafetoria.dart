@@ -1,13 +1,13 @@
 library cafetoria;
 
 import 'package:cafetoria/src/cafetoria_info_card.dart';
+import 'package:cafetoria/src/cafetoria_keys.dart';
+import 'package:cafetoria/src/cafetoria_loader.dart';
 import 'package:cafetoria/src/cafetoria_notifications.dart';
 import 'package:cafetoria/src/cafetoria_page.dart';
 import 'package:cafetoria/src/cafetoria_tags.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
-import 'package:cafetoria/src/cafetoria_keys.dart';
-import 'package:cafetoria/src/cafetoria_loader.dart';
 import 'package:widgets/widgets.dart';
 
 export 'src/cafetoria_events.dart';
@@ -25,7 +25,7 @@ class CafetoriaFeature implements Feature {
   final String featureKey = CafetoriaKeys.cafetoria;
 
   @override
-  final List<Feature> dependsOn = const [];
+  List<String> dependsOn(BuildContext context) => null;
 
   @override
   final CafetoriaLoader loader = CafetoriaLoader();

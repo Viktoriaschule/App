@@ -76,7 +76,7 @@ abstract class Loader<LoaderType> {
   }
 
   // ignore: public_member_api_docs
-  void loadOffline(BuildContext context) {
+  StatusCode loadOffline(BuildContext context) {
     if (hasStoredData) {
       preLoad(context);
       final parsed = _fromJSON(Static.storage.getString(key));
@@ -86,7 +86,9 @@ abstract class Loader<LoaderType> {
       }
       afterLoad();
       _sendLoadedEvent(Pages.of(context), EventBus.of(context));
+      return parsed.statusCode;
     }
+    return StatusCode.success;
   }
 
   /// Download the data from the api and returns the status code

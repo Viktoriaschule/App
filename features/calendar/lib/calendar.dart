@@ -22,7 +22,7 @@ class CalendarFeature implements Feature {
   final String featureKey = CalendarKeys.calendar;
 
   @override
-  final List<Feature> dependsOn = const [];
+  List<String> dependsOn(BuildContext context) => null;
 
   @override
   final CalendarLoader loader = CalendarLoader();

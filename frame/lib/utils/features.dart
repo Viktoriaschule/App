@@ -7,7 +7,6 @@ class Features extends StatelessWidget {
   const Features({
     @required this.child,
     @required this.features,
-    @required this.downloadOrder,
   });
 
   /// The child of this widget
@@ -15,12 +14,6 @@ class Features extends StatelessWidget {
 
   /// All pages in this app
   final List<Feature> features;
-
-  /// The download order as an two dimensional feature key list
-  ///
-  /// The first dimension is for parallel downloading
-  /// and the second for synchronize downloading
-  final List<List<String>> downloadOrder;
 
   /// All feature widget must be in a tree above the app,
   /// because the features need access via the
@@ -30,7 +23,6 @@ class Features extends StatelessWidget {
     }
     return FeaturesWidget(
       features: features,
-      downloadOrder: downloadOrder,
       child: child,
     );
   }
@@ -45,7 +37,6 @@ class FeaturesWidget extends InheritedWidget {
   FeaturesWidget({
     @required Widget child,
     @required this.features,
-    @required this.downloadOrder,
   }) : super(child: child) {
     for (final feature in features) {
       _featuresMap[feature.featureKey] = feature;
@@ -57,9 +48,6 @@ class FeaturesWidget extends InheritedWidget {
 
   /// All features in a map
   final Map<String, Feature> _featuresMap = {};
-
-  /// The download order as an two dimensional feature key list
-  final List<List<String>> downloadOrder;
 
   /// Returns a feature with the given feature key
   Feature getFeature(String key) => _featuresMap[key];

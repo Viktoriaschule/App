@@ -25,7 +25,7 @@ class AiXformationFeature implements Feature {
   final String featureKey = AiXformationKeys.aixformation;
 
   @override
-  final List<Feature> dependsOn = const [];
+  List<String> dependsOn(BuildContext context) => null;
 
   @override
   final AiXformationLoader loader = AiXformationLoader();
