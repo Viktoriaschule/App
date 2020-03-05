@@ -48,8 +48,15 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
             _NotificationsWidgetState.handleOnBackgroundMessageNotification,
       );
     }
+    final channels = FeaturesWidget.of(context)
+        .features
+        .where((f) => f.notificationsHandler != null)
+        .map((f) => f.notificationsHandler
+            .getAndroidNotificationHandler(context)
+            .toMap())
+        .toList();
     if (Platform().isAndroid) {
-      await methodChannel.invokeMethod('init');
+      await methodChannel.invokeMethod('init', channels);
     }
   }
 
@@ -59,6 +66,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     EventBus.of(context).publish(FetchAppDataEvent());
     final handler = _getNotificationHandler(context, data['type']);
     if (handler != null) {
+      print('open $data');
       handler.open(data, context);
     }
   }
@@ -71,15 +79,16 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
       if (data['action'] != 'update') {
         return;
       }
-      final handler = _getNotificationHandler(context, d['type']);
+
+      final handler = _getNotificationHandler(context, data['type']);
       if (handler != null) {
         EventBus.of(context).publish(FetchAppDataEvent());
         Scaffold.of(context).showSnackBar(SnackBar(
           action: SnackBarAction(
             label: 'Öffnen',
-            onPressed: () => handler.open(d, context),
+            onPressed: () => handler.open(data, context),
           ),
-          content: Text(handler.getSnackBarText(d, context)),
+          content: Text(handler.getSnackBarText(data, context)),
         ));
       }
       // ignore: avoid_catches_without_on_clauses
@@ -99,22 +108,10 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
       if (data['action'] == 'update') {
         return;
       }
+
       if (Platform().isAndroid) {
-        //TODO: Set the group on the server, because in a static function without context, the function cannot call any feature
-        final Map<String, int> groups = {
-          'substitution plan':
-              data['weekday'] != null ? int.parse(data['weekday']) : 0,
-          'cafetoria': 5,
-          'aixformation': 6,
-          'timetable': 7,
-        };
-        await methodChannel.invokeMethod(
-          'notification',
-          {
-            ...data,
-            'group': groups[data['type']],
-          },
-        );
+        print('Notification: $data');
+        await methodChannel.invokeMethod('notification', data);
       }
       // ignore: avoid_catches_without_on_clauses
     } catch (e, stacktrace) {

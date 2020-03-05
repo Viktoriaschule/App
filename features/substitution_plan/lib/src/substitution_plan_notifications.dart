@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:substitution_plan/substitution_plan.dart';
 import 'package:utils/utils.dart';
-import 'package:flutter_event_bus/flutter_event_bus.dart';
 
 /// The substitution plan notifications
 class SubstitutionPlanNotificationsHandler extends NotificationsHandler {
@@ -17,4 +17,12 @@ class SubstitutionPlanNotificationsHandler extends NotificationsHandler {
           .publish(PushMaterialPageRouteEvent(SubstitutionPlanPage(
         day: int.parse(data['day']),
       )));
+
+  @override
+  AndroidNotificationChannel getAndroidNotificationHandler(
+      BuildContext context) {
+    final feature = SubstitutionPlanWidget.of(context).feature;
+    return AndroidNotificationChannel(
+        feature.featureKey, feature.name, 'Neue Vertretungspläne');
+  }
 }

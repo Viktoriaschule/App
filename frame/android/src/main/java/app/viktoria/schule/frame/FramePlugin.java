@@ -27,6 +27,7 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FramePlugin implements FlutterPlugin, MethodCallHandler {
@@ -59,12 +60,13 @@ public class FramePlugin implements FlutterPlugin, MethodCallHandler {
         if (call.method.equals("init")) {
             onLaunchCallback.onLaunch();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Channel[] channels = new Channel[]{
-                        new Channel("substitution plan", "Vertretungsplan", "Änderungen für deinen Vertretungsplan"),
-                        new Channel("cafetoria", "Cafetoria", "Neue Cafetoriamenüs"),
-                        new Channel("aixformation", "AiXformation", "Neuer AiXformationartikel"),
-                        new Channel("timetable", "Stundenplan", "Neuer Stundenplan"),
-                };
+                List<Map<String, String>> rawChannels = (List<Map<String, String>>) call.arguments;
+
+                Channel[] channels = new Channel[rawChannels.size()];
+                for (int i = 0; i < rawChannels.size(); i++) {
+                    Map<String, String> channel = rawChannels.get(i);
+                    channels[i] = new Channel(channel.get("name"), channel.get("title"), channel.get("description"));
+                }
                 NotificationManager notificationManager = (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
                 for (int i = 0; i < channels.length; i++) {
                     int importance = i == 0 ? NotificationManager.IMPORTANCE_HIGH : NotificationManager.IMPORTANCE_DEFAULT;
@@ -93,10 +95,11 @@ public class FramePlugin implements FlutterPlugin, MethodCallHandler {
                 int uniqueInt = (int) (System.currentTimeMillis() & 0xfffffff);
                 PendingIntent pendingIntent = PendingIntent.getActivity(applicationContext, uniqueInt, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
+                String type = (String) data.get("type");
                 String title = (String) data.get("title");
                 String body = (String) data.get("body");
                 String bigBody = (String) data.get("bigBody");
-                int group = (int) data.get("group");
+                int group = Integer.parseInt((String) data.get("group"));
                 SpannableString formattedBody = new SpannableString(
                         Build.VERSION.SDK_INT < Build.VERSION_CODES.N ? Html.fromHtml(body)
                                 : Html.fromHtml(body, Html.FROM_HTML_MODE_LEGACY));
@@ -114,9 +117,14 @@ public class FramePlugin implements FlutterPlugin, MethodCallHandler {
                         .setSmallIcon(resId)
                         .setContentIntent(pendingIntent).setTicker(title + " " + formattedBody)
                         .setColor(Color.parseColor("#ff5bc638")).setGroup(String.valueOf(group)).setAutoCancel(true)
-                        .setColorized(true);
+                        .setColorized(true)
+                        .setChannelId(type);
+
+                System.out.println("Send notification: " + title);
 
                 NotificationManagerCompat.from(applicationContext).notify(group, notification.build());
+
+                System.out.println("Successfully send");
             } catch (ClassNotFoundException | PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }

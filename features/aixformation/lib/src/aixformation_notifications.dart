@@ -1,7 +1,8 @@
 import 'package:aixformation/aixformation.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:utils/utils.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'package:utils/utils.dart';
+
 import 'aixformation_model.dart';
 import 'aixformation_post.dart';
 
@@ -20,4 +21,12 @@ class AiXformationNotificationsHandler extends NotificationsHandler {
             ? AiXFormationWidget.of(context).feature.loader.data.posts
             : [],
       )));
+
+  @override
+  AndroidNotificationChannel getAndroidNotificationHandler(
+      BuildContext context) {
+    final feature = AiXFormationWidget.of(context).feature;
+    return AndroidNotificationChannel(
+        feature.featureKey, feature.name, 'Neue AiXformationartikel');
+  }
 }
