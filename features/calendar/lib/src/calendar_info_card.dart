@@ -42,7 +42,12 @@ class _CalendarInfoCardState extends InfoCardState<CalendarInfoCard> {
   @override
   ListGroup getListGroup(BuildContext context, InfoCardUtils utils) {
     final loader = CalendarWidget.of(context).feature.loader;
-    final _events = getEvents(loader);
+    final _events = getEvents(loader)
+        .where((event) =>
+            !widget.isSingleDay ||
+            event.start.isBefore(DateTime.now()) ||
+            event.start == DateTime.now())
+        .toList();
     return ListGroup(
       loadingKeys: const [CalendarKeys.calendar],
       showNavigation: widget.showNavigation,
