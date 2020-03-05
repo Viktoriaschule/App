@@ -9,18 +9,10 @@ dependencies:
     sdk: flutter
   frame:
     path: ../../frame
-  aixformation:
-    path: ../../features/aixformation
-  cafetoria:
-    path: ../../features/cafetoria
-  calendar:
-    path: ../../features/calendar
-  substitution_plan:
-    path: ../../features/substitution_plan
-  timetable:
-    path: ../../features/timetable
-  utils:
-    path: ../../utils
+  {{# features }}
+  {{ name }}:
+    path: ../../features/{{ name }}
+  {{/ features }}
 
 dev_dependencies:
   flutter_test:

@@ -1,3 +1,13 @@
 import 'package:frame/main.dart';
+{{# features }}
+import 'package:{{ name }}/{{ name }}.dart';
+{{/ features }}
 
-void main() => startApp('{{ fullName }}');
+void main() => startApp(
+      name: '{{ fullName }}',
+      features: [
+        {{# features }}
+        {{ fullName }}Feature(),
+        {{/ features }}
+      ],
+    );

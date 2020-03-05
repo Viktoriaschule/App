@@ -23,7 +23,7 @@ Future main(List<String> arguments) async {
     final String package = config['package'];
     final YamlMap firebaseWeb = config['firebase_web'];
     final YamlMap greenIcons = config['logo_green'];
-    final YamlMap whiteIcons = config['logo_white'];
+    final String whiteIcon = config['logo_white'];
     final List<Feature> features = config['features']
         .map((e) => Feature(e['name'], e['full_name']))
         .toList()
@@ -37,8 +37,7 @@ Future main(List<String> arguments) async {
       throw Exception('Missing $keyPropertiesPath');
     }
 
-    for (final iconPath
-        in [...greenIcons.values, ...whiteIcons.values].toList()) {
+    for (final iconPath in [...greenIcons.values, whiteIcon].toList()) {
       if (!File('$baseDir/apps/$iconPath').existsSync()) {
         throw Exception('Missing $baseDir/apps/$iconPath');
       }
@@ -51,6 +50,14 @@ Future main(List<String> arguments) async {
         print(s);
       }
     }
+
+    final templateData = {
+      'name': name,
+      'fullName': fullName,
+      'version': version,
+      'package': package,
+      'features': features.map((e) => e.toMap).toList(),
+    };
 
     final appDir = Directory('$baseDir/apps/$name');
     if (appDir.existsSync()) {
@@ -87,35 +94,24 @@ Future main(List<String> arguments) async {
         .writeAsStringSync(Template(
                 File('$baseDir/scripts/templates/Application.java.tmpl')
                     .readAsStringSync())
-            .renderString({
-      'package': package,
-    }));
+            .renderString(templateData));
     File('${appDir.path}/android/app/src/main/java/${package.replaceAll('.', '/')}/MainActivity.java')
         .writeAsStringSync(Template(
                 File('$baseDir/scripts/templates/MainActivity.java.tmpl')
                     .readAsStringSync())
-            .renderString({
-      'package': package,
-    }));
+            .renderString(templateData));
     File('${appDir.path}/lib/main.dart').writeAsStringSync(Template(
             File('$baseDir/scripts/templates/main.dart.tmpl')
                 .readAsStringSync())
-        .renderString({
-      'fullName': fullName,
-    }));
+        .renderString(templateData));
     File('${appDir.path}/pubspec.yaml').writeAsStringSync(Template(
             File('$baseDir/scripts/templates/pubspec.yaml.tmpl')
                 .readAsStringSync())
-        .renderString({
-      'name': name,
-      'version': version,
-    }));
+        .renderString(templateData));
     File('${appDir.path}/web/manifest.json').writeAsStringSync(Template(
             File('$baseDir/scripts/templates/manifest.json.tmpl')
                 .readAsStringSync())
-        .renderString({
-      'fullName': fullName,
-    }));
+        .renderString(templateData));
     File('${appDir.path}/web/sw.js').writeAsStringSync(
         File('$baseDir/scripts/templates/sw.js.tmpl').readAsStringSync());
 
@@ -300,7 +296,7 @@ Future main(List<String> arguments) async {
       'flutter_icons:',
       '  android: "logo_white"',
       '  ios: false',
-      '  image_path: "../${whiteIcons[1024]}"'
+      '  image_path: "../$whiteIcon"'
     ].join('\n'));
 
     await File('$baseDir/apps/${greenIcons[512]}')
@@ -349,18 +345,12 @@ Future main(List<String> arguments) async {
         .writeAsStringSync(Template(File(
                     '$baseDir/scripts/templates/RunConfigurationDebug.xml.tmpl')
                 .readAsStringSync())
-            .renderString({
-      'name': name,
-      'fullName': fullName,
-    }));
+            .renderString(templateData));
     File('$baseDir/.idea/runConfigurations/${fullName}_Release.xml')
         .writeAsStringSync(Template(File(
                     '$baseDir/scripts/templates/RunConfigurationRelease.xml.tmpl')
                 .readAsStringSync())
-            .renderString({
-      'name': name,
-      'fullName': fullName,
-    }));
+            .renderString(templateData));
 
     log('Finished');
   }
@@ -371,6 +361,14 @@ class Feature {
     this.name,
     this.fullName,
   );
+
+  factory Feature.fromMap(YamlMap map) =>
+      Feature(map['name'], map['full_name']);
+
+  Map<String, String> get toMap => {
+        'name': name,
+        'fullName': fullName,
+      };
 
   final String name;
   final String fullName;
