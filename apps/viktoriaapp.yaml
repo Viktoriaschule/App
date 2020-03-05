@@ -1,0 +1,22 @@
+name: viktoriaapp
+full_name: ViktoriaApp
+version: 1.0.0+1
+package: app.viktoria.schule
+features:
+  - name: timetable
+    full_name: Timetable
+firebase_web:
+  apiKey: "AIzaSyAZeIMxiWdjQG9ldfDA7cIHjgtYKFU8XU4"
+  authDomain: "viktoriaschule-e8094.firebaseapp.com"
+  databaseURL: "https://viktoriaschule-e8094.firebaseio.com"
+  projectId: "viktoriaschule-e8094"
+  storageBucket: "viktoriaschule-e8094.appspot.com"
+  messagingSenderId: "352238690927"
+  appId: "1:352238690927:web:f672ba544b329c32eaa39a"
+logo_green:
+  16: ../images/logo_green_16x16.png
+  192: ../images/logo_green_192x192.png
+  512: ../images/logo_green_512x512.png
+  1024: ../images/logo_green_1024x1024.png
+logo_white:
+  1024: ../images/logo_white_1024x1024.png

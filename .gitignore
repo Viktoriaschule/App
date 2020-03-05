@@ -1,6 +1,4 @@
-.idea/*
-/**/.idea
-!.idea/runConfigurations/
+.idea/
 
 gen/
 coverage/
@@ -31,7 +29,6 @@ images/*
 **/web/*.png
 **/android/app/src/main/res/mipmap-*/
 **/android/app/src/main/res/drawable/*.png
-**/android/key.properties
 **/ios/Runner/Assets.xcassets/AppIcon.appiconset/*.png
 **/ios/Runner/Assets.xcassets/LaunchImage.imageset/*.png
 **/generated_plugin_registrant.dart
@@ -79,5 +76,6 @@ images/*
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
-**/google-services.json
-
+**/*google-services.json
+**/*key.properties
+apps/*/
