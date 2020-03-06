@@ -44,17 +44,7 @@ class _AppPageState extends Interactor<AppPage>
           await Static.tags.loadOnline(context, force: true, autoLogin: false);
       if (result == StatusCode.unauthorized) {
         await _launchLogin();
-      } else if (result != StatusCode.success) {
-        if (showStatus) {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text(getStatusCodeMsg(result)),
-            action: SnackBarAction(
-              label: 'OK',
-              onPressed: () => null,
-            ),
-          ));
-        }
-      } else {
+      } else if (result == StatusCode.success) {
         // First sync the tags
         await Static.tags.syncDevice(context);
         await Static.tags.syncToServer(
@@ -92,32 +82,56 @@ class _AppPageState extends Interactor<AppPage>
     @required bool online,
     bool force = false,
   }) async {
-    final List<StatusCode> statusCodes = [];
+    final features = FeaturesWidget
+        .of(context)
+        .features;
+    final List<String> loading = [];
     final List<String> loaded = [];
 
-    Future loadFeature(Feature feature) async {
-      if (!loaded.contains(feature.featureKey)) {
-        final dependsOn = feature.dependsOn(context);
-        if (dependsOn != null && dependsOn.isNotEmpty) {
-          for (final depends in dependsOn) {
-            await loadFeature(FeaturesWidget.of(context).getFeature(depends));
+    Future<StatusCode> loadFeatures() async {
+      // Get all downloader that can be downloaded with the given dependency
+      final List<Future<StatusCode>> downloads = [];
+      for (final feature in features) {
+        // Download the feature if it does not has any dependencies or if all of them are loaded
+        if (feature.featureKey.isEmpty ||
+            (feature
+                .dependsOn(context)
+                ?.map(loaded.contains)
+                ?.reduce((v1, v2) => v1 || v2) ??
+                true)) {
+          if (loading.contains(feature.featureKey)) {
+            continue;
           }
+          loading.add(feature.featureKey);
+
+          // Add the downloader for this feature
+          downloads.add(() async {
+            // Download online or offline
+            StatusCode status;
+            if (online) {
+              status = await feature.loader.update(
+                context,
+                Static.updates.data,
+                force: force,
+              );
+            } else {
+              status = feature.loader.loadOffline(context);
+            }
+
+            loaded.add(feature.featureKey);
+
+            // Return the combined status of this download and all downloads that can now be downloaded because of this download
+            return reduceStatusCodes([status, await loadFeatures()]);
+          }());
         }
-        if (online) {
-          statusCodes.add(await feature.loader.update(
-            context,
-            Static.updates.data,
-            force: force,
-          ));
-        } else {
-          statusCodes.add(feature.loader.loadOffline(context));
-        }
-        loaded.add(feature.featureKey);
       }
+
+      // Wait for all downloader
+      final results = await Future.wait(downloads);
+      return reduceStatusCodes(results);
     }
 
-    FeaturesWidget.of(context).features.forEach(loadFeature);
-    return reduceStatusCodes(statusCodes);
+    return loadFeatures();
   }
 
   Future _launchLogin() async {
