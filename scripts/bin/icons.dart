@@ -39,6 +39,7 @@ Future main(List<String> arguments) async {
 
   final managementLogoGreen = [
     '<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">',
+    '\t<rect fill="#ffffff" x="192" y="12" width="640" height="1000"/>',
     '\t<g fill="#000000" transform="scale(42.666) translate(0.5,0)">',
     '\t\t$iPadPath',
     '\t</g>',
@@ -50,7 +51,8 @@ Future main(List<String> arguments) async {
 
   final managementLogoWhite = managementLogoGreen
       .replaceAll('5bc638', 'ffffff')
-      .replaceAll('000000', 'ffffff');
+      .replaceAll('000000', 'ffffff')
+      .replaceAll(RegExp('\t<rect.*\/>\n'), '');
 
   await fileLogoManagementGreen.writeAsString(managementLogoGreen);
   await fileLogoManagementWhite.writeAsString(managementLogoWhite);
