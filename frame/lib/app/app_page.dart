@@ -25,7 +25,7 @@ class _AppPageState extends Interactor<AppPage>
 
   @override
   Subscription subscribeEvents(EventBus eventBus) => eventBus
-          .respond<FetchAppDataEvent>((event) => _fetchData())
+          .respond<FetchAppDataEvent>((event) => _fetchDataWithStatusMsg())
           .respond<PushMaterialPageRouteEvent>((event) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute<void>(
@@ -35,9 +35,25 @@ class _AppPageState extends Interactor<AppPage>
         );
       });
 
+  Future _fetchDataWithStatusMsg(
+      {bool force = false, ScaffoldState scaffoldState}) async {
+    final scaffold = scaffoldState ?? Scaffold.of(context);
+    final status = await _fetchData(force: force);
+    if (status != StatusCode.success) {
+      scaffold.showSnackBar(
+        SnackBar(
+          content: Text(getStatusCodeMsg(status)),
+          action: SnackBarAction(
+            label: 'OK',
+            onPressed: () => null,
+          ),
+        ),
+      );
+    }
+  }
+
   Future<StatusCode> _fetchData({
     bool force = false,
-    bool showStatus = true,
   }) async {
     try {
       final result =
@@ -146,27 +162,16 @@ class _AppPageState extends Interactor<AppPage>
       Static.updates.parsedData = Updates.fromJson({});
     }
     Static.subjects.loadOffline(context);
+    await _loadData(online: false);
 
     _pwa = PWA();
     if (Platform().isWeb) {
       _permissionsGranted =
-          await Static.firebaseMessaging.hasNotificationPermissions();
+      await Static.firebaseMessaging.hasNotificationPermissions();
       _canInstall = _pwa.canInstall();
       setState(() {});
     }
-    await _loadData(online: false);
-    final onlineStatusCode = await _fetchData();
-    if (onlineStatusCode != StatusCode.success) {
-      scaffold.showSnackBar(
-        SnackBar(
-          content: Text(getStatusCodeMsg(onlineStatusCode)),
-          action: SnackBarAction(
-            label: 'OK',
-            onPressed: () => null,
-          ),
-        ),
-      );
-    }
+    await _fetchDataWithStatusMsg(scaffoldState: scaffold);
   }
 
   @override
@@ -251,7 +256,7 @@ class _AppPageState extends Interactor<AppPage>
         ],
         body: LayoutBuilder(
           builder: (context, constraints) => CustomRefreshIndicator(
-            loadOnline: () => _fetchData(force: true, showStatus: false),
+            loadOnline: () => _fetchData(force: true),
             child: HomePage(),
           ),
         ),
