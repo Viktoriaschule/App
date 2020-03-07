@@ -66,7 +66,6 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     EventBus.of(context).publish(FetchAppDataEvent());
     final handler = _getNotificationHandler(context, data['type']);
     if (handler != null) {
-      print('open $data');
       handler.open(data, context);
     }
   }
@@ -110,7 +109,6 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
       }
 
       if (Platform().isAndroid) {
-        print('Notification: $data');
         await methodChannel.invokeMethod('notification', data);
       }
       // ignore: avoid_catches_without_on_clauses
