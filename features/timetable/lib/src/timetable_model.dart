@@ -139,7 +139,6 @@ class TimetableDay {
               .where((subject) =>
                   subject != null &&
                   subject.subjectID != 'Mittagspause' &&
-                  subject.subjectID != 'Freistunde' &&
                   DateTime.now()
                       .isBefore(date.add(Times.getUnitTimes(subject.unit)[1])))
               .toList()

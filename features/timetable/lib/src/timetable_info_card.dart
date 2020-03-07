@@ -28,9 +28,14 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
   @override
   ListGroup getListGroup(BuildContext context, InfoCardUtils utils) {
     final loader = TimetableWidget.of(context).feature.loader;
+    final spLoader = SubstitutionPlanWidget.of(context).feature.loader;
     final subjects = loader.hasLoadedData
         ? loader.data.days[widget.date.weekday - 1]
             .getFutureSubjects(widget.date, loader.data.selection)
+            .where((subject) =>
+                subject.subjectID != 'Freistunde' ||
+                subject.getSubstitutions(widget.date, spLoader.data).isNotEmpty)
+            .toList()
         : <TimetableSubject>[];
     return ListGroup(
       loadingKeys: [TimetableKeys.timetable],
@@ -67,8 +72,6 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
                         ? subjects.sublist(0, utils.cut)
                         : subjects)
                     .map((subject) {
-                  final spLoader =
-                      SubstitutionPlanWidget.of(context).feature.loader;
                   final substitutions = spLoader.hasLoadedData
                       ? subject.getSubstitutions(widget.date, spLoader.data)
                       : <Substitution>[];
