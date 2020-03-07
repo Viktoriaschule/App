@@ -32,7 +32,6 @@ class TagsLoader extends Loader<Tags> {
         .where((key) => key.startsWith(Keys.notifications('')))
         .forEach(
             (key) => notifications[key] = Static.storage.getBool(key) ?? true);
-    print(notifications);
     if (id != null) {
       final Device device = Device(
         firebaseId: id,
