@@ -60,6 +60,9 @@ class _AppPageState extends Interactor<AppPage>
           await Static.tags.loadOnline(context, force: true, autoLogin: false);
       if (result == StatusCode.unauthorized) {
         await _launchLogin();
+        // Do not inform the user about an unauthorized error,
+        // because the login screen already tells enough
+        return StatusCode.success;
       } else if (result == StatusCode.success) {
         // First sync the tags
         await Static.tags.syncDevice(context);
@@ -98,9 +101,7 @@ class _AppPageState extends Interactor<AppPage>
     @required bool online,
     bool force = false,
   }) async {
-    final features = FeaturesWidget
-        .of(context)
-        .features;
+    final features = FeaturesWidget.of(context).features;
     final List<String> loading = [];
     final List<String> loaded = [];
 
@@ -111,9 +112,9 @@ class _AppPageState extends Interactor<AppPage>
         // Download the feature if it does not has any dependencies or if all of them are loaded
         if (feature.featureKey.isEmpty ||
             (feature
-                .dependsOn(context)
-                ?.map(loaded.contains)
-                ?.reduce((v1, v2) => v1 || v2) ??
+                    .dependsOn(context)
+                    ?.map(loaded.contains)
+                    ?.reduce((v1, v2) => v1 || v2) ??
                 true)) {
           if (loading.contains(feature.featureKey)) {
             continue;
