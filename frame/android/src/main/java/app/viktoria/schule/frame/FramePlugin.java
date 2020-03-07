@@ -120,11 +120,7 @@ public class FramePlugin implements FlutterPlugin, MethodCallHandler {
                         .setColorized(true)
                         .setChannelId(type);
 
-                System.out.println("Send notification: " + title);
-
                 NotificationManagerCompat.from(applicationContext).notify(group, notification.build());
-
-                System.out.println("Successfully send");
             } catch (ClassNotFoundException | PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }

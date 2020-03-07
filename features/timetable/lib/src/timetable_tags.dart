@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'package:substitution_plan/substitution_plan.dart';
 import 'package:timetable/src/timetable_keys.dart';
+import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 
 import 'timetable_events.dart';
@@ -9,6 +11,7 @@ import 'timetable_events.dart';
 class TimetableTagsHandler extends TagsHandler {
   @override
   void syncFromServer(Tags tags, BuildContext context) {
+    bool changed = false;
     // Sync selections
     for (final selection in tags.selected) {
       final String selectedCourseId =
@@ -20,6 +23,7 @@ class TimetableTagsHandler extends TagsHandler {
         // If the server is newer, sync the new course id
         if (selectedCourseId == null ||
             selection.timestamp.isAfter(DateTime.parse(selectedTimestamp))) {
+          changed = true;
           Static.storage.setString(
               TimetableKeys.selection(selection.block), selection.courseID);
           Static.storage.setString(
@@ -32,14 +36,15 @@ class TimetableTagsHandler extends TagsHandler {
     // Sync exams
     for (final exam in tags.exams) {
       final bool writing =
-          Static.storage.getBool(TimetableKeys.exam(exam.subject));
+      Static.storage.getBool(TimetableKeys.exam(exam.subject));
       // If the course id changed, check which version is newer
       if (writing != exam.writing) {
         final String examTimestamp =
-            Static.storage.getString(TimetableKeys.examTimestamp(exam.subject));
+        Static.storage.getString(TimetableKeys.examTimestamp(exam.subject));
         // If the server is newer, sync the new course id
         if (writing == null ||
             exam.timestamp.isAfter(DateTime.parse(examTimestamp))) {
+          changed = true;
           Static.storage
               .setBool(TimetableKeys.exam(exam.subject), exam.writing);
           Static.storage.setString(TimetableKeys.examTimestamp(exam.subject),
@@ -47,7 +52,26 @@ class TimetableTagsHandler extends TagsHandler {
         }
       }
     }
-    EventBus().publish(TimetableUpdateEvent());
+
+    // Update the substitution plan filter and views if any tag has changed
+    if (changed) {
+      // Update the substitution plan filter
+      final ttLoader = TimetableWidget
+          .of(context)
+          .feature
+          .loader;
+      if (ttLoader.hasLoadedData) {
+        SubstitutionPlanWidget
+            .of(context)
+            .feature
+            .loader
+            .data
+            ?.syncWithTimetable(ttLoader.data);
+      }
+
+      // Inform all views about new data
+      EventBus.of(context).publish(TimetableUpdateEvent());
+    }
   }
 
   @override
