@@ -47,7 +47,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
       ),
       body: Scrollbar(
         child: ListView(
-          shrinkWrap: true,
+          shrinkWrap: false,
           padding: EdgeInsets.all(5),
           children: [
             if (notificationFeatures.isNotEmpty)
