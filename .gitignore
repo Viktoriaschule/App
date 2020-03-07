@@ -1,4 +1,5 @@
 .idea/
+
 gen/
 coverage/
 doc/api/
@@ -17,24 +18,20 @@ doc/
 .history
 .svn/
 
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-pubspec.lock
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+**/pubspec.lock
 
-artifacts
 images/*
 !images/logo_white.svg
-go/assets/icon.png
-android/app/src/main/res/mipmap-*/
-android/app/src/main/res/drawable/*.png
-android/key.properties
-ios/Runner/Assets.xcassets/AppIcon.appiconset/*.png
-ios/Runner/Assets.xcassets/LaunchImage.imageset/*.png
-parsers/js/node_modules
-parsers/Schuldatentransfer UNSTF.TXT
-**.test_coverage.dart
-**coverage_badge.svg
+**/web/icons/*
+**/web/*.png
+**/android/app/src/main/res/mipmap-*/
+**/android/app/src/main/res/drawable/*.png
+**/ios/Runner/Assets.xcassets/AppIcon.appiconset/*.png
+**/ios/Runner/Assets.xcassets/LaunchImage.imageset/*.png
+**/generated_plugin_registrant.dart
 
 *.iml
 *.ipr
@@ -79,6 +76,6 @@ parsers/Schuldatentransfer UNSTF.TXT
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
-config.json
-google-services.json
-
+**/*google-services.json
+**/*key.properties
+apps/*/

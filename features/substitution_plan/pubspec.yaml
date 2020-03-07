@@ -1,0 +1,15 @@
+name: substitution_plan
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  timeago:
+  timetable:
+    path: ../timetable
+  utils:
+    path: ../../utils
+  widgets:
+    path: ../../widgets

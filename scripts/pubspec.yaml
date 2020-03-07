@@ -1,0 +1,7 @@
+name: scripts
+
+dependencies:
+  dio:
+  process_run:
+  yaml:
+  mustache_template:

@@ -1,0 +1,12 @@
+name: widgets
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_event_bus:
+  after_layout:
+  utils:
+    path: ../utils

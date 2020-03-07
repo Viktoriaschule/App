@@ -1,0 +1,17 @@
+name: aixformation
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_webview_plugin:
+  url_launcher:
+  cached_network_image:
+  share:
+  transparent_image:
+  utils:
+    path: ../../utils
+  widgets:
+    path: ../../widgets
