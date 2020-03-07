@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // ignore: public_member_api_docs
@@ -34,6 +35,9 @@ class CustomButton extends StatelessWidget {
           focusNode: focusNode,
           onPressed: enabled ? onPressed : null,
           color: Theme.of(context).accentColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+          ),
           child: child,
         ),
       );
