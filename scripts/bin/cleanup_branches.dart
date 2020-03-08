@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:process_run/cmd_run.dart';
 
 Future main(List<String> arguments) async {
@@ -29,13 +31,19 @@ Future main(List<String> arguments) async {
           !excludes.contains(i))
       .toList();
 
-  for (final branch in branches) {
-    print('Delete branch $branch:');
-    await run(
-      'git',
-      ['branch', '-d', branch],
-      verbose: false,
-    );
+  if (branches.isNotEmpty) {
+    print(
+        'Do you want to delete the banches:\n${branches.join('\n')}\n\n[Y|N]:');
+    if (stdin.readLineSync().toLowerCase() == 'y') {
+      for (final branch in branches) {
+        print('Delete branch $branch:');
+        await run(
+          'git',
+          ['branch', '-d', branch],
+          verbose: false,
+        );
+      }
+    }
   }
 
   await run(
