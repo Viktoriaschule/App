@@ -14,6 +14,9 @@ class Updates {
     return Updates(rawUpdate: updates);
   }
 
+  @override
+  String toString() => _rawUpdates.toString();
+
   Map<String, String> _rawUpdates;
 
   // ignore: public_member_api_docs

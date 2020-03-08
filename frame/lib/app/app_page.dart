@@ -72,10 +72,7 @@ class _AppPageState extends Interactor<AppPage>
         );
 
         // Then check all updates (If there is something new to update)
-        final storedUpdates = Static.updates.data ?? Updates.fromJson({});
-        await Static.updates.loadOnline(context, force: true);
-        final fetchedUpdates = Static.updates.data;
-        Static.updates.parsedData = storedUpdates;
+        final fetchedUpdates = (await Static.updates.fetch(context)).data;
 
         // Sync the local grade with the server
         Static.user.grade = fetchedUpdates.getUpdate(Keys.grade);
@@ -88,6 +85,7 @@ class _AppPageState extends Interactor<AppPage>
         return _loadData(
           online: true,
           force: force,
+          newUpdates: fetchedUpdates,
         );
       }
       return result;
@@ -100,6 +98,7 @@ class _AppPageState extends Interactor<AppPage>
   Future<StatusCode> _loadData({
     @required bool online,
     bool force = false,
+    Updates newUpdates,
   }) async {
     final features = FeaturesWidget.of(context).features;
     final List<String> loading = [];
@@ -128,7 +127,7 @@ class _AppPageState extends Interactor<AppPage>
             if (online) {
               status = await feature.loader.update(
                 context,
-                Static.updates.data,
+                newUpdates,
                 force: force,
               );
             } else {
