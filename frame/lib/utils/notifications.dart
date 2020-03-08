@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,8 +26,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     with AfterLayoutMixin<NotificationsWidget> {
   static MethodChannel methodChannel = MethodChannel('frame');
 
-  NotificationsHandler _getNotificationHandler(
-      BuildContext context, String type) {
+  NotificationsHandler _getNotificationHandler(BuildContext context, String type) {
     final features = FeaturesWidget.of(context)
         .features
         .where((f) => f.featureKey == type)
@@ -45,34 +46,45 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
         onResume: handleOnLaunchResumeNotification,
         onMessage: handleOnMessageNotification,
         onBackgroundMessage:
-            _NotificationsWidgetState.handleOnBackgroundMessageNotification,
+        _NotificationsWidgetState.handleOnBackgroundMessageNotification,
       );
     }
     final channels = FeaturesWidget.of(context)
         .features
         .where((f) => f.notificationsHandler != null)
         .map((f) => f.notificationsHandler
-            .getAndroidNotificationHandler(context)
-            .toMap())
+        .getAndroidNotificationHandler(context)
+        .toMap())
         .toList();
     if (Platform().isAndroid) {
       await methodChannel.invokeMethod('init', channels);
     }
   }
 
-  Future handleOnLaunchResumeNotification(
-    Map<String, dynamic> data,
-  ) async {
+  Future handleOnLaunchResumeNotification(Map<String, dynamic> data,) async {
     EventBus.of(context).publish(FetchAppDataEvent());
+
+    // Delete all notifications of the same type
+    if (Platform().isAndroid) {
+      try {
+        final List<int> groups = json.decode(data['closeGroups']).cast<int>();
+        if (groups.length > 1) {
+          await methodChannel.invokeMethod('closeGroups', groups);
+        }
+        // ignore: avoid_catches_without_on_clauses
+      } catch (e) {
+        print('Failed to delete notifications: $e');
+      }
+    }
+
+    // Open the correct page
     final handler = _getNotificationHandler(context, data['type']);
     if (handler != null) {
       handler.open(data, context);
     }
   }
 
-  Future<dynamic> handleOnMessageNotification(
-    Map<String, dynamic> d,
-  ) async {
+  Future<dynamic> handleOnMessageNotification(Map<String, dynamic> d,) async {
     try {
       final Map<String, dynamic> data = Map<String, dynamic>.from(d['data']);
       if (data['action'] != 'update') {
@@ -100,8 +112,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
 
   // This needs to be a static function otherwise it can't be called
   static Future<dynamic> handleOnBackgroundMessageNotification(
-    Map<String, dynamic> d,
-  ) async {
+      Map<String, dynamic> d,) async {
     final Map<String, dynamic> data = d['data'].cast<String, dynamic>();
     try {
       if (data['action'] == 'update') {
