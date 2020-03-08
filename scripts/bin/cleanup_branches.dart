@@ -1,4 +1,4 @@
-import 'command.dart';
+import 'package:process_run/cmd_run.dart';
 
 Future main(List<String> arguments) async {
   final excludes = <String>[];
@@ -12,11 +12,12 @@ Future main(List<String> arguments) async {
     }
   }
 
-  final result = (await runCommand(
+  final result = (await run(
     'git',
     ['branch'],
-    log: false,
-  ))['stdout'];
+    verbose: false,
+  ))
+      .stdout;
   final branches = result
       .split('\n')
       .map((i) => i.trim())
@@ -30,16 +31,16 @@ Future main(List<String> arguments) async {
 
   for (final branch in branches) {
     print('Delete branch $branch:');
-    await runCommand(
+    await run(
       'git',
       ['branch', '-d', branch],
-      log: false,
+      verbose: false,
     );
   }
 
-  await runCommand(
+  await run(
     'git',
     ['remote', 'prune', 'origin'],
-    log: true,
+    verbose: true,
   );
 }
