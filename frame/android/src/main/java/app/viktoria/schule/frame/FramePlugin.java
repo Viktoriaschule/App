@@ -14,15 +14,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
 import android.text.SpannableString;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.BinaryMessenger;
@@ -31,6 +25,10 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class FramePlugin implements FlutterPlugin, MethodCallHandler {
     public static OnLaunchCallback onLaunchCallback;
@@ -129,7 +127,7 @@ public class FramePlugin implements FlutterPlugin, MethodCallHandler {
                                 : Html.fromHtml(bigBody, Html.FROM_HTML_MODE_LEGACY));
                 PackageManager packageManager = applicationContext.getPackageManager();
                 Resources resources = packageManager.getResourcesForApplication(applicationContext.getPackageName());
-                int resId = resources.getIdentifier(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? "ic_launcher" : "logo_white", "mipmap", applicationContext.getPackageName());
+                int resId = resources.getIdentifier("logo_white", "mipmap", applicationContext.getPackageName());
 
                 NotificationCompat.Builder notification = new NotificationCompat.Builder(applicationContext, String.valueOf(group))
                         .setContentTitle(title).setContentText(formattedBody)
