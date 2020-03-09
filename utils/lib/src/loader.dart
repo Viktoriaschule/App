@@ -51,8 +51,8 @@ abstract class Loader<LoaderType> {
       return LoaderResponse<LoaderType>(
           data: data, statusCode: StatusCode.success);
       // ignore: avoid_catches_without_on_clauses
-    } catch (e) {
-      print('Failed to parse $key: $e');
+    } catch (e, stacktrace) {
+      print('Failed to parse $key: $e\n$stacktrace');
       return LoaderResponse<LoaderType>(
           data: null, statusCode: StatusCode.wrongFormat);
     }
@@ -66,7 +66,7 @@ abstract class Loader<LoaderType> {
         forceUpdate ||
         Static.updates.data.getUpdate(key) != hash ||
         !hasLoadedData) {
-      final status = await loadOnline(context, force: force);
+      final status = await loadOnline(context, force: true);
       if (status == StatusCode.success) {
         Static.updates.data.setUpdate(key, hash);
       }
@@ -111,7 +111,7 @@ abstract class Loader<LoaderType> {
           .statusCode;
 
   /// Fetches the data
-  Future<LoaderResponse> fetch(BuildContext context,
+  Future<LoaderResponse<LoaderType>> fetch(BuildContext context,
           {String username,
           String password,
           bool post = false,
@@ -135,14 +135,14 @@ abstract class Loader<LoaderType> {
   void afterLoad() => {};
 
   /// Download the data from the api and returns the status code
-  Future<LoaderResponse> _load(BuildContext context,
+  Future<LoaderResponse<LoaderType>> _load(BuildContext context,
       {String username,
-      String password,
-      bool force = false,
-      bool post = false,
-      Map<String, dynamic> body,
-      bool store = true,
-      bool autoLogin = true}) async {
+        String password,
+        bool force = false,
+        bool post = false,
+        Map<String, dynamic> body,
+        bool store = true,
+        bool autoLogin = true}) async {
     if (_loadedFromOnline && !force) {
       return LoaderResponse(statusCode: StatusCode.success);
     }
@@ -205,15 +205,9 @@ abstract class Loader<LoaderType> {
       if (response.statusCode == 401 && autoLogin && context != null) {
         await Navigator.of(context).pushReplacementNamed('/${Keys.login}');
       }
-
-      dynamic data;
-      try {
-        data = json.decode(response.toString());
-        statusCodes.add(StatusCode.success);
-        // ignore: avoid_catches_without_on_clauses
-      } catch (e) {
-        statusCodes.add(StatusCode.wrongFormat);
-        print('Failed parse $key: $e');
+      LoaderType data;
+      if (!store) {
+        data = _fromJSON(response.toString())?.data;
       }
 
       afterLoad();
@@ -221,9 +215,10 @@ abstract class Loader<LoaderType> {
       final status = reduceStatusCodes(statusCodes);
       if (status != StatusCode.success) {
         print(
-            'Did not successfully updated $key: $status (http: ${response.statusCode})');
+            'Did not successfully updated $key: $status (http: ${response
+                .statusCode})');
       }
-      return LoaderResponse(data: data, statusCode: status);
+      return LoaderResponse<LoaderType>(data: data, statusCode: status);
     } on DioError catch (e) {
       afterLoad();
       _sendLoadedEvent(pages, eventBus);

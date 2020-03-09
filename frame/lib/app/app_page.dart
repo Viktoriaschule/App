@@ -60,6 +60,9 @@ class _AppPageState extends Interactor<AppPage>
           await Static.tags.loadOnline(context, force: true, autoLogin: false);
       if (result == StatusCode.unauthorized) {
         await _launchLogin();
+        // Do not inform the user about an unauthorized error,
+        // because the login screen already tells enough
+        return StatusCode.success;
       } else if (result == StatusCode.success) {
         // First sync the tags
         await Static.tags.syncDevice(context);
@@ -69,10 +72,14 @@ class _AppPageState extends Interactor<AppPage>
         );
 
         // Then check all updates (If there is something new to update)
-        final storedUpdates = Static.updates.data ?? Updates.fromJson({});
-        await Static.updates.loadOnline(context, force: true);
-        final fetchedUpdates = Static.updates.data;
-        Static.updates.parsedData = storedUpdates;
+        final response = await Static.updates.fetch(context);
+        if (response.statusCode != StatusCode.success) {
+          return response.statusCode;
+        }
+        final fetchedUpdates = response.data;
+        if (fetchedUpdates == null) {
+          return StatusCode.failed;
+        }
 
         // Sync the local grade with the server
         Static.user.grade = fetchedUpdates.getUpdate(Keys.grade);
@@ -85,6 +92,7 @@ class _AppPageState extends Interactor<AppPage>
         return _loadData(
           online: true,
           force: force,
+          newUpdates: fetchedUpdates,
         );
       }
       return result;
@@ -97,10 +105,9 @@ class _AppPageState extends Interactor<AppPage>
   Future<StatusCode> _loadData({
     @required bool online,
     bool force = false,
+    Updates newUpdates,
   }) async {
-    final features = FeaturesWidget
-        .of(context)
-        .features;
+    final features = FeaturesWidget.of(context).features;
     final List<String> loading = [];
     final List<String> loaded = [];
 
@@ -111,9 +118,9 @@ class _AppPageState extends Interactor<AppPage>
         // Download the feature if it does not has any dependencies or if all of them are loaded
         if (feature.featureKey.isEmpty ||
             (feature
-                .dependsOn(context)
-                ?.map(loaded.contains)
-                ?.reduce((v1, v2) => v1 || v2) ??
+                    .dependsOn(context)
+                    ?.map(loaded.contains)
+                    ?.reduce((v1, v2) => v1 || v2) ??
                 true)) {
           if (loading.contains(feature.featureKey)) {
             continue;
@@ -127,7 +134,7 @@ class _AppPageState extends Interactor<AppPage>
             if (online) {
               status = await feature.loader.update(
                 context,
-                Static.updates.data,
+                newUpdates,
                 force: force,
               );
             } else {

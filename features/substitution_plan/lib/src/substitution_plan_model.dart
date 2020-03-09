@@ -11,7 +11,8 @@ class SubstitutionPlan {
         days: json
             .map<SubstitutionPlanDay>(
                 (day) => SubstitutionPlanDay.fromJson(day))
-            .toList(),
+            .toList()
+              ..sort((d1, d2) => d1.date.compareTo(d2.date)),
       );
 
   /// All substitution plan days

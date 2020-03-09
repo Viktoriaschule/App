@@ -31,14 +31,33 @@ import java.util.List;
 import java.util.Map;
 
 public class FramePlugin implements FlutterPlugin, MethodCallHandler {
+    public static OnLaunchCallback onLaunchCallback;
     private static MethodChannel channel;
     private Context applicationContext;
-    public static OnLaunchCallback onLaunchCallback;
-
 
     public static void registerWith(PluginRegistry.Registrar registrar) {
         FramePlugin instance = new FramePlugin();
         instance.onAttachedToEngine(registrar.context(), registrar.messenger());
+    }
+
+    public static boolean sendMessageFromIntent(DartExecutor dartExecutor, String method, Intent intent) {
+        Bundle extras = intent.getExtras();
+
+        if (extras == null || extras.get("type") == null) {
+            return false;
+        }
+
+        Map<String, Object> data = new HashMap<>();
+
+        for (String key : extras.keySet()) {
+            Object extra = extras.get(key);
+            if (extra != null) {
+                data.put(key, extra);
+            }
+        }
+
+        new Handler(Looper.getMainLooper()).post(() -> new MethodChannel(dartExecutor, "plugins.flutter.io/firebase_messaging").invokeMethod(method, data));
+        return true;
     }
 
     private void onAttachedToEngine(Context context, BinaryMessenger binaryMessenger) {
@@ -108,7 +127,7 @@ public class FramePlugin implements FlutterPlugin, MethodCallHandler {
                                 : Html.fromHtml(bigBody, Html.FROM_HTML_MODE_LEGACY));
                 PackageManager packageManager = applicationContext.getPackageManager();
                 Resources resources = packageManager.getResourcesForApplication(applicationContext.getPackageName());
-                int resId = resources.getIdentifier(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? "ic_launcher" : "logo_white", "mipmap", applicationContext.getPackageName());
+                int resId = resources.getIdentifier("logo_white", "mipmap", applicationContext.getPackageName());
 
                 NotificationCompat.Builder notification = new NotificationCompat.Builder(applicationContext, String.valueOf(group))
                         .setContentTitle(title).setContentText(formattedBody)
@@ -120,37 +139,21 @@ public class FramePlugin implements FlutterPlugin, MethodCallHandler {
                         .setColorized(true)
                         .setChannelId(type);
 
-                System.out.println("Send notification: " + title);
-
                 NotificationManagerCompat.from(applicationContext).notify(group, notification.build());
-
-                System.out.println("Successfully send");
             } catch (ClassNotFoundException | PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
+            }
+            result.success("");
+        } else if (call.method.equals("closeGroups")) {
+            final NotificationManagerCompat notificationManager = NotificationManagerCompat.from(applicationContext);
+            List<Integer> groups = (List<Integer>) call.arguments;
+            for (Integer group : groups) {
+                notificationManager.cancel(group);
             }
             result.success("");
         } else {
             result.notImplemented();
         }
-    }
-
-    public static boolean sendMessageFromIntent(DartExecutor dartExecutor, String method, Intent intent) {
-        Bundle extras = intent.getExtras();
-
-        if (extras == null || extras.get("type") == null) {
-            return false;
-        }
-
-        Map<String, Object> data = new HashMap<>();
-
-        for (String key : extras.keySet()) {
-            Object extra = extras.get(key);
-            if (extra != null) {
-                data.put(key, extra);
-            }
-        }
-        new Handler(Looper.getMainLooper()).post(() -> new MethodChannel(dartExecutor, "plugins.flutter.io/firebase_messaging").invokeMethod(method, data));
-        return true;
     }
 
     @Override
