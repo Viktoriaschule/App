@@ -14,9 +14,15 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Html;
 import android.text.SpannableString;
+
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.BinaryMessenger;
@@ -26,19 +32,34 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class FramePlugin implements FlutterPlugin, MethodCallHandler {
+    public static OnLaunchCallback onLaunchCallback;
     private static MethodChannel channel;
     private Context applicationContext;
-    public static OnLaunchCallback onLaunchCallback;
-
 
     public static void registerWith(PluginRegistry.Registrar registrar) {
         FramePlugin instance = new FramePlugin();
         instance.onAttachedToEngine(registrar.context(), registrar.messenger());
+    }
+
+    public static boolean sendMessageFromIntent(DartExecutor dartExecutor, String method, Intent intent) {
+        Bundle extras = intent.getExtras();
+
+        if (extras == null || extras.get("type") == null) {
+            return false;
+        }
+
+        Map<String, Object> data = new HashMap<>();
+
+        for (String key : extras.keySet()) {
+            Object extra = extras.get(key);
+            if (extra != null) {
+                data.put(key, extra);
+            }
+        }
+
+        new Handler(Looper.getMainLooper()).post(() -> new MethodChannel(dartExecutor, "plugins.flutter.io/firebase_messaging").invokeMethod(method, data));
+        return true;
     }
 
     private void onAttachedToEngine(Context context, BinaryMessenger binaryMessenger) {
@@ -125,28 +146,16 @@ public class FramePlugin implements FlutterPlugin, MethodCallHandler {
                 e.printStackTrace();
             }
             result.success("");
+        } else if (call.method.equals("closeGroups")) {
+            final NotificationManagerCompat notificationManager = NotificationManagerCompat.from(applicationContext);
+            List<Integer> groups = (List<Integer>) call.arguments;
+            for (Integer group : groups) {
+                notificationManager.cancel(group);
+            }
+            result.success("");
         } else {
             result.notImplemented();
         }
-    }
-
-    public static boolean sendMessageFromIntent(DartExecutor dartExecutor, String method, Intent intent) {
-        Bundle extras = intent.getExtras();
-
-        if (extras == null || extras.get("type") == null) {
-            return false;
-        }
-
-        Map<String, Object> data = new HashMap<>();
-
-        for (String key : extras.keySet()) {
-            Object extra = extras.get(key);
-            if (extra != null) {
-                data.put(key, extra);
-            }
-        }
-        new Handler(Looper.getMainLooper()).post(() -> new MethodChannel(dartExecutor, "plugins.flutter.io/firebase_messaging").invokeMethod(method, data));
-        return true;
     }
 
     @Override
