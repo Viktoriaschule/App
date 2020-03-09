@@ -72,7 +72,14 @@ class _AppPageState extends Interactor<AppPage>
         );
 
         // Then check all updates (If there is something new to update)
-        final fetchedUpdates = (await Static.updates.fetch(context)).data;
+        final response = await Static.updates.fetch(context);
+        if (response.statusCode != StatusCode.success) {
+          return response.statusCode;
+        }
+        final fetchedUpdates = response.data;
+        if (fetchedUpdates == null) {
+          return StatusCode.failed;
+        }
 
         // Sync the local grade with the server
         Static.user.grade = fetchedUpdates.getUpdate(Keys.grade);
