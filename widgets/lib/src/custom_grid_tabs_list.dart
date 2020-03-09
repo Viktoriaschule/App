@@ -14,6 +14,7 @@ class CustomGridTabsList extends StatefulWidget {
     @required this.children,
     @required this.extraInfoTitles,
     @required this.extraInfoChildren,
+    @required this.extraInfoCounts,
     @required this.onRefresh,
     Key key,
   }) : super(key: key);
@@ -27,8 +28,11 @@ class CustomGridTabsList extends StatefulWidget {
   // ignore: public_member_api_docs
   final List<String> extraInfoTitles;
 
-  // ignore: public_member_api_docs
+  /// All children that should be shown after click on the extra information button
   final List<List<Widget>> extraInfoChildren;
+
+  /// The count of all extra information
+  final List<int> extraInfoCounts;
 
   // ignore: public_member_api_docs
   final Future<StatusCode> Function() onRefresh;
@@ -80,33 +84,34 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
                           color: ThemeWidget.of(context).textColor,
                         ),
                       ),
-                      Positioned(
-                        right: 0,
-                        child: Container(
-                          margin: EdgeInsets.only(top: 6, right: 6),
-                          padding: EdgeInsets.all(1),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).accentColor,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          constraints: BoxConstraints(
-                            minWidth: 12,
-                            minHeight: 12,
-                          ),
-                          child: Text(
-                            widget
-                                .extraInfoChildren[
-                                    widget.children.indexOf(widget.tab)]
-                                .length
-                                .toString(),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 8,
+                      if (widget.extraInfoCounts[
+                              widget.children.indexOf(widget.tab)] !=
+                          0)
+                        Positioned(
+                          right: 0,
+                          child: Container(
+                            margin: EdgeInsets.only(top: 6, right: 6),
+                            padding: EdgeInsets.all(1),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).accentColor,
+                              borderRadius: BorderRadius.circular(6),
                             ),
-                            textAlign: TextAlign.center,
+                            constraints: BoxConstraints(
+                              minWidth: 12,
+                              minHeight: 12,
+                            ),
+                            child: Text(
+                              widget.extraInfoCounts[
+                                      widget.children.indexOf(widget.tab)]
+                                  .toString(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 8,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),

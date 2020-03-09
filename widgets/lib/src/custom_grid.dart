@@ -15,6 +15,7 @@ class CustomGrid extends StatefulWidget {
     @required this.onRefresh,
     this.extraInfoTitles,
     this.extraInfoChildren,
+    this.extraInfoCounts,
     this.childrenRowPrepend,
     this.appendRowPrepend,
     this.initialHorizontalIndex = 0,
@@ -36,8 +37,11 @@ class CustomGrid extends StatefulWidget {
   // ignore: public_member_api_docs
   final List<String> extraInfoTitles;
 
-  // ignore: public_member_api_docs
+  /// All children that should be shown after click on the extra information button
   final List<List<Widget>> extraInfoChildren;
+
+  /// The count of all extra information
+  final List<int> extraInfoCounts;
 
   // ignore: public_member_api_docs
   final CustomGridType type;
@@ -106,9 +110,10 @@ class _CustomGridState extends State<CustomGrid>
             controller: _tabController,
             children: widget.children
                 .map((tab) => CustomGridTabsList(
-                      tab: tab,
+              tab: tab,
                       extraInfoTitles: widget.extraInfoTitles,
                       extraInfoChildren: widget.extraInfoChildren,
+                      extraInfoCounts: widget.extraInfoCounts,
                       onRefresh: widget.onRefresh,
                       children: widget.children,
                     ))

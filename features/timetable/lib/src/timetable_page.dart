@@ -125,39 +125,41 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                     final day = _monday.add(Duration(days: weekday));
                     return '${weekdays[day.weekday - 1]} ${shortOutputDateFormat.format(day)}';
                   }),
+                  extraInfoCounts: List.generate(5, (weekday) {
+                    final day = _monday.add(Duration(days: weekday));
+                    int count = 0;
+
+                    // Check cafetoria
+                    final cafetoria =
+                        CafetoriaWidget.of(context)?.feature?.loader;
+                    if (cafetoria != null && cafetoria.hasLoadedData) {
+                      final days =
+                          cafetoria.data.days.where((d) => d.date == day);
+                      if (days.isNotEmpty && days.first.menus.isNotEmpty) {
+                        count++;
+                      }
+                    }
+
+                    // Check calendar
+                    final calendar =
+                        CalendarWidget.of(context)?.feature?.loader;
+                    if (calendar != null &&
+                        calendar.hasLoadedData &&
+                        calendar.data.getEventsForDate(day).isNotEmpty) {
+                      count++;
+                    }
+                    return count;
+                  }),
                   extraInfoChildren: List.generate(5, (weekday) {
                     final day = _monday.add(Duration(days: weekday));
                     return [
-                      if (CafetoriaWidget.of(context) != null &&
-                          CafetoriaWidget.of(context)
-                              .feature
-                              .loader
-                              .data
-                              .days
-                              .where((d) => d.date == day)
-                              .isNotEmpty &&
-                          CafetoriaWidget.of(context)
-                              .feature
-                              .loader
-                              .data
-                              .days
-                              .where((d) => d.date == day)
-                              .first
-                              .menus
-                              .isNotEmpty)
+                      if (CafetoriaWidget.of(context) != null)
                         CafetoriaInfoCard(
                           date: day,
                           showNavigation: false,
                           isSingleDay: true,
                         ),
-                      if (CalendarWidget.of(context) != null &&
-                          CalendarWidget.of(context)
-                              .feature
-                              .loader
-                              .data
-                              .getEventsSince(
-                                  day) // TODO: Get only the events for the specific day
-                              .isNotEmpty)
+                      if (CalendarWidget.of(context) != null)
                         CalendarInfoCard(
                           date: day,
                           showNavigation: false,

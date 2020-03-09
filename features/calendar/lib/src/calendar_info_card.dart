@@ -32,9 +32,6 @@ class CalendarInfoCard extends InfoCard {
 class _CalendarInfoCardState extends InfoCardState<CalendarInfoCard> {
   InfoCardUtils utils;
 
-  List<CalendarEvent> getEvents(CalendarLoader loader) =>
-      loader.hasLoadedData ? loader.data.getEventsSince(widget.date) : [];
-
   @override
   Subscription subscribeEvents(EventBus eventBus) =>
       eventBus.respond<CalendarUpdateEvent>((event) => setState(() => null));
@@ -42,12 +39,10 @@ class _CalendarInfoCardState extends InfoCardState<CalendarInfoCard> {
   @override
   ListGroup getListGroup(BuildContext context, InfoCardUtils utils) {
     final loader = CalendarWidget.of(context).feature.loader;
-    final _events = getEvents(loader)
-        .where((event) =>
-            !widget.isSingleDay ||
-            event.start.isBefore(DateTime.now()) ||
-            event.start == DateTime.now())
-        .toList();
+    final _events = (widget.isSingleDay
+            ? loader.data?.getEventsForDate(widget.date)
+            : loader.data?.getEventsSince(widget.date)) ??
+        <CalendarEvent>[];
     return ListGroup(
       loadingKeys: const [CalendarKeys.calendar],
       showNavigation: widget.showNavigation,

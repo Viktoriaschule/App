@@ -26,6 +26,12 @@ class Calendar {
       .where((event) => event.start == start || event.start.isAfter(start))
       .toList()
         ..sort((e1, e2) => e1.start.compareTo(e2.start));
+
+  /// Returns all events for a specific date
+  List<CalendarEvent> getEventsForDate(DateTime date) => getEventsSince(date)
+      .where((event) => event.start
+          .isBefore(date.add(Duration(days: 1)).subtract(Duration(seconds: 1))))
+      .toList();
 }
 
 /// Describes a calendar event...
