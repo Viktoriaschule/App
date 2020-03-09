@@ -27,11 +27,17 @@ class CafetoriaTagsHandler extends TagsHandler {
         Static.storage.setString(CafetoriaKeys.cafetoriaId, null);
         Static.storage.setString(CafetoriaKeys.cafetoriaPassword, null);
       } else {
-        final String decryptedID = decryptText(cafetoriaLogin.id);
-        final String decryptedPassword = decryptText(cafetoriaLogin.password);
-        Static.storage.setString(CafetoriaKeys.cafetoriaId, decryptedID);
-        Static.storage
-            .setString(CafetoriaKeys.cafetoriaPassword, decryptedPassword);
+        try {
+          final String decryptedID = decryptText(cafetoriaLogin.id);
+          final String decryptedPassword = decryptText(cafetoriaLogin.password);
+          Static.storage.setString(CafetoriaKeys.cafetoriaId, decryptedID);
+          Static.storage
+              .setString(CafetoriaKeys.cafetoriaPassword, decryptedPassword);
+        }
+        // ignore: avoid_catches_without_on_clauses
+        catch (_) {
+          print('Failed to decrypt cafetoira credentials');
+        }
       }
       Static.storage.setString(CafetoriaKeys.cafetoriaModified,
           cafetoriaLogin.timestamp.toIso8601String());
@@ -46,23 +52,38 @@ class CafetoriaTagsHandler extends TagsHandler {
 
     final String id = Static.storage.getString(CafetoriaKeys.cafetoriaId);
     final String password =
-    Static.storage.getString(CafetoriaKeys.cafetoriaPassword);
-    final String lastModified =
-    Static.storage.getString(CafetoriaKeys.cafetoriaModified);
+        Static.storage.getString(CafetoriaKeys.cafetoriaPassword);
+    String lastModified =
+        Static.storage.getString(CafetoriaKeys.cafetoriaModified);
 
-    // If the local cafetoria login data is set and newer than the server login data
-    if (lastModified != null &&
-        DateTime.parse(lastModified).isAfter(cafetoriaLogin.timestamp)) {
-      final encryptedId = id == null ? null : encryptText(id);
-      final encryptedPassword = password == null ? null : encryptText(password);
+    if (lastModified != null) {
+      final lastChangedDuration = DateTime.parse(lastModified)
+          .difference(cafetoriaLogin.timestamp)
+          .inSeconds;
 
-      if (cafetoriaLogin.id != encryptedId ||
-          cafetoriaLogin.password != encryptedPassword) {
-        tagsToUpdate['cafetoria'] = CafetoriaTags(
-            id: encryptedId,
-            password: encryptedPassword,
-            timestamp: DateTime.parse(lastModified))
-            .toMap();
+      // Update if
+      // 1. the local cafetoria login data is set and newer than the server login data
+      // 2. or the local data is different and was set in the same moment as the server
+      //    -> This case is only possible when the user password changed and so the encryption
+      if (lastChangedDuration <= 0) {
+        final encryptedId = id == null ? null : encryptText(id);
+        final encryptedPassword =
+            password == null ? null : encryptText(password);
+
+        if (cafetoriaLogin.id != encryptedId ||
+            cafetoriaLogin.password != encryptedPassword) {
+          // If the encryption changed, set the local version as newest
+          if (lastChangedDuration == 0) {
+            lastModified = DateTime.now().toIso8601String();
+            Static.storage
+                .setString(CafetoriaKeys.cafetoriaModified, lastModified);
+          }
+          tagsToUpdate['cafetoria'] = CafetoriaTags(
+                  id: encryptedId,
+                  password: encryptedPassword,
+                  timestamp: DateTime.parse(lastModified))
+              .toMap();
+        }
       }
     }
     return tagsToUpdate;
