@@ -79,7 +79,8 @@ abstract class Loader<LoaderType> {
   StatusCode loadOffline(BuildContext context) {
     if (hasStoredData) {
       preLoad(context);
-      final parsed = _fromJSON(Static.storage.getString(key));
+      _rawData = Static.storage.getString(key);
+      final parsed = _fromJSON(_rawData);
       parsedData = parsed.data;
       if (parsed.statusCode != StatusCode.success) {
         Static.storage.remove(key);
@@ -137,12 +138,12 @@ abstract class Loader<LoaderType> {
   /// Download the data from the api and returns the status code
   Future<LoaderResponse<LoaderType>> _load(BuildContext context,
       {String username,
-        String password,
-        bool force = false,
-        bool post = false,
-        Map<String, dynamic> body,
-        bool store = true,
-        bool autoLogin = true}) async {
+      String password,
+      bool force = false,
+      bool post = false,
+      Map<String, dynamic> body,
+      bool store = true,
+      bool autoLogin = true}) async {
     if (_loadedFromOnline && !force) {
       return LoaderResponse(statusCode: StatusCode.success);
     }
