@@ -65,7 +65,7 @@ class CustomRow extends StatelessWidget {
           ),
         if (showSplit ?? true)
           Container(
-            height: 40,
+            height: 34,
             width: 2.5,
             margin: EdgeInsets.only(
               right: 5,

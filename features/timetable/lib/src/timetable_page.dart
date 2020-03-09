@@ -204,14 +204,14 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                                                 .width) !=
                                         ScreenSize.big,
                                   ),
-                                SubstitutionList(
-                                  substitutions: substitutions
-                                      .where((substitution) =>
-                                          substitution.unit == subject.unit)
-                                      .toList(),
-                                  keepPadding: true,
-                                  topPadding: false,
-                                ),
+                                if (substitutions.isNotEmpty)
+                                  SubstitutionList(
+                                    padding: false,
+                                    substitutions: substitutions
+                                        .where((substitution) =>
+                                            substitution.unit == subject.unit)
+                                        .toList(),
+                                  ),
                               ],
                             ),
                           ),
