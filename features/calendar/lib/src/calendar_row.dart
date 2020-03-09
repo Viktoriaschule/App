@@ -2,6 +2,7 @@ import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
@@ -80,7 +81,7 @@ class _CalendarRowState extends State<CalendarRow>
                     ));
                   },
                   icon: Icon(
-                    Icons.add,
+                    MdiIcons.playlistPlus,
                     color: ThemeWidget.of(context).textColorLight,
                   ),
                 )
