@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// All tags of the current user
 class Tags {
   // ignore: public_member_api_docs
@@ -35,27 +37,16 @@ class Tags {
 /// Describes a device
 class Device {
   // ignore: public_member_api_docs
-  Device(
-      {this.os,
-      this.name,
-      this.appVersion,
-      this.deviceSettings,
-      this.firebaseId});
-
-  /// Creates a device from json map
-  factory Device.fromJson(Map<String, dynamic> json) => Device(
-        os: json['os'],
-        name: json['name'],
-        appVersion: json['appVersion'],
-        deviceSettings: json['settings'],
-        firebaseId: json['firebaseId'],
-      );
+  Device({
+    @required this.os,
+    @required this.appVersion,
+    @required this.deviceSettings,
+    @required this.firebaseId,
+    @required this.package,
+  });
 
   // ignore: public_member_api_docs
   final String os;
-
-  // ignore: public_member_api_docs
-  final String name;
 
   // ignore: public_member_api_docs
   final String appVersion;
@@ -66,12 +57,15 @@ class Device {
   // ignore: public_member_api_docs
   final String firebaseId;
 
+  // ignore: public_member_api_docs
+  final String package;
+
   /// Convert a device to a json map
   Map<String, dynamic> toMap() => {
         'os': os,
-        'name': name,
         'appVersion': appVersion,
         'firebaseId': firebaseId,
+        'package': package,
         'settings': deviceSettings,
       };
 }

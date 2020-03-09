@@ -37,8 +37,8 @@ class TagsLoader extends Loader<Tags> {
         firebaseId: id,
         appVersion: appVersion.isEmpty ? null : appVersion,
         os: os,
-        name: '-',
         deviceSettings: notifications,
+        package: packageInfo.packageName,
       );
       await _sendTags({'device': device.toMap()}, context);
     }
