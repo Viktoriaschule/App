@@ -18,4 +18,3 @@ export 'src/icons_texts.dart';
 export 'src/info_card.dart';
 export 'src/list_group.dart';
 export 'src/size_limit.dart';
-export 'src/snapping_list_view.dart';

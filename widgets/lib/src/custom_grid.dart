@@ -13,7 +13,8 @@ class CustomGrid extends StatefulWidget {
     @required this.type,
     @required this.columnPrepend,
     @required this.onRefresh,
-    this.append,
+    this.extraInfoTitles,
+    this.extraInfoChildren,
     this.childrenRowPrepend,
     this.appendRowPrepend,
     this.initialHorizontalIndex = 0,
@@ -29,11 +30,14 @@ class CustomGrid extends StatefulWidget {
   // ignore: public_member_api_docs
   final List<String> columnPrepend;
 
-  /// First columns then rows
+  // ignore: public_member_api_docs
   final List<List<Widget>> children;
 
-  /// First columns then rows
-  final List<List<Widget>> append;
+  // ignore: public_member_api_docs
+  final List<String> extraInfoTitles;
+
+  // ignore: public_member_api_docs
+  final List<List<Widget>> extraInfoChildren;
 
   // ignore: public_member_api_docs
   final CustomGridType type;
@@ -103,7 +107,8 @@ class _CustomGridState extends State<CustomGrid>
             children: widget.children
                 .map((tab) => CustomGridTabsList(
                       tab: tab,
-                      append: widget.append,
+                      extraInfoTitles: widget.extraInfoTitles,
+                      extraInfoChildren: widget.extraInfoChildren,
                       onRefresh: widget.onRefresh,
                       children: widget.children,
                     ))
@@ -116,9 +121,10 @@ class _CustomGridState extends State<CustomGrid>
           ..sort())
         .reversed
         .toList()[0];
-    final appendCount = widget.append != null
+    final appendCount = widget.extraInfoChildren != null
         ? (widget.children
-                .map((c) => widget.append[widget.children.indexOf(c)].length)
+                .map((c) =>
+                    widget.extraInfoChildren[widget.children.indexOf(c)].length)
                 .toList()
                   ..sort())
             .reversed
@@ -175,13 +181,14 @@ class _CustomGridState extends State<CustomGrid>
                             child = widget.children[column - 1][row - 1];
                           }
                         }
-                      } else if (widget.append != null) {
+                      } else if (widget.extraInfoChildren != null) {
                         final index = row - childrenCount - 1;
                         if (column == 0 && widget.appendRowPrepend != null) {
                           child = widget.appendRowPrepend[index];
                         } else {
-                          if (widget.append[column - 1].length > index) {
-                            child = widget.append[column - 1][index];
+                          if (widget.extraInfoChildren[column - 1].length >
+                              index) {
+                            child = widget.extraInfoChildren[column - 1][index];
                           }
                         }
                       }

@@ -121,16 +121,43 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                       ),
                     ),
                   ],
-                  append: List.generate(5, (weekday) {
+                  extraInfoTitles: List.generate(5, (weekday) {
+                    final day = _monday.add(Duration(days: weekday));
+                    return '${weekdays[day.weekday - 1]} ${shortOutputDateFormat.format(day)}';
+                  }),
+                  extraInfoChildren: List.generate(5, (weekday) {
                     final day = _monday.add(Duration(days: weekday));
                     return [
-                      if (CafetoriaWidget.of(context) != null)
+                      if (CafetoriaWidget.of(context) != null &&
+                          CafetoriaWidget.of(context)
+                              .feature
+                              .loader
+                              .data
+                              .days
+                              .where((d) => d.date == day)
+                              .isNotEmpty &&
+                          CafetoriaWidget.of(context)
+                              .feature
+                              .loader
+                              .data
+                              .days
+                              .where((d) => d.date == day)
+                              .first
+                              .menus
+                              .isNotEmpty)
                         CafetoriaInfoCard(
                           date: day,
                           showNavigation: false,
                           isSingleDay: true,
                         ),
-                      if (CalendarWidget.of(context) != null)
+                      if (CalendarWidget.of(context) != null &&
+                          CalendarWidget.of(context)
+                              .feature
+                              .loader
+                              .data
+                              .getEventsSince(
+                                  day) // TODO: Get only the events for the specific day
+                              .isNotEmpty)
                         CalendarInfoCard(
                           date: day,
                           showNavigation: false,
