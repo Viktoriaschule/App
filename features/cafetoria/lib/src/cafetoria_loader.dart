@@ -69,9 +69,9 @@ class CafetoriaLoader extends Loader<Cafetoria> {
       return StatusCode.failed;
     }
     if (response.data != null) {
-      return response.data['error'] == null
+      return response.data.error == null
           ? StatusCode.success
-          : (response.data['error']
+          : (response.data.error
                   .toString()
                   .toLowerCase()
                   .contains('credentials')
