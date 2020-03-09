@@ -28,16 +28,23 @@ class SubstitutionPlanRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final infoText = [];
-    if ((substitution.original.subjectID != substitution.changed.subjectID &&
-            substitution.changed.subjectID.isNotEmpty) ||
-        substitution.type == 0) {
+    bool lineThrough = true;
+    String subtitle =
+        Static.subjects.data.getSubject(substitution.original.subjectID);
+
+    if ((substitution.original.subjectID != substitution.changed.subjectID ||
+            (substitution.type == 0 && substitution.description.isEmpty)) &&
+        substitution.changed.subjectID.isNotEmpty) {
       infoText
           .add(Static.subjects.data.getSubject(substitution.changed.subjectID));
     }
+
     switch (substitution.type) {
       case 2:
         infoText.add(
-            '${Static.subjects.data.getSubject(substitution.changed.subjectID)} Klausur');
+            Static.subjects.data.getSubject(substitution.changed.subjectID));
+        subtitle = 'Klausur';
+        lineThrough = false;
         break;
       case 1:
         infoText.add('Freistunde');
@@ -45,8 +52,16 @@ class SubstitutionPlanRow extends StatelessWidget {
       case 0:
         break;
     }
-    if (substitution.info != null) {
+    if (substitution.info != null && substitution.info.isNotEmpty) {
       infoText.add(substitution.info);
+    }
+    if (substitution.description != null &&
+        substitution.description.isNotEmpty) {
+      if (substitution.original.subjectID == substitution.changed.subjectID ||
+          substitution.changed.subjectID.isEmpty) {
+        subtitle = substitution.description;
+        lineThrough = false;
+      }
     }
     final timetable = TimetableWidget.of(context).feature.loader.data;
     return CustomRow(
@@ -73,20 +88,14 @@ class SubstitutionPlanRow extends StatelessWidget {
               : Static.subjects.data
                   .getSubject(substitution.original.subjectID))
           : null,
-      subtitle: Static.subjects.hasLoadedData &&
-              infoText.join(' ') !=
-                  Static.subjects.data
-                      .getSubject(substitution.original.subjectID) &&
-              infoText.isNotEmpty
-          ? Text(
-              Static.subjects.data.getSubject(substitution.original.subjectID),
-              style: TextStyle(
-                decoration: TextDecoration.lineThrough,
-                color: ThemeWidget.of(context).textColorLight,
-                fontWeight: FontWeight.w100,
-              ),
-            )
-          : null,
+      subtitle: Text(
+        subtitle,
+        style: TextStyle(
+          decoration: lineThrough ? TextDecoration.lineThrough : null,
+          color: ThemeWidget.of(context).textColorLight,
+          fontWeight: FontWeight.w100,
+        ),
+      ),
       last: Row(
         children: [
           if (substitution.type != 1 ||
@@ -110,20 +119,22 @@ class SubstitutionPlanRow extends StatelessWidget {
                     substitution.changed.teacherID != null
                         ? substitution.changed.teacherID.toUpperCase()
                         : substitution.original.teacherID != null
-                            ? substitution.original.teacherID.toUpperCase()
-                            : '',
+                        ? substitution.original.teacherID.toUpperCase()
+                        : '',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w300,
-                      color: ThemeWidget.of(context).textColor,
+                      color: ThemeWidget
+                          .of(context)
+                          .textColor,
                       fontFamily: 'RobotoMono',
                     ),
                   ),
                   Text(
                     substitution.original.teacherID != null &&
-                            substitution.changed.teacherID != null &&
-                            substitution.original.teacherID !=
-                                substitution.changed.teacherID
+                        substitution.changed.teacherID != null &&
+                        substitution.original.teacherID !=
+                            substitution.changed.teacherID
                         ? substitution.original.teacherID.toUpperCase()
                         : '',
                     style: TextStyle(
@@ -139,14 +150,14 @@ class SubstitutionPlanRow extends StatelessWidget {
             ),
           if (substitution.type != 1 ||
               (substitution
-                          .getTimetableUnit(timetable)
-                          ?.subjects
-                          ?.where((s) =>
-                              Static.subjects.data.getSubject(s.subjectID) ==
-                              Static.subjects.data
-                                  .getSubject(substitution.original.subjectID))
-                          ?.length ??
-                      1) >
+                  .getTimetableUnit(timetable)
+                  ?.subjects
+                  ?.where((s) =>
+              Static.subjects.data.getSubject(s.subjectID) ==
+                  Static.subjects.data
+                      .getSubject(substitution.original.subjectID))
+                  ?.length ??
+                  1) >
                   1)
             Container(
               width: 30,
@@ -157,20 +168,22 @@ class SubstitutionPlanRow extends StatelessWidget {
                     substitution.changed.roomID != null
                         ? substitution.changed.roomID.toUpperCase()
                         : substitution.original.roomID != null
-                            ? substitution.original.roomID.toUpperCase()
-                            : '',
+                        ? substitution.original.roomID.toUpperCase()
+                        : '',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w300,
-                      color: ThemeWidget.of(context).textColor,
+                      color: ThemeWidget
+                          .of(context)
+                          .textColor,
                       fontFamily: 'RobotoMono',
                     ),
                   ),
                   Text(
                     substitution.original.roomID != null &&
-                            substitution.changed.roomID != null &&
-                            substitution.original.roomID !=
-                                substitution.changed.roomID
+                        substitution.changed.roomID != null &&
+                        substitution.original.roomID !=
+                            substitution.changed.roomID
                         ? substitution.original.roomID.toUpperCase()
                         : '',
                     style: TextStyle(

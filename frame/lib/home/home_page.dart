@@ -111,6 +111,7 @@ class _HomePageState extends Interactor<HomePage> with AfterLayoutMixin {
 
     //TODO: if (size == ScreenSize.small) {
     return ListView.builder(
+      shrinkWrap: false,
       padding: EdgeInsets.only(bottom: 10),
       itemCount: widgetBuilders.length,
       itemBuilder: (context, index) => widgetBuilders[index](),
