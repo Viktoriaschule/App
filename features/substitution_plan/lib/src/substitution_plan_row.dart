@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
@@ -63,7 +62,6 @@ class SubstitutionPlanRow extends StatelessWidget {
         lineThrough = false;
       }
     }
-    final timetable = TimetableWidget.of(context).feature.loader.data;
     return CustomRow(
       heroTag: substitution,
       splitColor: substitution.type == 1
@@ -98,105 +96,80 @@ class SubstitutionPlanRow extends StatelessWidget {
       ),
       last: Row(
         children: [
-          if (substitution.type != 1 ||
-              (substitution
-                          .getTimetableUnit(timetable)
-                          ?.subjects
-                          ?.where((s) =>
-                              Static.subjects.data.getSubject(s.subjectID) ==
-                              Static.subjects.data
-                                  .getSubject(substitution.original.subjectID))
-                          ?.length ??
-                      1) >
-                  1)
-            Container(
-              width: 30,
-              margin: EdgeInsets.only(right: 10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    substitution.changed.teacherID != null
-                        ? substitution.changed.teacherID.toUpperCase()
-                        : substitution.original.teacherID != null
-                        ? substitution.original.teacherID.toUpperCase()
-                        : '',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w300,
-                      color: ThemeWidget
-                          .of(context)
-                          .textColor,
-                      fontFamily: 'RobotoMono',
-                    ),
+          Container(
+            width: 30,
+            margin: EdgeInsets.only(right: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  substitution.changed.teacherID != null
+                      ? substitution.changed.teacherID.toUpperCase()
+                      : substitution.original.teacherID != null
+                          ? substitution.original.teacherID.toUpperCase()
+                          : '',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w300,
+                    color: ThemeWidget.of(context).textColor,
+                    fontFamily: 'RobotoMono',
                   ),
-                  Text(
-                    substitution.original.teacherID != null &&
-                        substitution.changed.teacherID != null &&
-                        substitution.original.teacherID !=
-                            substitution.changed.teacherID
-                        ? substitution.original.teacherID.toUpperCase()
-                        : '',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w300,
-                      color: ThemeWidget.of(context).textColor,
-                      decoration: TextDecoration.lineThrough,
-                      fontFamily: 'RobotoMono',
-                    ),
+                ),
+                Text(
+                  substitution.original.teacherID != null &&
+                          substitution.changed.teacherID != null &&
+                          substitution.original.teacherID !=
+                              substitution.changed.teacherID
+                      ? substitution.original.teacherID.toUpperCase()
+                      : '',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w300,
+                    color: ThemeWidget.of(context).textColor,
+                    decoration: TextDecoration.lineThrough,
+                    fontFamily: 'RobotoMono',
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          if (substitution.type != 1 ||
-              (substitution
-                  .getTimetableUnit(timetable)
-                  ?.subjects
-                  ?.where((s) =>
-              Static.subjects.data.getSubject(s.subjectID) ==
-                  Static.subjects.data
-                      .getSubject(substitution.original.subjectID))
-                  ?.length ??
-                  1) >
-                  1)
-            Container(
-              width: 30,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    substitution.changed.roomID != null
-                        ? substitution.changed.roomID.toUpperCase()
-                        : substitution.original.roomID != null
-                        ? substitution.original.roomID.toUpperCase()
-                        : '',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w300,
-                      color: ThemeWidget
-                          .of(context)
-                          .textColor,
-                      fontFamily: 'RobotoMono',
-                    ),
+          ),
+          Container(
+            width: 30,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  substitution.changed.roomID != null
+                      ? substitution.changed.roomID.toUpperCase()
+                      : substitution.original.roomID != null
+                          ? substitution.original.roomID.toUpperCase()
+                          : '',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w300,
+                    color: ThemeWidget.of(context).textColor,
+                    fontFamily: 'RobotoMono',
                   ),
-                  Text(
-                    substitution.original.roomID != null &&
-                        substitution.changed.roomID != null &&
-                        substitution.original.roomID !=
-                            substitution.changed.roomID
-                        ? substitution.original.roomID.toUpperCase()
-                        : '',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: ThemeWidget.of(context).textColor,
-                      decoration: TextDecoration.lineThrough,
-                      fontWeight: FontWeight.w300,
-                      fontFamily: 'RobotoMono',
-                    ),
+                ),
+                Text(
+                  substitution.type != 1 &&
+                          substitution.original.roomID != null &&
+                          substitution.changed.roomID != null &&
+                          substitution.original.roomID !=
+                              substitution.changed.roomID
+                      ? substitution.original.roomID.toUpperCase()
+                      : '',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: ThemeWidget.of(context).textColor,
+                    decoration: TextDecoration.lineThrough,
+                    fontWeight: FontWeight.w300,
+                    fontFamily: 'RobotoMono',
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+          ),
         ],
       ),
     );
