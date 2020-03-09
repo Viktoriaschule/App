@@ -32,8 +32,8 @@ Future main(List<String> arguments) async {
       .toList();
 
   if (branches.isNotEmpty) {
-    print(
-        'Do you want to delete the banches:\n${branches.join('\n')}\n\n[Y|N]:');
+    stdout.write(
+        'Do you want to delete the banches:\n${branches.join('\n')}\n\n[y|n]:');
     if (stdin.readLineSync().toLowerCase() == 'y') {
       for (final branch in branches) {
         print('Delete branch $branch:');
