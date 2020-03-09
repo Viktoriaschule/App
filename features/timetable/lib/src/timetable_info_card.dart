@@ -88,7 +88,7 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
                               .where((substitution) =>
                                   substitution.unit == subject.unit)
                               .toList(),
-                          topPadding: false,
+                          padding: false,
                         ),
                       ],
                     ),

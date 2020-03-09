@@ -10,7 +10,7 @@ class SubstitutionList extends StatelessWidget {
   const SubstitutionList({
     @required this.substitutions,
     this.showUnit = true,
-    this.topPadding = true,
+    this.padding = true,
     Key key,
   }) : super(key: key);
 
@@ -21,21 +21,21 @@ class SubstitutionList extends StatelessWidget {
   final bool showUnit;
 
   // ignore: public_member_api_docs
-  final bool topPadding;
+  final bool padding;
 
   @override
   Widget build(BuildContext context) {
     int lastUnit = -1;
     return Container(
-      margin: EdgeInsets.only(bottom: 6.5),
+      margin: EdgeInsets.only(bottom: padding ? 6.5 : 0),
       child: Column(
         children: substitutions
             .map((s) {
               final c = SizeLimit(
                 child: Container(
                   margin: EdgeInsets.only(
-                    top: lastUnit == s.unit ? 1 : topPadding ? 9 : 0,
-                    bottom: 2.5,
+                    top: lastUnit == s.unit ? 1 : padding ? 9 : 0,
+                    bottom: padding ? 2.5 : 0,
                   ),
                   child: SubstitutionPlanRow(
                     substitution: s,

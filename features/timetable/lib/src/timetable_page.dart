@@ -206,6 +206,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                                   ),
                                 if (substitutions.isNotEmpty)
                                   SubstitutionList(
+                                    padding: false,
                                     substitutions: substitutions
                                         .where((substitution) =>
                                             substitution.unit == subject.unit)
