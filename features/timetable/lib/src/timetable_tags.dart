@@ -11,9 +11,12 @@ import 'timetable_events.dart';
 class TimetableTagsHandler extends TagsHandler {
   @override
   void syncFromServer(Tags tags, BuildContext context) {
+    final selected = tags.data['selected']
+        .map<SelectionValue>((json) => SelectionValue.fromJson(json))
+        .toList();
     bool changed = false;
     // Sync selections
-    for (final selection in tags.selected) {
+    for (final selection in selected) {
       final String selectedCourseId =
           Static.storage.getString(TimetableKeys.selection(selection.block));
       // If the course id changed, check which version is newer
@@ -34,7 +37,9 @@ class TimetableTagsHandler extends TagsHandler {
     }
 
     // Sync exams
-    for (final exam in tags.exams) {
+    final exams =
+    tags.data['exams'].map<Exam>((json) => Exam.fromJson(json)).toList();
+    for (final exam in exams) {
       final bool writing =
       Static.storage.getBool(TimetableKeys.exam(exam.subject));
       // If the course id changed, check which version is newer
@@ -76,6 +81,13 @@ class TimetableTagsHandler extends TagsHandler {
 
   @override
   Map<String, dynamic> syncToServer(Tags tags) {
+    // Parse tags
+    final currentSelection = tags.data['selected']
+        .map<SelectionValue>((json) => SelectionValue.fromJson(json))
+        .toList();
+    final currentExams =
+    tags.data['exams'].map<Exam>((json) => Exam.fromJson(json)).toList();
+
     final Map<String, dynamic> tagsToUpdate = {};
     // Sync selections and exams
     final List<String> keys = Static.storage.getKeys();
@@ -94,7 +106,7 @@ class TimetableTagsHandler extends TagsHandler {
         );
         // Check if the local selection is newer than the server selection
         final serverSelection =
-            tags.selected.where((s) => s.block == selection.block).toList();
+        currentSelection.where((s) => s.block == selection.block).toList();
         // If the server does not have this selection,
         // or the selection changed and the local version is newer, sync the selection
         if (serverSelection.isEmpty ||
@@ -112,7 +124,7 @@ class TimetableTagsHandler extends TagsHandler {
                 Static.storage.getString('timestamp-$key') ?? '20000101'));
         // Check if the local exam is newer than the server exam
         final serverExam =
-            tags.exams.where((e) => e.subject == exam.subject).toList();
+        currentExams.where((e) => e.subject == exam.subject).toList();
         // If the server does not have this exam,
         // or the exam changed and the local version is newer, sync the exam
         if (serverExam.isEmpty ||
@@ -128,4 +140,66 @@ class TimetableTagsHandler extends TagsHandler {
 
     return tagsToUpdate;
   }
+}
+
+/// Describes a user selection
+class SelectionValue {
+  // ignore: public_member_api_docs
+  const SelectionValue({this.block, this.courseID, this.timestamp});
+
+  // ignore: public_member_api_docs
+  factory SelectionValue.fromJson(Map<String, dynamic> json) =>
+      SelectionValue(
+        block: json['block'],
+        courseID: json['courseID'],
+        timestamp: DateTime.parse(json['timestamp']),
+      );
+
+  /// The block identifier
+  final String block;
+
+  /// The course identifier
+  final String courseID;
+
+  /// The last changed timestamp
+  final DateTime timestamp;
+
+  /// Converts the device settings to a json map
+  Map<String, dynamic> toMap() =>
+      {
+        'block': block,
+        'courseID': courseID,
+        'timestamp': timestamp.toIso8601String(),
+      };
+}
+
+/// Describes all settings to sync for this device
+class Exam {
+  // ignore: public_member_api_docs
+  const Exam({this.subject, this.writing, this.timestamp});
+
+  // ignore: public_member_api_docs
+  factory Exam.fromJson(Map<String, dynamic> json) =>
+      Exam(
+        subject: json['subject'],
+        writing: json['writing'],
+        timestamp: DateTime.parse(json['timestamp']),
+      );
+
+  /// The subject identifier
+  final String subject;
+
+  /// The writing option
+  final bool writing;
+
+  /// The last changed timestamp
+  final DateTime timestamp;
+
+  /// Converts the device settings to a json map
+  Map<String, dynamic> toMap() =>
+      {
+        'subject': subject,
+        'writing': writing,
+        'timestamp': timestamp.toIso8601String(),
+      };
 }
