@@ -1,3 +1,4 @@
+import 'package:calendar/src/calendar_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
@@ -24,7 +25,9 @@ class CalendarEventDialog extends StatelessWidget {
   Widget build(BuildContext context) => SimpleDialog(
         contentPadding: EdgeInsets.only(left: 5, right: 5, top: 10),
         title: Text(
-          date == null ? 'Termin' : outputDateFormat.format(date),
+          date == null
+              ? CalendarLocalizations.event
+              : outputDateFormat.format(date),
           style: TextStyle(
             color: ThemeWidget.of(context).textColor,
           ),
@@ -42,7 +45,7 @@ class CalendarEventDialog extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
                 child: Text(
-                  'OK',
+                  AppLocalizations.ok,
                   style: TextStyle(color: darkColor),
                 ),
               ),

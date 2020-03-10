@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:substitution_plan/substitution_plan.dart';
 import 'package:timetable/src/timetable_keys.dart';
+import 'package:timetable/src/timetable_localizations.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 
@@ -123,7 +124,9 @@ class TimetableDay {
           selection.getSelectedSubject(unit.subjects);
 
       // If nothing  or a subject (not lunchtime and free lesson) selected return the index...
-      if ((selected == null || selected.subjectID != 'Freistunde') && i != 5) {
+      if ((selected == null ||
+              selected.subjectID != TimetableLocalizations.freeLesson) &&
+          i != 5) {
         return i + 1;
       }
     }
@@ -137,10 +140,10 @@ class TimetableDay {
           ? units
               .map((unit) => unit.getSelected(selection))
               .where((subject) =>
-                  subject != null &&
-                  subject.subjectID != 'Mittagspause' &&
-                  DateTime.now()
-                      .isBefore(date.add(Times.getUnitTimes(subject.unit)[1])))
+      subject != null &&
+          subject.subjectID != TimetableLocalizations.lunchBreak &&
+          DateTime.now()
+              .isBefore(date.add(Times.getUnitTimes(subject.unit)[1])))
               .toList()
           : [];
 
@@ -303,8 +306,9 @@ class Selection {
         if (pSubjects.length == 1) {
           return subjects.indexOf(pSubjects[0]);
         } else {
-          final pFreeLesson =
-              subjects.where((s) => s.subjectID == 'Freistunde').toList();
+          final pFreeLesson = subjects
+              .where((s) => s.subjectID == TimetableLocalizations.freeLesson)
+              .toList();
           if (pFreeLesson.length == 1) {
             return subjects.indexOf(pFreeLesson[0]);
           }

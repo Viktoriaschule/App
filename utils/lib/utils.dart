@@ -2,6 +2,7 @@ library utils;
 
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:utils/src/localizations.dart';
 
 export 'src/crypt.dart';
 export 'src/events.dart';
@@ -9,6 +10,7 @@ export 'src/feature_utils/feature.dart';
 export 'src/info_card_utils.dart';
 export 'src/keys.dart';
 export 'src/loader.dart';
+export 'src/localizations.dart';
 export 'src/pages.dart';
 export 'src/plugins/firebase/firebase.dart';
 export 'src/plugins/platform/platform.dart';
@@ -62,15 +64,15 @@ StatusCode reduceStatusCodes(List<StatusCode> statusCodes) {
 String getStatusCodeMsg(StatusCode status) {
   switch (status) {
     case StatusCode.offline:
-      return 'Du bist offline';
+      return AppLocalizations.youAreOffline;
     case StatusCode.failed:
-      return 'Verbindung zum Server fehlgeschlagen';
+      return AppLocalizations.connectingToServerFailed;
     case StatusCode.wrongFormat:
-      return 'Serverfehler';
+      return AppLocalizations.serverError;
     case StatusCode.unauthorized:
-      return 'Login-Daten nicht korrekt';
+      return AppLocalizations.credentialsWrong;
     case StatusCode.success:
-      return 'Erfolgreich';
+      return AppLocalizations.success;
   }
   return null;
 }

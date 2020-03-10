@@ -1,5 +1,6 @@
 import 'package:calendar/calendar.dart';
 import 'package:calendar/src/calendar_keys.dart';
+import 'package:calendar/src/calendar_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
@@ -48,8 +49,8 @@ class _CalendarInfoCardState extends InfoCardState<CalendarInfoCard> {
       showNavigation: widget.showNavigation,
       heroId: CalendarKeys.calendar,
       title: widget.isSingleDay
-          ? 'Termine - ${weekdays[widget.date.weekday - 1]}'
-          : 'Kalender',
+          ? '${CalendarLocalizations.events} - ${weekdays[widget.date.weekday - 1]}'
+          : CalendarWidget.of(context).feature.name,
       counter: widget.isSingleDay ? 0 : _events.length - utils.cut,
       actions: [
         NavigationAction(
@@ -74,7 +75,7 @@ class _CalendarInfoCardState extends InfoCardState<CalendarInfoCard> {
       ],
       children: [
         if (!loader.hasLoadedData || _events.isEmpty)
-          EmptyList(title: 'Keine Termine')
+          EmptyList(title: CalendarLocalizations.noEvents)
         else
           SizeLimit(
             child: Column(

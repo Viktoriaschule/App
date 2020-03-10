@@ -33,7 +33,7 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
         ? loader.data.days[widget.date.weekday - 1]
             .getFutureSubjects(widget.date, loader.data.selection)
             .where((subject) =>
-                subject.subjectID != 'Freistunde' ||
+                subject.subjectID != SubstitutionPlanLocalizations.freeLesson ||
                 subject.getSubstitutions(widget.date, spLoader.data).isNotEmpty)
             .toList()
         : <TimetableSubject>[];

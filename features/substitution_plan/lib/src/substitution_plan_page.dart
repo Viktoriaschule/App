@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:substitution_plan/src/substitution_plan_keys.dart';
+import 'package:substitution_plan/src/substitution_plan_localizations.dart';
 import 'package:substitution_plan/substitution_plan.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:timetable/timetable.dart';
@@ -132,7 +133,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                     height: 60,
                     child: Center(
                       child: Text(
-                        'Meine Vertretungen',
+                        SubstitutionPlanLocalizations.mySubstitutions,
                         style: TextStyle(
                           fontSize: 16,
                           color: ThemeWidget.of(context).textColor,
@@ -145,10 +146,12 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                     height: 60,
                     child: Center(
                       child: Text(
-                        'Weitere Vertretungen',
+                        SubstitutionPlanLocalizations.otherSubstitutions,
                         style: TextStyle(
                           fontSize: 16,
-                          color: ThemeWidget.of(context).textColor,
+                          color: ThemeWidget
+                              .of(context)
+                              .textColor,
                         ),
                       ),
                     ),
@@ -158,10 +161,12 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                     height: 60,
                     child: Center(
                       child: Text(
-                        'Vertretungen',
+                        SubstitutionPlanLocalizations.substitutions,
                         style: TextStyle(
                           fontSize: 16,
-                          color: ThemeWidget.of(context).textColor,
+                          color: ThemeWidget
+                              .of(context)
+                              .textColor,
                         ),
                       ),
                     ),
@@ -179,10 +184,14 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                       notMyChanges = loader.data.days[index].otherChanges;
                     }
                     final myChangesWidget = myChanges.isEmpty
-                        ? EmptyList(title: 'Keine Änderungen')
+                        ? EmptyList(
+                        title:
+                        SubstitutionPlanLocalizations.noSubstitutions)
                         : SubstitutionList(substitutions: myChanges);
                     final notMyChangesWidget = notMyChanges.isEmpty
-                        ? EmptyList(title: 'Keine Änderungen')
+                        ? EmptyList(
+                        title:
+                        SubstitutionPlanLocalizations.noSubstitutions)
                         : SubstitutionList(substitutions: notMyChanges);
                     items = [
                       if (getScreenSize(MediaQuery.of(context).size.width) !=
@@ -190,7 +199,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                         myChangesWidget
                       else
                         ListGroup(
-                          title: 'Meine Vertretungen',
+                          title: SubstitutionPlanLocalizations.mySubstitutions,
                           children: [
                             Container(
                               margin: EdgeInsets.only(
@@ -206,7 +215,8 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                         notMyChangesWidget
                       else
                         ListGroup(
-                          title: 'Weitere Vertretungen',
+                          title:
+                          SubstitutionPlanLocalizations.otherSubstitutions,
                           children: [
                             Container(
                               margin: EdgeInsets.only(
@@ -224,7 +234,9 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                       changes = loader.data.days[index].data[widget.grade];
                     }
                     final changesWidget = changes.isEmpty
-                        ? EmptyList(title: 'Keine Änderungen')
+                        ? EmptyList(
+                        title:
+                        SubstitutionPlanLocalizations.noSubstitutions)
                         : SubstitutionList(substitutions: changes);
                     items = [
                       if (getScreenSize(MediaQuery.of(context).size.width) !=
@@ -232,7 +244,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                         changesWidget
                       else
                         ListGroup(
-                          title: 'Vertretungen',
+                          title: SubstitutionPlanLocalizations.substitutions,
                           children: [
                             Container(
                               margin: EdgeInsets.only(
@@ -283,8 +295,10 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                   ];
                 },
               ),
-            )
-          : Center(child: EmptyList(title: 'Kein Vertretungsplan')),
+      )
+          : Center(
+          child: EmptyList(
+              title: SubstitutionPlanLocalizations.noSubstitutionPlan)),
     );
   }
 }

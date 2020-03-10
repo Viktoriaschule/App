@@ -1,4 +1,5 @@
 import 'package:cafetoria/cafetoria.dart';
+import 'package:cafetoria/src/cafetoria_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
@@ -54,7 +55,7 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
       failMsg = loginStatus == StatusCode.success
           ? null
           : (loginStatus == StatusCode.failed
-              ? 'Serverfehler - Versuche es später nochmal'
+              ? AppLocalizations.serverError
               : getStatusCodeMsg(loginStatus));
       _credentialsCorrect = loginStatus == StatusCode.success;
       if (_formKey.currentState.validate()) {
@@ -76,7 +77,7 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
             SnackBar(
               content: Text(getStatusCodeMsg(status)),
               action: SnackBarAction(
-                label: 'OK',
+                label: AppLocalizations.ok,
                 onPressed: () => null,
               ),
             ),
@@ -117,7 +118,7 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
         child: Padding(
           padding: EdgeInsets.only(top: 10),
           child: Text(
-            'Cafétoria Login',
+            CafetoriaLocalizations.cafetoriaLogin,
             style: TextStyle(fontWeight: FontWeight.w100),
           ),
         ),
@@ -133,14 +134,15 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
                   controller: idController,
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Id muss angegeben sein';
+                      return CafetoriaLocalizations.idMustSet;
                     }
                     if (!_credentialsCorrect) {
                       return failMsg;
                     }
                     return null;
                   },
-                  decoration: InputDecoration(hintText: 'Keyfob-ID'),
+                  decoration: InputDecoration(
+                      hintText: CafetoriaLocalizations.keyfobId),
                   onFieldSubmitted: (value) {
                     FocusScope.of(context).requestFocus(_focus);
                   },
@@ -149,7 +151,7 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
                   controller: passwordController,
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Password kann nicht leer sein';
+                      return CafetoriaLocalizations.passwordMustSet;
                     }
                     if (!_credentialsCorrect) {
                       return failMsg;
@@ -157,7 +159,7 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
                     return null;
                   },
                   decoration: InputDecoration(
-                    hintText: 'Keyfob-Pin',
+                    hintText: CafetoriaLocalizations.keyfobPin,
                   ),
                   onFieldSubmitted: (value) {
                     checkForm(loader);
@@ -180,10 +182,10 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
                                   color: Theme.of(context).primaryColor,
                                 )
                               : Text(
-                                  'Anmelden',
-                                  style: TextStyle(
-                                    color: darkColor,
-                                  ),
+                            AppLocalizations.login,
+                            style: TextStyle(
+                              color: darkColor,
+                            ),
                                 ),
                         ),
                       ),
@@ -203,11 +205,10 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
                                     widget.onFinished();
                                     return;
                                   case StatusCode.offline:
-                                    failMsg = 'Offline';
+                                    failMsg = AppLocalizations.offline;
                                     break;
                                   default:
-                                    failMsg =
-                                        'Serverfehler - Versuche es später nochmal';
+                                    failMsg = AppLocalizations.serverError;
                                 }
                                 _credentialsCorrect = false;
                                 _formKey.currentState.validate();
@@ -221,10 +222,10 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
                                     color: Theme.of(context).primaryColor,
                                   )
                                 : Text(
-                                    'Abmelden',
-                                    style: TextStyle(
-                                      color: darkColor,
-                                    ),
+                              AppLocalizations.logout,
+                              style: TextStyle(
+                                color: darkColor,
+                              ),
                                   ),
                           ),
                         ),

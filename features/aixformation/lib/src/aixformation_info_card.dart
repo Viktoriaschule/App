@@ -1,4 +1,5 @@
 import 'package:aixformation/aixformation.dart';
+import 'package:aixformation/src/aixformation_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
@@ -57,7 +58,7 @@ class _AiXformationInfoCardState extends InfoCardState<AiXformationInfoCard> {
               .toList()
               .cast<Widget>()
         else
-          EmptyList(title: 'Keine Artikel')
+          EmptyList(title: AiXformationLocalizations.noArticle)
       ],
     );
   }

@@ -100,9 +100,7 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
                             margin: EdgeInsets.only(top: 13.5, right: 13.5),
                             padding: EdgeInsets.all(1),
                             decoration: BoxDecoration(
-                              color: Theme
-                                  .of(context)
-                                  .accentColor,
+                              color: Theme.of(context).accentColor,
                               borderRadius: BorderRadius.circular(6),
                             ),
                             constraints: BoxConstraints(

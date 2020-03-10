@@ -180,8 +180,8 @@ class _ListGroupState extends Interactor<ListGroup>
               else
                 content,
               if ((widget.onTap ??
-                          (actions.isNotEmpty ? actions[0].onTap : null)) !=
-                      null &&
+                  (actions.isNotEmpty ? actions[0].onTap : null)) !=
+                  null &&
                   !widget.doRowsHandleClick)
                 Positioned.fill(
                   child: InkWell(

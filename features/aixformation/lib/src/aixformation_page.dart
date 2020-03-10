@@ -7,6 +7,7 @@ import 'package:widgets/widgets.dart';
 
 import 'aixformation_events.dart';
 import 'aixformation_keys.dart';
+import 'aixformation_localizations.dart';
 import 'aixformation_row.dart';
 
 /// The maximum count for aixformation articles on this page
@@ -66,11 +67,7 @@ class AiXformationPageState extends Interactor<AiXformationPage> {
                     }
                     return Padding(
                       padding: EdgeInsets.only(
-                        bottom: 10,
-                        left: 10,
-                        right: 10,
-                        top: 20,
-                      ),
+                          bottom: 10, left: 10, right: 10, top: 20),
                       child: InkWell(
                           onTap: () => launch('https://aixformation.de'),
                           child: Padding(
@@ -78,8 +75,7 @@ class AiXformationPageState extends Interactor<AiXformationPage> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                    'Weitere Artikel auf der AiXformation Webseite'),
+                                Text(AiXformationLocalizations.moreArticles),
                                 Padding(
                                   padding: EdgeInsets.all(5),
                                   child: Icon(
@@ -94,7 +90,7 @@ class AiXformationPageState extends Interactor<AiXformationPage> {
                   },
                 )
               : Center(
-                  child: EmptyList(title: 'Keine Artikel'),
+            child: EmptyList(title: AiXformationLocalizations.noArticle),
                 ),
         ),
       ),

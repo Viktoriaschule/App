@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'package:substitution_plan/src/substitution_plan_localizations.dart';
 import 'package:substitution_plan/substitution_plan.dart';
 import 'package:utils/utils.dart';
 
@@ -8,7 +9,8 @@ class SubstitutionPlanNotificationsHandler extends NotificationsHandler {
   @override
   String getSnackBarText(Map<String, dynamic> data, BuildContext context) {
     final loader = SubstitutionPlanWidget.of(context)?.feature?.loader;
-    return 'Neuer Vertretungsplan${loader?.hasLoadedData ?? false ? ' für ${weekdays[loader.data.days[int.parse(data['day'])].date.weekday - 1]}' : ''}';
+    return SubstitutionPlanLocalizations.newSubstitutionPlanFor(
+        weekdays[loader.data.days[int.parse(data['day'])].date.weekday - 1]);
   }
 
   @override
@@ -21,8 +23,10 @@ class SubstitutionPlanNotificationsHandler extends NotificationsHandler {
   @override
   AndroidNotificationChannel getAndroidNotificationHandler(
       BuildContext context) {
-    final feature = SubstitutionPlanWidget.of(context).feature;
-    return AndroidNotificationChannel(
-        feature.featureKey, feature.name, 'Neue Vertretungspläne');
+    final feature = SubstitutionPlanWidget
+        .of(context)
+        .feature;
+    return AndroidNotificationChannel(feature.featureKey, feature.name,
+        SubstitutionPlanLocalizations.newSubstitutionPlans);
   }
 }

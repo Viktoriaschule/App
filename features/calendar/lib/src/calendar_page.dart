@@ -347,7 +347,7 @@ class _CalendarPageState extends Interactor<CalendarPage>
                 );
               },
             )
-          : EmptyList(title: 'Keine Kalender'),
+          : EmptyList(title: CalendarLocalizations.noEvents),
     );
   }
 }

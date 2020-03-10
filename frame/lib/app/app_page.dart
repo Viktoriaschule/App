@@ -44,7 +44,7 @@ class _AppPageState extends Interactor<AppPage>
         SnackBar(
           content: Text(getStatusCodeMsg(status)),
           action: SnackBarAction(
-            label: 'OK',
+            label: AppLocalizations.ok,
             onPressed: () => null,
           ),
         ),
@@ -199,10 +199,12 @@ class _AppPageState extends Interactor<AppPage>
               _permissionsChecking = true;
             });
             _permissionsGranted =
-                await Static.firebaseMessaging.requestNotificationPermissions();
+            await Static.firebaseMessaging.requestNotificationPermissions();
             await Static.tags.syncDevice(
               context,
-              FeaturesWidget.of(context).features,
+              FeaturesWidget
+                  .of(context)
+                  .features,
             );
             setState(() {
               _permissionsChecking = false;
@@ -255,7 +257,9 @@ class _AppPageState extends Interactor<AppPage>
                 },
                 icon: Icon(
                   Icons.settings,
-                  color: ThemeWidget.of(context).textColor,
+                  color: ThemeWidget
+                      .of(context)
+                      .textColor,
                 ),
               ),
             ],

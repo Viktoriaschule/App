@@ -5,6 +5,8 @@ import 'package:frame/utils/features.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'settings_localizations.dart';
+
 /// SettingsPage class
 /// describes the Settings widget
 class SettingsPage extends StatefulWidget {
@@ -50,7 +52,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
           children: [
             if (notificationFeatures.isNotEmpty)
               ListGroup(
-                title: 'Benachrichtigungen',
+                title: SettingsLocalizations.notifications,
                 children: notificationFeatures
                     .map(
                       (feature) => SwitchListTile(
@@ -70,7 +72,9 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                           try {
                             await Static.tags.syncDevice(
                               context,
-                              FeaturesWidget.of(context).features,
+                              FeaturesWidget
+                                  .of(context)
+                                  .features,
                             );
                             // ignore: empty_catches
                           } on DioError {}
@@ -80,7 +84,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                     .toList(),
               ),
             ListGroup(
-              title: 'Design',
+              title: SettingsLocalizations.design,
               children: [
                 Container(
                   padding: EdgeInsets.only(left: 15, right: 15),
@@ -97,15 +101,15 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                     items: const [
                       DropdownMenuItem<int>(
                         value: 0,
-                        child: Text('Automatisch'),
+                        child: Text(SettingsLocalizations.automatic),
                       ),
                       DropdownMenuItem<int>(
                         value: 1,
-                        child: Text('Hell'),
+                        child: Text(SettingsLocalizations.light),
                       ),
                       DropdownMenuItem<int>(
                         value: 2,
-                        child: Text('Dunkel'),
+                        child: Text(SettingsLocalizations.dark),
                       ),
                     ],
                   ),
@@ -133,7 +137,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                         '/${Keys.login}', (r) => false);
                   },
                   child: Text(
-                    'Abmelden',
+                    AppLocalizations.logout,
                     style: TextStyle(
                       color: darkColor,
                     ),

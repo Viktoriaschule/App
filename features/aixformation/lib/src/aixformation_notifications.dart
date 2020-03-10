@@ -1,4 +1,5 @@
 import 'package:aixformation/aixformation.dart';
+import 'package:aixformation/src/aixformation_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
@@ -10,7 +11,7 @@ import 'aixformation_post.dart';
 class AiXformationNotificationsHandler extends NotificationsHandler {
   @override
   String getSnackBarText(Map<String, dynamic> data, BuildContext context) =>
-      'Neuer AiXformation-Artikel';
+      AiXformationLocalizations.newAiXformationArticle;
 
   @override
   void open(Map<String, dynamic> data, BuildContext context) =>
@@ -26,7 +27,7 @@ class AiXformationNotificationsHandler extends NotificationsHandler {
   AndroidNotificationChannel getAndroidNotificationHandler(
       BuildContext context) {
     final feature = AiXFormationWidget.of(context).feature;
-    return AndroidNotificationChannel(
-        feature.featureKey, feature.name, 'Neue AiXformationartikel');
+    return AndroidNotificationChannel(feature.featureKey, feature.name,
+        AiXformationLocalizations.newAiXformationArticles);
   }
 }
