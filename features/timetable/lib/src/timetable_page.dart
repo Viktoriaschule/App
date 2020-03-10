@@ -181,8 +181,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                       // Show the normal lessen if it is an exam, but not of the same subjects, as this unit
                       final showNormal = substitutions.length == 1 &&
                           substitutions.first.type == 2 &&
-                          substitutions.first.original.courseID !=
-                              subject.courseID;
+                          substitutions.first.courseID != subject.courseID;
                       return SizeLimit(
                         child: InkWell(
                           onTap: () async {
