@@ -49,8 +49,7 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
                   }
                 },
                 icon: Icon(
-                  Icons.credit_card,
-                  size: 28,
+                  Icons.open_in_new,
                   color: ThemeWidget.of(context).textColor,
                 ),
               ),
@@ -65,7 +64,6 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
                 },
                 icon: Icon(
                   MdiIcons.account,
-                  size: 28,
                   color: ThemeWidget.of(context).textColor,
                 ),
               ),
