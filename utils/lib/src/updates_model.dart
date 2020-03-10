@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:utils/src/keys.dart';
+import 'package:utils/src/static.dart';
+
 /// Defines all updates
 class Updates {
   // ignore: public_member_api_docs
@@ -23,5 +28,8 @@ class Updates {
   String getUpdate(String key) => _rawUpdates[key] ?? '';
 
   // ignore: public_member_api_docs
-  void setUpdate(String key, String hash) => _rawUpdates[key] = hash;
+  void setUpdate(String key, String hash) {
+    _rawUpdates[key] = hash;
+    Static.storage.setString(Keys.updates, json.encode(_rawUpdates));
+  }
 }
