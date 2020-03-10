@@ -54,8 +54,9 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
               ),
             ),
           ),
-          if (widget.extraInfoChildren[widget.children.indexOf(widget.tab)]
-              .isNotEmpty)
+          if (widget.extraInfoChildren != null &&
+              widget.extraInfoChildren[widget.children.indexOf(widget.tab)]
+                  .isNotEmpty)
             Positioned(
               bottom: 0,
               left: 0,
