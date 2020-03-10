@@ -75,21 +75,22 @@ class ThemeWidget extends InheritedWidget {
 
   /// Returns the current layout brightness
   Brightness get brightness {
-    if (!Static.storage.has(Keys.automaticDesign) ||
-            Static.storage.getBool(Keys.automaticDesign) ??
-        true) {
-      return Static.storage.has(Keys.platformBrightness) &&
-                  Static.storage.getBool(Keys.platformBrightness) ??
-              false
-          ? Brightness.dark
-          : Brightness.light;
+    final design = Static.storage.getInt(Keys.design) ?? 0;
+    switch (design) {
+      case 0:
+        return Static.storage.has(Keys.platformBrightness) &&
+                    Static.storage.getBool(Keys.platformBrightness) ??
+                false
+            ? Brightness.dark
+            : Brightness.light;
+      case 1:
+        return Brightness.light;
+      case 2:
+        return Brightness.dark;
+      default:
+        print('Unknown theme state $design');
+        return Brightness.light;
     }
-    if (Static.storage.has(Keys.darkMode) &&
-            Static.storage.getBool(Keys.darkMode) ??
-        false) {
-      return Brightness.dark;
-    }
-    return Brightness.light;
   }
 
   /// TODO: Remove the usage of these functions by using the theme
