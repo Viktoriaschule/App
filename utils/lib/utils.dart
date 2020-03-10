@@ -27,7 +27,7 @@ export 'src/updates_model.dart';
 export 'src/user_model.dart';
 
 // ignore: public_member_api_docs
-const String viktoriaAppBaseURL = 'https://viktoriaapp.fingeg.de';
+const String viktoriaAppBaseURL = 'http://81.169.207.189:98';
 
 /// Http status codes
 enum StatusCode {
