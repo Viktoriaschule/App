@@ -121,7 +121,36 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                       ),
                     ),
                   ],
-                  append: List.generate(5, (weekday) {
+                  extraInfoTitles: List.generate(5, (weekday) {
+                    final day = _monday.add(Duration(days: weekday));
+                    return '${weekdays[day.weekday - 1]} ${shortOutputDateFormat.format(day)}';
+                  }),
+                  extraInfoCounts: List.generate(5, (weekday) {
+                    final day = _monday.add(Duration(days: weekday));
+                    int count = 0;
+
+                    // Check cafetoria
+                    final cafetoria =
+                        CafetoriaWidget.of(context)?.feature?.loader;
+                    if (cafetoria != null && cafetoria.hasLoadedData) {
+                      final days =
+                          cafetoria.data.days.where((d) => d.date == day);
+                      if (days.isNotEmpty && days.first.menus.isNotEmpty) {
+                        count++;
+                      }
+                    }
+
+                    // Check calendar
+                    final calendar =
+                        CalendarWidget.of(context)?.feature?.loader;
+                    if (calendar != null &&
+                        calendar.hasLoadedData &&
+                        calendar.data.getEventsForDate(day).isNotEmpty) {
+                      count++;
+                    }
+                    return count;
+                  }),
+                  extraInfoChildren: List.generate(5, (weekday) {
                     final day = _monday.add(Duration(days: weekday));
                     return [
                       if (CafetoriaWidget.of(context) != null)

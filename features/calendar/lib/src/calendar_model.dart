@@ -21,11 +21,17 @@ class Calendar {
   /// All events
   final List<CalendarEvent> events;
 
-  /// Returns all events since the given data
+  /// Returns all events since the given date
   List<CalendarEvent> getEventsSince(DateTime start) => events
       .where((event) => event.start == start || event.start.isAfter(start))
       .toList()
         ..sort((e1, e2) => e1.start.compareTo(e2.start));
+
+  /// Returns all events for a specific date
+  List<CalendarEvent> getEventsForDate(DateTime date) => getEventsSince(date)
+      .where((event) => event.start
+          .isBefore(date.add(Duration(days: 1)).subtract(Duration(seconds: 1))))
+      .toList();
 }
 
 /// Describes a calendar event...
@@ -72,7 +78,7 @@ class CalendarEvent {
           start.year,
           start.month,
           start.day,
-        ).add(Duration(days: 1)).subtract(Duration(seconds: 1)) !=
+        ).add(Duration(days: 1)).subtract(Duration(hours: 1)) !=
         end) {
       dateStr += ' - ';
       if (end.hour != 0 || end.minute != 0) {

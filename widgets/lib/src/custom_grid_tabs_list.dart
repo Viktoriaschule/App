@@ -1,13 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:utils/utils.dart';
 
-import 'custom_list_view.dart';
+import 'custom_grid_info_page.dart';
 import 'custom_refresh_indicator.dart';
-import 'snapping_list_view.dart';
 
 // ignore: public_member_api_docs
 class CustomGridTabsList extends StatefulWidget {
@@ -15,7 +12,9 @@ class CustomGridTabsList extends StatefulWidget {
   const CustomGridTabsList({
     @required this.tab,
     @required this.children,
-    @required this.append,
+    @required this.extraInfoTitles,
+    @required this.extraInfoChildren,
+    @required this.extraInfoCounts,
     @required this.onRefresh,
     Key key,
   }) : super(key: key);
@@ -27,7 +26,13 @@ class CustomGridTabsList extends StatefulWidget {
   final List<List<Widget>> children;
 
   // ignore: public_member_api_docs
-  final List<List<Widget>> append;
+  final List<String> extraInfoTitles;
+
+  /// All children that should be shown after click on the extra information button
+  final List<List<Widget>> extraInfoChildren;
+
+  /// The count of all extra information
+  final List<int> extraInfoCounts;
 
   // ignore: public_member_api_docs
   final Future<StatusCode> Function() onRefresh;
@@ -37,103 +42,81 @@ class CustomGridTabsList extends StatefulWidget {
 }
 
 class _CustomGridTabsListState extends State<CustomGridTabsList> {
-  ScrollController _scrollControllerSnapping;
-  double _offset = 0;
-
   @override
-  void initState() {
-    _scrollControllerSnapping = ScrollController()
-      ..addListener(() {
-        setState(() {
-          _offset = _scrollControllerSnapping.offset;
-        });
-      });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _scrollControllerSnapping.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) {
-          final content = Column(
-            children: [
-              ...widget.tab,
-            ],
-          );
-          final animationProgress = _offset / constraints.maxHeight;
-          if (widget.append == null) {
-            return Container(
-              color: Theme.of(context).backgroundColor,
-              height: constraints.maxHeight,
-              child: CustomRefreshIndicator(
-                loadOnline: widget.onRefresh,
-                child: ListView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  children: [content],
-                ),
+  Widget build(BuildContext context) => Stack(
+        children: [
+          Container(
+            color: Theme.of(context).backgroundColor,
+            child: CustomRefreshIndicator(
+              loadOnline: widget.onRefresh,
+              child: ListView(
+                children: widget.tab,
               ),
-            );
-          }
-
-          return Stack(
-            children: [
-              Container(
-                color: Theme.of(context).backgroundColor,
-                height: constraints.maxHeight,
-                child: SnappingListView(
-                  controller: _scrollControllerSnapping,
-                  scrollDirection: Axis.vertical,
-                  itemExtent: constraints.maxHeight,
-                  children: [
-                    CustomListView(
-                      loadOnline: widget.onRefresh,
-                      height: constraints.maxHeight,
-                      scrollControllerParent: _scrollControllerSnapping,
-                      isTop: true,
-                      children: [content],
-                    ),
-                    CustomListView(
-                      height: constraints.maxHeight,
-                      scrollControllerParent: _scrollControllerSnapping,
-                      isTop: false,
-                      children:
-                          widget.append[widget.children.indexOf(widget.tab)],
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                alignment: Alignment.bottomCenter,
+            ),
+          ),
+          if (widget.extraInfoChildren[widget.children.indexOf(widget.tab)]
+              .isNotEmpty)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Center(
                 child: GestureDetector(
                   onTap: () {
-                    _scrollControllerSnapping.animateTo(
-                      animationProgress < 0.5
-                          ? _scrollControllerSnapping.position.maxScrollExtent
-                          : 0,
-                      duration: Duration(milliseconds: 250),
-                      curve: Curves.easeInOutCubic,
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => CustomGridInfoPage(
+                          title: widget.extraInfoTitles[
+                              widget.children.indexOf(widget.tab)],
+                          children: widget.extraInfoChildren[
+                              widget.children.indexOf(widget.tab)],
+                        ),
+                      ),
                     );
                   },
-                  child: Container(
-                    padding: EdgeInsets.all(7.5),
-                    child: Transform.rotate(
-                      angle: animationProgress * pi,
-                      child: Icon(
-                        Icons.expand_more,
-                        size: 30,
-                        color: ThemeWidget.of(context).textColor,
+                  child: Stack(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.all(7.5),
+                        child: Icon(
+                          Icons.info_outline,
+                          size: 25,
+                          color: ThemeWidget.of(context).textColor,
+                        ),
                       ),
-                    ),
+                      if (widget.extraInfoCounts[
+                              widget.children.indexOf(widget.tab)] !=
+                          0)
+                        Positioned(
+                          right: 0,
+                          child: Container(
+                            margin: EdgeInsets.only(top: 6, right: 6),
+                            padding: EdgeInsets.all(1),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).accentColor,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            constraints: BoxConstraints(
+                              minWidth: 12,
+                              minHeight: 12,
+                            ),
+                            child: Text(
+                              widget.extraInfoCounts[
+                                      widget.children.indexOf(widget.tab)]
+                                  .toString(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 8,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
-            ],
-          );
-        },
+            ),
+        ],
       );
 }
