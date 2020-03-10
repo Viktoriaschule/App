@@ -53,7 +53,7 @@ class _SubstitutionPlanInfoCardState
       heroId: getScreenSize(MediaQuery.of(context).size.width) ==
               ScreenSize.small
           ? SubstitutionPlanKeys.substitutionPlan
-          : '${SubstitutionPlanKeys.substitutionPlan}-${loader.data.days.indexOf(substitutionPlanDay)}',
+          : '${SubstitutionPlanKeys.substitutionPlan}-${loader.hasLoadedData ? loader.data.days.indexOf(substitutionPlanDay) : null}',
       heroIdNavigation: SubstitutionPlanKeys.substitutionPlan,
       title: 'Nächste Vertretungen - ${weekdays[widget.date.weekday - 1]}',
       counter: substitutions.length > utils.cut

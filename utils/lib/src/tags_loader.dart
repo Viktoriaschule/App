@@ -20,18 +20,19 @@ class TagsLoader extends Loader<Tags> {
   fromJSON(json) => Tags.fromJson(json);
 
   /// Initialize device tags
-  Future syncDevice(BuildContext context) async {
+  Future syncDevice(BuildContext context, List<Feature> features) async {
     final String id = await Static.firebaseMessaging.getToken();
     final packageInfo = await PackageInfo.fromPlatform();
     final String appVersion =
         '${packageInfo.version}+${packageInfo.buildNumber}';
     final String os = Platform().platformName;
     final Map<String, bool> notifications = {};
-    Static.storage
-        .getKeys()
-        .where((key) => key.startsWith(Keys.notifications('')))
-        .forEach(
-            (key) => notifications[key] = Static.storage.getBool(key) ?? true);
+    for (final f in features) {
+      if (f.notificationsHandler != null) {
+        final key = Keys.notifications(f.featureKey);
+        notifications[key] = Static.storage.getBool(key) ?? true;
+      }
+    }
     if (id != null) {
       final Device device = Device(
         firebaseId: id,

@@ -13,8 +13,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends Interactor<SettingsPage> {
-  bool _automaticDesign;
-  bool _darkMode;
+  int _design;
 
   @override
   Subscription subscribeEvents(EventBus eventBus) =>
@@ -24,8 +23,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
       Static.storage.getBool(Keys.notifications(key)) ?? true;
 
   void _init() {
-    _automaticDesign = Static.storage.getBool(Keys.automaticDesign) ?? true;
-    _darkMode = Static.storage.getBool(Keys.darkMode) ?? false;
+    _design = Static.storage.getInt(Keys.design) ?? 0;
   }
 
   @override
@@ -55,14 +53,13 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                 title: 'Benachrichtigungen',
                 children: notificationFeatures
                     .map(
-                      (feature) => CheckboxListTile(
+                      (feature) => SwitchListTile(
                         title: Text(
                           feature.name,
                           style: TextStyle(
                             color: ThemeWidget.of(context).textColor,
                           ),
                         ),
-                        checkColor: lightColor,
                         activeColor: Theme.of(context).accentColor,
                         value: getNotifications(feature.featureKey),
                         onChanged: (value) async {
@@ -71,7 +68,10 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                                 Keys.notifications(feature.featureKey), value);
                           });
                           try {
-                            await Static.tags.syncDevice(context);
+                            await Static.tags.syncDevice(
+                              context,
+                              FeaturesWidget.of(context).features,
+                            );
                             // ignore: empty_catches
                           } on DioError {}
                         },
@@ -82,43 +82,33 @@ class _SettingsPageState extends Interactor<SettingsPage> {
             ListGroup(
               title: 'Design',
               children: [
-                CheckboxListTile(
-                  title: Text(
-                    'Automatisch',
-                    style: TextStyle(
-                      color: ThemeWidget.of(context).textColor,
-                    ),
-                  ),
-                  checkColor: lightColor,
-                  activeColor: Theme.of(context).accentColor,
-                  value: _automaticDesign,
-                  onChanged: (value) async {
-                    setState(() {
-                      _automaticDesign = value;
-                      Static.storage.setBool(Keys.automaticDesign, value);
+                Container(
+                  padding: EdgeInsets.only(left: 15, right: 15),
+                  child: DropdownButton<int>(
+                    isExpanded: true,
+                    value: _design,
+                    onChanged: (value) {
+                      setState(() {
+                        _design = value;
+                      });
+                      Static.storage.setInt(Keys.design, value);
                       EventBus.of(context).publish(ThemeChangedEvent());
-                    });
-                  },
-                ),
-                CheckboxListTile(
-                  title: Text(
-                    'Dunkles Design',
-                    style: TextStyle(
-                      color: ThemeWidget.of(context).textColor,
-                    ),
+                    },
+                    items: const [
+                      DropdownMenuItem<int>(
+                        value: 0,
+                        child: Text('Automatisch'),
+                      ),
+                      DropdownMenuItem<int>(
+                        value: 1,
+                        child: Text('Hell'),
+                      ),
+                      DropdownMenuItem<int>(
+                        value: 2,
+                        child: Text('Dunkel'),
+                      ),
+                    ],
                   ),
-                  checkColor: lightColor,
-                  activeColor: Theme.of(context).accentColor,
-                  value: _darkMode,
-                  onChanged: !_automaticDesign
-                      ? (value) async {
-                          setState(() {
-                            _darkMode = value;
-                            Static.storage.setBool(Keys.darkMode, value);
-                            EventBus.of(context).publish(ThemeChangedEvent());
-                          });
-                        }
-                      : null,
                 ),
               ],
             ),

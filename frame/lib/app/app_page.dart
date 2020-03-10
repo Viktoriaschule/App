@@ -65,7 +65,10 @@ class _AppPageState extends Interactor<AppPage>
         return StatusCode.success;
       } else if (result == StatusCode.success) {
         // First sync the tags
-        await Static.tags.syncDevice(context);
+        await Static.tags.syncDevice(
+          context,
+          FeaturesWidget.of(context).features,
+        );
         await Static.tags.syncToServer(
           context,
           FeaturesWidget.of(context).features,
@@ -197,7 +200,10 @@ class _AppPageState extends Interactor<AppPage>
             });
             _permissionsGranted =
                 await Static.firebaseMessaging.requestNotificationPermissions();
-            await Static.tags.syncDevice(context);
+            await Static.tags.syncDevice(
+              context,
+              FeaturesWidget.of(context).features,
+            );
             setState(() {
               _permissionsChecking = false;
             });
@@ -252,9 +258,7 @@ class _AppPageState extends Interactor<AppPage>
                 icon: Icon(
                   Icons.settings,
                   size: 28,
-                  color: ThemeWidget
-                      .of(context)
-                      .textColor,
+                  color: ThemeWidget.of(context).textColor,
                 ),
               ),
             ],
