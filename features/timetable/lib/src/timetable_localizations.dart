@@ -17,4 +17,7 @@ class TimetableLocalizations {
 
   // ignore: public_member_api_docs
   static const clickToSelect = 'Klicke zum Auswählen';
+
+  // ignore: public_member_api_docs
+  static const noTimetable = 'Kein Stundenplan';
 }

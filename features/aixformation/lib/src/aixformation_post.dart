@@ -1,4 +1,5 @@
 import 'package:after_layout/after_layout.dart';
+import 'package:aixformation/aixformation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:share/share.dart';
@@ -93,7 +94,7 @@ class _AiXformationPostState extends State<AiXformationPost>
           ),
         ),
         appBar: CustomAppBar(
-          title: 'AiXformation',
+          title: AiXFormationWidget.of(context).feature.name,
           loadingKeys: const [],
           actions: [
             IconButton(

@@ -69,8 +69,8 @@ class _CafetoriaInfoCardState extends InfoCardState<CafetoriaInfoCard> {
         }),
       ],
       title: !loader.hasLoadedData || loader.data.saldo == null
-          ? 'Cafétoria - ${weekdays[widget.date.weekday - 1]}'
-          : 'Cafétoria - ${weekdays[widget.date.weekday - 1]} (${loader.data.saldo}€) ',
+          ? '${CafetoriaWidget.of(context).feature.name} - ${weekdays[widget.date.weekday - 1]}'
+          : '${CafetoriaWidget.of(context).feature.name} - ${weekdays[widget.date.weekday - 1]} (${loader.data.saldo}€) ',
       counter: _days.length - 1,
       children: [
         if (!loader.hasLoadedData ||

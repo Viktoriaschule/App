@@ -17,4 +17,10 @@ class CafetoriaLocalizations {
 
   // ignore: public_member_api_docs
   static const newMenus = 'Neue Cafétoria-Menüs';
+
+  // ignore: public_member_api_docs
+  static const noMenus = 'Keine Menüs';
+
+  // ignore: public_member_api_docs
+  static const menus = 'Menüs';
 }

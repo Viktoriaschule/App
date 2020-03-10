@@ -1,5 +1,6 @@
 import 'package:calendar/calendar.dart';
 import 'package:calendar/src/calendar_keys.dart';
+import 'package:calendar/src/calendar_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:widgets/widgets.dart';
@@ -55,7 +56,7 @@ class CalendarListState extends Interactor<CalendarList> {
                   ),
                 ),
               )
-            : EmptyList(title: 'Keine Kalender'),
+            : EmptyList(title: CalendarLocalizations.noEvents),
       ),
     );
   }

@@ -44,7 +44,7 @@ class _AppPageState extends Interactor<AppPage>
         SnackBar(
           content: Text(getStatusCodeMsg(status)),
           action: SnackBarAction(
-            label: 'OK',
+            label: AppLocalizations.ok,
             onPressed: () => null,
           ),
         ),
@@ -174,7 +174,7 @@ class _AppPageState extends Interactor<AppPage>
     _pwa = PWA();
     if (Platform().isWeb) {
       _permissionsGranted =
-      await Static.firebaseMessaging.hasNotificationPermissions();
+          await Static.firebaseMessaging.hasNotificationPermissions();
       _canInstall = _pwa.canInstall();
       setState(() {});
     }

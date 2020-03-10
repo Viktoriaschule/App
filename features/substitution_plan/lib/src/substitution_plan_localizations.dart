@@ -19,6 +19,15 @@ class SubstitutionPlanLocalizations {
   static const newSubstitutionPlans = 'Neue Vertretungspläne';
 
   // ignore: public_member_api_docs
+  static const nextSubstitutions = 'Nächste Vertretungen';
+
+  // ignore: public_member_api_docs
+  static const exam = 'Klausur';
+
+  // ignore: public_member_api_docs
+  static const freeLesson = 'Freistunde';
+
+  // ignore: public_member_api_docs
   static String newSubstitutionPlanFor(String weekday) =>
       'Neuer Vertretungsplan${weekday != null ? ' für $weekday' : ''}';
 }

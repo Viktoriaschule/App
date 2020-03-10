@@ -1,4 +1,5 @@
 import 'package:cafetoria/cafetoria.dart';
+import 'package:cafetoria/src/cafetoria_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
@@ -107,12 +108,14 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
                                 )
                                 .toList()
                                 .cast<Widget>()
-                            : [EmptyList(title: 'Keine Menüs')],
+                            : [
+                                EmptyList(title: CafetoriaLocalizations.noMenus)
+                              ],
                       ),
                     );
                   })
               : Center(
-                  child: EmptyList(title: 'Keine Menüs'),
+                  child: EmptyList(title: CafetoriaLocalizations.noMenus),
                 ),
         ),
       ),

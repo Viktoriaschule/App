@@ -14,6 +14,7 @@ export 'src/cafetoria_events.dart';
 export 'src/cafetoria_info_card.dart';
 export 'src/cafetoria_keys.dart';
 export 'src/cafetoria_loader.dart';
+export 'src/cafetoria_localizations.dart';
 export 'src/cafetoria_page.dart';
 
 /// The cafetoria feature

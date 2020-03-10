@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:substitution_plan/substitution_plan.dart';
 import 'package:timetable/src/timetable_keys.dart';
+import 'package:timetable/src/timetable_localizations.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
@@ -100,7 +101,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                       height: 60,
                       child: Center(
                         child: Text(
-                          'Termine',
+                          CalendarLocalizations.events,
                           style: TextStyle(
                             fontSize: 16,
                             color: ThemeWidget.of(context).textColor,
@@ -112,7 +113,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                       height: 60,
                       child: Center(
                         child: Text(
-                          'Cafétoria',
+                          CafetoriaLocalizations.menus,
                           style: TextStyle(
                             fontSize: 16,
                             color: ThemeWidget.of(context).textColor,
@@ -221,7 +222,11 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                   ),
                 ),
               )
-            : Center(child: EmptyList(title: 'Kein Stundenplan')),
+            : Center(
+                child: EmptyList(
+                  title: TimetableLocalizations.noTimetable,
+                ),
+              ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:utils/src/localizations.dart';
 
 import 'keys.dart';
 
@@ -19,8 +20,8 @@ class Pages extends InheritedWidget {
 
   /// All pages in this app
   final Map<String, Page> pages = {
-    '${Keys.settings}': Page('Einstellungen'),
-    '${Keys.home}': Page('Startseite'),
+    '${Keys.settings}': Page(AppLocalizations.settings),
+    '${Keys.home}': Page(AppLocalizations.homepage),
   };
 
   @override

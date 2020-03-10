@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:substitution_plan/src/substitution_plan_localizations.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
@@ -37,10 +38,10 @@ class SubstitutionPlanRow extends StatelessWidget {
     switch (substitution.type) {
       case 2:
         infoText.add(
-            '${Static.subjects.data.getSubject(substitution.changed.subjectID)} Klausur');
+            '${Static.subjects.data.getSubject(substitution.changed.subjectID)} ${SubstitutionPlanLocalizations.exam}');
         break;
       case 1:
-        infoText.add('Freistunde');
+        infoText.add(SubstitutionPlanLocalizations.freeLesson);
         break;
       case 0:
         break;

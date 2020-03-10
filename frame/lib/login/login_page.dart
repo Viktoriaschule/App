@@ -25,7 +25,7 @@ class _LoginPageState extends State<_LoginPage> {
       if (_usernameFieldController.text.isEmpty ||
           _passwordFieldController.text.isEmpty) {
         Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('Username und Passwort erforderlich'),
+          content: Text(AppLocalizations.usernamePasswordRequired),
         ));
         return;
       }
@@ -51,15 +51,15 @@ class _LoginPageState extends State<_LoginPage> {
         String msg;
         switch (result) {
           case StatusCode.unauthorized:
-            msg = 'Die Anmeldedaten sind falsch';
+            msg = AppLocalizations.credentialsWrong;
             _passwordFieldController.clear();
             FocusScope.of(context).requestFocus(_passwordFieldFocus);
             break;
           case StatusCode.offline:
-            msg = 'Du musst online sein';
+            msg = AppLocalizations.needsToBeOnline;
             break;
           default:
-            msg = 'Fehler bei der Anmeldung. Probiere es später erneut!';
+            msg = AppLocalizations.errorWhileLoggingIn;
         }
         Scaffold.of(context).showSnackBar(SnackBar(
           content: Text(msg),
@@ -70,7 +70,7 @@ class _LoginPageState extends State<_LoginPage> {
         _checkingLogin = false;
       });
       Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text('Deine Anmeldung konnte nicht überprüft werden'),
+        content: Text(AppLocalizations.errorWhileLoggingIn),
       ));
     }
   }
@@ -84,7 +84,7 @@ class _LoginPageState extends State<_LoginPage> {
         color: ThemeWidget.of(context).textColor,
       ),
       decoration: InputDecoration(
-        hintText: 'Username',
+        hintText: AppLocalizations.username,
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: darkColor,
@@ -110,7 +110,7 @@ class _LoginPageState extends State<_LoginPage> {
         color: ThemeWidget.of(context).textColor,
       ),
       decoration: InputDecoration(
-        hintText: 'Passwort',
+        hintText: AppLocalizations.password,
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: darkColor,

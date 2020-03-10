@@ -11,6 +11,7 @@ import 'package:widgets/widgets.dart';
 export 'src/calendar_events.dart';
 export 'src/calendar_info_card.dart';
 export 'src/calendar_loader.dart';
+export 'src/calendar_localizations.dart';
 export 'src/calendar_page.dart';
 
 /// The calendar feature

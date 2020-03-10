@@ -26,7 +26,8 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     with AfterLayoutMixin<NotificationsWidget> {
   static MethodChannel methodChannel = MethodChannel('frame');
 
-  NotificationsHandler _getNotificationHandler(BuildContext context, String type) {
+  NotificationsHandler _getNotificationHandler(
+      BuildContext context, String type) {
     final features = FeaturesWidget.of(context)
         .features
         .where((f) => f.featureKey == type)
@@ -46,22 +47,24 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
         onResume: handleOnLaunchResumeNotification,
         onMessage: handleOnMessageNotification,
         onBackgroundMessage:
-        _NotificationsWidgetState.handleOnBackgroundMessageNotification,
+            _NotificationsWidgetState.handleOnBackgroundMessageNotification,
       );
     }
     final channels = FeaturesWidget.of(context)
         .features
         .where((f) => f.notificationsHandler != null)
         .map((f) => f.notificationsHandler
-        .getAndroidNotificationHandler(context)
-        .toMap())
+            .getAndroidNotificationHandler(context)
+            .toMap())
         .toList();
     if (Platform().isAndroid) {
       await methodChannel.invokeMethod('init', channels);
     }
   }
 
-  Future handleOnLaunchResumeNotification(Map<String, dynamic> data,) async {
+  Future handleOnLaunchResumeNotification(
+    Map<String, dynamic> data,
+  ) async {
     EventBus.of(context).publish(FetchAppDataEvent());
 
     // Delete all notifications of the same type
@@ -84,7 +87,9 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     }
   }
 
-  Future<dynamic> handleOnMessageNotification(Map<String, dynamic> d,) async {
+  Future<dynamic> handleOnMessageNotification(
+    Map<String, dynamic> d,
+  ) async {
     try {
       final Map<String, dynamic> data = Map<String, dynamic>.from(d['data']);
       if (data['action'] != 'update') {
@@ -96,7 +101,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
         EventBus.of(context).publish(FetchAppDataEvent());
         Scaffold.of(context).showSnackBar(SnackBar(
           action: SnackBarAction(
-            label: 'Öffnen',
+            label: AppLocalizations.open,
             onPressed: () => handler.open(data, context),
           ),
           content: Text(handler.getSnackBarText(data, context)),
@@ -112,7 +117,8 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
 
   // This needs to be a static function otherwise it can't be called
   static Future<dynamic> handleOnBackgroundMessageNotification(
-      Map<String, dynamic> d,) async {
+    Map<String, dynamic> d,
+  ) async {
     final Map<String, dynamic> data = d['data'].cast<String, dynamic>();
     try {
       if (data['action'] == 'update') {

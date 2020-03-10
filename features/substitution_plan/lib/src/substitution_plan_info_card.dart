@@ -56,7 +56,8 @@ class _SubstitutionPlanInfoCardState
           ? SubstitutionPlanKeys.substitutionPlan
           : '${SubstitutionPlanKeys.substitutionPlan}-${loader.data.days.indexOf(substitutionPlanDay)}',
       heroIdNavigation: SubstitutionPlanKeys.substitutionPlan,
-      title: 'Nächste Vertretungen - ${weekdays[widget.date.weekday - 1]}',
+      title:
+          '${SubstitutionPlanLocalizations.nextSubstitutions} - ${weekdays[widget.date.weekday - 1]}',
       counter: substitutions.length > utils.cut
           ? substitutions.length - utils.cut
           : 0,
