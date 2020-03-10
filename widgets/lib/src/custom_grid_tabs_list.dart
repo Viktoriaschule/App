@@ -78,11 +78,17 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
                   child: Stack(
                     children: <Widget>[
                       Container(
-                        padding: EdgeInsets.all(7.5),
+                        padding: EdgeInsets.all(15),
                         child: Icon(
                           Icons.info_outline,
                           size: 25,
-                          color: ThemeWidget.of(context).textColor,
+                          color: widget.extraInfoCounts[
+                                      widget.children.indexOf(widget.tab)] >
+                                  0
+                              ? ThemeWidget.of(context).textColor
+                              : ThemeWidget.of(context)
+                                  .textColor
+                                  .withOpacity(0.5),
                         ),
                       ),
                       if (widget.extraInfoCounts[
@@ -91,10 +97,12 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
                         Positioned(
                           right: 0,
                           child: Container(
-                            margin: EdgeInsets.only(top: 6, right: 6),
+                            margin: EdgeInsets.only(top: 13.5, right: 13.5),
                             padding: EdgeInsets.all(1),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).accentColor,
+                              color: Theme
+                                  .of(context)
+                                  .accentColor,
                               borderRadius: BorderRadius.circular(6),
                             ),
                             constraints: BoxConstraints(

@@ -78,7 +78,7 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
                   // Show the normal lessen if it is an exam, but not of the same subjects, as this unit
                   final showNormal = substitutions.length == 1 &&
                       substitutions.first.type == 2 &&
-                      substitutions.first.original.courseID != subject.courseID;
+                      substitutions.first.courseID != subject.courseID;
                   return Container(
                     margin: EdgeInsets.all(10),
                     child: Column(
