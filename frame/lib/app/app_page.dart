@@ -174,7 +174,7 @@ class _AppPageState extends Interactor<AppPage>
     _pwa = PWA();
     if (Platform().isWeb) {
       _permissionsGranted =
-      await Static.firebaseMessaging.hasNotificationPermissions();
+          await Static.firebaseMessaging.hasNotificationPermissions();
       _canInstall = _pwa.canInstall();
       setState(() {});
     }
@@ -252,7 +252,9 @@ class _AppPageState extends Interactor<AppPage>
                 icon: Icon(
                   Icons.settings,
                   size: 28,
-                  color: ThemeWidget.of(context).textColor,
+                  color: ThemeWidget
+                      .of(context)
+                      .textColor,
                 ),
               ),
             ],
@@ -261,11 +263,9 @@ class _AppPageState extends Interactor<AppPage>
             loadingKeys: [Keys.tags, Keys.subjects, Keys.updates],
           ),
         ],
-        body: LayoutBuilder(
-          builder: (context, constraints) => CustomRefreshIndicator(
-            loadOnline: () => _fetchData(force: true),
-            child: HomePage(),
-          ),
+        body: CustomRefreshIndicator(
+          loadOnline: () => _fetchData(force: true),
+          child: HomePage(),
         ),
       ),
     );
