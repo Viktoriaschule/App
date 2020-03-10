@@ -9,7 +9,6 @@ export 'src/custom_grid.dart';
 export 'src/custom_grid_tabs_list.dart';
 export 'src/custom_hero.dart';
 export 'src/custom_linear_progress_indicator.dart';
-export 'src/custom_list_view.dart';
 export 'src/custom_refresh_indicator.dart';
 export 'src/custom_row.dart';
 export 'src/dialog_content_wrapper.dart';
