@@ -262,6 +262,7 @@ class SubstitutionDetails {
     @required this.teacherID,
     @required this.roomID,
     @required this.subjectID,
+    @required this.courseID,
   });
 
   /// Creates a substitution details from json
@@ -270,6 +271,7 @@ class SubstitutionDetails {
         teacherID: json['teacherID'].replaceAll('+', '\n'),
         roomID: json['roomID'],
         subjectID: json['subjectID'],
+        courseID: json['courseID'],
       );
 
   // ignore: public_member_api_docs
@@ -280,6 +282,9 @@ class SubstitutionDetails {
 
   // ignore: public_member_api_docs
   final String subjectID;
+
+  /// The [courseID] is only set in the original object
+  final String courseID;
 
   /// Compares to substitution details
   bool equals(SubstitutionDetails c) =>

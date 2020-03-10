@@ -178,6 +178,11 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                           subject?.getSubstitutions(
                                   day, substitutionPlanFeature.loader.data) ??
                               [];
+                      // Show the normal lessen if it is an exam, but not of the same subjects, as this unit
+                      final showNormal = substitutions.length == 1 &&
+                          substitutions.first.type == 2 &&
+                          substitutions.first.original.courseID !=
+                              subject.courseID;
                       return SizeLimit(
                         child: InkWell(
                           onTap: () async {
@@ -214,32 +219,38 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                             margin: EdgeInsets.all(10),
                             child: Column(
                               children: [
-                                if (substitutions.isEmpty)
-                                  TimetableRow(
-                                    subject: subject ??
-                                        TimetableSubject(
-                                          unit: unit.unit,
-                                          subjectID: 'none',
-                                          teacherID: null,
-                                          roomID: null,
-                                          courseID: '',
-                                          id: '',
-                                          day: weekday,
-                                          block: '',
-                                        ),
-                                    showUnit: getScreenSize(
-                                            MediaQuery.of(context)
-                                                .size
-                                                .width) !=
-                                        ScreenSize.big,
-                                  ),
                                 if (substitutions.isNotEmpty)
                                   SubstitutionList(
                                     padding: false,
                                     substitutions: substitutions
                                         .where((substitution) =>
-                                            substitution.unit == subject.unit)
+                                    substitution.unit == subject.unit)
                                         .toList(),
+                                  ),
+                                if (substitutions.isEmpty || showNormal)
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: substitutions.isNotEmpty ? 5 : 0),
+                                    child: TimetableRow(
+                                      subject: subject ??
+                                          TimetableSubject(
+                                            unit: unit.unit,
+                                            subjectID: 'none',
+                                            teacherID: null,
+                                            roomID: null,
+                                            courseID: '',
+                                            id: '',
+                                            day: weekday,
+                                            block: '',
+                                          ),
+                                      hideUnit: substitutions.isNotEmpty,
+                                      showUnit: getScreenSize(
+                                          MediaQuery
+                                              .of(context)
+                                              .size
+                                              .width) !=
+                                          ScreenSize.big,
+                                    ),
                                   ),
                               ],
                             ),
