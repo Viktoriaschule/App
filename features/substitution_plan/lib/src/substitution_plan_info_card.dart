@@ -8,6 +8,7 @@ import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 import 'substitution_list.dart';
+import 'substitution_plan_localizations.dart';
 import 'substitution_plan_model.dart';
 import 'substitution_plan_page.dart';
 
@@ -70,7 +71,7 @@ class _SubstitutionPlanInfoCardState
       ],
       children: [
         if (substitutions.isEmpty)
-          EmptyList(title: 'Keine Änderungen')
+          EmptyList(title: SubstitutionPlanLocalizations.noSubstitutions)
         else
           SizeLimit(
             child: Container(

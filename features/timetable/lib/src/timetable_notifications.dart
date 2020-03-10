@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'package:timetable/src/timetable_localizations.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 
@@ -7,7 +8,7 @@ import 'package:utils/utils.dart';
 class TimetableNotificationsHandler extends NotificationsHandler {
   @override
   String getSnackBarText(Map<String, dynamic> data, BuildContext context) =>
-      'Neuer Stundenplan';
+      TimetableLocalizations.newTimetable;
 
   @override
   void open(Map<String, dynamic> data, BuildContext context) =>
@@ -18,6 +19,6 @@ class TimetableNotificationsHandler extends NotificationsHandler {
       BuildContext context) {
     final feature = TimetableWidget.of(context).feature;
     return AndroidNotificationChannel(
-        feature.featureKey, feature.name, 'Neue Stundenpläne');
+        feature.featureKey, feature.name, TimetableLocalizations.newTimetables);
   }
 }

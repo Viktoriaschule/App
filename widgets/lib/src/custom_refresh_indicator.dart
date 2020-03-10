@@ -26,7 +26,7 @@ class CustomRefreshIndicator extends StatelessWidget {
                 SnackBar(
                   content: Text(getStatusCodeMsg(status)),
                   action: SnackBarAction(
-                    label: 'OK',
+                    label: AppLocalizations.ok,
                     onPressed: () => null,
                   ),
                 ),

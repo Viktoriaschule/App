@@ -42,7 +42,7 @@ class CalendarEventDialog extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
                 child: Text(
-                  'OK',
+                  AppLocalizations.ok,
                   style: TextStyle(color: darkColor),
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:timetable/src/timetable_localizations.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
@@ -42,7 +43,8 @@ class TimetableRow extends StatelessWidget {
     final timeStr = '$startHour:$startMinute - $endHour:$endMinute';
     return CustomRow(
       splitColor: Colors.transparent,
-      showSplit: !(subject.subjectID == 'Mittagspause') && showSplit,
+      showSplit: !(subject.subjectID == TimetableLocalizations.lunchBreak) &&
+          showSplit,
       leading: showUnit && unit != 5
           ? Align(
               alignment: Alignment(0.3, 0),
@@ -56,20 +58,23 @@ class TimetableRow extends StatelessWidget {
               ),
             )
           : null,
-      titleAlignment: subject.subjectID == 'Mittagspause'
+      titleAlignment: subject.subjectID == TimetableLocalizations.lunchBreak
           ? CrossAxisAlignment.center
           : CrossAxisAlignment.start,
       title: Static.subjects.hasLoadedData && subject.subjectID != 'none'
           ? Static.subjects.data.getSubject(subject.subjectID)
-          : 'Nicht ausgewählt',
-      titleFontWeight:
-          subject.subjectID == 'Mittagspause' ? FontWeight.w100 : null,
-      titleColor: subject.subjectID == 'Mittagspause'
+          : TimetableLocalizations.notSelected,
+      titleFontWeight: subject.subjectID == TimetableLocalizations.lunchBreak
+          ? FontWeight.w100
+          : null,
+      titleColor: subject.subjectID == TimetableLocalizations.lunchBreak
           ? ThemeWidget.of(context).textColor
           : Theme.of(context).accentColor,
-      subtitle: subject.subjectID != 'Mittagspause'
+      subtitle: subject.subjectID != TimetableLocalizations.lunchBreak
           ? Text(
-              subject.subjectID != 'none' ? timeStr : 'Klicke zum Auswählen',
+              subject.subjectID != 'none'
+                  ? timeStr
+                  : TimetableLocalizations.clickToSelect,
               style: TextStyle(
                 color: ThemeWidget.of(context).textColor,
                 fontWeight: FontWeight.w100,
@@ -80,7 +85,7 @@ class TimetableRow extends StatelessWidget {
           ? Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (subject.subjectID != 'Mittagspause')
+                if (subject.subjectID != TimetableLocalizations.lunchBreak)
                   Container(
                     width: 30,
                     margin: EdgeInsets.only(right: 10),
@@ -100,7 +105,7 @@ class TimetableRow extends StatelessWidget {
                       ],
                     ),
                   ),
-                if (subject.subjectID != 'Mittagspause')
+                if (subject.subjectID != TimetableLocalizations.lunchBreak)
                   Container(
                     width: 30,
                     child: Column(

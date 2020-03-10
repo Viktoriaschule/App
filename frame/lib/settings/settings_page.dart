@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'package:frame/settings/settings_localizations.dart';
 import 'package:frame/utils/features.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
@@ -52,7 +53,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
           children: [
             if (notificationFeatures.isNotEmpty)
               ListGroup(
-                title: 'Benachrichtigungen',
+                title: SettingsLocalizations.notifications,
                 children: notificationFeatures
                     .map(
                       (feature) => CheckboxListTile(
@@ -80,17 +81,21 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                     .toList(),
               ),
             ListGroup(
-              title: 'Design',
+              title: SettingsLocalizations.design,
               children: [
                 CheckboxListTile(
                   title: Text(
-                    'Automatisch',
+                    SettingsLocalizations.automatic,
                     style: TextStyle(
-                      color: ThemeWidget.of(context).textColor,
+                      color: ThemeWidget
+                          .of(context)
+                          .textColor,
                     ),
                   ),
                   checkColor: lightColor,
-                  activeColor: Theme.of(context).accentColor,
+                  activeColor: Theme
+                      .of(context)
+                      .accentColor,
                   value: _automaticDesign,
                   onChanged: (value) async {
                     setState(() {
@@ -102,9 +107,11 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                 ),
                 CheckboxListTile(
                   title: Text(
-                    'Dunkles Design',
+                    SettingsLocalizations.darkDesign,
                     style: TextStyle(
-                      color: ThemeWidget.of(context).textColor,
+                      color: ThemeWidget
+                          .of(context)
+                          .textColor,
                     ),
                   ),
                   checkColor: lightColor,
@@ -143,7 +150,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                         '/${Keys.login}', (r) => false);
                   },
                   child: Text(
-                    'Abmelden',
+                    AppLocalizations.logout,
                     style: TextStyle(
                       color: darkColor,
                     ),

@@ -9,6 +9,7 @@ export 'src/feature_utils/feature.dart';
 export 'src/info_card_utils.dart';
 export 'src/keys.dart';
 export 'src/loader.dart';
+export 'src/localizations.dart';
 export 'src/pages.dart';
 export 'src/plugins/firebase/firebase.dart';
 export 'src/plugins/platform/platform.dart';
