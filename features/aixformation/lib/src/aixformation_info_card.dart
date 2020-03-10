@@ -35,6 +35,7 @@ class _AiXformationInfoCardState extends InfoCardState<AiXformationInfoCard> {
     return ListGroup(
       loadingKeys: const [AiXformationKeys.aixformation],
       heroId: AiXformationKeys.aixformation,
+      doRowsHandleClick: true,
       actions: [
         NavigationAction(Icons.expand_more, () {
           Navigator.of(context).push(
@@ -49,12 +50,9 @@ class _AiXformationInfoCardState extends InfoCardState<AiXformationInfoCard> {
       children: [
         if (loader.hasLoadedData && loader.data.posts.isNotEmpty)
           ...posts
-              .map((post) => Container(
-                    margin: EdgeInsets.all(10),
-                    child: AiXformationRow(
-                      post: post,
-                      posts: posts,
-                    ),
+              .map((post) => AiXformationRow(
+                    post: post,
+                    posts: posts,
                   ))
               .toList()
               .cast<Widget>()

@@ -23,6 +23,7 @@ class ListGroup extends StatefulWidget {
     this.counter = 0,
     this.onTap,
     this.showNavigation = true,
+    this.doRowsHandleClick = false,
     Key key,
   }) : super(key: key);
 
@@ -58,6 +59,9 @@ class ListGroup extends StatefulWidget {
   // ignore: public_member_api_docs
   final List<String> loadingKeys;
 
+  // ignore: public_member_api_docs
+  final bool doRowsHandleClick;
+
   @override
   _ListGroupState createState() => _ListGroupState();
 }
@@ -90,61 +94,68 @@ class _ListGroupState extends Interactor<ListGroup>
       padding: EdgeInsets.only(bottom: 10),
       child: Column(
         children: [
-          Container(
-            padding: EdgeInsets.only(left: 20, right: 10),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: 31),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 10),
-                      child: Text(
-                        widget.title,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w100,
-                          color: ThemeWidget.of(context).textColor,
-                          fontSize: 18,
+          InkWell(
+            onTap: widget.doRowsHandleClick
+                ? widget.onTap ?? (actions.isNotEmpty ? actions[0].onTap : null)
+                : null,
+            child: Container(
+              padding: EdgeInsets.only(left: 20, right: 10),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: 31),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        child: Text(
+                          widget.title,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w100,
+                            color: ThemeWidget.of(context).textColor,
+                            fontSize: 18,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 10),
-                    width: 31,
-                    height: 31,
-                    child: Stack(
-                      children: [
-                        AnimatedOpacity(
-                          duration: Duration(milliseconds: 100),
-                          opacity:
-                              widget.loadingKeys != null && _isLoading ? 1 : 0,
-                          child: Center(
-                            child: CustomCircularProgressIndicator(
-                              height: 20,
-                              width: 20,
-                            ),
-                          ),
-                        ),
-                        AnimatedOpacity(
-                          duration: Duration(milliseconds: 100),
-                          opacity:
-                              widget.loadingKeys != null && _isLoading ? 0 : 1,
-                          child: Center(
-                            child: Text(
-                              widget.counter > 0 ? '+${widget.counter}' : '',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w100,
-                                color: ThemeWidget.of(context).textColor,
-                                fontSize: 18,
+                    Container(
+                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                      width: 31,
+                      height: 41,
+                      child: Stack(
+                        children: [
+                          AnimatedOpacity(
+                            duration: Duration(milliseconds: 100),
+                            opacity: widget.loadingKeys != null && _isLoading
+                                ? 1
+                                : 0,
+                            child: Center(
+                              child: CustomCircularProgressIndicator(
+                                height: 20,
+                                width: 20,
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                          AnimatedOpacity(
+                            duration: Duration(milliseconds: 100),
+                            opacity: widget.loadingKeys != null && _isLoading
+                                ? 0
+                                : 1,
+                            child: Center(
+                              child: Text(
+                                widget.counter > 0 ? '+${widget.counter}' : '',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w100,
+                                  color: ThemeWidget.of(context).textColor,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -169,8 +180,9 @@ class _ListGroupState extends Interactor<ListGroup>
               else
                 content,
               if ((widget.onTap ??
-                      (actions.isNotEmpty ? actions[0].onTap : null)) !=
-                  null)
+                          (actions.isNotEmpty ? actions[0].onTap : null)) !=
+                      null &&
+                  !widget.doRowsHandleClick)
                 Positioned.fill(
                   child: InkWell(
                     onTap: widget.onTap ??

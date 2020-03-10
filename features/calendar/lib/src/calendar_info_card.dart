@@ -86,6 +86,7 @@ class _CalendarInfoCardState extends InfoCardState<CalendarInfoCard> {
                           margin: EdgeInsets.all(10),
                           child: CalendarRow(
                             event: event,
+                            showAddButton: false,
                           ),
                         ))
                     .toList()

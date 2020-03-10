@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 // ignore: public_member_api_docs
 class CustomCard extends StatefulWidget {
   // ignore: public_member_api_docs
-  const CustomCard(
-      {@required this.child, Key key, this.margin, this.color, this.elevation})
-      : super(key: key);
+  const CustomCard({
+    @required this.child,
+    Key key,
+    this.margin,
+    this.color,
+    this.elevation,
+  }) : super(key: key);
 
   // ignore: public_member_api_docs
   final EdgeInsets margin;

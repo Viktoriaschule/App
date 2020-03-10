@@ -15,6 +15,7 @@ class CalendarRow extends StatefulWidget {
     @required this.event,
     this.showDate = false,
     this.showSplit = true,
+    this.showAddButton = true,
   });
 
   // ignore: public_member_api_docs
@@ -25,6 +26,9 @@ class CalendarRow extends StatefulWidget {
 
   // ignore: public_member_api_docs
   final bool showSplit;
+
+  // ignore: public_member_api_docs
+  final bool showAddButton;
 
   @override
   _CalendarRowState createState() => _CalendarRowState();
@@ -59,7 +63,7 @@ class _CalendarRowState extends State<CalendarRow>
                 color: ThemeWidget.of(context).textColor,
                 fontWeight: FontWeight.w100),
           ),
-          last: Platform().isMobile
+          last: Platform().isMobile && widget.showAddButton
               ? IconButton(
                   onPressed: () {
                     final startDate = widget.event.start.subtract(Duration(
