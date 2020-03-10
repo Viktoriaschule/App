@@ -187,14 +187,16 @@ class SubstitutionPlanDay {
 /// Describes a substitution of a substitution plan day...
 class Substitution {
   // ignore: public_member_api_docs
-  Substitution(
-      {@required this.unit,
-      @required this.type,
-      @required this.info,
-      @required this.id,
-      @required this.courseID,
-      @required this.original,
-      @required this.changed});
+  Substitution({
+    @required this.unit,
+    @required this.type,
+    @required this.info,
+    @required this.id,
+    @required this.courseID,
+    @required this.original,
+    @required this.changed,
+    @required this.description,
+  });
 
   /// Creates a substitution from json map
   factory Substitution.fromJson(Map<String, dynamic> json) => Substitution(
@@ -203,6 +205,7 @@ class Substitution {
         info: json['info'],
         id: json['id'],
         courseID: json['courseID'],
+        description: json['description'],
         original: SubstitutionDetails.fromJson(json['original']),
         changed: SubstitutionDetails.fromJson(json['changed']),
       );
@@ -221,6 +224,9 @@ class Substitution {
 
   /// The timetable courseID
   final String courseID;
+
+  /// A specific substitution case description
+  final String description;
 
   /// The original subject details
   final SubstitutionDetails original;

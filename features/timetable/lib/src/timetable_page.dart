@@ -122,7 +122,36 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                       ),
                     ),
                   ],
-                  append: List.generate(5, (weekday) {
+                  extraInfoTitles: List.generate(5, (weekday) {
+                    final day = _monday.add(Duration(days: weekday));
+                    return '${weekdays[day.weekday - 1]} ${shortOutputDateFormat.format(day)}';
+                  }),
+                  extraInfoCounts: List.generate(5, (weekday) {
+                    final day = _monday.add(Duration(days: weekday));
+                    int count = 0;
+
+                    // Check cafetoria
+                    final cafetoria =
+                        CafetoriaWidget.of(context)?.feature?.loader;
+                    if (cafetoria != null && cafetoria.hasLoadedData) {
+                      final days =
+                          cafetoria.data.days.where((d) => d.date == day);
+                      if (days.isNotEmpty && days.first.menus.isNotEmpty) {
+                        count++;
+                      }
+                    }
+
+                    // Check calendar
+                    final calendar =
+                        CalendarWidget.of(context)?.feature?.loader;
+                    if (calendar != null &&
+                        calendar.hasLoadedData &&
+                        calendar.data.getEventsForDate(day).isNotEmpty) {
+                      count++;
+                    }
+                    return count;
+                  }),
+                  extraInfoChildren: List.generate(5, (weekday) {
                     final day = _monday.add(Duration(days: weekday));
                     return [
                       if (CafetoriaWidget.of(context) != null)
@@ -148,18 +177,23 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                       // ignore: omit_local_variable_types
                       final List<Substitution> substitutions =
                           subject?.getSubstitutions(
-                                  day, substitutionPlanFeature.loader.data) ??
+                              day, substitutionPlanFeature.loader.data) ??
                               [];
+                      // Show the normal lessen if it is an exam, but not of the same subjects, as this unit
+                      final showNormal = substitutions.length == 1 &&
+                          substitutions.first.type == 2 &&
+                          substitutions.first.courseID != subject.courseID;
                       return SizeLimit(
                         child: InkWell(
                           onTap: () async {
                             if (unit.subjects.length > 1) {
                               // ignore: omit_local_variable_types
                               final TimetableSubject selection =
-                                  await showDialog(
+                              await showDialog(
                                 context: context,
-                                builder: (context) => TimetableSelectDialog(
-                                  weekday: weekday,
+                                builder: (context) =>
+                                    TimetableSelectDialog(
+                                      weekday: weekday,
                                   unit: unit,
                                 ),
                               );
@@ -186,32 +220,38 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                             margin: EdgeInsets.all(10),
                             child: Column(
                               children: [
-                                if (substitutions.isEmpty)
-                                  TimetableRow(
-                                    subject: subject ??
-                                        TimetableSubject(
-                                          unit: unit.unit,
-                                          subjectID: 'none',
-                                          teacherID: null,
-                                          roomID: null,
-                                          courseID: '',
-                                          id: '',
-                                          day: weekday,
-                                          block: '',
-                                        ),
-                                    showUnit: getScreenSize(
-                                            MediaQuery.of(context)
-                                                .size
-                                                .width) !=
-                                        ScreenSize.big,
-                                  ),
                                 if (substitutions.isNotEmpty)
                                   SubstitutionList(
                                     padding: false,
                                     substitutions: substitutions
                                         .where((substitution) =>
-                                            substitution.unit == subject.unit)
+                                    substitution.unit == subject.unit)
                                         .toList(),
+                                  ),
+                                if (substitutions.isEmpty || showNormal)
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: substitutions.isNotEmpty ? 5 : 0),
+                                    child: TimetableRow(
+                                      subject: subject ??
+                                          TimetableSubject(
+                                            unit: unit.unit,
+                                            subjectID: 'none',
+                                            teacherID: null,
+                                            roomID: null,
+                                            courseID: '',
+                                            id: '',
+                                            day: weekday,
+                                            block: '',
+                                          ),
+                                      hideUnit: substitutions.isNotEmpty,
+                                      showUnit: getScreenSize(
+                                          MediaQuery
+                                              .of(context)
+                                              .size
+                                              .width) !=
+                                          ScreenSize.big,
+                                    ),
                                   ),
                               ],
                             ),

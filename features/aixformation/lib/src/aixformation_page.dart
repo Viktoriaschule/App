@@ -58,12 +58,9 @@ class AiXformationPageState extends Interactor<AiXformationPage> {
                     if (index < maxArticleCount) {
                       return Center(
                         child: SizeLimit(
-                          child: Container(
-                            margin: EdgeInsets.all(10),
-                            child: AiXformationRow(
-                              post: post,
-                              posts: loader.data.posts,
-                            ),
+                          child: AiXformationRow(
+                            post: post,
+                            posts: loader.data.posts,
                           ),
                         ),
                       );

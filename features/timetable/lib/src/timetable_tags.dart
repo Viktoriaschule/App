@@ -11,7 +11,7 @@ import 'timetable_events.dart';
 class TimetableTagsHandler extends TagsHandler {
   @override
   void syncFromServer(Tags tags, BuildContext context) {
-    final selected = tags.data['selected']
+    final List<SelectionValue> selected = tags.data['selected']
         .map<SelectionValue>((json) => SelectionValue.fromJson(json))
         .toList();
     bool changed = false;
@@ -37,15 +37,15 @@ class TimetableTagsHandler extends TagsHandler {
     }
 
     // Sync exams
-    final exams =
-    tags.data['exams'].map<Exam>((json) => Exam.fromJson(json)).toList();
+    final List<Exam> exams =
+        tags.data['exams'].map<Exam>((json) => Exam.fromJson(json)).toList();
     for (final exam in exams) {
       final bool writing =
-      Static.storage.getBool(TimetableKeys.exam(exam.subject));
+          Static.storage.getBool(TimetableKeys.exam(exam.subject));
       // If the course id changed, check which version is newer
       if (writing != exam.writing) {
         final String examTimestamp =
-        Static.storage.getString(TimetableKeys.examTimestamp(exam.subject));
+            Static.storage.getString(TimetableKeys.examTimestamp(exam.subject));
         // If the server is newer, sync the new course id
         if (writing == null ||
             exam.timestamp.isAfter(DateTime.parse(examTimestamp))) {

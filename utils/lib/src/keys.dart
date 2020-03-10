@@ -50,11 +50,8 @@ class Keys {
   static const String tags = 'tags';
 
   // ignore: public_member_api_docs
-  static const String automaticDesign = 'automaticDesign';
-
-  // ignore: public_member_api_docs
-  static const String darkMode = 'darkMode';
-
-  // ignore: public_member_api_docs
   static const String platformBrightness = 'platformBrightness';
+
+  // ignore: public_member_api_docs
+  static const String design = 'design';
 }

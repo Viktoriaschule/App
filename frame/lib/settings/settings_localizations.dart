@@ -10,7 +10,10 @@ class SettingsLocalizations {
   static const design = 'Design';
 
   // ignore: public_member_api_docs
-  static const darkDesign = 'Dunkles Design';
+  static const dark = 'Dunkel';
+
+  // ignore: public_member_api_docs
+  static const light = 'Hell';
 
   // ignore: public_member_api_docs
   static const automatic = 'Automatisch';

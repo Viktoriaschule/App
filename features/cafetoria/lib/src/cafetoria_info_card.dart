@@ -1,7 +1,6 @@
 import 'package:cafetoria/cafetoria.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
@@ -57,15 +56,12 @@ class _CafetoriaInfoCardState extends InfoCardState<CafetoriaInfoCard> {
       heroId: '${CafetoriaKeys.cafetoria}-0',
       heroIdNavigation: CafetoriaKeys.cafetoria,
       actions: [
-        NavigationAction(Icons.list, () {
+        NavigationAction(Icons.expand_more, () {
           Navigator.of(context).push(
             MaterialPageRoute<void>(
               builder: (context) => CafetoriaPage(),
             ),
           );
-        }),
-        NavigationAction(Icons.credit_card, () async {
-          await launch('https://www.opc-asp.de/vs-aachen/');
         }),
       ],
       title: !loader.hasLoadedData || loader.data.saldo == null

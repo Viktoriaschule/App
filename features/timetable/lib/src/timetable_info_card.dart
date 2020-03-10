@@ -75,14 +75,14 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
                   final substitutions = spLoader.hasLoadedData
                       ? subject.getSubstitutions(widget.date, spLoader.data)
                       : <Substitution>[];
+                  // Show the normal lessen if it is an exam, but not of the same subjects, as this unit
+                  final showNormal = substitutions.length == 1 &&
+                      substitutions.first.type == 2 &&
+                      substitutions.first.courseID != subject.courseID;
                   return Container(
                     margin: EdgeInsets.all(10),
                     child: Column(
                       children: [
-                        if (substitutions.isEmpty)
-                          TimetableRow(
-                            subject: subject,
-                          ),
                         SubstitutionList(
                           substitutions: substitutions
                               .where((substitution) =>
@@ -90,6 +90,15 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
                               .toList(),
                           padding: false,
                         ),
+                        if (substitutions.isEmpty || showNormal)
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: substitutions.isNotEmpty ? 5 : 0),
+                            child: TimetableRow(
+                              subject: subject,
+                              hideUnit: substitutions.isNotEmpty,
+                            ),
+                          )
                       ],
                     ),
                   );

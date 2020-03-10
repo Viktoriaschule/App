@@ -65,7 +65,10 @@ class _AppPageState extends Interactor<AppPage>
         return StatusCode.success;
       } else if (result == StatusCode.success) {
         // First sync the tags
-        await Static.tags.syncDevice(context);
+        await Static.tags.syncDevice(
+          context,
+          FeaturesWidget.of(context).features,
+        );
         await Static.tags.syncToServer(
           context,
           FeaturesWidget.of(context).features,
@@ -196,15 +199,19 @@ class _AppPageState extends Interactor<AppPage>
               _permissionsChecking = true;
             });
             _permissionsGranted =
-                await Static.firebaseMessaging.requestNotificationPermissions();
-            await Static.tags.syncDevice(context);
+            await Static.firebaseMessaging.requestNotificationPermissions();
+            await Static.tags.syncDevice(
+              context,
+              FeaturesWidget
+                  .of(context)
+                  .features,
+            );
             setState(() {
               _permissionsChecking = false;
             });
           },
           child: Icon(
             Icons.notifications_off,
-            size: 28,
             color: ThemeWidget.of(context).textColor,
           ),
         ),
@@ -227,7 +234,6 @@ class _AppPageState extends Interactor<AppPage>
           },
           child: Icon(
             MdiIcons.cellphoneArrowDown,
-            size: 28,
             color: ThemeWidget.of(context).textColor,
           ),
         ),
@@ -251,8 +257,9 @@ class _AppPageState extends Interactor<AppPage>
                 },
                 icon: Icon(
                   Icons.settings,
-                  size: 28,
-                  color: ThemeWidget.of(context).textColor,
+                  color: ThemeWidget
+                      .of(context)
+                      .textColor,
                 ),
               ),
             ],
@@ -261,11 +268,9 @@ class _AppPageState extends Interactor<AppPage>
             loadingKeys: [Keys.tags, Keys.subjects, Keys.updates],
           ),
         ],
-        body: LayoutBuilder(
-          builder: (context, constraints) => CustomRefreshIndicator(
-            loadOnline: () => _fetchData(force: true),
-            child: HomePage(),
-          ),
+        body: CustomRefreshIndicator(
+          loadOnline: () => _fetchData(force: true),
+          child: HomePage(),
         ),
       ),
     );

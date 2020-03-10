@@ -13,6 +13,7 @@ class TimetableRow extends StatelessWidget {
     @required this.subject,
     this.showUnit = true,
     this.showSplit = true,
+    this.hideUnit = false,
     Key key,
   })  : assert(subject != null, 'subject must not be null'),
         super(key: key);
@@ -20,11 +21,14 @@ class TimetableRow extends StatelessWidget {
   // ignore: public_member_api_docs
   final TimetableSubject subject;
 
-  // ignore: public_member_api_docs
+  /// If there is space for the unit of not
   final bool showUnit;
 
   // ignore: public_member_api_docs
   final bool showSplit;
+
+  /// If the unit should be hide, but the space should still be there
+  final bool hideUnit;
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +53,12 @@ class TimetableRow extends StatelessWidget {
           ? Align(
               alignment: Alignment(0.3, 0),
               child: Text(
-                (unit + 1).toString(),
+                !hideUnit ? (unit + 1).toString() : '',
                 style: TextStyle(
                   fontSize: 25,
-                  color: ThemeWidget.of(context).textColorLight,
+                  color: ThemeWidget
+                      .of(context)
+                      .textColorLight,
                   fontWeight: FontWeight.w100,
                 ),
               ),
