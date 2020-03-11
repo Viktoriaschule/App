@@ -44,11 +44,11 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
   Future _registerNotifications(BuildContext context) async {
     if (Platform().isMobile || Platform().isWeb) {
       Static.firebaseMessaging.configure(
-        onLaunch: handleOnLaunchResumeNotification,
-        onResume: handleOnLaunchResumeNotification,
-        onMessage: handleOnMessageNotification,
+        onLaunch: _handleOnLaunchResumeNotification,
+        onResume: _handleOnLaunchResumeNotification,
+        onMessage: _handleOnMessageNotification,
         onBackgroundMessage:
-            _NotificationsWidgetState.handleOnBackgroundMessageNotification,
+            _NotificationsWidgetState._handleOnBackgroundMessageNotification,
       );
     }
     final channels = FeaturesWidget.of(context)
@@ -63,7 +63,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     }
   }
 
-  Future handleOnLaunchResumeNotification(
+  Future _handleOnLaunchResumeNotification(
     Map<String, dynamic> data,
   ) async {
     EventBus.of(context).publish(FetchAppDataEvent());
@@ -88,7 +88,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     }
   }
 
-  Future<dynamic> handleOnMessageNotification(
+  Future<dynamic> _handleOnMessageNotification(
     Map<String, dynamic> d,
   ) async {
     try {
@@ -117,7 +117,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
   }
 
   // This needs to be a static function otherwise it can't be called
-  static Future<dynamic> handleOnBackgroundMessageNotification(
+  static Future<dynamic> _handleOnBackgroundMessageNotification(
     Map<String, dynamic> d,
   ) async {
     final Map<String, dynamic> data = d['data'].cast<String, dynamic>();
