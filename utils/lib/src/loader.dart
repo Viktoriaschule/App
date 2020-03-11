@@ -93,39 +93,47 @@ abstract class Loader<LoaderType> {
   }
 
   /// Download the data from the api and returns the status code
-  Future<StatusCode> loadOnline(BuildContext context,
-          {String username,
-          String password,
-          bool force = false,
-          bool post = false,
-          Map<String, dynamic> body,
-          bool store = true,
-          bool autoLogin = true}) async =>
-      (await _load(context,
-              username: username,
-              password: password,
-              force: force,
-              post: post,
-              body: body,
-              store: store,
-              autoLogin: autoLogin))
+  Future<StatusCode> loadOnline(
+    BuildContext context, {
+    String username,
+    String password,
+    bool force = false,
+    bool post = false,
+    Map<String, dynamic> body,
+    bool store = true,
+    bool showLoginOnWrongCredentials = true,
+  }) async =>
+      (await _load(
+        context,
+        username: username,
+        password: password,
+        force: force,
+        post: post,
+        body: body,
+        store: store,
+        showLoginOnWrongCredentials: showLoginOnWrongCredentials,
+      ))
           .statusCode;
 
   /// Fetches the data
-  Future<LoaderResponse<LoaderType>> fetch(BuildContext context,
-          {String username,
-          String password,
-          bool post = false,
-          Map<String, dynamic> body,
-          bool autoLogin = true}) =>
-      _load(context,
-          username: username,
-          password: password,
-          force: true,
-          post: post,
-          body: body,
-          store: false,
-          autoLogin: autoLogin);
+  Future<LoaderResponse<LoaderType>> fetch(
+    BuildContext context, {
+    String username,
+    String password,
+    bool post = false,
+    Map<String, dynamic> body,
+    bool showLoginOnWrongCredentials = true,
+  }) =>
+      _load(
+        context,
+        username: username,
+        password: password,
+        force: true,
+        post: post,
+        body: body,
+        store: false,
+        showLoginOnWrongCredentials: showLoginOnWrongCredentials,
+      );
 
   /// A function that can be override to process some operations with a valid context before the load function starts
   void preLoad(BuildContext context) => {};
@@ -136,14 +144,16 @@ abstract class Loader<LoaderType> {
   void afterLoad() => {};
 
   /// Download the data from the api and returns the status code
-  Future<LoaderResponse<LoaderType>> _load(BuildContext context,
-      {String username,
-      String password,
-      bool force = false,
-      bool post = false,
-      Map<String, dynamic> body,
-      bool store = true,
-      bool autoLogin = true}) async {
+  Future<LoaderResponse<LoaderType>> _load(
+    BuildContext context, {
+    String username,
+    String password,
+    bool force = false,
+    bool post = false,
+    Map<String, dynamic> body,
+    bool store = true,
+    bool showLoginOnWrongCredentials = true,
+  }) async {
     if (_loadedFromOnline && !force) {
       return LoaderResponse(statusCode: StatusCode.success);
     }
@@ -203,7 +213,9 @@ abstract class Loader<LoaderType> {
           print('$key failed to load');
         }
       }
-      if (response.statusCode == 401 && autoLogin && context != null) {
+      if (response.statusCode == 401 &&
+          showLoginOnWrongCredentials &&
+          context != null) {
         await Navigator.of(context).pushReplacementNamed('/${Keys.login}');
       }
       LoaderType data;
@@ -226,7 +238,7 @@ abstract class Loader<LoaderType> {
         case DioErrorType.RESPONSE:
           if (e.response.statusCode == 401) {
             print('Failed to load $key: Unauthorized');
-            if (autoLogin && context != null) {
+            if (showLoginOnWrongCredentials && context != null) {
               await Navigator.of(context)
                   .pushReplacementNamed('/${Keys.login}');
             }

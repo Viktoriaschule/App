@@ -5,12 +5,12 @@ import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 // ignore: public_member_api_docs
-class _LoginPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<_LoginPage> {
+class _LoginPageState extends State<LoginPage> {
   final FocusNode _passwordFieldFocus = FocusNode();
   final FocusNode _submitButtonFocus = FocusNode();
   final TextEditingController _usernameFieldController =
@@ -35,7 +35,7 @@ class _LoginPageState extends State<_LoginPage> {
       final result = await Static.updates.loadOnline(
         context,
         force: true,
-        autoLogin: false,
+        showLoginOnWrongCredentials: false,
         username: _usernameFieldController.text,
         password: _passwordFieldController.text,
       );
@@ -47,24 +47,13 @@ class _LoginPageState extends State<_LoginPage> {
         Static.user.password = _passwordFieldController.text;
         await Navigator.of(context).pushReplacementNamed('/');
         return;
-      } else {
-        String msg;
-        switch (result) {
-          case StatusCode.unauthorized:
-            msg = AppLocalizations.credentialsWrong;
-            _passwordFieldController.clear();
-            FocusScope.of(context).requestFocus(_passwordFieldFocus);
-            break;
-          case StatusCode.offline:
-            msg = AppLocalizations.needsToBeOnline;
-            break;
-          default:
-            msg = AppLocalizations.errorWhileLoggingIn;
-        }
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(msg),
-        ));
+      } else if (result == StatusCode.unauthorized) {
+        _passwordFieldController.clear();
+        FocusScope.of(context).requestFocus(_passwordFieldFocus);
       }
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text(getStatusCodeMsg(result)),
+      ));
     } on DioError {
       setState(() {
         _checkingLogin = false;
@@ -174,12 +163,4 @@ class _LoginPageState extends State<_LoginPage> {
       ),
     );
   }
-}
-
-// ignore: public_member_api_docs
-class LoginPageWrapper extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        body: _LoginPage(),
-      );
 }

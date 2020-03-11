@@ -58,7 +58,7 @@ class _AppFrameState extends Interactor<AppFrame>
   }) async {
     try {
       final result =
-          await Static.tags.loadOnline(context, force: true, autoLogin: false);
+          await Static.tags.loadOnline(context, force: true, showLoginOnWrongCredentials: false);
       if (result == StatusCode.unauthorized) {
         await _launchLogin();
         // Do not inform the user about an unauthorized error,

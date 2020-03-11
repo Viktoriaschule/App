@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 
 import 'features.dart';
@@ -15,12 +13,12 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends Interactor<HomePage> with AfterLayoutMixin {
-  DateTime day;
-  Future<void> timeUpdates = Future.delayed(Duration(seconds: 0));
-  List<Feature> features;
+class _HomePageState extends State<HomePage> with AfterLayoutMixin {
+  DateTime _day;
+  Future<void> _timeUpdates = Future.delayed(Duration(seconds: 0));
+  List<Feature> _features;
 
-  DateTime getDay(List<Feature> features) {
+  DateTime _getDay(List<Feature> features) {
     // Get the first feature that wants to set the home page day
     for (final feature in features) {
       final date = feature.getHomePageDate();
@@ -33,22 +31,13 @@ class _HomePageState extends Interactor<HomePage> with AfterLayoutMixin {
     return DateTime(now.year, now.month, now.day);
   }
 
-  @override
-  Subscription subscribeEvents(EventBus eventBus) =>
-      eventBus.respond<TimetableUpdateEvent>((event) => update());
-
-  void update() {
-    setState(() => null);
-    timeUpdate();
-  }
-
   /// Cancel the time updater
-  Future<void> cancelTimeUpdate() async {
+  Future<void> _cancelTimeUpdate() async {
     try {
       // After updating the timeout the future will directly stops
-      await timeUpdates.timeout(Duration(seconds: 0));
+      await _timeUpdates.timeout(Duration(seconds: 0));
       // Wait until the future is finished
-      await timeUpdates;
+      await _timeUpdates;
     } on TimeoutException {
       // An await throws a timeout when the future was finished after a timeout, so catch them
       return;
@@ -56,58 +45,57 @@ class _HomePageState extends Interactor<HomePage> with AfterLayoutMixin {
   }
 
   /// Update the time automatically
-  Future<void> timeUpdate() async {
-    if (features != null) {
-      // Get the closest duration
-      Duration duration;
-      for (final feature in features) {
-        final d = feature.durationToHomePageDateUpdate();
-        if (d != null &&
-            (duration == null || duration.inSeconds > d.inSeconds)) {
-          if (d.inSeconds < 0) {
-            print('Error in ${feature.name} time update duration: $duration');
-          } else {
-            duration = d;
-          }
+  Future<void> _timeUpdate() async {
+    // Get the closest duration
+    Duration duration;
+    for (final feature in _features) {
+      final d = feature.durationToHomePageDateUpdate();
+      if (d != null && (duration == null || duration.inSeconds > d.inSeconds)) {
+        if (d.inSeconds < 0) {
+          print('Error in ${feature.name} time update duration: $duration');
+        } else {
+          duration = d;
         }
       }
+    }
 
-      // Only set if there is any feature that wants to update after s specific time
-      if (duration != null) {
-        // First cancel the current updater
-        await cancelTimeUpdate();
+    // Only set if there is a feature that wants to update after a specific time
+    if (duration != null) {
+      // First cancel the current updater
+      await _cancelTimeUpdate();
 
-        // Set the new updater
-        timeUpdates = Future.delayed(duration).then((_) {
-          if (mounted) {
-            update();
-          }
-        });
-      }
+      // Set the new updater
+      _timeUpdates = Future.delayed(duration).then((_) {
+        if (mounted) {
+          setState(() {
+            _day = _getDay(_features);
+          });
+          _timeUpdate();
+        }
+      });
     }
   }
 
   @override
   void dispose() {
-    cancelTimeUpdate();
+    _cancelTimeUpdate();
     super.dispose();
   }
 
   @override
   void afterFirstLayout(BuildContext context) {
-    features = FeaturesWidget.of(context).features;
-    timeUpdate();
+    _features = FeaturesWidget.of(context).features;
+    _timeUpdate();
   }
 
   @override
   Widget build(BuildContext context) {
     //final size = getScreenSize(MediaQuery.of(context).size.width);
     // Get the date for the home page
-    final day = getDay(features ?? FeaturesWidget.of(context).features);
 
     final widgetBuilders = FeaturesWidget.of(context)
         .features
-        .map((f) => () => f.getInfoCard(day))
+        .map((f) => () => f.getInfoCard(_day))
         .toList();
 
     //TODO: if (size == ScreenSize.small) {
@@ -235,5 +223,5 @@ class _HomePageState extends Interactor<HomePage> with AfterLayoutMixin {
     */
   }
 
-  // final _screenPadding = 110;
+// final _screenPadding = 110;
 }

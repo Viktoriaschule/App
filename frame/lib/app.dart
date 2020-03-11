@@ -41,7 +41,7 @@ class _AppState extends Interactor<App> {
           theme: ThemeWidget.of(context).theme,
           routes: <String, WidgetBuilder>{
             '/': (context) => AppFrame(),
-            '/${Keys.login}': (context) => LoginPageWrapper(),
+            '/${Keys.login}': (context) => LoginPage(),
           },
           builder: (context, child) => Scaffold(
             body: ThemeUpdateWidget(
