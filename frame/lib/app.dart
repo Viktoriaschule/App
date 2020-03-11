@@ -40,7 +40,7 @@ class _AppState extends Interactor<App> {
           title: widget.appName,
           theme: ThemeWidget.of(context).theme,
           routes: <String, WidgetBuilder>{
-            '/': (context) => AppPage(),
+            '/': (context) => AppFrame(),
             '/${Keys.login}': (context) => LoginPageWrapper(),
           },
           builder: (context, child) => Scaffold(

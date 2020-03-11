@@ -11,13 +11,13 @@ import 'home_page.dart';
 import 'settings_page.dart';
 
 // ignore: public_member_api_docs
-class AppPage extends StatefulWidget {
+class AppFrame extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _AppPageState();
+  State<StatefulWidget> createState() => _AppFrameState();
 }
 
-class _AppPageState extends Interactor<AppPage>
-    with SingleTickerProviderStateMixin, AfterLayoutMixin<AppPage> {
+class _AppFrameState extends Interactor<AppFrame>
+    with SingleTickerProviderStateMixin, AfterLayoutMixin<AppFrame> {
   bool _permissionsGranted = true;
   bool _permissionsChecking = false;
   bool _canInstall = false;
