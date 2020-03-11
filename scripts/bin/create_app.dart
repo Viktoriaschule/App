@@ -351,6 +351,21 @@ Future main(List<String> arguments) async {
                     '$baseDir/scripts/templates/RunConfigurationRelease.xml.tmpl')
                 .readAsStringSync())
             .renderString(templateData));
+    File('$baseDir/.idea/runConfigurations/${fullName}_Profile.xml')
+        .writeAsStringSync(Template(File(
+                    '$baseDir/scripts/templates/RunConfigurationProfile.xml.tmpl')
+                .readAsStringSync())
+            .renderString(templateData));
+
+    await run(
+      'git',
+      [
+        'add',
+        '*',
+        '-f',
+      ],
+      workingDirectory: '$baseDir/.idea/runConfigurations',
+    );
 
     log('Finished');
   }
