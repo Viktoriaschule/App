@@ -72,7 +72,7 @@ class _CalendarGridItemState extends State<CalendarGridItem> {
         child: Container(
           padding: EdgeInsets.all(2.5),
           decoration: BoxDecoration(
-            color: _isToday() ? Colors.blue.shade100 : null,
+            color: _isToday() ? Colors.blue.withOpacity(0.10) : null,
             border: Border(
               right: BorderSide(
                 color: _isToday() ||
@@ -91,15 +91,22 @@ class _CalendarGridItemState extends State<CalendarGridItem> {
             widget.date.day.toString(),
             style: TextStyle(
               color: _isWeekend()
-                  ? ThemeWidget.of(context).brightness == Brightness.light
-                      ? Colors.red
-                      : Colors.red.withOpacity(0.5)
+                  ? ThemeWidget
+                  .of(context)
+                  .brightness == Brightness.light
+                  ? Colors.red
+                  : Colors.red.withOpacity(0.5)
                   : !widget.main
-                      ? ThemeWidget.of(context).textColor.withOpacity(0.5)
-                      : _isToday()
-                          ? Colors.blue
-                          : ThemeWidget.of(context).textColor,
-              fontWeight: widget.main ? FontWeight.bold : null,
+                  ? ThemeWidget
+                  .of(context)
+                  .textColor
+                  .withOpacity(0.5)
+                  : _isToday()
+                  ? Colors.blue
+                  : ThemeWidget
+                  .of(context)
+                  .textColor,
+              fontWeight: widget.main ? null : FontWeight.w100,
             ),
           ),
         ),
