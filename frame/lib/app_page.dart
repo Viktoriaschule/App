@@ -2,12 +2,13 @@ import 'package:after_layout/after_layout.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:frame/home/home_page.dart';
-import 'package:frame/settings/settings_page.dart';
-import 'package:frame/utils/features.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
+
+import 'features.dart';
+import 'home_page.dart';
+import 'settings_page.dart';
 
 // ignore: public_member_api_docs
 class AppPage extends StatefulWidget {
@@ -199,12 +200,10 @@ class _AppPageState extends Interactor<AppPage>
               _permissionsChecking = true;
             });
             _permissionsGranted =
-            await Static.firebaseMessaging.requestNotificationPermissions();
+                await Static.firebaseMessaging.requestNotificationPermissions();
             await Static.tags.syncDevice(
               context,
-              FeaturesWidget
-                  .of(context)
-                  .features,
+              FeaturesWidget.of(context).features,
             );
             setState(() {
               _permissionsChecking = false;
@@ -257,9 +256,7 @@ class _AppPageState extends Interactor<AppPage>
                 },
                 icon: Icon(
                   Icons.settings,
-                  color: ThemeWidget
-                      .of(context)
-                      .textColor,
+                  color: ThemeWidget.of(context).textColor,
                 ),
               ),
             ],
