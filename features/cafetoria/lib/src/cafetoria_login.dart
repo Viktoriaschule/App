@@ -182,10 +182,10 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
                                   color: Theme.of(context).primaryColor,
                                 )
                               : Text(
-                            AppLocalizations.login,
-                            style: TextStyle(
-                              color: darkColor,
-                            ),
+                                  AppLocalizations.login,
+                                  style: TextStyle(
+                                    color: darkColor,
+                                  ),
                                 ),
                         ),
                       ),
@@ -222,10 +222,10 @@ class CafetoriaLoginState extends State<CafetoriaLogin> {
                                     color: Theme.of(context).primaryColor,
                                   )
                                 : Text(
-                              AppLocalizations.logout,
-                              style: TextStyle(
-                                color: darkColor,
-                              ),
+                                    AppLocalizations.logout,
+                                    style: TextStyle(
+                                      color: darkColor,
+                                    ),
                                   ),
                           ),
                         ),

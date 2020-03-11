@@ -140,10 +140,10 @@ class TimetableDay {
           ? units
               .map((unit) => unit.getSelected(selection))
               .where((subject) =>
-      subject != null &&
-          subject.subjectID != TimetableLocalizations.lunchBreak &&
-          DateTime.now()
-              .isBefore(date.add(Times.getUnitTimes(subject.unit)[1])))
+                  subject != null &&
+                  subject.subjectID != TimetableLocalizations.lunchBreak &&
+                  DateTime.now()
+                      .isBefore(date.add(Times.getUnitTimes(subject.unit)[1])))
               .toList()
           : [];
 

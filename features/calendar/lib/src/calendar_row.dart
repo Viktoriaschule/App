@@ -63,7 +63,7 @@ class _CalendarRowState extends State<CalendarRow>
                 color: ThemeWidget.of(context).textColor,
                 fontWeight: FontWeight.w100),
           ),
-    last: Platform().isMobile && widget.showAddButton
+          last: Platform().isMobile && widget.showAddButton
               ? IconButton(
                   onPressed: () {
                     final startDate = widget.event.start.subtract(Duration(

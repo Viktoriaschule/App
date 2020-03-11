@@ -72,9 +72,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                           try {
                             await Static.tags.syncDevice(
                               context,
-                              FeaturesWidget
-                                  .of(context)
-                                  .features,
+                              FeaturesWidget.of(context).features,
                             );
                             // ignore: empty_catches
                           } on DioError {}

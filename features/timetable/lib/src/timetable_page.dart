@@ -177,7 +177,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                       // ignore: omit_local_variable_types
                       final List<Substitution> substitutions =
                           subject?.getSubstitutions(
-                              day, substitutionPlanFeature.loader.data) ??
+                                  day, substitutionPlanFeature.loader.data) ??
                               [];
                       // Show the normal lessen if it is an exam, but not of the same subjects, as this unit
                       final showNormal = substitutions.length == 1 &&
@@ -189,11 +189,10 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                             if (unit.subjects.length > 1) {
                               // ignore: omit_local_variable_types
                               final TimetableSubject selection =
-                              await showDialog(
+                                  await showDialog(
                                 context: context,
-                                builder: (context) =>
-                                    TimetableSelectDialog(
-                                      weekday: weekday,
+                                builder: (context) => TimetableSelectDialog(
+                                  weekday: weekday,
                                   unit: unit,
                                 ),
                               );
@@ -225,7 +224,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                                     padding: false,
                                     substitutions: substitutions
                                         .where((substitution) =>
-                                    substitution.unit == subject.unit)
+                                            substitution.unit == subject.unit)
                                         .toList(),
                                   ),
                                 if (substitutions.isEmpty || showNormal)
@@ -246,10 +245,9 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                                           ),
                                       hideUnit: substitutions.isNotEmpty,
                                       showUnit: getScreenSize(
-                                          MediaQuery
-                                              .of(context)
-                                              .size
-                                              .width) !=
+                                              MediaQuery.of(context)
+                                                  .size
+                                                  .width) !=
                                           ScreenSize.big,
                                     ),
                                   ),

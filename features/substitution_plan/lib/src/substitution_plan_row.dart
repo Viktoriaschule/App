@@ -78,22 +78,20 @@ class SubstitutionPlanRow extends StatelessWidget {
                   color: ThemeWidget.of(context).textColorLight,
                   fontWeight: FontWeight.w100,
                 ),
-        ),
-      )
+              ),
+            )
           : keepPadding ? Container() : null,
       title: Static.subjects.hasLoadedData
           ? (infoText.isNotEmpty
-          ? infoText.join(' ')
-          : Static.subjects.data
-          .getSubject(substitution.original.subjectID))
+              ? infoText.join(' ')
+              : Static.subjects.data
+                  .getSubject(substitution.original.subjectID))
           : null,
       subtitle: Text(
         subtitle,
         style: TextStyle(
           decoration: lineThrough ? TextDecoration.lineThrough : null,
-          color: ThemeWidget
-              .of(context)
-              .textColorLight,
+          color: ThemeWidget.of(context).textColorLight,
           fontWeight: FontWeight.w100,
         ),
       ),
@@ -109,30 +107,26 @@ class SubstitutionPlanRow extends StatelessWidget {
                   substitution.changed.teacherID != null
                       ? substitution.changed.teacherID.toUpperCase()
                       : substitution.original.teacherID != null
-                      ? substitution.original.teacherID.toUpperCase()
-                      : '',
+                          ? substitution.original.teacherID.toUpperCase()
+                          : '',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w300,
-                    color: ThemeWidget
-                        .of(context)
-                        .textColor,
+                    color: ThemeWidget.of(context).textColor,
                     fontFamily: 'RobotoMono',
                   ),
                 ),
                 Text(
                   substitution.original.teacherID != null &&
-                      substitution.changed.teacherID != null &&
-                      substitution.original.teacherID !=
-                          substitution.changed.teacherID
+                          substitution.changed.teacherID != null &&
+                          substitution.original.teacherID !=
+                              substitution.changed.teacherID
                       ? substitution.original.teacherID.toUpperCase()
                       : '',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w300,
-                    color: ThemeWidget
-                        .of(context)
-                        .textColor,
+                    color: ThemeWidget.of(context).textColor,
                     decoration: TextDecoration.lineThrough,
                     fontFamily: 'RobotoMono',
                   ),
@@ -149,30 +143,26 @@ class SubstitutionPlanRow extends StatelessWidget {
                   substitution.changed.roomID != null
                       ? substitution.changed.roomID.toUpperCase()
                       : substitution.original.roomID != null
-                      ? substitution.original.roomID.toUpperCase()
-                      : '',
+                          ? substitution.original.roomID.toUpperCase()
+                          : '',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w300,
-                    color: ThemeWidget
-                        .of(context)
-                        .textColor,
+                    color: ThemeWidget.of(context).textColor,
                     fontFamily: 'RobotoMono',
                   ),
                 ),
                 Text(
                   substitution.type != 1 &&
-                      substitution.original.roomID != null &&
-                      substitution.changed.roomID != null &&
-                      substitution.original.roomID !=
-                          substitution.changed.roomID
+                          substitution.original.roomID != null &&
+                          substitution.changed.roomID != null &&
+                          substitution.original.roomID !=
+                              substitution.changed.roomID
                       ? substitution.original.roomID.toUpperCase()
                       : '',
                   style: TextStyle(
                     fontSize: 14,
-                    color: ThemeWidget
-                        .of(context)
-                        .textColor,
+                    color: ThemeWidget.of(context).textColor,
                     decoration: TextDecoration.lineThrough,
                     fontWeight: FontWeight.w300,
                     fontFamily: 'RobotoMono',

@@ -90,7 +90,7 @@ class AiXformationPageState extends Interactor<AiXformationPage> {
                   },
                 )
               : Center(
-            child: EmptyList(title: AiXformationLocalizations.noArticle),
+                  child: EmptyList(title: AiXformationLocalizations.noArticle),
                 ),
         ),
       ),

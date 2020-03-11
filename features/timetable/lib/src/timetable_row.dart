@@ -56,9 +56,7 @@ class TimetableRow extends StatelessWidget {
                 !hideUnit ? (unit + 1).toString() : '',
                 style: TextStyle(
                   fontSize: 25,
-                  color: ThemeWidget
-                      .of(context)
-                      .textColorLight,
+                  color: ThemeWidget.of(context).textColorLight,
                   fontWeight: FontWeight.w100,
                 ),
               ),
