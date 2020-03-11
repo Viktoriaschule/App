@@ -4,9 +4,10 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:frame/utils/features.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
+
+import 'features.dart';
 
 // ignore: public_member_api_docs
 class HomePage extends StatefulWidget {

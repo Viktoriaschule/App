@@ -1,9 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:utils/utils.dart';
 
-import 'app_frame.dart';
+import 'app.dart';
+import 'features.dart';
 
 /// Start the app
 Future startApp({
@@ -21,8 +23,16 @@ Future startApp({
   Static.storage = Storage();
   await Static.storage.init();
   await setupDateFormats();
-  runApp(AppFrame(
-    appName: name,
-    features: features,
+  runApp(EventBusWidget(
+    child: Features(
+      features: features,
+      child: Pages(
+        child: ThemeWidget(
+          child: App(
+            appName: name,
+          ),
+        ),
+      ),
+    ),
   ));
 }

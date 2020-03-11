@@ -144,7 +144,7 @@ class _LoginPageState extends State<_LoginPage> {
                 color: Theme.of(context).primaryColor,
               )
             : Text(
-                'Anmelden',
+                AppLocalizations.login,
                 style: TextStyle(
                   color: darkColor,
                 ),
