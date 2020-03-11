@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
 
-import 'app_page.dart';
+import 'app_frame.dart';
 import 'login_page.dart';
 import 'notifications.dart';
 
