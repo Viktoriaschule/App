@@ -22,11 +22,11 @@ Future startApp({
 
   Static.storage = Storage();
   await Static.storage.init();
-  await setupDateFormats();
+
   runApp(EventBusWidget(
     child: Features(
       features: features,
-      child: Pages(
+      child: LoadingState(
         child: ThemeWidget(
           child: App(
             appName: name,

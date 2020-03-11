@@ -86,7 +86,7 @@ abstract class Loader<LoaderType> {
         Static.storage.remove(key);
       }
       afterLoad();
-      _sendLoadedEvent(Pages.of(context), EventBus.of(context));
+      _sendLoadedEvent(LoadingState.of(context), EventBus.of(context));
       return parsed.statusCode;
     }
     return StatusCode.success;
@@ -148,11 +148,11 @@ abstract class Loader<LoaderType> {
       return LoaderResponse(statusCode: StatusCode.success);
     }
 
-    final pages = context != null ? Pages.of(context) : null;
+    final loadingStates = context != null ? LoadingState.of(context) : null;
     final eventBus = context != null ? EventBus.of(context) : null;
 
     // Inform the gui about this loading process
-    _sendLoadingEvent(pages, eventBus);
+    _sendLoadingEvent(loadingStates, eventBus);
 
     // Run the pre load for custom loader operations
     preLoad(context);
@@ -212,7 +212,7 @@ abstract class Loader<LoaderType> {
       }
 
       afterLoad();
-      _sendLoadedEvent(pages, eventBus);
+      _sendLoadedEvent(loadingStates, eventBus);
       final status = reduceStatusCodes(statusCodes);
       if (status != StatusCode.success) {
         print(
@@ -222,7 +222,7 @@ abstract class Loader<LoaderType> {
       return LoaderResponse<LoaderType>(data: data, statusCode: status);
     } on DioError catch (e) {
       afterLoad();
-      _sendLoadedEvent(pages, eventBus);
+      _sendLoadedEvent(loadingStates, eventBus);
       switch (e.type) {
         case DioErrorType.RESPONSE:
           if (e.response.statusCode == 401) {
@@ -250,20 +250,20 @@ abstract class Loader<LoaderType> {
   }
 
   /// Sets the page loading state
-  void _setLoading(Pages pages, EventBus eventBus, bool isLoading) {
-    pages?.setLoading(key, isLoading);
+  void _setLoading(LoadingState loadingStates, EventBus eventBus, bool isLoading) {
+    loadingStates?.setLoading(key, isLoading);
     eventBus?.publish(LoadingStatusChangedEvent(key));
   }
 
   // ignore: public_member_api_docs
-  void _sendLoadingEvent(Pages pages, EventBus eventBus) {
-    _setLoading(pages, eventBus, true);
+  void _sendLoadingEvent(LoadingState loadingStates, EventBus eventBus) {
+    _setLoading(loadingStates, eventBus, true);
   }
 
   // ignore: public_member_api_docs
-  void _sendLoadedEvent(Pages pages, EventBus eventBus) {
+  void _sendLoadedEvent(LoadingState loadingStates, EventBus eventBus) {
     eventBus?.publish(event);
-    _setLoading(pages, eventBus, false);
+    _setLoading(loadingStates, eventBus, false);
   }
 
   // ignore: public_member_api_docs

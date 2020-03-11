@@ -149,9 +149,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                         SubstitutionPlanLocalizations.otherSubstitutions,
                         style: TextStyle(
                           fontSize: 16,
-                          color: ThemeWidget
-                              .of(context)
-                              .textColor,
+                          color: ThemeWidget.of(context).textColor,
                         ),
                       ),
                     ),
@@ -164,9 +162,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                         SubstitutionPlanLocalizations.substitutions,
                         style: TextStyle(
                           fontSize: 16,
-                          color: ThemeWidget
-                              .of(context)
-                              .textColor,
+                          color: ThemeWidget.of(context).textColor,
                         ),
                       ),
                     ),
@@ -185,13 +181,13 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                     }
                     final myChangesWidget = myChanges.isEmpty
                         ? EmptyList(
-                        title:
-                        SubstitutionPlanLocalizations.noSubstitutions)
+                            title:
+                                SubstitutionPlanLocalizations.noSubstitutions)
                         : SubstitutionList(substitutions: myChanges);
                     final notMyChangesWidget = notMyChanges.isEmpty
                         ? EmptyList(
-                        title:
-                        SubstitutionPlanLocalizations.noSubstitutions)
+                            title:
+                                SubstitutionPlanLocalizations.noSubstitutions)
                         : SubstitutionList(substitutions: notMyChanges);
                     items = [
                       if (getScreenSize(MediaQuery.of(context).size.width) !=
@@ -216,7 +212,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                       else
                         ListGroup(
                           title:
-                          SubstitutionPlanLocalizations.otherSubstitutions,
+                              SubstitutionPlanLocalizations.otherSubstitutions,
                           children: [
                             Container(
                               margin: EdgeInsets.only(
@@ -235,8 +231,8 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                     }
                     final changesWidget = changes.isEmpty
                         ? EmptyList(
-                        title:
-                        SubstitutionPlanLocalizations.noSubstitutions)
+                            title:
+                                SubstitutionPlanLocalizations.noSubstitutions)
                         : SubstitutionList(substitutions: changes);
                     items = [
                       if (getScreenSize(MediaQuery.of(context).size.width) !=
@@ -277,7 +273,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                                     Icons.timer,
                                   ],
                                   texts: [
-                                    outputDateFormat
+                                    shortOutputDateFormat
                                         .format(loader.data.days[index].date),
                                     timeago.format(
                                       loader.data.days[index].updated,
@@ -295,10 +291,10 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                   ];
                 },
               ),
-      )
+            )
           : Center(
-          child: EmptyList(
-              title: SubstitutionPlanLocalizations.noSubstitutionPlan)),
+              child: EmptyList(
+                  title: SubstitutionPlanLocalizations.noSubstitutionPlan)),
     );
   }
 }

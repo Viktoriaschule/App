@@ -237,13 +237,12 @@ class _AppFrameState extends Interactor<AppFrame>
           ),
         ),
     ];
-    final pages = Pages.of(context).pages;
     return Scaffold(
       extendBody: true,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxScrolled) => [
           CustomAppBar(
-            title: pages[Keys.home].title,
+            title: AppLocalizations.homepage,
             actions: [
               ...webActions,
               IconButton(

@@ -7,23 +7,20 @@ import 'keys.dart';
 import 'plugins/platform/platform.dart';
 import 'static.dart';
 
-// ignore: public_member_api_docs
-final Color lightColor = Color(0xFFFAFAFA);
-// ignore: public_member_api_docs
-final Color lightBackgroundColor = lightColor;
+final Color _lightColor = Color(0xFFFAFAFA);
+final Color _lightBackgroundColor = _lightColor;
+// TODO: make [darkColor] private access
 // ignore: public_member_api_docs
 final Color darkColor = Color(0xFF424242);
-// ignore: public_member_api_docs
-final Color darkColorLight = Color(0x90000000);
-// ignore: public_member_api_docs
-final Color darkBackgroundColor = Color(0xFF303030);
+final Color _darkColorLight = Color(0x90000000);
+final Color _darkBackgroundColor = Color(0xFF303030);
 
 final _accentColor = Color(0xFF74B451);
 
 /// Get the theme of the app
 ThemeData get _theme => ThemeData(
       brightness: Brightness.light,
-      primaryColor: lightColor,
+      primaryColor: _lightColor,
       accentColor: _accentColor,
       primaryIconTheme: IconThemeData(
         color: darkColor,
@@ -31,8 +28,8 @@ ThemeData get _theme => ThemeData(
       cardTheme: CardTheme(
         elevation: Platform().isWeb ? 2 : 5,
       ),
-      cardColor: lightColor,
-      backgroundColor: lightBackgroundColor,
+      cardColor: _lightColor,
+      backgroundColor: _lightBackgroundColor,
       fontFamily: 'Ubuntu',
     );
 
@@ -43,10 +40,10 @@ ThemeData get _darkTheme => ThemeData(
       accentColor: _theme.accentColor,
       highlightColor: Color(0xFF666666),
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: Color.lerp(darkColor, darkBackgroundColor, 0.5),
+        backgroundColor: Color.lerp(darkColor, _darkBackgroundColor, 0.5),
         actionTextColor: _theme.accentColor,
         contentTextStyle: TextStyle(
-          color: lightColor,
+          color: _lightColor,
         ),
       ),
       primaryIconTheme: IconThemeData(
@@ -54,7 +51,7 @@ ThemeData get _darkTheme => ThemeData(
       ),
       cardTheme: _theme.cardTheme,
       cardColor: darkColor,
-      backgroundColor: darkBackgroundColor,
+      backgroundColor: _darkBackgroundColor,
       fontFamily: 'Ubuntu',
     );
 
@@ -100,7 +97,7 @@ class ThemeWidget extends InheritedWidget {
 
   /// Get the text color according to the theme
   Color get textColorLight =>
-      brightness == Brightness.light ? darkColorLight : Color(0xFFCCCCCC);
+      brightness == Brightness.light ? _darkColorLight : Color(0xFFCCCCCC);
 }
 
 // ignore: public_member_api_docs

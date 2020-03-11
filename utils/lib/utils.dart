@@ -1,6 +1,5 @@
 library utils;
 
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:utils/src/localizations.dart';
 
@@ -10,8 +9,8 @@ export 'src/feature_utils/feature.dart';
 export 'src/info_card_utils.dart';
 export 'src/keys.dart';
 export 'src/loader.dart';
+export 'src/loading_state.dart';
 export 'src/localizations.dart';
-export 'src/pages.dart';
 export 'src/plugins/firebase/firebase.dart';
 export 'src/plugins/platform/platform.dart';
 export 'src/plugins/pwa/pwa.dart';
@@ -146,39 +145,6 @@ DateFormat outputDateFormat = DateFormat('dd.MM.y');
 
 /// The short date format to display all dates in
 DateFormat shortOutputDateFormat = DateFormat('dd.MM');
-
-/// The date and time format to display all dates and times in
-DateFormat outputDateTimeFormat = DateFormat('dd.MM.y HH:mm');
-
-var _dateFormats = [];
-
-/// Setup all date formats used by the web server
-Future setupDateFormats() async {
-  await initializeDateFormatting('de', null);
-  _dateFormats = [
-    DateFormat.yMMMMd('de'),
-    outputDateFormat,
-  ];
-}
-
-/// Parse a date using any format used by the server
-DateTime parseDate(String date) {
-  for (final format in _dateFormats.cast<DateFormat>()) {
-    try {
-      try {
-        if (format.parse(date).year < 2000) {
-          date =
-              '${date.split('.')[0]}.${date.split('.')[1]}.${(int.parse(date.split('.')[2]) + 2000).toString()}';
-        }
-        // ignore: empty_catches
-      } on Exception {}
-
-      return format.parse(date);
-      // ignore: avoid_catches_without_on_clauses, empty_catches
-    } catch (e) {}
-  }
-  throw FormatException('$date was not matching any date formats');
-}
 
 /// Get the week number of a year by date
 int weekNumber(DateTime date) {

@@ -42,7 +42,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
         .toList();
     return Scaffold(
       appBar: CustomAppBar(
-        title: Pages.of(context).pages[Keys.settings].title,
+        title: SettingsLocalizations.settings,
         loadingKeys: [Keys.tags],
       ),
       body: Scrollbar(

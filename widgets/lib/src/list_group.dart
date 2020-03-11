@@ -75,7 +75,7 @@ class _ListGroupState extends Interactor<ListGroup>
       eventBus.respond<LoadingStatusChangedEvent>((event) async {
         if (widget.loadingKeys.contains(event.key)) {
           setState(() {
-            _isLoading = Pages.of(context).isLoading(widget.loadingKeys);
+            _isLoading = LoadingState.of(context).isLoading(widget.loadingKeys);
           });
         }
       });
@@ -83,7 +83,7 @@ class _ListGroupState extends Interactor<ListGroup>
   @override
   void afterFirstLayout(BuildContext context) {
     setState(() {
-      _isLoading = Pages.of(context).isLoading(widget.loadingKeys);
+      _isLoading = LoadingState.of(context).isLoading(widget.loadingKeys);
     });
   }
 
