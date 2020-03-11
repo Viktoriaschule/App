@@ -83,15 +83,15 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
   }
 
   @override
-  void afterFirstLayout(BuildContext context) {
-    _features = FeaturesWidget.of(context).features;
-    _timeUpdate();
-  }
+  void afterFirstLayout(BuildContext context) => _timeUpdate();
 
   @override
   Widget build(BuildContext context) {
     //final size = getScreenSize(MediaQuery.of(context).size.width);
     // Get the date for the home page
+
+    _features ??= FeaturesWidget.of(context).features;
+    _day ??= _getDay(_features);
 
     final widgetBuilders = FeaturesWidget.of(context)
         .features
