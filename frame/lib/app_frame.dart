@@ -1,5 +1,4 @@
 import 'package:after_layout/after_layout.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -56,54 +55,49 @@ class _AppFrameState extends Interactor<AppFrame>
   Future<StatusCode> _fetchData({
     bool force = false,
   }) async {
-    try {
-      final result =
-          await Static.tags.loadOnline(context, force: true, showLoginOnWrongCredentials: false);
-      if (result == StatusCode.unauthorized) {
-        await _launchLogin();
-        // Do not inform the user about an unauthorized error,
-        // because the login screen already tells enough
-        return StatusCode.success;
-      } else if (result == StatusCode.success) {
-        // First sync the tags
-        await Static.tags.syncDevice(
-          context,
-          FeaturesWidget.of(context).features,
-        );
-        await Static.tags.syncToServer(
-          context,
-          FeaturesWidget.of(context).features,
-        );
+    final result = await Static.tags
+        .loadOnline(context, force: true, showLoginOnWrongCredentials: false);
+    if (result == StatusCode.unauthorized) {
+      await _launchLogin();
+      // Do not inform the user about an unauthorized error,
+      // because the login screen already tells enough
+      return StatusCode.success;
+    } else if (result == StatusCode.success) {
+      // First sync the tags
+      await Static.tags.syncDevice(
+        context,
+        FeaturesWidget.of(context).features,
+      );
+      await Static.tags.syncToServer(
+        context,
+        FeaturesWidget.of(context).features,
+      );
 
-        // Then check all updates (If there is something new to update)
-        final response = await Static.updates.fetch(context);
-        if (response.statusCode != StatusCode.success) {
-          return response.statusCode;
-        }
-        final fetchedUpdates = response.data;
-        if (fetchedUpdates == null) {
-          return StatusCode.failed;
-        }
-
-        // Sync the local grade with the server
-        Static.user.grade = fetchedUpdates.getUpdate(Keys.grade);
-
-        //TODO: Move to feature without gui
-        await Static.subjects.update(context, fetchedUpdates, force: force);
-
-        //TODO: Add old app dialog
-
-        return _loadData(
-          online: true,
-          force: force,
-          newUpdates: fetchedUpdates,
-        );
+      // Then check all updates (If there is something new to update)
+      final response = await Static.updates.fetch(context);
+      if (response.statusCode != StatusCode.success) {
+        return response.statusCode;
       }
-      return result;
-    } on DioError {
-      print('Failed to fetch data');
-      return StatusCode.failed;
+      final fetchedUpdates = response.data;
+      if (fetchedUpdates == null) {
+        return StatusCode.failed;
+      }
+
+      // Sync the local grade with the server
+      Static.user.grade = fetchedUpdates.getUpdate(Keys.grade);
+
+      //TODO: Move to feature without gui
+      await Static.subjects.update(context, fetchedUpdates, force: force);
+
+      //TODO: Add old app dialog
+
+      return _loadData(
+        online: true,
+        force: force,
+        newUpdates: fetchedUpdates,
+      );
     }
+    return result;
   }
 
   Future<StatusCode> _loadData({

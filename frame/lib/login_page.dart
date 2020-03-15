@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:utils/utils.dart';
@@ -21,47 +20,38 @@ class _LoginPageState extends State<LoginPage> {
   bool _checkingLogin = false;
 
   Future _submitLogin() async {
-    try {
-      if (_usernameFieldController.text.isEmpty ||
-          _passwordFieldController.text.isEmpty) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.usernamePasswordRequired),
-        ));
-        return;
-      }
-      setState(() {
-        _checkingLogin = true;
-      });
-      final result = await Static.updates.loadOnline(
-        context,
-        force: true,
-        showLoginOnWrongCredentials: false,
-        username: _usernameFieldController.text,
-        password: _passwordFieldController.text,
-      );
-      setState(() {
-        _checkingLogin = false;
-      });
-      if (result == StatusCode.success) {
-        Static.user.username = _usernameFieldController.text;
-        Static.user.password = _passwordFieldController.text;
-        await Navigator.of(context).pushReplacementNamed('/');
-        return;
-      } else if (result == StatusCode.unauthorized) {
-        _passwordFieldController.clear();
-        FocusScope.of(context).requestFocus(_passwordFieldFocus);
-      }
+    if (_usernameFieldController.text.isEmpty ||
+        _passwordFieldController.text.isEmpty) {
       Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text(getStatusCodeMsg(result)),
+        content: Text(AppLocalizations.usernamePasswordRequired),
       ));
-    } on DioError {
-      setState(() {
-        _checkingLogin = false;
-      });
-      Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text(AppLocalizations.errorWhileLoggingIn),
-      ));
+      return;
     }
+    setState(() {
+      _checkingLogin = true;
+    });
+    final result = await Static.updates.loadOnline(
+      context,
+      force: true,
+      showLoginOnWrongCredentials: false,
+      username: _usernameFieldController.text,
+      password: _passwordFieldController.text,
+    );
+    setState(() {
+      _checkingLogin = false;
+    });
+    if (result == StatusCode.success) {
+      Static.user.username = _usernameFieldController.text;
+      Static.user.password = _passwordFieldController.text;
+      await Navigator.of(context).pushReplacementNamed('/');
+      return;
+    } else if (result == StatusCode.unauthorized) {
+      _passwordFieldController.clear();
+      FocusScope.of(context).requestFocus(_passwordFieldFocus);
+    }
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(getStatusCodeMsg(result)),
+    ));
   }
 
   @override

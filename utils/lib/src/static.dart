@@ -26,7 +26,3 @@ class Static {
   // ignore: public_member_api_docs
   static FirebaseMessaging firebaseMessaging = FirebaseMessaging();
 }
-
-typedef VoidCallback = void Function();
-typedef FutureCallback = Future Function();
-typedef FutureCallbackShouldRender = Future Function(bool shouldRender);

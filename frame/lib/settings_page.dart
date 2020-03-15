@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
@@ -69,13 +68,10 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                             Static.storage.setBool(
                                 Keys.notifications(feature.featureKey), value);
                           });
-                          try {
-                            await Static.tags.syncDevice(
-                              context,
-                              FeaturesWidget.of(context).features,
-                            );
-                            // ignore: empty_catches
-                          } on DioError {}
+                          await Static.tags.syncDevice(
+                            context,
+                            FeaturesWidget.of(context).features,
+                          );
                         },
                       ),
                     )

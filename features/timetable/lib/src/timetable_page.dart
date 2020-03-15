@@ -1,6 +1,5 @@
 import 'package:cafetoria/cafetoria.dart';
 import 'package:calendar/calendar.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:substitution_plan/substitution_plan.dart';
@@ -206,13 +205,10 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                                 loader.data,
                               );
                               setState(() {});
-                              try {
-                                await loader.data.selection.save(context);
-                                if (mounted) {
-                                  setState(() {});
-                                }
-                                // ignore: empty_catches
-                              } on DioError {}
+                              await loader.data.selection.save(context);
+                              if (mounted) {
+                                setState(() {});
+                              }
                             }
                           },
                           child: Container(
