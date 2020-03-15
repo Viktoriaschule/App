@@ -42,7 +42,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
     return Scaffold(
       appBar: CustomAppBar(
         title: SettingsLocalizations.settings,
-        loadingKeys: [Keys.tags],
+        loadingKeys: const [Keys.tags],
       ),
       body: Scrollbar(
         child: ListView(
@@ -122,8 +122,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                     // Clear the data of all features
                     FeaturesWidget.of(context)
                         .features
-                        .where((f) => f.loader != null)
-                        .forEach((f) => f.loader.clear());
+                        .forEach((f) => f.loader?.clear());
                     Static.subjects.clear();
                     Static.storage.getKeys().forEach(Static.storage.remove);
                     EventBus.of(context).publish(ThemeChangedEvent());
