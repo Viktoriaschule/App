@@ -1,23 +1,22 @@
 import 'package:cafetoria/cafetoria.dart';
-import 'package:cafetoria/src/cafetoria_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 /// Cafetoria login data
-class CafetoriaLogin extends StatefulWidget {
+class CafetoriaLoginDialog extends StatefulWidget {
   // ignore: public_member_api_docs
-  const CafetoriaLogin({@required this.onFinished});
+  const CafetoriaLoginDialog({@required this.onFinished});
 
   /// Finish callback
   final VoidCallback onFinished;
 
   @override
-  State<StatefulWidget> createState() => CafetoriaLoginState();
+  State<StatefulWidget> createState() => CafetoriaLoginDialogState();
 }
 
 // ignore: public_member_api_docs
-class CafetoriaLoginState extends State<CafetoriaLogin> {
+class CafetoriaLoginDialogState extends State<CafetoriaLoginDialog> {
   final _formKey = GlobalKey<FormState>();
   final _focus = FocusNode();
   bool _credentialsCorrect = true;

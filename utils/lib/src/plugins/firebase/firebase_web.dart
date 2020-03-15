@@ -38,6 +38,7 @@ class FirebaseMessaging extends FirebaseMessagingBase {
   MessageHandler _onMessage;
 
   // TODO: figure out what to do with onBackgroundMessage
+  // ignore: unused_field
   MessageHandler _onBackgroundMessage;
   MessageHandler _onLaunch;
   MessageHandler _onResume;

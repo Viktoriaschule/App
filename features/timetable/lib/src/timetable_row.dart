@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:timetable/src/timetable_localizations.dart';
+import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'timetable_model.dart';
 
 // ignore: public_member_api_docs
 class TimetableRow extends StatelessWidget {

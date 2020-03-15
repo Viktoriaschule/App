@@ -1,8 +1,5 @@
+import 'package:aixformation/aixformation.dart';
 import 'package:utils/utils.dart';
-
-import 'aixformation_events.dart';
-import 'aixformation_keys.dart';
-import 'aixformation_model.dart';
 
 /// AiXformationLoader class
 class AiXformationLoader extends Loader<AiXformation> {

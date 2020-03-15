@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:substitution_plan/substitution_plan.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import '../substitution_plan.dart';
-import 'substitution_plan_model.dart';
 
 // ignore: public_member_api_docs
 class SubstitutionPlanRow extends StatelessWidget {

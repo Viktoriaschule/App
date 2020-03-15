@@ -1,13 +1,10 @@
+import 'package:aixformation/aixformation.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'aixformation_model.dart';
-import 'aixformation_post.dart';
-import 'aixformation_utils.dart';
 
 // ignore: public_member_api_docs
 class AiXformationRow extends StatelessWidget {

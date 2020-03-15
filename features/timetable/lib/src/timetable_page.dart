@@ -3,15 +3,9 @@ import 'package:calendar/calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:substitution_plan/substitution_plan.dart';
-import 'package:timetable/src/timetable_keys.dart';
-import 'package:timetable/src/timetable_localizations.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'timetable_model.dart';
-import 'timetable_row.dart';
-import 'timetable_select_dialog.dart';
 
 // ignore: public_member_api_docs
 class TimetablePage extends StatefulWidget {
@@ -38,7 +32,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
         : DateTime.now());
     return Scaffold(
       appBar: CustomAppBar(
-        title: TimetableWidget.of(context).feature.name,
+        title: TimetableLocalizations.name,
         loadingKeys: [
           TimetableKeys.timetable,
           substitutionPlanFeature.featureKey,

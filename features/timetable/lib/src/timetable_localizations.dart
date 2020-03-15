@@ -1,6 +1,9 @@
 /// All localizations for the cafetoria feature
 class TimetableLocalizations {
   // ignore: public_member_api_docs
+  static const name = 'Stundenplan';
+
+  // ignore: public_member_api_docs
   static const freeLesson = 'Freistunde';
 
   // ignore: public_member_api_docs

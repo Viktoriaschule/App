@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:substitution_plan/substitution_plan.dart';
-import 'package:timetable/src/timetable_keys.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'timetable_page.dart';
-import 'timetable_row.dart';
 
 // ignore: public_member_api_docs
 class TimetableInfoCard extends InfoCard {

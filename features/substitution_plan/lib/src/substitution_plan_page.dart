@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:substitution_plan/src/substitution_plan_keys.dart';
-import 'package:substitution_plan/src/substitution_plan_localizations.dart';
 import 'package:substitution_plan/substitution_plan.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'substitution_list.dart';
-import 'substitution_plan_events.dart';
-import 'substitution_plan_model.dart';
 
 // ignore: public_member_api_docs
 class SubstitutionPlanPage extends StatefulWidget {
@@ -60,7 +54,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
     }
     return Scaffold(
       appBar: CustomAppBar(
-        title: SubstitutionPlanWidget.of(context).feature.name,
+        title: SubstitutionPlanLocalizations.name,
         loadingKeys: [
           SubstitutionPlanKeys.substitutionPlan,
           TimetableWidget.of(context).feature.featureKey,

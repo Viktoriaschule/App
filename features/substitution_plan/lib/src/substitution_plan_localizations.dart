@@ -1,6 +1,9 @@
 /// All localizations for the cafetoria feature
 class SubstitutionPlanLocalizations {
   // ignore: public_member_api_docs
+  static const name = 'Vertretungsplan';
+
+  // ignore: public_member_api_docs
   static const noSubstitutions = 'Keine Änderung';
 
   // ignore: public_member_api_docs

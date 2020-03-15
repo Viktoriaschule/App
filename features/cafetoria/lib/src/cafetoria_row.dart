@@ -1,9 +1,8 @@
+import 'package:cafetoria/cafetoria.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'cafetoria_model.dart';
 
 // ignore: public_member_api_docs
 class CafetoriaRow extends StatefulWidget {

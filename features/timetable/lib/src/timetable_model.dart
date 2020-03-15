@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:substitution_plan/substitution_plan.dart';
-import 'package:timetable/src/timetable_keys.dart';
-import 'package:timetable/src/timetable_localizations.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
-
-import 'timetable_events.dart';
 
 /// Describes the whole timetable
 class Timetable {

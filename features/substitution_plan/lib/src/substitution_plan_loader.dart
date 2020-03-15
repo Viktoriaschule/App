@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
-import 'package:substitution_plan/src/substitution_plan_keys.dart';
+import 'package:flutter/material.dart';
+import 'package:substitution_plan/substitution_plan.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
-
-import 'substitution_plan_events.dart';
-import 'substitution_plan_model.dart';
 
 /// SubstitutionPlanLoader class
 class SubstitutionPlanLoader extends Loader<SubstitutionPlan> {

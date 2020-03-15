@@ -4,12 +4,6 @@ import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
-import 'cafetoria_events.dart';
-import 'cafetoria_keys.dart';
-import 'cafetoria_model.dart';
-import 'cafetoria_page.dart';
-import 'cafetoria_row.dart';
-
 // ignore: public_member_api_docs
 class CafetoriaInfoCard extends InfoCard {
   // ignore: public_member_api_docs
@@ -65,8 +59,8 @@ class _CafetoriaInfoCardState extends InfoCardState<CafetoriaInfoCard> {
         }),
       ],
       title: !loader.hasLoadedData || loader.data.saldo == null
-          ? '${CafetoriaWidget.of(context).feature.name} - ${weekdays[widget.date.weekday - 1]}'
-          : '${CafetoriaWidget.of(context).feature.name} - ${weekdays[widget.date.weekday - 1]} (${loader.data.saldo}€) ',
+          ? '${CafetoriaLocalizations.name} - ${weekdays[widget.date.weekday - 1]}'
+          : '${CafetoriaLocalizations.name} - ${weekdays[widget.date.weekday - 1]} (${loader.data.saldo}€) ',
       counter: _days.length - 1,
       children: [
         if (!loader.hasLoadedData ||
