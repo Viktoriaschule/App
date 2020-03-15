@@ -27,7 +27,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
     return Scaffold(
       appBar: CustomAppBar(
         title: SettingsLocalizations.settings,
-        loadingKeys: [Keys.tags],
+        loadingKeys: const [Keys.tags],
       ),
       body: Scrollbar(
         child: ListView(
