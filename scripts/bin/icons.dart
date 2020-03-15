@@ -1,20 +1,33 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:process_run/cmd_run.dart';
+import 'package:process_run/which.dart';
 import 'package:scripts/base_dir.dart';
 
 Future main(List<String> arguments) async {
+  if (whichSync('inkscape') == null) {
+    throw Exception('Inkscape isn\'t installed');
+  }
   // Copy the white svg to a green svg
-  final fileLogoWhite = File('$baseDir/images/logo_white.svg');
-  final fileLogoGreen = File('$baseDir/images/logo_green.svg');
-  final fileLogoManagementWhite =
-      File('$baseDir/images/logo_management_white.svg');
-  final fileLogoManagementGreen =
-      File('$baseDir/images/logo_management_green.svg');
+  final logoWhitePath = '$baseDir/images/logo_white.svg';
+  final logoGreenPath = '$baseDir/images/logo_green.svg';
+  final logoManagementWhitePath = '$baseDir/images/logo_management_white.svg';
+  final logoManagementGreenPath = '$baseDir/images/logo_management_green.svg';
 
-  final logoWhite = await fileLogoWhite.readAsString();
-  final logoGreen = logoWhite.replaceAll('ffffff', '5bc638');
-  await fileLogoGreen.writeAsString(logoGreen);
+  final logoWhite = await File(logoWhitePath).readAsString();
+  final logoGreen =
+      (logoWhite.replaceAll('#ffffff', 'url(#gradient)').split('\n')
+            ..insertAll(1, [
+              '\t<defs>',
+              '\t\t<linearGradient id="gradient" x1="60%" y1="10%" x2="20%" y2="100%">',
+              '\t\t\t<stop offset="10%" style="stop-color:#008e3f;stop-opacity:1"/>',
+              '\t\t\t<stop offset="70%" style="stop-color:#76bd31;stop-opacity:1"/>',
+              '\t\t</linearGradient>',
+              '\t</defs>',
+            ]))
+          .join('\n');
+  await File(logoGreenPath).writeAsString(logoGreen);
 
   final iPadPath = RegExp('<path.*\/>')
       .firstMatch((await Dio().get(
@@ -33,8 +46,11 @@ Future main(List<String> arguments) async {
             '',
           ))
       .group(0);
-  final logoGreenG = RegExp('<g.*<\/g>')
+  final logoGreenContent = RegExp('<defs.*<\/g>')
       .firstMatch(logoGreen.replaceAll(RegExp('\n|\r'), ''))
+      .group(0);
+  final logoWhiteContent = RegExp('<g.*<\/g>')
+      .firstMatch(logoWhite.replaceAll(RegExp('\n|\r'), ''))
       .group(0);
 
   final managementLogoGreen = [
@@ -44,69 +60,91 @@ Future main(List<String> arguments) async {
     '\t\t$iPadPath',
     '\t</g>',
     '\t<g transform="scale(0.5) translate(512, 448)">',
-    '\t\t$logoGreenG',
+    '\t\t$logoGreenContent',
     '\t</g>',
     '</svg>',
   ].join('\n');
 
-  final managementLogoWhite = managementLogoGreen
-      .replaceAll('5bc638', 'ffffff')
-      .replaceAll('000000', 'ffffff')
-      .replaceAll(RegExp('\t<rect.*\/>\n'), '');
+  final managementLogoWhite = [
+    '<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">',
+    '\t<g fill="#ffffff" transform="scale(42.666) translate(0.5,0)">',
+    '\t\t$iPadPath',
+    '\t</g>',
+    '\t<g transform="scale(0.5) translate(512, 448)">',
+    '\t\t$logoWhiteContent',
+    '\t</g>',
+    '</svg>',
+  ].join('\n');
 
-  await fileLogoManagementGreen.writeAsString(managementLogoGreen);
-  await fileLogoManagementWhite.writeAsString(managementLogoWhite);
+  await File(logoManagementGreenPath).writeAsString(managementLogoGreen);
+  await File(logoManagementWhitePath).writeAsString(managementLogoWhite);
 
-  print('Converting SVGs to PNGs');
+  await svgToPng(
+    logoWhitePath,
+    '$baseDir/images/logo_white_1024x1024.png',
+    1024,
+  );
+  await svgToPng(
+    logoManagementWhitePath,
+    '$baseDir/images/logo_management_white_1024x1024.png',
+    1024,
+  );
+  await svgToPng(
+    logoGreenPath,
+    '$baseDir/images/logo_green_1024x1024.png',
+    1024,
+  );
+  await svgToPng(
+    logoManagementGreenPath,
+    '$baseDir/images/logo_management_green_1024x1024.png',
+    1024,
+  );
+  await svgToPng(
+    logoGreenPath,
+    '$baseDir/images/logo_green_512x512.png',
+    512,
+  );
+  await svgToPng(
+    logoManagementGreenPath,
+    '$baseDir/images/logo_management_green_512x512.png',
+    512,
+  );
+  await svgToPng(
+    logoGreenPath,
+    '$baseDir/images/logo_green_192x192.png',
+    192,
+  );
+  await svgToPng(
+    logoManagementGreenPath,
+    '$baseDir/images/logo_management_green_192x192.png',
+    192,
+  );
+  await svgToPng(
+    logoGreenPath,
+    '$baseDir/images/logo_green_16x16.png',
+    16,
+  );
+  await svgToPng(
+    logoManagementGreenPath,
+    '$baseDir/images/logo_management_green_16x16.png',
+    16,
+  );
+}
 
-  // Create PNGs from SVGs
-  await File('$baseDir/images/logo_white_1024x1024.png')
-      .writeAsBytes(await post(
-    'https://fingeg.de/converter/png?width=1024&height=1024',
-    {'img': logoWhite},
-  ));
-  await File('$baseDir/images/logo_green_1024x1024.png')
-      .writeAsBytes(await post(
-    'https://fingeg.de/converter/png?width=1024&height=1024',
-    {'img': logoGreen},
-  ));
-  await File('$baseDir/images/logo_green_512x512.png').writeAsBytes(await post(
-    'https://fingeg.de/converter/png?width=512&height=512',
-    {'img': logoGreen},
-  ));
-  await File('$baseDir/images/logo_green_192x192.png').writeAsBytes(await post(
-    'https://fingeg.de/converter/png?width=192&height=192',
-    {'img': logoGreen},
-  ));
-  await File('$baseDir/images/logo_green_16x16.png').writeAsBytes(await post(
-    'https://fingeg.de/converter/png?width=16&height=16',
-    {'img': logoGreen},
-  ));
-  await File('$baseDir/images/logo_management_white_1024x1024.png')
-      .writeAsBytes(await post(
-    'https://fingeg.de/converter/png?width=1024&height=1024',
-    {'img': managementLogoWhite},
-  ));
-  await File('$baseDir/images/logo_management_green_1024x1024.png')
-      .writeAsBytes(await post(
-    'https://fingeg.de/converter/png?width=1024&height=1024',
-    {'img': managementLogoGreen},
-  ));
-  await File('$baseDir/images/logo_management_green_512x512.png')
-      .writeAsBytes(await post(
-    'https://fingeg.de/converter/png?width=512&height=512',
-    {'img': managementLogoGreen},
-  ));
-  await File('$baseDir/images/logo_management_green_192x192.png')
-      .writeAsBytes(await post(
-    'https://fingeg.de/converter/png?width=192&height=192',
-    {'img': managementLogoGreen},
-  ));
-  await File('$baseDir/images/logo_management_green_16x16.png')
-      .writeAsBytes(await post(
-    'https://fingeg.de/converter/png?width=16&height=16',
-    {'img': managementLogoGreen},
-  ));
+Future svgToPng(String inPath, String outPath, int size) async {
+  await run(
+    'inkscape',
+    [
+      '-z',
+      '-e',
+      outPath,
+      '-w',
+      size.toString(),
+      '-h',
+      size.toString(),
+      inPath,
+    ],
+  );
 }
 
 Future<List<int>> post(String url, Map<String, dynamic> body) async =>
