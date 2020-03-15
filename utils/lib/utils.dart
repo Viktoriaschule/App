@@ -26,7 +26,7 @@ export 'src/updates_model.dart';
 export 'src/user_model.dart';
 
 // ignore: public_member_api_docs
-const String viktoriaAppBaseURL = 'https://api.app.viktoria.schule';
+const String viktoriaAppBaseURL = 'https://api.app.vs-ac.de';
 
 /// Http status codes
 enum StatusCode {
