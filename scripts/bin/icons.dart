@@ -16,17 +16,7 @@ Future main(List<String> arguments) async {
   final logoManagementGreenPath = '$baseDir/images/logo_management_green.svg';
 
   final logoWhite = await File(logoWhitePath).readAsString();
-  final logoGreen =
-      (logoWhite.replaceAll('#ffffff', 'url(#gradient)').split('\n')
-            ..insertAll(1, [
-              '\t<defs>',
-              '\t\t<linearGradient id="gradient" x1="60%" y1="10%" x2="20%" y2="100%">',
-              '\t\t\t<stop offset="10%" style="stop-color:#008e3f;stop-opacity:1"/>',
-              '\t\t\t<stop offset="70%" style="stop-color:#76bd31;stop-opacity:1"/>',
-              '\t\t</linearGradient>',
-              '\t</defs>',
-            ]))
-          .join('\n');
+  final logoGreen = logoWhite.replaceAll('ffffff', '5bc638');
   await File(logoGreenPath).writeAsString(logoGreen);
 
   final iPadPath = RegExp('<path.*\/>')
@@ -46,7 +36,7 @@ Future main(List<String> arguments) async {
             '',
           ))
       .group(0);
-  final logoGreenContent = RegExp('<defs.*<\/g>')
+  final logoGreenContent = RegExp('<g.*<\/g>')
       .firstMatch(logoGreen.replaceAll(RegExp('\n|\r'), ''))
       .group(0);
   final logoWhiteContent = RegExp('<g.*<\/g>')
