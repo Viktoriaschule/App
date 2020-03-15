@@ -14,24 +14,9 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends Interactor<SettingsPage> {
-  int _design;
-
   @override
   Subscription subscribeEvents(EventBus eventBus) =>
-      eventBus.respond<TagsUpdateEvent>((event) => setState(_init));
-
-  bool getNotifications(String key) =>
-      Static.storage.getBool(Keys.notifications(key)) ?? true;
-
-  void _init() {
-    _design = Static.storage.getInt(Keys.design) ?? 0;
-  }
-
-  @override
-  void initState() {
-    _init();
-    super.initState();
-  }
+      eventBus.respond<TagsUpdateEvent>((event) => setState(() => null));
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +47,9 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                           ),
                         ),
                         activeColor: Theme.of(context).accentColor,
-                        value: getNotifications(feature.featureKey),
+                        value: Static.storage.getBool(
+                                Keys.notifications(feature.featureKey)) ??
+                            true,
                         onChanged: (value) async {
                           setState(() {
                             Static.storage.setBool(
@@ -84,12 +71,11 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                   padding: EdgeInsets.only(left: 15, right: 15),
                   child: DropdownButton<int>(
                     isExpanded: true,
-                    value: _design,
+                    value: Static.storage.getInt(Keys.design) ?? 0,
                     onChanged: (value) {
                       setState(() {
-                        _design = value;
+                        Static.storage.setInt(Keys.design, value);
                       });
-                      Static.storage.setInt(Keys.design, value);
                       EventBus.of(context).publish(ThemeChangedEvent());
                     },
                     items: const [
@@ -119,13 +105,13 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                     Static.user.clear();
                     Static.tags.clear();
                     Static.updates.clear();
-                    // Clear the data of all features
+                    Static.subjects.clear();
                     FeaturesWidget.of(context)
                         .features
                         .where((f) => f.loader != null)
                         .forEach((f) => f.loader.clear());
-                    Static.subjects.clear();
                     Static.storage.getKeys().forEach(Static.storage.remove);
+
                     EventBus.of(context).publish(ThemeChangedEvent());
                     Navigator.of(context).pushNamedAndRemoveUntil(
                         '/${Keys.login}', (r) => false);
