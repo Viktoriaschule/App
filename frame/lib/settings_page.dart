@@ -108,8 +108,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                     Static.subjects.clear();
                     FeaturesWidget.of(context)
                         .features
-                        .where((f) => f.loader != null)
-                        .forEach((f) => f.loader.clear());
+                        .forEach((f) => f.loader?.clear());
                     Static.storage.getKeys().forEach(Static.storage.remove);
 
                     EventBus.of(context).publish(ThemeChangedEvent());
