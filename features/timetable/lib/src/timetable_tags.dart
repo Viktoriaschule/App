@@ -61,13 +61,9 @@ class TimetableTagsHandler extends TagsHandler {
     // Update the substitution plan filter and views if any tag has changed
     if (changed) {
       // Update the substitution plan filter
-      final ttLoader = TimetableWidget
-          .of(context)
-          .feature
-          .loader;
+      final ttLoader = TimetableWidget.of(context).feature.loader;
       if (ttLoader.hasLoadedData) {
-        SubstitutionPlanWidget
-            .of(context)
+        SubstitutionPlanWidget.of(context)
             .feature
             .loader
             .data

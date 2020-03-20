@@ -25,6 +25,9 @@ class SubstitutionPlanLocalizations {
   static const exam = 'Klausur';
 
   // ignore: public_member_api_docs
+  static const examSupervision = 'Klausuraufsicht';
+
+  // ignore: public_member_api_docs
   static const freeLesson = 'Freistunde';
 
   // ignore: public_member_api_docs

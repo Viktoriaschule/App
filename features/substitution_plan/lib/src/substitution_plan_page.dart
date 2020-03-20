@@ -67,17 +67,18 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
           Keys.tags
         ],
         actions: <Widget>[
-          if (Static.user.grade != null &&
+          if (Static.user.group != null &&
               timetableLoader.hasLoadedData &&
-              loader.hasLoadedData)
+              loader.hasLoadedData &&
+              !Static.user.isTeacher())
             Container(
               width: 48,
               child: DropdownButton<String>(
                   underline: Container(),
-                  value: widget.grade ?? Static.user.grade,
+                  value: widget.grade ?? Static.user.group,
                   items: grades
                       .where(
-                          (g) => widget.grade == null || g != Static.user.grade)
+                          (g) => widget.grade == null || g != Static.user.group)
                       .map(
                         (grade) => DropdownMenuItem(
                           value: grade,
@@ -89,11 +90,12 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                       )
                       .toList(),
                   onChanged: (grade) {
-                    if (grade != (widget.grade ?? Static.user.grade)) {
+                    if (grade != (widget.grade ?? Static.user.group)) {
                       final route = MaterialPageRoute<void>(
-                        builder: (context) => SubstitutionPlanPage(
-                          grade: grade,
-                        ),
+                        builder: (context) =>
+                            SubstitutionPlanPage(
+                              grade: grade,
+                            ),
                       );
                       if (widget.grade == null) {
                         Navigator.of(context).push(route);

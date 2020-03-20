@@ -204,3 +204,23 @@ DateTime monday(DateTime date) {
   }
   return newDate;
 }
+
+/// Optimizes the participant ids
+/// and combines to many of them to one if possible
+String optimizeParticipantID(String raw) {
+  raw = raw.replaceAll('+', '\n');
+  final ids = raw.split('\n');
+  // If there are more than two ids
+  // and all ids are grades
+  // and begins all with the same letter
+  // and begins not with 'q',
+  // than combine all ids to one.
+  //
+  // For example: [9a, 9b, 9c] -> 9abc
+  if (ids.length > 2 &&
+      ids.every((id) => grades.contains(id)) &&
+      ids.every((id) => id.startsWith(raw[0]) && !id.startsWith('q'))) {
+    raw = '${raw[0]}${ids.map((id) => id[1]).join('')}';
+  }
+  return raw;
+}

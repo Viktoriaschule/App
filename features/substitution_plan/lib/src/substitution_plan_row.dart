@@ -25,6 +25,12 @@ class SubstitutionPlanRow extends StatelessWidget {
   // ignore: public_member_api_docs
   final bool keepPadding;
 
+  String _getWithCase(String raw) => raw.length >= 2 &&
+          grades.contains(raw.substring(0, 2)) &&
+          !isSeniorGrade(raw)
+      ? raw
+      : raw.toUpperCase();
+
   @override
   Widget build(BuildContext context) {
     final infoText = [];
@@ -43,7 +49,9 @@ class SubstitutionPlanRow extends StatelessWidget {
       case 2:
         infoText.add(
             Static.subjects.data.getSubject(substitution.changed.subjectID));
-        subtitle = SubstitutionPlanLocalizations.exam;
+        subtitle = Static.user.isTeacher()
+            ? SubstitutionPlanLocalizations.examSupervision
+            : SubstitutionPlanLocalizations.exam;
         lineThrough = false;
         break;
       case 1:
@@ -70,14 +78,16 @@ class SubstitutionPlanRow extends StatelessWidget {
           : (substitution.type == 2 ? Colors.red : Colors.orange),
       leading: showUnit
           ? Align(
-              alignment: Alignment(0.3, 0),
-              child: Text(
-                (substitution.unit + 1).toString(),
-                style: TextStyle(
-                  fontSize: 25,
-                  color: ThemeWidget.of(context).textColorLight,
-                  fontWeight: FontWeight.w100,
-                ),
+        alignment: Alignment(0.3, 0),
+        child: Text(
+          (substitution.unit + 1).toString(),
+          style: TextStyle(
+            fontSize: 25,
+            color: ThemeWidget
+                .of(context)
+                .textColorLight,
+            fontWeight: FontWeight.w100,
+          ),
         ),
       )
           : keepPadding ? Container() : null,
@@ -100,16 +110,16 @@ class SubstitutionPlanRow extends StatelessWidget {
       last: Row(
         children: [
           Container(
-            width: 30,
+            width: 35,
             margin: EdgeInsets.only(right: 10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  substitution.changed.teacherID != null
-                      ? substitution.changed.teacherID.toUpperCase()
-                      : substitution.original.teacherID != null
-                      ? substitution.original.teacherID.toUpperCase()
+                  substitution.changed.participantID != null
+                      ? _getWithCase(substitution.changed.participantID)
+                      : substitution.original.participantID != null
+                      ? _getWithCase(substitution.original.participantID)
                       : '',
                   style: TextStyle(
                     fontSize: 14,
@@ -121,11 +131,11 @@ class SubstitutionPlanRow extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  substitution.original.teacherID != null &&
-                      substitution.changed.teacherID != null &&
-                      substitution.original.teacherID !=
-                          substitution.changed.teacherID
-                      ? substitution.original.teacherID.toUpperCase()
+                  substitution.original.participantID != null &&
+                      substitution.changed.participantID != null &&
+                      substitution.original.participantID !=
+                          substitution.changed.participantID
+                      ? _getWithCase(substitution.original.participantID)
                       : '',
                   style: TextStyle(
                     fontSize: 14,

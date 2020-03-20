@@ -13,11 +13,18 @@ class User {
   // ignore: public_member_api_docs
   String get password => Static.storage.getString(Keys.password);
 
-  // ignore: public_member_api_docs
-  String get grade => Static.storage.getString(Keys.grade);
+  /// The group is the grade for students and the teacher name for teachers
+  String get group => Static.storage.getString(Keys.group);
 
-  // ignore: public_member_api_docs
-  int get group => Static.storage.getInt(Keys.group);
+  /// The user type is 1 (student), 2 (teacher), 4 (developer),  8 (other)
+  /// or a combination of them
+  int get _userType => Static.storage.getInt(Keys.userType);
+
+  /// If the user is a teacher
+  bool isTeacher() => [2, 3, 6, 10].contains(_userType);
+
+  /// If the user is a teacher
+  bool isDeveloper() => [4, 5, 6, 12].contains(_userType);
 
   // ignore: public_member_api_docs
   set username(String username) =>
@@ -28,16 +35,18 @@ class User {
       Static.storage.setString(Keys.password, password);
 
   // ignore: public_member_api_docs
-  set grade(String grade) => Static.storage.setString(Keys.grade, grade);
+  set group(String grade) => Static.storage.setString(Keys.group, grade);
 
-  // ignore: public_member_api_docs
-  set group(int group) => Static.storage.setInt(Keys.group, group);
+  /// The user type is 1 (student), 2 (teacher), 4 (developer),  8 (other)
+  /// or a combination of them
+  // ignore: avoid_setters_without_getters
+  set userType(int group) => Static.storage.setInt(Keys.userType, group);
 
   /// Resets all user data
   void clear() {
     username = null;
     password = null;
-    grade = null;
     group = null;
+    userType = null;
   }
 }

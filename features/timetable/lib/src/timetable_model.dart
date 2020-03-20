@@ -11,13 +11,13 @@ import 'timetable_events.dart';
 /// Describes the whole timetable
 class Timetable {
   // ignore: public_member_api_docs
-  Timetable({@required this.days, @required this.date, @required this.grade}) {
+  Timetable({@required this.days, @required this.date, @required this.group}) {
     setAllSelections();
   }
 
   /// Creates a timetable for json map
   factory Timetable.fromJSON(Map<String, dynamic> json) => Timetable(
-        grade: json['grade'],
+    group: json['group'],
         date: DateTime.parse(json['date']).toLocal(),
         days: json['data']['days']
             .map((json) => TimetableDay.fromJson(json))
@@ -32,7 +32,7 @@ class Timetable {
   DateTime date;
 
   /// The grade of the timetable
-  String grade;
+  String group;
 
   /// The user timetable selection
   Selection selection = Selection();
@@ -40,7 +40,7 @@ class Timetable {
   /// Set all default selections...
   void setAllSelections() {
     for (int i = 0; i < days.length; i++) {
-      days[i].setSelections(days.indexOf(days[i]), selection);
+      days[i].setDefaultSelections(days.indexOf(days[i]), selection);
     }
   }
 
@@ -148,9 +148,9 @@ class TimetableDay {
           : [];
 
   /// Set the default selections...
-  Future setSelections(int day, Selection selection) async {
+  Future setDefaultSelections(int day, Selection selection) async {
     for (int i = 0; i < units.length; i++) {
-      units[i].setSelection(day, i, selection);
+      units[i].setDefaultSelection(day, i, selection);
     }
   }
 
@@ -199,10 +199,15 @@ class TimetableUnit {
   String get block => subjects.isNotEmpty ? subjects[0].block : null;
 
   /// Set the default selection
-  void setSelection(int day, int unit, Selection selection) {
+  void setDefaultSelection(int day, int unit, Selection selection) {
     if (subjects.length == 1) {
-      selection.setSelectedSubject(subjects[0], null, null, null,
-          defaultSelection: true);
+      selection.setSelectedSubject(
+        subjects[0],
+        null,
+        null,
+        null,
+        defaultSelection: true,
+      );
     }
   }
 
@@ -217,7 +222,7 @@ class TimetableSubject {
   TimetableSubject({
     @required this.unit,
     @required this.id,
-    @required this.teacherID,
+    @required this.participantID,
     @required this.subjectID,
     @required this.roomID,
     @required this.courseID,
@@ -230,7 +235,7 @@ class TimetableSubject {
       TimetableSubject(
         unit: json['unit'],
         id: json['id'],
-        teacherID: json['teacherID'].replaceAll('+', '\n'),
+        participantID: optimizeParticipantID(json['participantID']),
         subjectID: json['subjectID'],
         roomID: json['roomID'],
         courseID: json['courseID'],
@@ -247,8 +252,10 @@ class TimetableSubject {
   /// The subject name identifier
   final String subjectID;
 
-  /// The teacher name identifier
-  final String teacherID;
+  /// The participant identifier
+  /// For students the teacher and
+  /// for teachers the grade
+  final String participantID;
 
   /// The room name identifier
   final String roomID;

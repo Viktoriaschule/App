@@ -85,7 +85,7 @@ class _AppPageState extends Interactor<AppPage>
         }
 
         // Sync the local grade with the server
-        Static.user.grade = fetchedUpdates.getUpdate(Keys.grade);
+        Static.user.group = fetchedUpdates.getUpdate(Keys.group);
 
         //TODO: Move to feature without gui
         await Static.subjects.update(context, fetchedUpdates, force: force);

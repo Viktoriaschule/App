@@ -211,13 +211,20 @@ abstract class Loader<LoaderType> {
         data = _fromJSON(response.toString())?.data;
       }
 
+      try {
+        afterLoad();
+        // ignore: avoid_catches_without_on_clauses
+      } catch (e, stacktrace) {
+        print('Failed run after load of $key: $e\n$stacktrace');
+        statusCodes.add(StatusCode.wrongFormat);
+      }
+
       afterLoad();
       _sendLoadedEvent(pages, eventBus);
       final status = reduceStatusCodes(statusCodes);
       if (status != StatusCode.success) {
         print(
-            'Did not successfully updated $key: $status (http: ${response
-                .statusCode})');
+            'Did not successfully updated $key: $status (http: ${response.statusCode})');
       }
       return LoaderResponse<LoaderType>(data: data, statusCode: status);
     } on DioError catch (e) {

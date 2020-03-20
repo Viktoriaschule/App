@@ -170,95 +170,107 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                   }),
                   children: List.generate(
                     5,
-                    (weekday) => loader.data.days[weekday].units.map((unit) {
-                      final day = _monday.add(Duration(days: weekday));
-                      final subject = loader.data.selection
-                          .getSelectedSubject(unit.subjects);
-                      // ignore: omit_local_variable_types
-                      final List<Substitution> substitutions =
-                          subject?.getSubstitutions(
-                              day, substitutionPlanFeature.loader.data) ??
-                              [];
-                      // Show the normal lessen if it is an exam, but not of the same subjects, as this unit
-                      final showNormal = substitutions.length == 1 &&
-                          substitutions.first.type == 2 &&
-                          substitutions.first.courseID != subject.courseID;
-                      return SizeLimit(
-                        child: InkWell(
-                          onTap: () async {
-                            if (unit.subjects.length > 1) {
-                              // ignore: omit_local_variable_types
-                              final TimetableSubject selection =
-                              await showDialog(
-                                context: context,
-                                builder: (context) =>
-                                    TimetableSelectDialog(
-                                      weekday: weekday,
-                                  unit: unit,
-                                ),
-                              );
-                              if (selection == null) {
-                                return;
-                              }
-                              loader.data.selection.setSelectedSubject(
-                                selection,
-                                EventBus.of(context),
-                                substitutionPlanFeature.loader.data,
-                                loader.data,
-                              );
-                              setState(() {});
-                              try {
-                                await loader.data.selection.save(context);
-                                if (mounted) {
-                                  setState(() {});
-                                }
-                                // ignore: empty_catches
-                              } on DioError {}
-                            }
-                          },
-                          child: Container(
-                            margin: EdgeInsets.all(10),
-                            child: Column(
-                              children: [
-                                if (substitutions.isNotEmpty)
-                                  SubstitutionList(
-                                    padding: false,
-                                    substitutions: substitutions
-                                        .where((substitution) =>
-                                    substitution.unit == subject.unit)
-                                        .toList(),
-                                  ),
-                                if (substitutions.isEmpty || showNormal)
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        top: substitutions.isNotEmpty ? 5 : 0),
-                                    child: TimetableRow(
-                                      subject: subject ??
-                                          TimetableSubject(
-                                            unit: unit.unit,
-                                            subjectID: 'none',
-                                            teacherID: null,
-                                            roomID: null,
-                                            courseID: '',
-                                            id: '',
-                                            day: weekday,
-                                            block: '',
+                    (weekday) => loader.data.days[weekday].units.isEmpty
+                        ? [
+                            Container(
+                              padding: EdgeInsets.only(top: 20),
+                              child: EmptyList(
+                                title: 'Kein Unterricht',
+                              ),
+                            )
+                          ]
+                        : loader.data.days[weekday].units.map((unit) {
+                            final day = _monday.add(Duration(days: weekday));
+                            final subject = loader.data.selection
+                                .getSelectedSubject(unit.subjects);
+                            // ignore: omit_local_variable_types
+                            final List<Substitution> substitutions =
+                                subject?.getSubstitutions(day,
+                                        substitutionPlanFeature.loader.data) ??
+                                    [];
+                            // Show the normal lessen if it is an exam, but not of the same subjects, as this unit
+                            final showNormal = substitutions.length == 1 &&
+                                substitutions.first.type == 2 &&
+                                substitutions.first.courseID !=
+                                    subject.courseID;
+                            return SizeLimit(
+                              child: InkWell(
+                                onTap: () async {
+                                  if (unit.subjects.length > 1) {
+                                    // ignore: omit_local_variable_types
+                                    final TimetableSubject selection =
+                                        await showDialog(
+                                      context: context,
+                                      builder: (context) =>
+                                          TimetableSelectDialog(
+                                        weekday: weekday,
+                                        unit: unit,
+                                      ),
+                                    );
+                                    if (selection == null) {
+                                      return;
+                                    }
+                                    loader.data.selection.setSelectedSubject(
+                                      selection,
+                                      EventBus.of(context),
+                                      substitutionPlanFeature.loader.data,
+                                      loader.data,
+                                    );
+                                    setState(() {});
+                                    try {
+                                      await loader.data.selection.save(context);
+                                      if (mounted) {
+                                        setState(() {});
+                                      }
+                                      // ignore: empty_catches
+                                    } on DioError {}
+                                  }
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.all(10),
+                                  child: Column(
+                                    children: [
+                                      if (substitutions.isNotEmpty)
+                                        SubstitutionList(
+                                          padding: false,
+                                          substitutions: substitutions
+                                              .where((substitution) =>
+                                                  substitution.unit ==
+                                                  subject.unit)
+                                              .toList(),
+                                        ),
+                                      if (substitutions.isEmpty || showNormal)
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: substitutions.isNotEmpty
+                                                  ? 5
+                                                  : 0),
+                                          child: TimetableRow(
+                                            subject: subject ??
+                                                TimetableSubject(
+                                                  unit: unit.unit,
+                                                  subjectID: 'none',
+                                                  participantID: null,
+                                                  roomID: null,
+                                                  courseID: '',
+                                                  id: '',
+                                                  day: weekday,
+                                                  block: '',
+                                                ),
+                                            hideUnit: substitutions.isNotEmpty,
+                                            showUnit: getScreenSize(
+                                                    MediaQuery.of(context)
+                                                        .size
+                                                        .width) !=
+                                                ScreenSize.big,
                                           ),
-                                      hideUnit: substitutions.isNotEmpty,
-                                      showUnit: getScreenSize(
-                                          MediaQuery
-                                              .of(context)
-                                              .size
-                                              .width) !=
-                                          ScreenSize.big,
-                                    ),
+                                        ),
+                                    ],
                                   ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                                ),
+                              ),
+                            );
+                          }).toList(),
                   ),
                 ),
               )
