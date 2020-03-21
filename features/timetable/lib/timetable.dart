@@ -58,7 +58,7 @@ class TimetableFeature implements Feature {
 
   @override
   DateTime getHomePageDate() =>
-      loader.hasLoadedData && loader.data.selection.isSet()
+      loader.hasLoadedData && loader.data.selection.isSet(Static.user.group)
           ? loader.data.initialDay(DateTime.now())
           : monday(DateTime.now()).add(Duration(
               days:

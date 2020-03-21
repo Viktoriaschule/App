@@ -8,10 +8,10 @@ class Keys {
   static const String password = 'password';
 
   // ignore: public_member_api_docs
-  static const String grade = 'grade';
+  static const String group = 'group';
 
   // ignore: public_member_api_docs
-  static const String group = 'group';
+  static const String userType = 'userType';
 
   // ignore: public_member_api_docs
   static const String title = 'title';
@@ -24,9 +24,6 @@ class Keys {
 
   // ignore: public_member_api_docs
   static String notifications(String featureKey) => 'notifications-$featureKey';
-
-  // ignore: public_member_api_docs
-  static const String substitutionPlanNotification = 'substitution plan';
 
   // ignore: public_member_api_docs
   static const String updates = 'updates';

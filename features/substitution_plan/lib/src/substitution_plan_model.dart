@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:timetable/timetable.dart';
+import 'package:utils/utils.dart';
 
 /// Describes the substitution plan
 class SubstitutionPlan {
@@ -108,7 +109,7 @@ class SubstitutionPlanDay {
   List<String> myUnparsed = [];
 
   /// The current user grade
-  String filteredGrade;
+  String filteredGroup;
 
   /// Synchronize the substitution plan with the given timetable
   void syncWithTimetable(Timetable timetable) {
@@ -118,7 +119,7 @@ class SubstitutionPlanDay {
 
   /// Sorts all substitutions by the unit, courseID and type
   void sort() {
-    data.forEach((grade, substitutions) {
+    data.forEach((group, substitutions) {
       substitutions.sort((a, b) {
         var r = a.unit.compareTo(b.unit);
         if (r == 0) {
@@ -133,14 +134,16 @@ class SubstitutionPlanDay {
   }
 
   /// Set the unparsed filtered lists
-  List<String> filterUnparsed(Timetable timetable, {String grade}) {
+  List<String> filterUnparsed(Timetable timetable, {String group}) {
     myUnparsed = [];
-    if (grade == null) {
-      filteredGrade = timetable.grade;
-      myUnparsed..addAll(unparsed[filteredGrade])..addAll(unparsed['other']);
+    if (group == null) {
+      filteredGroup = timetable.group;
+      myUnparsed
+        ..addAll(unparsed[filteredGroup] ?? [])
+        ..addAll(unparsed['other'] ?? []);
       return null;
     }
-    return [...unparsed[grade]..addAll(unparsed['other'])];
+    return [...unparsed[group]..addAll(unparsed['other'])];
   }
 
   /// Set the filtered lists
@@ -150,17 +153,17 @@ class SubstitutionPlanDay {
     undefinedChanges = [];
 
     final List<TimetableSubject> selectedSubjects =
-        timetable.getAllSelectedSubjects();
+    timetable.getAllSelectedSubjects();
     final List<String> selectedIds = selectedSubjects.map((s) => s.id).toList();
     final List<String> selectedCourseIds =
-        selectedSubjects.map((s) => s.courseID).toList();
+    selectedSubjects.map((s) => s.courseID).toList();
 
-    filteredGrade = timetable.grade;
-    for (final substitution in data[filteredGrade]) {
+    filteredGroup = timetable.group;
+    for (final substitution in data[filteredGroup]) {
       if (substitution.id == null && substitution.courseID == null) {
         undefinedChanges.add(substitution);
       } else if ((substitution.id != null &&
-              selectedIds.contains(substitution.id)) ||
+          selectedIds.contains(substitution.id)) ||
           (substitution.courseID != null &&
               selectedCourseIds.contains(substitution.courseID))) {
         // If it is no exam, add to my changes
@@ -265,7 +268,7 @@ class Substitution {
 class SubstitutionDetails {
   // ignore: public_member_api_docs
   SubstitutionDetails({
-    @required this.teacherID,
+    @required this.participantID,
     @required this.roomID,
     @required this.subjectID,
   });
@@ -273,13 +276,16 @@ class SubstitutionDetails {
   /// Creates a substitution details from json
   factory SubstitutionDetails.fromJson(Map<String, dynamic> json) =>
       SubstitutionDetails(
-        teacherID: json['teacherID'].replaceAll('+', '\n'),
+        participantID: optimizeParticipantID(json['participantID']),
         roomID: json['roomID'],
         subjectID: json['subjectID'],
       );
 
-  // ignore: public_member_api_docs
-  final String teacherID;
+  /// The participant identifier
+  ///
+  /// For students the teacher and
+  /// for teachers the grade
+  final String participantID;
 
   // ignore: public_member_api_docs
   final String roomID;
@@ -289,7 +295,7 @@ class SubstitutionDetails {
 
   /// Compares to substitution details
   bool equals(SubstitutionDetails c) =>
-      teacherID == c.teacherID &&
-      roomID == c.roomID &&
+      participantID == c.participantID &&
+          roomID == c.roomID &&
       subjectID == c.subjectID;
 }

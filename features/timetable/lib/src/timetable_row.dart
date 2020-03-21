@@ -28,6 +28,12 @@ class TimetableRow extends StatelessWidget {
   /// If the unit should be hide, but the space should still be there
   final bool hideUnit;
 
+  String _getWithCase(String raw) => raw.length >= 2 &&
+          grades.contains(raw.substring(0, 2)) &&
+          !isSeniorGrade(raw)
+      ? raw
+      : raw.toUpperCase();
+
   @override
   Widget build(BuildContext context) {
     final unit = subject.unit;
@@ -43,42 +49,51 @@ class TimetableRow extends StatelessWidget {
         ((times[1].inMinutes % 60).toString().length == 1 ? '0' : '') +
             (times[1].inMinutes % 60).toString();
     final timeStr = '$startHour:$startMinute - $endHour:$endMinute';
+    final theme = ThemeWidget.of(context);
+    final showCenterInfo =
+        subject.subjectID == TimetableLocalizations.lunchBreak;
+    final useOpacity = Static.user.isTeacher() &&
+        subject.subjectID == TimetableLocalizations.freeLesson;
+    final opacity = theme.brightness == Brightness.dark ? 0.65 : 0.7;
     return CustomRow(
       splitColor: Colors.transparent,
-      showSplit: !(subject.subjectID == TimetableLocalizations.lunchBreak) &&
-          showSplit,
-      leading: showUnit && unit != 5
+      showSplit: !showCenterInfo && showSplit,
+      leading: showUnit && !showCenterInfo
           ? Align(
               alignment: Alignment(0.3, 0),
               child: Text(
                 !hideUnit ? (unit + 1).toString() : '',
                 style: TextStyle(
                   fontSize: 25,
-                  color: ThemeWidget.of(context).textColorLight,
+                  color: useOpacity
+                      ? theme.textColorLight.withOpacity(opacity -
+                          (theme.brightness == Brightness.dark ? 0 : 0.3))
+                      : theme.textColorLight,
                   fontWeight: FontWeight.w100,
                 ),
               ),
             )
           : null,
-      titleAlignment: subject.subjectID == TimetableLocalizations.lunchBreak
-          ? CrossAxisAlignment.center
-          : CrossAxisAlignment.start,
+      titleAlignment:
+          showCenterInfo ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       title: Static.subjects.hasLoadedData && subject.subjectID != 'none'
           ? Static.subjects.data.getSubject(subject.subjectID)
           : TimetableLocalizations.notSelected,
-      titleFontWeight: subject.subjectID == TimetableLocalizations.lunchBreak
-          ? FontWeight.w100
-          : null,
-      titleColor: subject.subjectID == TimetableLocalizations.lunchBreak
-          ? ThemeWidget.of(context).textColor
-          : Theme.of(context).accentColor,
-      subtitle: subject.subjectID != TimetableLocalizations.lunchBreak
+      titleFontWeight: showCenterInfo ? FontWeight.w100 : null,
+      titleColor: showCenterInfo
+          ? theme.textColor
+          : useOpacity
+              ? Theme.of(context).accentColor.withOpacity(opacity)
+              : Theme.of(context).accentColor,
+      subtitle: !showCenterInfo
           ? Text(
               subject.subjectID != 'none'
                   ? timeStr
                   : TimetableLocalizations.clickToSelect,
               style: TextStyle(
-                color: ThemeWidget.of(context).textColor,
+                color: useOpacity
+                    ? theme.textColor.withOpacity(opacity)
+                    : theme.textColor,
                 fontWeight: FontWeight.w100,
               ),
             )
@@ -87,27 +102,27 @@ class TimetableRow extends StatelessWidget {
           ? Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (subject.subjectID != TimetableLocalizations.lunchBreak)
+                if (!showCenterInfo)
                   Container(
-                    width: 30,
+                    width: 35,
                     margin: EdgeInsets.only(right: 10),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if (subject.teacherID != null)
+                        if (subject.participantID != null)
                           Text(
-                            '${subject.teacherID.toUpperCase()}\n',
+                            '${_getWithCase(subject.participantID)}\n',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w300,
-                              color: ThemeWidget.of(context).textColor,
+                              color: theme.textColor,
                               fontFamily: 'RobotoMono',
                             ),
                           ),
                       ],
                     ),
                   ),
-                if (subject.subjectID != TimetableLocalizations.lunchBreak)
+                if (!showCenterInfo)
                   Container(
                     width: 30,
                     child: Column(
@@ -119,7 +134,7 @@ class TimetableRow extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w300,
-                              color: ThemeWidget.of(context).textColor,
+                              color: theme.textColor,
                               fontFamily: 'RobotoMono',
                             ),
                           ),
@@ -129,8 +144,8 @@ class TimetableRow extends StatelessWidget {
               ],
             )
           : Icon(
-              MdiIcons.exclamation,
-              color: ThemeWidget.of(context).textColorLight,
+        MdiIcons.exclamation,
+        color: theme.textColorLight,
             ),
     );
   }

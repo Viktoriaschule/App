@@ -16,11 +16,14 @@ class TimetableLocalizations {
   static const newTimetables = 'Neue Stundenpläne';
 
   // ignore: public_member_api_docs
-  static const notSelected = 'Nicht ausgewählt';
+  static const notSelected = 'Nichts ausgewählt';
 
   // ignore: public_member_api_docs
   static const clickToSelect = 'Klicke zum Auswählen';
 
   // ignore: public_member_api_docs
   static const noTimetable = 'Kein Stundenplan';
+
+  // ignore: public_member_api_docs
+  static const noSubjects = 'Kein Unterricht';
 }

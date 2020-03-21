@@ -23,6 +23,7 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
 
   @override
   ListGroup getListGroup(BuildContext context, InfoCardUtils utils) {
+    final group = Static.user.group;
     final loader = TimetableWidget.of(context).feature.loader;
     final spLoader = SubstitutionPlanWidget.of(context).feature.loader;
     final subjects = loader.hasLoadedData
@@ -44,7 +45,7 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
       actions: [
         NavigationAction(
           Icons.expand_more,
-          () {
+              () {
             Navigator.of(context).push(
               MaterialPageRoute<void>(builder: (context) => TimetablePage()),
             );
@@ -58,15 +59,17 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
             children: [
               if (subjects.isEmpty ||
                   !loader.hasLoadedData ||
-                  !loader.data.selection.isSet())
+                  !loader.data.selection.isSet(group))
                 EmptyList(
-                    title: loader.data?.selection?.isSet() ?? true
-                        ? 'Kein Stundenplan'
-                        : 'Keine Stunden ausgewählt')
+                    title: loader.data?.selection?.isSet(group) ?? true
+                        ? loader.hasLoadedData && subjects.isEmpty
+                        ? TimetableLocalizations.noSubjects
+                        : TimetableLocalizations.noTimetable
+                        : TimetableLocalizations.notSelected)
               else
                 ...(subjects.length > utils.cut
-                        ? subjects.sublist(0, utils.cut)
-                        : subjects)
+                    ? subjects.sublist(0, utils.cut)
+                    : subjects)
                     .map((subject) {
                   final substitutions = spLoader.hasLoadedData
                       ? subject.getSubstitutions(widget.date, spLoader.data)
@@ -75,6 +78,10 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
                   final showNormal = substitutions.length == 1 &&
                       substitutions.first.type == 2 &&
                       substitutions.first.courseID != subject.courseID;
+                  final List<Substitution> undefinedSubstitutions =
+                      subject?.getUndefinedSubstitutions(
+                          widget.date, spLoader.data) ??
+                          [];
                   return Container(
                     margin: EdgeInsets.all(10),
                     child: Column(
@@ -82,7 +89,7 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
                         SubstitutionList(
                           substitutions: substitutions
                               .where((substitution) =>
-                                  substitution.unit == subject.unit)
+                          substitution.unit == subject.unit)
                               .toList(),
                           padding: false,
                         ),
@@ -94,7 +101,16 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
                               subject: subject,
                               hideUnit: substitutions.isNotEmpty,
                             ),
-                          )
+                          ),
+                        if (undefinedSubstitutions.isNotEmpty)
+                          SubstitutionList(
+                            showUnit: false,
+                            padding: false,
+                            substitutions: undefinedSubstitutions
+                                .where((substitution) =>
+                            substitution.unit == subject.unit)
+                                .toList(),
+                          ),
                       ],
                     ),
                   );

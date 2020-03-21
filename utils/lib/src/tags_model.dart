@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 class Tags {
   // ignore: public_member_api_docs
   Tags({
+    this.userType,
     this.group,
-    this.grade,
     this.data,
   });
 
@@ -15,23 +15,23 @@ class Tags {
       return Tags();
     }
     return Tags(
-      grade: json['grade'],
       group: json['group'],
+      userType: json['userType'],
       data: json,
     );
   }
 
   /// The user grade
-  final String grade;
+  final String group;
 
   /// The user group (pupil/developer/teacher)
-  final int group;
+  final int userType;
 
   /// The raw tags
   final Map<String, dynamic> data;
 
   /// Checks if the user is already initialized in the server
-  bool get isInitialized => grade != null;
+  bool get isInitialized => group != null;
 }
 
 /// Describes a device

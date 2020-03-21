@@ -84,7 +84,7 @@ class _AppFrameState extends Interactor<AppFrame>
       }
 
       // Sync the local grade with the server
-      Static.user.grade = fetchedUpdates.getUpdate(Keys.grade);
+      Static.user.group = fetchedUpdates.getUpdate(Keys.group);
 
       //TODO: Move to feature without gui
       await Static.subjects.update(context, fetchedUpdates, force: force);
@@ -255,7 +255,7 @@ class _AppFrameState extends Interactor<AppFrame>
             ],
             sliver: true,
             isLeading: false,
-            loadingKeys: [Keys.tags, Keys.subjects, Keys.updates],
+            loadingKeys: const [Keys.tags, Keys.subjects, Keys.updates],
           ),
         ],
         body: CustomRefreshIndicator(
