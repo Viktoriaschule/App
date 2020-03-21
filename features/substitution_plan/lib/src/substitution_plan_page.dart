@@ -92,10 +92,9 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                   onChanged: (grade) {
                     if (grade != (widget.grade ?? Static.user.group)) {
                       final route = MaterialPageRoute<void>(
-                        builder: (context) =>
-                            SubstitutionPlanPage(
-                              grade: grade,
-                            ),
+                        builder: (context) => SubstitutionPlanPage(
+                          grade: grade,
+                        ),
                       );
                       if (widget.grade == null) {
                         Navigator.of(context).push(route);
@@ -181,9 +180,12 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                   if (widget.grade == null) {
                     List<Substitution> myChanges = [];
                     List<Substitution> notMyChanges = [];
+                    List<Substitution> undefinedChanges = [];
                     if (loader.hasLoadedData) {
                       myChanges = loader.data.days[index].myChanges;
                       notMyChanges = loader.data.days[index].otherChanges;
+                      undefinedChanges =
+                          loader.data.days[index].undefinedChanges;
                     }
                     final myChangesWidget = myChanges.isEmpty
                         ? EmptyList(
@@ -195,8 +197,14 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                         title:
                         SubstitutionPlanLocalizations.noSubstitutions)
                         : SubstitutionList(substitutions: notMyChanges);
+                    final undefinedChangesWidget = undefinedChanges.isEmpty
+                        ? null
+                        : SubstitutionList(substitutions: undefinedChanges);
                     items = [
-                      if (getScreenSize(MediaQuery.of(context).size.width) !=
+                      if (getScreenSize(MediaQuery
+                          .of(context)
+                          .size
+                          .width) !=
                           ScreenSize.small)
                         myChangesWidget
                       else
@@ -212,7 +220,32 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                             ),
                           ],
                         ),
-                      if (getScreenSize(MediaQuery.of(context).size.width) !=
+                      if (undefinedChangesWidget != null &&
+                          getScreenSize(MediaQuery
+                              .of(context)
+                              .size
+                              .width) !=
+                              ScreenSize.small)
+                        undefinedChangesWidget
+                      else
+                        if (undefinedChangesWidget != null)
+                          ListGroup(
+                            title: SubstitutionPlanLocalizations
+                                .undefinedSubstitutions,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(
+                                  left: 10,
+                                  right: 10,
+                                ),
+                                child: undefinedChangesWidget,
+                              ),
+                            ],
+                          ),
+                      if (getScreenSize(MediaQuery
+                          .of(context)
+                          .size
+                          .width) !=
                           ScreenSize.small)
                         notMyChangesWidget
                       else

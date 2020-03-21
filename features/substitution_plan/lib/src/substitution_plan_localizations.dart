@@ -13,6 +13,9 @@ class SubstitutionPlanLocalizations {
   static const mySubstitutions = 'Meine $substitutions';
 
   // ignore: public_member_api_docs
+  static const undefinedSubstitutions = 'Evtl. meine $substitutions';
+
+  // ignore: public_member_api_docs
   static const otherSubstitutions = 'Weitere $substitutions';
 
   // ignore: public_member_api_docs

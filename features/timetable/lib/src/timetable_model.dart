@@ -17,7 +17,7 @@ class Timetable {
 
   /// Creates a timetable for json map
   factory Timetable.fromJSON(Map<String, dynamic> json) => Timetable(
-    group: json['group'],
+        group: json['group'],
         date: DateTime.parse(json['date']).toLocal(),
         days: json['data']['days']
             .map((json) => TimetableDay.fromJson(json))
@@ -270,14 +270,24 @@ class TimetableSubject {
   final int day;
 
   /// Returns all substitutions with this subject id
-  List<Substitution> getSubstitutions(
-          DateTime date, SubstitutionPlan substitutionPlan) =>
+  List<Substitution> getSubstitutions(DateTime date,
+      SubstitutionPlan substitutionPlan) =>
       substitutionPlan
           ?.getForDate(date)
           ?.myChanges
           ?.where((s) => s.unit == unit)
           ?.toList() ??
-      [];
+          [];
+
+  /// Returns all undefined substitutions with this subject id
+  List<Substitution> getUndefinedSubstitutions(DateTime date,
+      SubstitutionPlan substitutionPlan) =>
+      substitutionPlan
+          ?.getForDate(date)
+          ?.undefinedChanges
+          ?.where((s) => s.unit == unit)
+          ?.toList() ??
+          [];
 
   /// Check if the exams is already set
   bool get examIsSet =>

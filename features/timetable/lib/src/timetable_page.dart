@@ -193,6 +193,10 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                                 substitutions.first.type == 2 &&
                                 substitutions.first.courseID !=
                                     subject.courseID;
+                            final List<Substitution> undefinedSubstitutions =
+                                subject?.getUndefinedSubstitutions(day,
+                                        substitutionPlanFeature.loader.data) ??
+                                    [];
                             return SizeLimit(
                               child: InkWell(
                                 onTap: () async {
@@ -259,11 +263,22 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                                                 ),
                                             hideUnit: substitutions.isNotEmpty,
                                             showUnit: getScreenSize(
-                                                    MediaQuery.of(context)
-                                                        .size
-                                                        .width) !=
+                                                MediaQuery
+                                                    .of(context)
+                                                    .size
+                                                    .width) !=
                                                 ScreenSize.big,
                                           ),
+                                        ),
+                                      if (undefinedSubstitutions.isNotEmpty)
+                                        SubstitutionList(
+                                          showUnit: false,
+                                          padding: false,
+                                          substitutions: undefinedSubstitutions
+                                              .where((substitution) =>
+                                          substitution.unit ==
+                                              subject.unit)
+                                              .toList(),
                                         ),
                                     ],
                                   ),

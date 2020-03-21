@@ -79,6 +79,10 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
                   final showNormal = substitutions.length == 1 &&
                       substitutions.first.type == 2 &&
                       substitutions.first.courseID != subject.courseID;
+                  final List<Substitution> undefinedSubstitutions =
+                      subject?.getUndefinedSubstitutions(
+                              widget.date, spLoader.data) ??
+                          [];
                   return Container(
                     margin: EdgeInsets.all(10),
                     child: Column(
@@ -98,7 +102,16 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
                               subject: subject,
                               hideUnit: substitutions.isNotEmpty,
                             ),
-                          )
+                          ),
+                        if (undefinedSubstitutions.isNotEmpty)
+                          SubstitutionList(
+                            showUnit: false,
+                            padding: false,
+                            substitutions: undefinedSubstitutions
+                                .where((substitution) =>
+                                    substitution.unit == subject.unit)
+                                .toList(),
+                          ),
                       ],
                     ),
                   );
