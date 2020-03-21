@@ -29,8 +29,10 @@ class CustomGridInfoPageState extends State<CustomGridInfoPage> {
           title: widget.title,
           loadingKeys: const [],
         ),
-        body: ListView(
-          children: widget.children,
+        body: Scrollbar(
+          child: ListView(
+            children: widget.children,
+          ),
         ),
       );
 }

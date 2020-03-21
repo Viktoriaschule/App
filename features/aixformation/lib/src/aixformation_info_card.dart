@@ -7,14 +7,19 @@ import 'package:widgets/widgets.dart';
 
 import 'aixformation_events.dart';
 import 'aixformation_keys.dart';
-import 'aixformation_model.dart';
 import 'aixformation_page.dart';
 import 'aixformation_row.dart';
 
 // ignore: public_member_api_docs
 class AiXformationInfoCard extends InfoCard {
   // ignore: public_member_api_docs
-  const AiXformationInfoCard({@required DateTime date}) : super(date: date);
+  const AiXformationInfoCard({
+    @required DateTime date,
+    double maxHeight,
+  }) : super(
+          date: date,
+          maxHeight: maxHeight,
+        );
 
   @override
   _AiXformationInfoCardState createState() => _AiXformationInfoCardState();
@@ -26,13 +31,12 @@ class _AiXformationInfoCardState extends InfoCardState<AiXformationInfoCard> {
       .respond<AiXformationUpdateEvent>((event) => setState(() => null));
 
   @override
-  ListGroup getListGroup(BuildContext context, InfoCardUtils utils) {
+  ListGroup build(BuildContext context) {
     final loader = AiXFormationWidget.of(context).feature.loader;
-    final List<Post> posts = loader.hasLoadedData
-        ? loader.data.posts.length > utils.cut
-            ? loader.data.posts.sublist(0, utils.cut)
-            : loader.data.posts
-        : [];
+    final cut = InfoCardUtils.cut(
+      getScreenSize(MediaQuery.of(context).size.width),
+      loader.hasLoadedData ? loader.data.posts.length : 0,
+    );
     return ListGroup(
       loadingKeys: const [AiXformationKeys.aixformation],
       heroId: AiXformationKeys.aixformation,
@@ -47,13 +51,16 @@ class _AiXformationInfoCardState extends InfoCardState<AiXformationInfoCard> {
         }),
       ],
       title: 'AiXformation',
-      counter: loader.hasLoadedData ? loader.data.posts.length - utils.cut : 0,
+      counter: loader.hasLoadedData ? loader.data.posts.length - cut : 0,
+      maxHeight: widget.maxHeight,
       children: [
         if (loader.hasLoadedData && loader.data.posts.isNotEmpty)
-          ...posts
+          ...(loader.data.posts.length > cut
+                  ? loader.data.posts.sublist(0, cut)
+                  : loader.data.posts)
               .map((post) => AiXformationRow(
                     post: post,
-                    posts: posts,
+                    posts: loader.data.posts,
                   ))
               .toList()
               .cast<Widget>()

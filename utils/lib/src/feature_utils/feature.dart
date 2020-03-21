@@ -53,9 +53,8 @@ abstract class Feature {
   /// Returns the duration between the current moment and the next `getHomePageDate()` update
   Duration durationToHomePageDateUpdate();
 
-  //TODO: Replace with InfoCard type
   /// The information card of this feature for the home page of the app
-  InfoCard getInfoCard(DateTime date);
+  InfoCard getInfoCard(DateTime date, double maxHeight);
 
   /// The custom page for this feature
   Widget getPage();

@@ -13,7 +13,7 @@ class TimetableRow extends StatelessWidget {
     @required this.subject,
     this.showUnit = true,
     this.showSplit = true,
-    this.hideUnit = false,
+    this.keepUnitPadding = false,
     Key key,
   })  : assert(subject != null, 'subject must not be null'),
         super(key: key);
@@ -27,8 +27,8 @@ class TimetableRow extends StatelessWidget {
   // ignore: public_member_api_docs
   final bool showSplit;
 
-  /// If the unit should be hide, but the space should still be there
-  final bool hideUnit;
+  /// If the space should be kept where the unit was
+  final bool keepUnitPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -50,17 +50,12 @@ class TimetableRow extends StatelessWidget {
       showSplit: !(subject.subjectID == TimetableLocalizations.lunchBreak) &&
           showSplit,
       leading: showUnit && unit != 5
-          ? Align(
-              alignment: Alignment(0.3, 0),
-              child: Text(
-                !hideUnit ? (unit + 1).toString() : '',
-                style: TextStyle(
-                  fontSize: 25,
-                  color: ThemeWidget
-                      .of(context)
-                      .textColorLight,
-                  fontWeight: FontWeight.w100,
-                ),
+          ? Text(
+              !keepUnitPadding ? (unit + 1).toString() : '',
+              style: TextStyle(
+                fontSize: 25,
+                color: ThemeWidget.of(context).textColorLight,
+                fontWeight: FontWeight.w100,
               ),
             )
           : null,
@@ -88,50 +83,50 @@ class TimetableRow extends StatelessWidget {
             )
           : null,
       last: subject.subjectID != 'none'
-          ? Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (subject.subjectID != TimetableLocalizations.lunchBreak)
-                  Container(
-                    width: 30,
-                    margin: EdgeInsets.only(right: 10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (subject.teacherID != null)
-                          Text(
-                            '${subject.teacherID.toUpperCase()}\n',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w300,
-                              color: ThemeWidget.of(context).textColor,
-                              fontFamily: 'RobotoMono',
+          ? subject.subjectID != TimetableLocalizations.lunchBreak
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 30,
+                      margin: EdgeInsets.only(right: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (subject.teacherID != null)
+                            Text(
+                              '${subject.teacherID.toUpperCase()}${!subject.teacherID.contains('\n') ? '\n' : ''}',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w300,
+                                color: ThemeWidget.of(context).textColor,
+                                fontFamily: 'RobotoMono',
+                              ),
                             ),
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                if (subject.subjectID != TimetableLocalizations.lunchBreak)
-                  Container(
-                    width: 30,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (subject.roomID != null)
-                          Text(
-                            '${subject.roomID.toUpperCase()}\n',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w300,
-                              color: ThemeWidget.of(context).textColor,
-                              fontFamily: 'RobotoMono',
+                    Container(
+                      width: 30,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (subject.roomID != null)
+                            Text(
+                              '${subject.roomID.toUpperCase()}\n',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w300,
+                                color: ThemeWidget.of(context).textColor,
+                                fontFamily: 'RobotoMono',
+                              ),
                             ),
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-              ],
-            )
+                  ],
+                )
+              : Container()
           : Icon(
               MdiIcons.exclamation,
               color: ThemeWidget.of(context).textColorLight,

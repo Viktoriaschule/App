@@ -9,7 +9,8 @@ import 'cafetoria_events.dart';
 class CafetoriaTagsHandler extends TagsHandler {
   @override
   void syncFromServer(Tags tags, BuildContext context) {
-    final cafetoriaLogin = CafetoriaTags.fromJson(tags.data['cafetoria']);
+    final cafetoriaLogin =
+        CafetoriaTags.fromJson(tags.data != null ? tags.data['cafetoria'] : {});
     bool cafetoriaIsNewer = false;
     final String cafetoriaModified =
         Static.storage.getString(CafetoriaKeys.cafetoriaModified);
@@ -47,7 +48,8 @@ class CafetoriaTagsHandler extends TagsHandler {
 
   @override
   Map<String, dynamic> syncToServer(Tags tags) {
-    final cafetoriaLogin = CafetoriaTags.fromJson(tags.data['cafetoria']);
+    final cafetoriaLogin =
+        CafetoriaTags.fromJson(tags.data != null ? tags.data['cafetoria'] : {});
     final Map<String, dynamic> tagsToUpdate = {};
 
     final String id = Static.storage.getString(CafetoriaKeys.cafetoriaId);
@@ -96,11 +98,13 @@ class CafetoriaTags {
   CafetoriaTags({this.id, this.password, this.timestamp});
 
   /// Creates cafetoria tags from json map
-  factory CafetoriaTags.fromJson(Map<String, dynamic> json) =>
-      CafetoriaTags(
-          id: json['id'],
-          password: json['password'],
-          timestamp: DateTime.parse(json['timestamp']));
+  factory CafetoriaTags.fromJson(Map<String, dynamic> json) => CafetoriaTags(
+        id: json['id'],
+        password: json['password'],
+        timestamp: json['timestamp'] != null
+            ? DateTime.parse(json['timestamp'])
+            : DateTime.now(),
+      );
 
   // ignore: public_member_api_docs
   final String id;
@@ -112,8 +116,7 @@ class CafetoriaTags {
   final DateTime timestamp;
 
   /// Converts cafetoria tags to json map
-  Map<String, dynamic> toMap() =>
-      {
+  Map<String, dynamic> toMap() => {
         'id': id,
         'password': password,
         'timestamp': timestamp.toIso8601String()

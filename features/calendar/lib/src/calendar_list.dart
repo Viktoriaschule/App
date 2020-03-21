@@ -46,13 +46,14 @@ class CalendarListState extends Interactor<CalendarList> {
       body: CustomRefreshIndicator(
         loadOnline: () => loader.loadOnline(context, force: true),
         child: events.isNotEmpty
-            ? ListView.builder(
-                padding: EdgeInsets.only(bottom: 10),
-                itemCount: events.length,
-                itemBuilder: (context, index) => Container(
-                  margin: EdgeInsets.all(10),
-                  child: CalendarRow(
-                    event: events[index],
+            ? Scrollbar(
+                child: ListView.builder(
+                  padding: EdgeInsets.only(bottom: 10),
+                  itemCount: events.length,
+                  itemBuilder: (context, index) => SizeLimit(
+                    child: CalendarRow(
+                      event: events[index],
+                    ),
                   ),
                 ),
               )

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:frame/utils/features.dart';
 import 'package:timetable/timetable.dart';
@@ -104,135 +103,59 @@ class _HomePageState extends Interactor<HomePage> with AfterLayoutMixin {
     // Get the date for the home page
     final day = getDay(features ?? FeaturesWidget.of(context).features);
 
+    /*
     final widgetBuilders = FeaturesWidget.of(context)
         .features
         .map((f) => () => f.getInfoCard(day))
         .toList();
+*/
+    final numberFeatures = FeaturesWidget.of(context).features.length;
+    final size = getScreenSize(MediaQuery.of(context).size.width);
+    int numberColumns;
+    switch (size) {
+      case ScreenSize.small:
+        numberColumns = 1;
+        break;
+      case ScreenSize.middle:
+        numberColumns = 2;
+        break;
+      case ScreenSize.big:
+        numberColumns = 3;
+        break;
+    }
 
-    //TODO: if (size == ScreenSize.small) {
-    return ListView.builder(
-      shrinkWrap: false,
-      padding: EdgeInsets.only(bottom: 10),
-      itemCount: widgetBuilders.length,
-      itemBuilder: (context, index) => widgetBuilders[index](),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final numberRows = (numberFeatures / numberColumns).ceil();
+        final height =
+            numberColumns > 1 ? constraints.maxHeight / numberRows : null;
+        return Scrollbar(
+          child: ListView(
+            children: List.generate(
+              numberRows,
+              (rowIndex) => Container(
+                height: height,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: List.generate(numberColumns, (columnIndex) {
+                    final index = rowIndex * numberColumns + columnIndex;
+                    if (index >= numberFeatures) {
+                      return Expanded(
+                        child: Container(),
+                      );
+                    }
+                    return Expanded(
+                      child: FeaturesWidget.of(context)
+                          .features[index]
+                          .getInfoCard(day, height),
+                    );
+                  }),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
-    //}
-    //TODO: Add other screen sizes
-    /*
-    if (size == ScreenSize.middle) {
-      return SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                substitutionPlanBuilder(),
-                timetableBuilder(),
-              ]
-                  .map((x) => Expanded(
-                        flex: 1,
-                        child: SizedBox(
-                          height: (MediaQuery.of(context).size.height -
-                                  _screenPadding) /
-                              3,
-                          child: x,
-                        ),
-                      ))
-                  .toList()
-                  .cast<Widget>(),
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                calendarBuilder(),
-                cafetoriaBuilder(),
-              ]
-                  .map((x) => Expanded(
-                        flex: 1,
-                        child: SizedBox(
-                          height: (MediaQuery.of(context).size.height -
-                                  _screenPadding) /
-                              3,
-                          child: x,
-                        ),
-                      ))
-                  .toList()
-                  .cast<Widget>(),
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                aixformationBuilder(),
-              ]
-                  .map((x) => Expanded(
-                        flex: 1,
-                        child: SizedBox(
-                          height: (MediaQuery.of(context).size.height -
-                                  _screenPadding) /
-                              3,
-                          child: x,
-                        ),
-                      ))
-                  .toList()
-                  .cast<Widget>(),
-            ),
-          ],
-        ),
-      );
-    }
-    if (size == ScreenSize.big) {
-      return SingleChildScrollView(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                substitutionPlanBuilder(),
-                cafetoriaBuilder(),
-              ]
-                  .map((x) => SizedBox(
-                        height: (MediaQuery.of(context).size.height -
-                                _screenPadding) /
-                            2,
-                        child: x,
-                      ))
-                  .toList()
-                  .cast<Widget>(),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                timetableBuilder(),
-                calendarBuilder(),
-              ]
-                  .map((x) => SizedBox(
-                        height: (MediaQuery.of(context).size.height -
-                                _screenPadding) /
-                            2,
-                        child: x,
-                      ))
-                  .toList()
-                  .cast<Widget>(),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height - _screenPadding,
-              child: aixformationBuilder(),
-            ),
-          ]
-              .map((x) => Expanded(
-                    flex: 1,
-                    child: x,
-                  ))
-              .toList()
-              .cast<Widget>(),
-        ),
-      );
-    }
-    /return Container();
-    */
   }
-
-  // final _screenPadding = 110;
 }

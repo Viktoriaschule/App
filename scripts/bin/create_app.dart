@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:mustache_template/mustache.dart';
 import 'package:process_run/process_run.dart';
+import 'package:process_run/which.dart';
 import 'package:scripts/base_dir.dart';
 import 'package:yaml/yaml.dart';
 
@@ -114,6 +116,45 @@ Future main(List<String> arguments) async {
         .renderString(templateData));
     File('${appDir.path}/web/sw.js').writeAsStringSync(
         File('$baseDir/scripts/templates/sw.js.tmpl').readAsStringSync());
+
+    if (whichSync('hover') != null) {
+      log('Creating go-flutter config');
+      await run(
+        'hover',
+        ['init'],
+        workingDirectory: appDir.path,
+      );
+      final plugins = [
+        'shared_preferences',
+        'package_info',
+        'url_launcher',
+        'path_provider'
+      ];
+      for (final plugin in plugins) {
+        File('${appDir.path}/go/cmd/import-$plugin-plugin.go')
+            .writeAsStringSync((await Dio().get(
+                    'https://raw.githubusercontent.com/go-flutter-desktop/plugins/master/$plugin/import.go.tmpl'))
+                .toString());
+      }
+      final formats = [
+        'linux-deb',
+        'linux-pkg',
+        'linux-rpm',
+        'windows-msi',
+        'darwin-dmg',
+        'darwin-pkg',
+      ];
+      for (final format in formats) {
+        await run(
+          'hover',
+          [
+            'init-packaging',
+            format,
+          ],
+          workingDirectory: appDir.path,
+        );
+      }
+    }
 
     log('Modifying Android sources');
     final androidManifestPath =
@@ -285,6 +326,13 @@ Future main(List<String> arguments) async {
           ),
     );
 
+    if (whichSync('hover') != null) {
+      log('Modifying go-flutter sources');
+      final hoverYamlPath = '${appDir.path}/go/hover.yaml';
+      File(hoverYamlPath).writeAsStringSync(
+          File(hoverYamlPath).readAsStringSync().replaceAll('_desktop', ''));
+    }
+
     log('Copying icons');
     File('${appDir.path}/icons_green.yaml').writeAsStringSync([
       'flutter_icons:',
@@ -305,6 +353,11 @@ Future main(List<String> arguments) async {
         .copy('${appDir.path}/web/icons/Icon-192.png');
     await File('$baseDir/apps/${greenIcons[16]}')
         .copy('${appDir.path}/web/favicon.png');
+
+    if (whichSync('hover') != null) {
+      await File('$baseDir/apps/${greenIcons[1024]}')
+          .copy('${appDir.path}/go/assets/icon.png');
+    }
 
     // Create app icons
     await run(

@@ -6,13 +6,18 @@ import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
-import 'timetable_page.dart';
 import 'timetable_row.dart';
 
 // ignore: public_member_api_docs
 class TimetableInfoCard extends InfoCard {
   // ignore: public_member_api_docs
-  const TimetableInfoCard({DateTime date}) : super(date: date);
+  const TimetableInfoCard({
+    @required DateTime date,
+    double maxHeight,
+  }) : super(
+          date: date,
+          maxHeight: maxHeight,
+        );
 
   @override
   _TimetableInfoCardState createState() => _TimetableInfoCardState();
@@ -26,7 +31,7 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
       .respond<SubstitutionPlanUpdateEvent>((event) => setState(() => null));
 
   @override
-  ListGroup getListGroup(BuildContext context, InfoCardUtils utils) {
+  ListGroup build(BuildContext context) {
     final loader = TimetableWidget.of(context).feature.loader;
     final spLoader = SubstitutionPlanWidget.of(context).feature.loader;
     final subjects = loader.hasLoadedData
@@ -37,13 +42,18 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
                 subject.getSubstitutions(widget.date, spLoader.data).isNotEmpty)
             .toList()
         : <TimetableSubject>[];
+    final cut = InfoCardUtils.cut(
+      getScreenSize(MediaQuery.of(context).size.width),
+      subjects.length,
+    );
     return ListGroup(
       loadingKeys: [TimetableKeys.timetable],
       title: 'Nächste Stunden - ${weekdays[widget.date.weekday - 1]}',
-      counter: subjects.length > utils.cut ? subjects.length - utils.cut : 0,
-      heroId: utils.size == ScreenSize.small
-          ? TimetableKeys.timetable
-          : '${TimetableKeys.timetable}-${utils.weekday}',
+      counter: subjects.length > cut ? subjects.length - cut : 0,
+      heroId:
+          getScreenSize(MediaQuery.of(context).size.width) == ScreenSize.small
+              ? TimetableKeys.timetable
+              : '${TimetableKeys.timetable}-${widget.date.weekday - 1}',
       heroIdNavigation: TimetableKeys.timetable,
       actions: [
         NavigationAction(
@@ -55,57 +65,39 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
           },
         ),
       ],
+      maxHeight: widget.maxHeight,
       children: [
-        SizeLimit(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (subjects.isEmpty ||
-                  !loader.hasLoadedData ||
-                  !loader.data.selection.isSet())
-                EmptyList(
-                    title: loader.data?.selection?.isSet() ?? true
-                        ? 'Kein Stundenplan'
-                        : 'Keine Stunden ausgewählt')
-              else
-                ...(subjects.length > utils.cut
-                        ? subjects.sublist(0, utils.cut)
-                        : subjects)
-                    .map((subject) {
-                  final substitutions = spLoader.hasLoadedData
-                      ? subject.getSubstitutions(widget.date, spLoader.data)
-                      : <Substitution>[];
-                  // Show the normal lessen if it is an exam, but not of the same subjects, as this unit
-                  final showNormal = substitutions.length == 1 &&
-                      substitutions.first.type == 2 &&
-                      substitutions.first.courseID != subject.courseID;
-                  return Container(
-                    margin: EdgeInsets.all(10),
-                    child: Column(
-                      children: [
-                        SubstitutionList(
-                          substitutions: substitutions
-                              .where((substitution) =>
-                                  substitution.unit == subject.unit)
-                              .toList(),
-                          padding: false,
-                        ),
-                        if (substitutions.isEmpty || showNormal)
-                          Padding(
-                            padding: EdgeInsets.only(
-                                top: substitutions.isNotEmpty ? 5 : 0),
-                            child: TimetableRow(
-                              subject: subject,
-                              hideUnit: substitutions.isNotEmpty,
-                            ),
-                          )
-                      ],
+        if (subjects.isEmpty ||
+            !loader.hasLoadedData ||
+            !loader.data.selection.isSet())
+          EmptyList(
+              title: loader.data?.selection?.isSet() ?? true
+                  ? 'Kein Stundenplan'
+                  : 'Keine Stunden ausgewählt')
+        else
+          ...(subjects.length > cut ? subjects.sublist(0, cut) : subjects)
+              .map((subject) {
+                final substitutions = spLoader.hasLoadedData
+                    ? subject.getSubstitutions(widget.date, spLoader.data)
+                    : <Substitution>[];
+                // Show the normal lessen if it is an exam, but not of the same subjects, as this unit
+                final showNormal = substitutions.length == 1 &&
+                    substitutions.first.type == 2 &&
+                    substitutions.first.courseID != subject.courseID;
+                return [
+                  ...getSubstitutionList(substitutions
+                      .where(
+                          (substitution) => substitution.unit == subject.unit)
+                      .toList()),
+                  if (substitutions.isEmpty || showNormal)
+                    TimetableRow(
+                      subject: subject,
+                      keepUnitPadding: substitutions.isNotEmpty,
                     ),
-                  );
-                }),
-            ],
-          ),
-        ),
+                ];
+              })
+              .expand((x) => x)
+              .cast<Widget>(),
       ],
     );
   }

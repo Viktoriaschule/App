@@ -53,7 +53,7 @@ class CustomBottomNavigation extends StatelessWidget {
                 child: InkWell(
                   onTap: action.onTap,
                   child: Container(
-                    height: 45,
+                    height: 43.5,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       border: borderRight

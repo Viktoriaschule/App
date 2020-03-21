@@ -21,7 +21,10 @@ class TagsLoader extends Loader<Tags> {
 
   /// Initialize device tags
   Future syncDevice(BuildContext context, List<Feature> features) async {
-    final String id = await Static.firebaseMessaging.getToken();
+    String id;
+    if (!Platform().isDesktop) {
+      id = await Static.firebaseMessaging.getToken();
+    }
     final packageInfo = await PackageInfo.fromPlatform();
     final String appVersion =
         '${packageInfo.version}+${packageInfo.buildNumber}';

@@ -38,7 +38,10 @@ class TimetableFeature implements Feature {
   final TimetableTagsHandler tagsHandler = TimetableTagsHandler();
 
   @override
-  InfoCard getInfoCard(DateTime date) => TimetableInfoCard(date: date);
+  InfoCard getInfoCard(DateTime date, double maxHeight) => TimetableInfoCard(
+        date: date,
+        maxHeight: maxHeight,
+      );
 
   @override
   Widget getPage() => TimetablePage(key: ValueKey(featureKey));

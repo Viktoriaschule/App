@@ -35,16 +35,18 @@ class _CafetoriaRowState extends State<CafetoriaRow> {
           color: ThemeWidget.of(context).textColorLight,
         ),
         title: widget.menu.name,
-        subtitle: IconsTexts(
-          icons: [
-            if (widget.menu.price != 0) MdiIcons.currencyEur,
-            if (widget.menu.time.isNotEmpty) Icons.timer,
-          ],
-          texts: [
-            if (widget.menu.price != 0)
-              widget.menu.price.toString().replaceAll('.', ','),
-            if (widget.menu.time.isNotEmpty) widget.menu.time,
-          ],
-        ),
+        subtitle: widget.menu.price != 0 || widget.menu.time.isNotEmpty
+            ? IconsTexts(
+                icons: [
+                  if (widget.menu.price != 0) MdiIcons.currencyEur,
+                  if (widget.menu.time.isNotEmpty) Icons.timer,
+                ],
+                texts: [
+                  if (widget.menu.price != 0)
+                    widget.menu.price.toString().replaceAll('.', ','),
+                  if (widget.menu.time.isNotEmpty) widget.menu.time,
+                ],
+              )
+            : null,
       );
 }

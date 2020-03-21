@@ -3,6 +3,7 @@ library widgets;
 export 'src/custom_app_bar.dart';
 export 'src/custom_bottom_navigation.dart';
 export 'src/custom_button.dart';
+export 'src/custom_cached_network_image.dart';
 export 'src/custom_card.dart';
 export 'src/custom_circular_progress_indicator.dart';
 export 'src/custom_grid.dart';

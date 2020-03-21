@@ -49,8 +49,10 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
             color: Theme.of(context).backgroundColor,
             child: CustomRefreshIndicator(
               loadOnline: widget.onRefresh,
-              child: ListView(
-                children: widget.tab,
+              child: Scrollbar(
+                child: ListView(
+                  children: widget.tab,
+                ),
               ),
             ),
           ),

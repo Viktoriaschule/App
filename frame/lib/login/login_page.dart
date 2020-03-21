@@ -39,9 +39,11 @@ class _LoginPageState extends State<_LoginPage> {
         username: _usernameFieldController.text,
         password: _passwordFieldController.text,
       );
-      setState(() {
-        _checkingLogin = false;
-      });
+      if (mounted) {
+        setState(() {
+          _checkingLogin = false;
+        });
+      }
       if (result == StatusCode.success) {
         Static.user.username = _usernameFieldController.text;
         Static.user.password = _passwordFieldController.text;
@@ -155,20 +157,22 @@ class _LoginPageState extends State<_LoginPage> {
       color: Theme.of(context).backgroundColor,
       child: Center(
         child: Scrollbar(
-          child: ListView(
-            shrinkWrap: true,
-            padding: EdgeInsets.all(10),
-            children: [
-              SizeLimit(
-                child: Column(
-                  children: [
-                    usernameField,
-                    passwordField,
-                    submitButton,
-                  ],
+          child: Scrollbar(
+            child: ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.all(10),
+              children: [
+                SizeLimit(
+                  child: Column(
+                    children: [
+                      usernameField,
+                      passwordField,
+                      submitButton,
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

@@ -53,48 +53,49 @@ class CustomRow extends StatelessWidget {
   final dynamic heroTag;
 
   @override
-  Widget build(BuildContext context) {
-    final row = Row(
-      children: [
-        if (leading != null)
-          Container(
-            width: 30,
-            child: Center(
-              child: leading,
-            ),
-          ),
-        if (showSplit ?? true)
-          Container(
-            height: 34,
-            width: 2.5,
-            margin: EdgeInsets.only(
-              right: 5,
-            ),
-            color: splitColor ?? Colors.transparent,
-          ),
-        Expanded(
-          flex: 1,
-          child: Column(
-            crossAxisAlignment: titleAlignment ?? CrossAxisAlignment.start,
-            children: [
-              if (title != null)
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: titleFontWeight,
-                    color: titleColor ?? Theme.of(context).accentColor,
-                  ),
-                  overflow: titleOverflow ?? TextOverflow.ellipsis,
+  Widget build(BuildContext context) => Container(
+        height: 40,
+        margin: EdgeInsets.all(10),
+        child: Row(
+          children: [
+            if (leading != null)
+              Container(
+                width: 30,
+                child: Center(
+                  child: leading,
                 ),
-              if (subtitle != null) subtitle else Text(''),
-            ],
-          ),
+              ),
+            if (showSplit ?? true)
+              Container(
+                height: 34,
+                width: 2.5,
+                margin: EdgeInsets.only(
+                  right: 5,
+                ),
+                color: splitColor ?? Colors.transparent,
+              ),
+            Expanded(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: titleAlignment ?? CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (title != null)
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: titleFontWeight,
+                        color: titleColor ?? Theme.of(context).accentColor,
+                      ),
+                      overflow: titleOverflow ?? TextOverflow.ellipsis,
+                    ),
+                  if (subtitle != null) subtitle,
+                ],
+              ),
+            ),
+            if (last != null) last,
+          ],
         ),
-        if (last != null) last,
-      ],
-    );
-
-    return row;
-  }
+      );
 }

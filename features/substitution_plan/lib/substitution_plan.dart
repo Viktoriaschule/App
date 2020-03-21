@@ -42,7 +42,11 @@ class SubstitutionPlanFeature implements Feature {
   final TagsHandler tagsHandler = null;
 
   @override
-  InfoCard getInfoCard(DateTime date) => SubstitutionPlanInfoCard(date: date);
+  InfoCard getInfoCard(DateTime date, double maxHeight) =>
+      SubstitutionPlanInfoCard(
+        date: date,
+        maxHeight: maxHeight,
+      );
 
   @override
   Widget getPage() => SubstitutionPlanPage(key: ValueKey(featureKey));

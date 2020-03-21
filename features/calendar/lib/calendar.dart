@@ -35,7 +35,10 @@ class CalendarFeature implements Feature {
   final TagsHandler tagsHandler = null;
 
   @override
-  InfoCard getInfoCard(DateTime date) => CalendarInfoCard(date: date);
+  InfoCard getInfoCard(DateTime date, double maxHeight) => CalendarInfoCard(
+        date: date,
+        maxHeight: maxHeight,
+      );
 
   @override
   Widget getPage() => CalendarPage(key: ValueKey(featureKey));

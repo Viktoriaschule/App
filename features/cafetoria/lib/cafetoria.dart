@@ -39,7 +39,10 @@ class CafetoriaFeature implements Feature {
   final CafetoriaTagsHandler tagsHandler = CafetoriaTagsHandler();
 
   @override
-  InfoCard getInfoCard(DateTime date) => CafetoriaInfoCard(date: date);
+  InfoCard getInfoCard(DateTime date, double maxHeight) => CafetoriaInfoCard(
+        date: date,
+        maxHeight: maxHeight,
+      );
 
   @override
   Widget getPage() => CafetoriaPage(key: ValueKey(featureKey));

@@ -8,9 +8,7 @@ dependencies:
     sdk: flutter
   flutter_webview_plugin:
   url_launcher:
-  cached_network_image:
   share:
-  transparent_image:
   utils:
     path: ../../utils
   widgets:

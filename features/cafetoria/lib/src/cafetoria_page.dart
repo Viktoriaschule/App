@@ -81,37 +81,38 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
             await loader.loadOnline(context, force: true),
           ]),
           child: days.isNotEmpty
-              ? ListView.builder(
-                  padding: EdgeInsets.only(bottom: 10),
-                  itemCount: days.length,
-                  itemBuilder: (context, index) {
-                    final day = days[index];
-                    return SizeLimit(
-                      child: ListGroup(
-                        heroId:
-                            '${CafetoriaKeys.cafetoria}-${days.indexOf(day)}',
-                        title:
-                            // ignore: lines_longer_than_80_chars
-                            '${weekdays[day.date.weekday - 1]} ${shortOutputDateFormat.format(day.date)}',
-                        children: day.menus.isNotEmpty
-                            ? day.menus
-                                .map(
-                                  (menu) => Container(
-                                    margin: EdgeInsets.all(10),
-                                    child: CafetoriaRow(
+              ? Scrollbar(
+                  child: ListView.builder(
+                    padding: EdgeInsets.only(bottom: 10),
+                    itemCount: days.length,
+                    itemBuilder: (context, index) {
+                      final day = days[index];
+                      return SizeLimit(
+                        child: ListGroup(
+                          heroId:
+                              '${CafetoriaKeys.cafetoria}-${days.indexOf(day)}',
+                          title:
+                              // ignore: lines_longer_than_80_chars
+                              '${weekdays[day.date.weekday - 1]} ${shortOutputDateFormat.format(day.date)}',
+                          children: day.menus.isNotEmpty
+                              ? day.menus
+                                  .map(
+                                    (menu) => CafetoriaRow(
                                       day: day,
                                       menu: menu,
                                     ),
-                                  ),
-                                )
-                                .toList()
-                                .cast<Widget>()
-                            : [
-                                EmptyList(title: CafetoriaLocalizations.noMenus)
-                              ],
-                      ),
-                    );
-                  })
+                                  )
+                                  .toList()
+                                  .cast<Widget>()
+                              : [
+                                  EmptyList(
+                                      title: CafetoriaLocalizations.noMenus)
+                                ],
+                        ),
+                      );
+                    },
+                  ),
+                )
               : Center(
                   child: EmptyList(title: CafetoriaLocalizations.noMenus),
                 ),

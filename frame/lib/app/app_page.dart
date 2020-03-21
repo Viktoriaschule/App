@@ -199,12 +199,10 @@ class _AppPageState extends Interactor<AppPage>
               _permissionsChecking = true;
             });
             _permissionsGranted =
-            await Static.firebaseMessaging.requestNotificationPermissions();
+                await Static.firebaseMessaging.requestNotificationPermissions();
             await Static.tags.syncDevice(
               context,
-              FeaturesWidget
-                  .of(context)
-                  .features,
+              FeaturesWidget.of(context).features,
             );
             setState(() {
               _permissionsChecking = false;
@@ -241,37 +239,31 @@ class _AppPageState extends Interactor<AppPage>
     final pages = Pages.of(context).pages;
     return Scaffold(
       extendBody: true,
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxScrolled) => [
-          CustomAppBar(
-            title: pages[Keys.home].title,
-            actions: [
-              ...webActions,
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (context) => SettingsPage(),
-                    ),
-                  );
-                },
-                icon: Icon(
-                  Icons.settings,
-                  color: ThemeWidget
-                      .of(context)
-                      .textColor,
+      appBar: CustomAppBar(
+        title: pages[Keys.home].title,
+        actions: [
+          ...webActions,
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (context) => SettingsPage(),
                 ),
-              ),
-            ],
-            sliver: true,
-            isLeading: false,
-            loadingKeys: [Keys.tags, Keys.subjects, Keys.updates],
+              );
+            },
+            icon: Icon(
+              Icons.settings,
+              color: ThemeWidget.of(context).textColor,
+            ),
           ),
         ],
-        body: CustomRefreshIndicator(
-          loadOnline: () => _fetchData(force: true),
-          child: HomePage(),
-        ),
+        sliver: false,
+        isLeading: false,
+        loadingKeys: [Keys.tags, Keys.subjects, Keys.updates],
+      ),
+      body: CustomRefreshIndicator(
+        loadOnline: () => _fetchData(force: true),
+        child: HomePage(),
       ),
     );
   }

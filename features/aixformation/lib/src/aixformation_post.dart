@@ -8,7 +8,6 @@ import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 import 'aixformation_model.dart';
-import 'aixformation_utils.dart';
 
 // ignore: public_member_api_docs
 class AiXformationPost extends StatefulWidget {
@@ -90,7 +89,7 @@ class _AiXformationPostState extends State<AiXformationPost>
           height: double.infinity,
           width: double.infinity,
           child: Center(
-            child: getLoadingPlaceholder(context),
+            child: CustomCircularProgressIndicator(),
           ),
         ),
         appBar: CustomAppBar(

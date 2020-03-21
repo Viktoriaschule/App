@@ -38,7 +38,7 @@ class AiXformationFeature implements Feature {
   final TagsHandler tagsHandler = null;
 
   @override
-  InfoCard getInfoCard(DateTime date) => AiXformationInfoCard(date: date);
+  InfoCard getInfoCard(DateTime date,double maxHeight) => AiXformationInfoCard(date: date,maxHeight:maxHeight,);
 
   @override
   Widget getPage() => AiXformationPage(key: ValueKey(featureKey));

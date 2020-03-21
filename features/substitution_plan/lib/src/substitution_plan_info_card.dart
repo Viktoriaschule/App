@@ -17,7 +17,11 @@ class SubstitutionPlanInfoCard extends InfoCard {
   // ignore: public_member_api_docs
   const SubstitutionPlanInfoCard({
     @required DateTime date,
-  }) : super(date: date);
+    double maxHeight,
+  }) : super(
+          date: date,
+          maxHeight: maxHeight,
+        );
 
   @override
   _SubstitutionPlanInfoCardState createState() =>
@@ -44,11 +48,14 @@ class _SubstitutionPlanInfoCardState
   void update(event) => setState(() => null);
 
   @override
-  ListGroup getListGroup(BuildContext context, InfoCardUtils utils) {
+  ListGroup build(BuildContext context) {
     final loader = SubstitutionPlanWidget.of(context).feature.loader;
     final substitutionPlanDay = getSpDay(loader.data);
     final substitutions = getSubstitutions(substitutionPlanDay);
-
+    final cut = InfoCardUtils.cut(
+      getScreenSize(MediaQuery.of(context).size.width),
+      substitutions.length,
+    );
     return ListGroup(
       loadingKeys: const [SubstitutionPlanKeys.substitutionPlan],
       heroId: getScreenSize(MediaQuery.of(context).size.width) ==
@@ -58,9 +65,7 @@ class _SubstitutionPlanInfoCardState
       heroIdNavigation: SubstitutionPlanKeys.substitutionPlan,
       title:
           '${SubstitutionPlanLocalizations.nextSubstitutions} - ${weekdays[widget.date.weekday - 1]}',
-      counter: substitutions.length > utils.cut
-          ? substitutions.length - utils.cut
-          : 0,
+      counter: substitutions.length > cut ? substitutions.length - cut : 0,
       actions: [
         NavigationAction(Icons.expand_more, () {
           Navigator.of(context).push(
@@ -70,26 +75,16 @@ class _SubstitutionPlanInfoCardState
           );
         }),
       ],
+      maxHeight: widget.maxHeight,
       children: [
         if (substitutions.isEmpty)
           EmptyList(title: SubstitutionPlanLocalizations.noSubstitutions)
-        else
-          SizeLimit(
-            child: Container(
-              margin: EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (loader.hasLoadedData)
-                    SubstitutionList(
-                      substitutions: substitutions.length > utils.cut
-                          ? substitutions.sublist(0, utils.cut)
-                          : substitutions,
-                    ),
-                ],
-              ),
-            ),
-          ),
+        else if (loader.hasLoadedData)
+          ...getSubstitutionList(
+            substitutions.length > cut
+                ? substitutions.sublist(0, cut)
+                : substitutions,
+          )
       ],
     );
   }

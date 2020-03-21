@@ -17,7 +17,7 @@ class CustomGrid extends StatefulWidget {
     this.extraInfoChildren,
     this.extraInfoCounts,
     this.childrenRowPrepend,
-    this.appendRowPrepend,
+    this.extraInfoRowPrepend,
     this.initialHorizontalIndex = 0,
     Key key,
   }) : super(key: key);
@@ -26,7 +26,7 @@ class CustomGrid extends StatefulWidget {
   final List<Widget> childrenRowPrepend;
 
   // ignore: public_member_api_docs
-  final List<Widget> appendRowPrepend;
+  final List<Widget> extraInfoRowPrepend;
 
   // ignore: public_member_api_docs
   final List<String> columnPrepend;
@@ -128,12 +128,12 @@ class _CustomGridState extends State<CustomGrid>
         .toList()[0];
     final appendCount = widget.extraInfoChildren != null
         ? (widget.children
-        .map((c) =>
-    widget.extraInfoChildren[widget.children.indexOf(c)].length)
-        .toList()
-      ..sort())
-        .reversed
-        .toList()[0]
+                .map((c) =>
+                    widget.extraInfoChildren[widget.children.indexOf(c)].length)
+                .toList()
+                  ..sort())
+            .reversed
+            .toList()[0]
         : 0;
     return Container(
       color: Theme.of(context).backgroundColor,
@@ -144,67 +144,82 @@ class _CustomGridState extends State<CustomGrid>
             shrinkWrap: true,
             children: List.generate(
               childrenCount + appendCount + 1,
-              (row) => Container(
-                decoration: row == 0 ||
-                        (row >= childrenCount &&
-                            row < childrenCount + appendCount)
-                    ? BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            width: 1,
-                            color: ThemeWidget.of(context).textColor,
-                          ),
-                        ),
-                      )
-                    : null,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: List.generate(
-                    widget.children.length +
-                        (widget.childrenRowPrepend != null ? 1 : 0),
-                    (column) {
-                      Widget child = Container();
-                      if (row == 0 && column == 0) {
-                        child = Container();
-                      } else if (row == 0) {
-                        child = Container(
-                          margin: EdgeInsets.only(top: 20, bottom: 10),
-                          alignment: Alignment.topCenter,
-                          child: Text(
-                            widget.columnPrepend[column - 1],
-                            style: TextStyle(
-                              fontSize: 16,
+              (row) {
+                final showDivider = row == 0 ||
+                    (row >= childrenCount && row < childrenCount + appendCount);
+                final edgeInsets =
+                    showDivider ? EdgeInsets.only(bottom: 15) : null;
+                return Container(
+                  decoration: showDivider
+                      ? BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              width: 1,
                               color: ThemeWidget.of(context).textColor,
                             ),
                           ),
+                        )
+                      : null,
+                  margin: edgeInsets,
+                  padding: edgeInsets,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate(
+                      widget.children.length +
+                          (widget.childrenRowPrepend != null ? 1 : 0),
+                      (column) {
+                        Widget child = Container();
+                        if (row == 0 && column == 0) {
+                          child = Container();
+                        } else if (row == 0) {
+                          child = Container(
+                            margin: EdgeInsets.only(top: 15),
+                            alignment: Alignment.center,
+                            child: Text(
+                              widget.columnPrepend[column - 1],
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: ThemeWidget.of(context).textColor,
+                              ),
+                            ),
+                          );
+                        } else if (row <= childrenCount) {
+                          if (column == 0 &&
+                              widget.childrenRowPrepend != null) {
+                            child = widget.childrenRowPrepend[row - 1];
+                          } else {
+                            if (widget.children[column - 1].length > row - 1) {
+                              child = Container(
+                                margin: EdgeInsets.only(
+                                  left: 10,
+                                  right: 10,
+                                ),
+                                child: widget.children[column - 1][row - 1],
+                              );
+                            }
+                          }
+                        } else if (widget.extraInfoChildren != null) {
+                          final index = row - childrenCount - 1;
+                          if (column == 0 &&
+                              widget.extraInfoRowPrepend != null) {
+                            child = widget.extraInfoRowPrepend[index];
+                          } else {
+                            if (widget.extraInfoChildren[column - 1].length >
+                                index) {
+                              child =
+                                  widget.extraInfoChildren[column - 1][index];
+                            }
+                          }
+                        }
+                        return Expanded(
+                          flex: column == 0 ? 1 : 3,
+                          child: child,
                         );
-                      } else if (row <= childrenCount) {
-                        if (column == 0 && widget.childrenRowPrepend != null) {
-                          child = widget.childrenRowPrepend[row - 1];
-                        } else {
-                          if (widget.children[column - 1].length > row - 1) {
-                            child = widget.children[column - 1][row - 1];
-                          }
-                        }
-                      } else if (widget.extraInfoChildren != null) {
-                        final index = row - childrenCount - 1;
-                        if (column == 0 && widget.appendRowPrepend != null) {
-                          child = widget.appendRowPrepend[index];
-                        } else {
-                          if (widget.extraInfoChildren[column - 1].length >
-                              index) {
-                            child = widget.extraInfoChildren[column - 1][index];
-                          }
-                        }
-                      }
-                      return Expanded(
-                        flex: column == 0 ? 1 : 3,
-                        child: child,
-                      );
-                    },
+                      },
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
         ),
