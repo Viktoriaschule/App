@@ -1,27 +1,31 @@
 library substitution_plan;
 
 import 'package:flutter/material.dart';
-import 'package:substitution_plan/src/substitution_plan_info_card.dart';
-import 'package:substitution_plan/src/substitution_plan_keys.dart';
-import 'package:substitution_plan/src/substitution_plan_loader.dart';
-import 'package:substitution_plan/src/substitution_plan_notifications.dart';
-import 'package:substitution_plan/src/substitution_plan_page.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'src/substitution_plan_info_card.dart';
+import 'src/substitution_plan_keys.dart';
+import 'src/substitution_plan_loader.dart';
+import 'src/substitution_plan_localizations.dart';
+import 'src/substitution_plan_notifications.dart';
+import 'src/substitution_plan_page.dart';
+
 export 'src/substitution_list.dart';
 export 'src/substitution_plan_events.dart';
 export 'src/substitution_plan_info_card.dart';
+export 'src/substitution_plan_keys.dart';
 export 'src/substitution_plan_loader.dart';
 export 'src/substitution_plan_localizations.dart';
 export 'src/substitution_plan_model.dart';
 export 'src/substitution_plan_page.dart';
+export 'src/substitution_plan_row.dart';
 
 /// The substitution plan feature
 class SubstitutionPlanFeature implements Feature {
   @override
-  final String name = 'Vertretungsplan';
+  final String name = SubstitutionPlanLocalizations.name;
 
   @override
   final String featureKey = SubstitutionPlanKeys.substitutionPlan;

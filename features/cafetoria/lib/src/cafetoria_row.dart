@@ -1,9 +1,8 @@
+import 'package:cafetoria/cafetoria.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'cafetoria_model.dart';
 
 // ignore: public_member_api_docs
 class CafetoriaRow extends StatefulWidget {
@@ -30,23 +29,23 @@ class CafetoriaRow extends StatefulWidget {
 class _CafetoriaRowState extends State<CafetoriaRow> {
   @override
   Widget build(BuildContext context) => CustomRow(
-        leading: Icon(
-          Icons.restaurant,
-          color: ThemeWidget.of(context).textColorLight,
-        ),
-        title: widget.menu.name,
-        subtitle: widget.menu.price != 0 || widget.menu.time.isNotEmpty
-            ? IconsTexts(
-                icons: [
-                  if (widget.menu.price != 0) MdiIcons.currencyEur,
-                  if (widget.menu.time.isNotEmpty) Icons.timer,
-                ],
-                texts: [
-                  if (widget.menu.price != 0)
-                    widget.menu.price.toString().replaceAll('.', ','),
-                  if (widget.menu.time.isNotEmpty) widget.menu.time,
-                ],
-              )
-            : null,
-      );
+    leading: Icon(
+      Icons.restaurant,
+      color: ThemeWidget.of(context).textColorLight,
+    ),
+    title: widget.menu.name,
+    subtitle: widget.menu.price != 0 || widget.menu.time.isNotEmpty
+        ? IconsTexts(
+      icons: [
+        if (widget.menu.price != 0) MdiIcons.currencyEur,
+        if (widget.menu.time.isNotEmpty) Icons.timer,
+      ],
+      texts: [
+        if (widget.menu.price != 0)
+          widget.menu.price.toString().replaceAll('.', ','),
+        if (widget.menu.time.isNotEmpty) widget.menu.time,
+      ],
+    )
+        : null,
+  );
 }

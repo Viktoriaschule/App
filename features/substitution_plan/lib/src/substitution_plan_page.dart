@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:substitution_plan/src/substitution_plan_keys.dart';
-import 'package:substitution_plan/src/substitution_plan_localizations.dart';
 import 'package:substitution_plan/substitution_plan.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:timetable/timetable.dart';
@@ -17,7 +15,7 @@ class SubstitutionPlanPage extends StatefulWidget {
   const SubstitutionPlanPage({
     Key key,
     this.day,
-    this.grade,
+    this.group,
   })  : assert(day == null || day == 0 || day == 1, 'day must be null, 0 or 1'),
         super(key: key);
 
@@ -25,7 +23,7 @@ class SubstitutionPlanPage extends StatefulWidget {
   final int day;
 
   // ignore: public_member_api_docs
-  final String grade;
+  final String group;
 
   @override
   _SubstitutionPlanPageState createState() => _SubstitutionPlanPageState();
@@ -59,42 +57,48 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
     }
     return Scaffold(
       appBar: CustomAppBar(
-        title: SubstitutionPlanWidget.of(context).feature.name,
+        title: SubstitutionPlanLocalizations.name,
         loadingKeys: [
           SubstitutionPlanKeys.substitutionPlan,
-          TimetableWidget.of(context).feature.featureKey,
+          TimetableWidget
+              .of(context)
+              .feature
+              .featureKey,
           Keys.tags
         ],
         actions: <Widget>[
-          if (Static.user.grade != null &&
+          if (Static.user.group != null &&
               timetableLoader.hasLoadedData &&
-              loader.hasLoadedData)
+              loader.hasLoadedData &&
+              !Static.user.isTeacher())
             Container(
               width: 48,
               child: DropdownButton<String>(
                   underline: Container(),
-                  value: widget.grade ?? Static.user.grade,
+                  value: widget.group ?? Static.user.group,
                   items: grades
                       .where(
-                          (g) => widget.grade == null || g != Static.user.grade)
+                          (g) => widget.group == null || g != Static.user.group)
                       .map(
-                        (grade) => DropdownMenuItem(
+                        (grade) =>
+                        DropdownMenuItem(
                           value: grade,
                           child: Text(
                             isSeniorGrade(grade) ? grade.toUpperCase() : grade,
                             style: TextStyle(fontWeight: FontWeight.w100),
                           ),
                         ),
-                      )
+                  )
                       .toList(),
                   onChanged: (grade) {
-                    if (grade != (widget.grade ?? Static.user.grade)) {
+                    if (grade != (widget.group ?? Static.user.group)) {
                       final route = MaterialPageRoute<void>(
-                        builder: (context) => SubstitutionPlanPage(
-                          grade: grade,
-                        ),
+                        builder: (context) =>
+                            SubstitutionPlanPage(
+                              group: grade,
+                            ),
                       );
-                      if (widget.grade == null) {
+                      if (widget.group == null) {
                         Navigator.of(context).push(route);
                       } else {
                         Navigator.of(context).pushReplacement(route);
@@ -127,7 +131,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                   height: 60,
                   color: Colors.transparent,
                 ),
-                if (widget.grade == null)
+                if (widget.group == null)
                   Container(
                     height: 60,
                     child: Center(
@@ -135,12 +139,14 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                         SubstitutionPlanLocalizations.mySubstitutions,
                         style: TextStyle(
                           fontSize: 16,
-                          color: ThemeWidget.of(context).textColor,
+                          color: ThemeWidget
+                              .of(context)
+                              .textColor,
                         ),
                       ),
                     ),
                   ),
-                if (widget.grade == null)
+                if (widget.group == null)
                   Container(
                     height: 60,
                     child: Center(
@@ -148,12 +154,14 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                         SubstitutionPlanLocalizations.otherSubstitutions,
                         style: TextStyle(
                           fontSize: 16,
-                          color: ThemeWidget.of(context).textColor,
+                          color: ThemeWidget
+                              .of(context)
+                              .textColor,
                         ),
                       ),
                     ),
                   ),
-                if (widget.grade != null)
+                if (widget.group != null)
                   Container(
                     height: 60,
                     child: Center(
@@ -161,7 +169,9 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                         SubstitutionPlanLocalizations.substitutions,
                         style: TextStyle(
                           fontSize: 16,
-                          color: ThemeWidget.of(context).textColor,
+                          color: ThemeWidget
+                              .of(context)
+                              .textColor,
                         ),
                       ),
                     ),
@@ -171,31 +181,42 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                 2,
                 (index) {
                   List<Widget> items = [];
-                  if (widget.grade == null) {
+                  if (widget.group == null) {
                     List<Substitution> myChanges = [];
                     List<Substitution> notMyChanges = [];
+                    List<Substitution> undefinedChanges = [];
                     if (loader.hasLoadedData) {
                       myChanges = loader.data.days[index].myChanges;
                       notMyChanges = loader.data.days[index].otherChanges;
+                      undefinedChanges =
+                          loader.data.days[index].undefinedChanges;
                     }
                     final myChangesWidget = myChanges.isEmpty
                         ? EmptyList(
-                            title:
-                                SubstitutionPlanLocalizations.noSubstitutions,
+                      title:
+                      SubstitutionPlanLocalizations.noSubstitutions,
                           )
                         : Column(
-                            children: getSubstitutionList(myChanges),
-                          );
+                      children: getSubstitutionList(myChanges),
+                    );
                     final notMyChangesWidget = notMyChanges.isEmpty
                         ? EmptyList(
-                            title:
-                                SubstitutionPlanLocalizations.noSubstitutions,
-                          )
+                      title:
+                      SubstitutionPlanLocalizations.noSubstitutions,
+                    )
                         : Column(
-                            children: getSubstitutionList(notMyChanges),
-                          );
+                      children: getSubstitutionList(notMyChanges),
+                    );
+                    final undefinedChangesWidget = undefinedChanges.isEmpty
+                        ? null
+                        : Column(
+                      children: getSubstitutionList(undefinedChanges),
+                    );
                     items = [
-                      if (getScreenSize(MediaQuery.of(context).size.width) !=
+                      if (getScreenSize(MediaQuery
+                          .of(context)
+                          .size
+                          .width) !=
                           ScreenSize.small)
                         Container(
                           margin: EdgeInsets.only(
@@ -210,7 +231,31 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                             myChangesWidget,
                           ],
                         ),
-                      if (getScreenSize(MediaQuery.of(context).size.width) !=
+                      if (undefinedChangesWidget != null &&
+                          getScreenSize(MediaQuery
+                              .of(context)
+                              .size
+                              .width) !=
+                              ScreenSize.small)
+                        Container(
+                          margin: EdgeInsets.only(
+                            right: 10,
+                          ),
+                          child: undefinedChangesWidget,
+                        )
+                      else
+                        if (undefinedChangesWidget != null)
+                          ListGroup(
+                            title: SubstitutionPlanLocalizations
+                                .undefinedSubstitutions,
+                            children: [
+                              undefinedChangesWidget,
+                            ],
+                          ),
+                      if (getScreenSize(MediaQuery
+                          .of(context)
+                          .size
+                          .width) !=
                           ScreenSize.small)
                         Container(
                           margin: EdgeInsets.only(
@@ -230,7 +275,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                   } else {
                     List<Substitution> changes = [];
                     if (loader.hasLoadedData) {
-                      changes = loader.data.days[index].data[widget.grade];
+                      changes = loader.data.days[index].data[widget.group];
                     }
                     final changesWidget = changes.isEmpty
                         ? EmptyList(
@@ -279,7 +324,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                                     Icons.timer,
                                   ],
                                   texts: [
-                                    outputDateFormat
+                                    shortOutputDateFormat
                                         .format(loader.data.days[index].date),
                                     timeago.format(
                                       loader.data.days[index].updated,

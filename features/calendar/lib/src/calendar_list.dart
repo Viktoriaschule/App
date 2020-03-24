@@ -1,12 +1,7 @@
 import 'package:calendar/calendar.dart';
-import 'package:calendar/src/calendar_keys.dart';
-import 'package:calendar/src/calendar_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:widgets/widgets.dart';
-
-import 'calendar_page.dart';
-import 'calendar_row.dart';
 
 // ignore: public_member_api_docs
 class CalendarList extends StatefulWidget {
@@ -28,7 +23,7 @@ class CalendarListState extends Interactor<CalendarList> {
     return NestedScrollView(
       headerSliverBuilder: (context, innerBoxIsScrolled) => [
         CustomAppBar(
-          title: CalendarWidget.of(context).feature.name,
+          title: CalendarLocalizations.name,
           actions: [
             IconButton(
               icon: Icon(Icons.calendar_today),

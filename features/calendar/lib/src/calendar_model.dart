@@ -75,10 +75,10 @@ class CalendarEvent {
       dateStr = _dateFormat.format(start);
     }
     if (DateTime(
-      start.year,
-      start.month,
-      start.day,
-    ).add(Duration(days: 1)).subtract(Duration(hours: 1)) !=
+          start.year,
+          start.month,
+          start.day,
+        ).add(Duration(days: 1)).subtract(Duration(hours: 1)) !=
         end) {
       dateStr += ' - ';
       if (end.hour != 0 || end.minute != 0) {

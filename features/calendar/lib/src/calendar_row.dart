@@ -1,10 +1,9 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:calendar/calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'calendar_model.dart';
 
 // ignore: public_member_api_docs
 class CalendarRow extends StatelessWidget {

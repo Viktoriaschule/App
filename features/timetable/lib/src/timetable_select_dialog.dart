@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'timetable_model.dart';
-import 'timetable_row.dart';
 
 // ignore: public_member_api_docs
 class TimetableSelectDialog extends StatelessWidget {

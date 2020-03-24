@@ -4,12 +4,6 @@ import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
-import 'cafetoria_events.dart';
-import 'cafetoria_keys.dart';
-import 'cafetoria_model.dart';
-import 'cafetoria_page.dart';
-import 'cafetoria_row.dart';
-
 // ignore: public_member_api_docs
 class CafetoriaInfoCard extends InfoCard {
   // ignore: public_member_api_docs

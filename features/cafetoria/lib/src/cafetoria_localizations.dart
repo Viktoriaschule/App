@@ -1,6 +1,9 @@
 /// All localizations for the cafetoria feature
 class CafetoriaLocalizations {
   // ignore: public_member_api_docs
+  static const name = 'Cafétoria';
+
+  // ignore: public_member_api_docs
   static const cafetoriaLogin = 'Cafétoria Login';
 
   // ignore: public_member_api_docs

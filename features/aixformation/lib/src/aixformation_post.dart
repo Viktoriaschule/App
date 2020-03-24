@@ -93,7 +93,7 @@ class _AiXformationPostState extends State<AiXformationPost>
           ),
         ),
         appBar: CustomAppBar(
-          title: AiXFormationWidget.of(context).feature.name,
+          title: AiXformationLocalizations.name,
           loadingKeys: const [],
           actions: [
             IconButton(

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 
 import '../utils.dart';
@@ -60,10 +60,10 @@ class TagsLoader extends Loader<Tags> {
     }
     if (tags != null) {
       // Sync grade
-      Static.user.grade = tags.grade;
+      Static.user.group = tags.group;
 
       // Set the user group (1 (pupil); 2 (teacher); 4 (developer); 8 (other))
-      Static.user.group = tags.group;
+      Static.user.userType = tags.userType;
 
       for (final feature in features) {
         if (feature.tagsHandler != null) {

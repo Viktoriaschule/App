@@ -32,7 +32,7 @@ class _AiXformationInfoCardState extends InfoCardState<AiXformationInfoCard> {
 
   @override
   ListGroup build(BuildContext context) {
-    final loader = AiXFormationWidget.of(context).feature.loader;
+    final loader = AiXformationWidget.of(context).feature.loader;
     final cut = InfoCardUtils.cut(
       getScreenSize(MediaQuery.of(context).size.width),
       loader.hasLoadedData ? loader.data.posts.length : 0,
@@ -50,7 +50,7 @@ class _AiXformationInfoCardState extends InfoCardState<AiXformationInfoCard> {
           );
         }),
       ],
-      title: 'AiXformation',
+      title: AiXformationLocalizations.name,
       counter: loader.hasLoadedData ? loader.data.posts.length - cut : 0,
       maxHeight: widget.maxHeight,
       children: [

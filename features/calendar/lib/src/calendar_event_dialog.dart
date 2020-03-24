@@ -1,10 +1,7 @@
-import 'package:calendar/src/calendar_localizations.dart';
+import 'package:calendar/calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'calendar_model.dart';
-import 'calendar_row.dart';
 
 // ignore: public_member_api_docs
 class CalendarEventDialog extends StatelessWidget {

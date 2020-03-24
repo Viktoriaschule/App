@@ -5,11 +5,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
-import 'aixformation_events.dart';
-import 'aixformation_keys.dart';
-import 'aixformation_localizations.dart';
-import 'aixformation_row.dart';
-
 /// The maximum count for aixformation articles on this page
 const maxArticleCount = 100;
 
@@ -26,12 +21,12 @@ class AiXformationPage extends StatefulWidget {
 class AiXformationPageState extends Interactor<AiXformationPage> {
   @override
   Widget build(BuildContext context) {
-    final loader = AiXFormationWidget.of(context).feature.loader;
+    final loader = AiXformationWidget.of(context).feature.loader;
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           CustomAppBar(
-            title: AiXFormationWidget.of(context).feature.name,
+            title: AiXformationLocalizations.name,
             sliver: true,
             loadingKeys: const [AiXformationKeys.aixformation],
             actions: [

@@ -1,25 +1,30 @@
 library aixformation;
 
-import 'package:aixformation/src/aixformation_info_card.dart';
-import 'package:aixformation/src/aixformation_keys.dart';
-import 'package:aixformation/src/aixformation_loader.dart';
-import 'package:aixformation/src/aixformation_notifications.dart';
-import 'package:aixformation/src/aixformation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'src/aixformation_info_card.dart';
+import 'src/aixformation_keys.dart';
+import 'src/aixformation_loader.dart';
+import 'src/aixformation_localizations.dart';
+import 'src/aixformation_notifications.dart';
+import 'src/aixformation_page.dart';
+
 export 'src/aixformation_events.dart';
 export 'src/aixformation_info_card.dart';
+export 'src/aixformation_keys.dart';
 export 'src/aixformation_loader.dart';
+export 'src/aixformation_localizations.dart';
 export 'src/aixformation_model.dart';
 export 'src/aixformation_page.dart';
 export 'src/aixformation_post.dart';
+export 'src/aixformation_row.dart';
 
 /// The aixformation feature
 class AiXformationFeature implements Feature {
   @override
-  final String name = 'Aixformation';
+  final String name = AiXformationLocalizations.name;
 
   @override
   final String featureKey = AiXformationKeys.aixformation;
@@ -44,7 +49,7 @@ class AiXformationFeature implements Feature {
   Widget getPage() => AiXformationPage(key: ValueKey(featureKey));
 
   @override
-  AiXFormationWidget getFeatureWidget(Widget child) => AiXFormationWidget(
+  AiXformationWidget getFeatureWidget(Widget child) => AiXformationWidget(
         feature: this,
         key: ValueKey(featureKey),
         child: child,
@@ -61,13 +66,13 @@ class AiXformationFeature implements Feature {
 }
 
 // ignore: public_member_api_docs
-class AiXFormationWidget extends FeatureWidget<AiXformationFeature> {
+class AiXformationWidget extends FeatureWidget<AiXformationFeature> {
   // ignore: public_member_api_docs
-  const AiXFormationWidget(
+  const AiXformationWidget(
       {@required Widget child, @required AiXformationFeature feature, Key key})
       : super(child: child, feature: feature, key: key);
 
-  /// Find the closest [AiXFormationWidget] from ancestor tree.
-  static AiXFormationWidget of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<AiXFormationWidget>();
+  /// Find the closest [AiXformationWidget] from ancestor tree.
+  static AiXformationWidget of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<AiXformationWidget>();
 }

@@ -12,7 +12,7 @@ class Features extends StatelessWidget {
   /// The child of this widget
   final Widget child;
 
-  /// All pages in this app
+  /// All features in this app
   final List<Feature> features;
 
   /// All feature widget must be in a tree above the app,
@@ -43,7 +43,7 @@ class FeaturesWidget extends InheritedWidget {
     }
   }
 
-  /// All pages in this app
+  /// All features in this app
   final List<Feature> features;
 
   /// All features in a map

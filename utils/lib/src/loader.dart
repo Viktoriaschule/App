@@ -86,46 +86,54 @@ abstract class Loader<LoaderType> {
         Static.storage.remove(key);
       }
       afterLoad();
-      _sendLoadedEvent(Pages.of(context), EventBus.of(context));
+      _sendLoadedEvent(LoadingState.of(context), EventBus.of(context));
       return parsed.statusCode;
     }
     return StatusCode.success;
   }
 
   /// Download the data from the api and returns the status code
-  Future<StatusCode> loadOnline(BuildContext context,
-          {String username,
-          String password,
-          bool force = false,
-          bool post = false,
-          Map<String, dynamic> body,
-          bool store = true,
-          bool autoLogin = true}) async =>
-      (await _load(context,
-              username: username,
-              password: password,
-              force: force,
-              post: post,
-              body: body,
-              store: store,
-              autoLogin: autoLogin))
+  Future<StatusCode> loadOnline(
+    BuildContext context, {
+    String username,
+    String password,
+    bool force = false,
+    bool post = false,
+    Map<String, dynamic> body,
+    bool store = true,
+    bool showLoginOnWrongCredentials = true,
+  }) async =>
+      (await _load(
+        context,
+        username: username,
+        password: password,
+        force: force,
+        post: post,
+        body: body,
+        store: store,
+        showLoginOnWrongCredentials: showLoginOnWrongCredentials,
+      ))
           .statusCode;
 
   /// Fetches the data
-  Future<LoaderResponse<LoaderType>> fetch(BuildContext context,
-          {String username,
-          String password,
-          bool post = false,
-          Map<String, dynamic> body,
-          bool autoLogin = true}) =>
-      _load(context,
-          username: username,
-          password: password,
-          force: true,
-          post: post,
-          body: body,
-          store: false,
-          autoLogin: autoLogin);
+  Future<LoaderResponse<LoaderType>> fetch(
+    BuildContext context, {
+    String username,
+    String password,
+    bool post = false,
+    Map<String, dynamic> body,
+    bool showLoginOnWrongCredentials = true,
+  }) =>
+      _load(
+        context,
+        username: username,
+        password: password,
+        force: true,
+        post: post,
+        body: body,
+        store: false,
+        showLoginOnWrongCredentials: showLoginOnWrongCredentials,
+      );
 
   /// A function that can be override to process some operations with a valid context before the load function starts
   void preLoad(BuildContext context) => {};
@@ -136,23 +144,25 @@ abstract class Loader<LoaderType> {
   void afterLoad() => {};
 
   /// Download the data from the api and returns the status code
-  Future<LoaderResponse<LoaderType>> _load(BuildContext context,
-      {String username,
-      String password,
-      bool force = false,
-      bool post = false,
-      Map<String, dynamic> body,
-      bool store = true,
-      bool autoLogin = true}) async {
+  Future<LoaderResponse<LoaderType>> _load(
+    BuildContext context, {
+    String username,
+    String password,
+    bool force = false,
+    bool post = false,
+    Map<String, dynamic> body,
+    bool store = true,
+    bool showLoginOnWrongCredentials = true,
+  }) async {
     if (_loadedFromOnline && !force) {
       return LoaderResponse(statusCode: StatusCode.success);
     }
 
-    final pages = context != null ? Pages.of(context) : null;
+    final loadingStates = context != null ? LoadingState.of(context) : null;
     final eventBus = context != null ? EventBus.of(context) : null;
 
     // Inform the gui about this loading process
-    _sendLoadingEvent(pages, eventBus);
+    _sendLoadingEvent(loadingStates, eventBus);
 
     // Run the pre load for custom loader operations
     preLoad(context);
@@ -203,7 +213,9 @@ abstract class Loader<LoaderType> {
           print('$key failed to load');
         }
       }
-      if (response.statusCode == 401 && autoLogin && context != null) {
+      if (response.statusCode == 401 &&
+          showLoginOnWrongCredentials &&
+          context != null) {
         await Navigator.of(context).pushReplacementNamed('/${Keys.login}');
       }
       LoaderType data;
@@ -211,8 +223,16 @@ abstract class Loader<LoaderType> {
         data = _fromJSON(response.toString())?.data;
       }
 
+      try {
+        afterLoad();
+        // ignore: avoid_catches_without_on_clauses
+      } catch (e, stacktrace) {
+        print('Failed run after load of $key: $e\n$stacktrace');
+        statusCodes.add(StatusCode.wrongFormat);
+      }
+
       afterLoad();
-      _sendLoadedEvent(pages, eventBus);
+      _sendLoadedEvent(loadingStates, eventBus);
       final status = reduceStatusCodes(statusCodes);
       if (status != StatusCode.success) {
         print(
@@ -222,12 +242,12 @@ abstract class Loader<LoaderType> {
       return LoaderResponse<LoaderType>(data: data, statusCode: status);
     } on DioError catch (e) {
       afterLoad();
-      _sendLoadedEvent(pages, eventBus);
+      _sendLoadedEvent(loadingStates, eventBus);
       switch (e.type) {
         case DioErrorType.RESPONSE:
           if (e.response.statusCode == 401) {
             print('Failed to load $key: Unauthorized');
-            if (autoLogin && context != null) {
+            if (showLoginOnWrongCredentials && context != null) {
               await Navigator.of(context)
                   .pushReplacementNamed('/${Keys.login}');
             }
@@ -250,20 +270,21 @@ abstract class Loader<LoaderType> {
   }
 
   /// Sets the page loading state
-  void _setLoading(Pages pages, EventBus eventBus, bool isLoading) {
-    pages?.setLoading(key, isLoading);
+  void _setLoading(LoadingState loadingStates, EventBus eventBus,
+      bool isLoading) {
+    loadingStates?.setLoading(key, isLoading);
     eventBus?.publish(LoadingStatusChangedEvent(key));
   }
 
   // ignore: public_member_api_docs
-  void _sendLoadingEvent(Pages pages, EventBus eventBus) {
-    _setLoading(pages, eventBus, true);
+  void _sendLoadingEvent(LoadingState loadingStates, EventBus eventBus) {
+    _setLoading(loadingStates, eventBus, true);
   }
 
   // ignore: public_member_api_docs
-  void _sendLoadedEvent(Pages pages, EventBus eventBus) {
+  void _sendLoadedEvent(LoadingState loadingStates, EventBus eventBus) {
     eventBus?.publish(event);
-    _setLoading(pages, eventBus, false);
+    _setLoading(loadingStates, eventBus, false);
   }
 
   // ignore: public_member_api_docs

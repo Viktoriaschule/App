@@ -10,8 +10,8 @@ export 'src/feature_utils/feature.dart';
 export 'src/info_card_utils.dart';
 export 'src/keys.dart';
 export 'src/loader.dart';
+export 'src/loading_state.dart';
 export 'src/localizations.dart';
-export 'src/pages.dart';
 export 'src/plugins/firebase/firebase.dart';
 export 'src/plugins/platform/platform.dart';
 export 'src/plugins/pwa/pwa.dart';
@@ -27,7 +27,7 @@ export 'src/updates_model.dart';
 export 'src/user_model.dart';
 
 // ignore: public_member_api_docs
-const String viktoriaAppBaseURL = 'https://api.app.vs-ac.de';
+const String viktoriaAppBaseURL = 'http://localhost:8000';
 
 /// Http status codes
 enum StatusCode {
@@ -150,35 +150,8 @@ DateFormat shortOutputDateFormat = DateFormat('dd.MM');
 /// The date and time format to display all dates and times in
 DateFormat outputDateTimeFormat = DateFormat('dd.MM.y HH:mm');
 
-var _dateFormats = [];
-
 /// Setup all date formats used by the web server
-Future setupDateFormats() async {
-  await initializeDateFormatting('de', null);
-  _dateFormats = [
-    DateFormat.yMMMMd('de'),
-    outputDateFormat,
-  ];
-}
-
-/// Parse a date using any format used by the server
-DateTime parseDate(String date) {
-  for (final format in _dateFormats.cast<DateFormat>()) {
-    try {
-      try {
-        if (format.parse(date).year < 2000) {
-          date =
-              '${date.split('.')[0]}.${date.split('.')[1]}.${(int.parse(date.split('.')[2]) + 2000).toString()}';
-        }
-        // ignore: empty_catches
-      } on Exception {}
-
-      return format.parse(date);
-      // ignore: avoid_catches_without_on_clauses, empty_catches
-    } catch (e) {}
-  }
-  throw FormatException('$date was not matching any date formats');
-}
+Future setupDateFormats() => initializeDateFormatting('de');
 
 /// Get the week number of a year by date
 int weekNumber(DateTime date) {
@@ -203,4 +176,24 @@ DateTime monday(DateTime date) {
     newDate = newDate.add(Duration(hours: 1));
   }
   return newDate;
+}
+
+/// Optimizes the participant ids
+/// and combines to many of them to one if possible
+String optimizeParticipantID(String raw) {
+  raw = raw.replaceAll('+', '\n');
+  final ids = raw.split('\n');
+  // If there are more than two ids
+  // and all ids are grades
+  // and begins all with the same letter
+  // and begins not with 'q',
+  // than combine all ids to one.
+  //
+  // For example: [9a, 9b, 9c] -> 9abc
+  if (ids.length > 2 &&
+      ids.every((id) => grades.contains(id)) &&
+      ids.every((id) => id.startsWith(raw[0]) && !id.startsWith('q'))) {
+    raw = '${raw[0]}${ids.map((id) => id[1]).join('')}';
+  }
+  return raw;
 }
