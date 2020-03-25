@@ -81,7 +81,7 @@ class _CustomCachedNetworkImageState extends State<CustomCachedNetworkImage>
         height: widget.height,
         width: widget.width,
         placeholder: (context, url) => loading,
-        errorWidget: (context, url, error) => error,
+        errorWidget: (context, url, error) => Icon(Icons.error_outline),
       );
     }
     if (_initialized || _platform.isWeb) {
