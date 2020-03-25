@@ -82,37 +82,37 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
               .map((subject) {
             final substitutions = spLoader.hasLoadedData
                 ? subject.getSubstitutions(widget.date, spLoader.data)
-                : <Substitution>[];
-            // Show the normal lessen if it is an exam, but not of the same subjects, as this unit
-            final showNormal = substitutions.length == 1 &&
-                substitutions.first.type == 2 &&
-                substitutions.first.courseID != subject.courseID;
-            final List<Substitution> undefinedSubstitutions =
-                subject?.getUndefinedSubstitutions(
-                    widget.date, spLoader.data) ??
-                    [];
-            return [
-              ...getSubstitutionList(substitutions
-                  .where(
-                      (substitution) => substitution.unit == subject.unit)
-                  .toList()),
-              if (substitutions.isEmpty || showNormal)
-                TimetableRow(
-                  subject: subject,
-                  keepUnitPadding: substitutions.isNotEmpty,
-                ),
-              if (undefinedSubstitutions.isNotEmpty)
-                ...getSubstitutionList(
-                  undefinedSubstitutions
-                      .where((substitution) =>
-                  substitution.unit == subject.unit)
-                      .toList(),
-                  showUnit: false,
-                ),
-            ];
-          })
+                    : <Substitution>[];
+                // Show the normal lessen if it is an exam, but not of the same subjects, as this unit
+                final showNormal = substitutions.length == 1 &&
+                    substitutions.first.type == 2 &&
+                    substitutions.first.courseID != subject.courseID;
+                final List<Substitution> undefinedSubstitutions =
+                    subject?.getUndefinedSubstitutions(
+                            widget.date, spLoader.data) ??
+                        [];
+                return [
+                  ...getSubstitutionList(substitutions
+                      .where(
+                          (substitution) => substitution.unit == subject.unit)
+                      .toList()),
+                  if (substitutions.isEmpty || showNormal)
+                    TimetableRow(
+                      subject: subject,
+                      keepUnitPadding: substitutions.isNotEmpty,
+                    ),
+                  if (undefinedSubstitutions.isNotEmpty)
+                    ...getSubstitutionList(
+                      undefinedSubstitutions
+                          .where((substitution) =>
+                              substitution.unit == subject.unit)
+                          .toList(),
+                      showUnit: false,
+                    ),
+                ];
+              })
               .expand((x) => x)
-              .cast<Widget>(),
+              .cast<PreferredSize>(),
       ],
     );
   }

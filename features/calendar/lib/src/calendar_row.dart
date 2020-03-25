@@ -6,7 +6,7 @@ import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 // ignore: public_member_api_docs
-class CalendarRow extends StatelessWidget {
+class CalendarRow extends PreferredSize {
   // ignore: public_member_api_docs
   const CalendarRow({
     @required this.event,
@@ -26,6 +26,9 @@ class CalendarRow extends StatelessWidget {
 
   // ignore: public_member_api_docs
   final bool showAddButton;
+
+  @override
+  Size get preferredSize => Size.fromHeight(customRowHeight);
 
   @override
   Widget build(BuildContext context) => CustomRow(

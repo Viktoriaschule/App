@@ -79,23 +79,17 @@ class _CafetoriaInfoCardState extends InfoCardState<CafetoriaInfoCard> {
             afterDays.first.menus.isEmpty)
           EmptyList(title: 'Keine Menüs')
         else
-          SizeLimit(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children:
-                  (afterDays.first.menus.length > cut && !widget.isSingleDay
-                          ? afterDays.first.menus.sublist(0, cut)
-                          : afterDays.first.menus)
-                      .map(
-                        (menu) => CafetoriaRow(
-                          day: afterDays.first,
-                          menu: menu,
-                        ),
-                      )
-                      .toList()
-                      .cast<Widget>(),
-            ),
-          ),
+          ...(afterDays.first.menus.length > cut && !widget.isSingleDay
+                  ? afterDays.first.menus.sublist(0, cut)
+                  : afterDays.first.menus)
+              .map(
+                (menu) => CafetoriaRow(
+                  day: afterDays.first,
+                  menu: menu,
+                ),
+              )
+              .toList()
+              .cast<PreferredSize>(),
       ],
     );
   }

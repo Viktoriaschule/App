@@ -60,10 +60,7 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
         title: SubstitutionPlanLocalizations.name,
         loadingKeys: [
           SubstitutionPlanKeys.substitutionPlan,
-          TimetableWidget
-              .of(context)
-              .feature
-              .featureKey,
+          TimetableWidget.of(context).feature.featureKey,
           Keys.tags
         ],
         actions: <Widget>[
@@ -192,26 +189,24 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                           loader.data.days[index].undefinedChanges;
                     }
                     final myChangesWidget = myChanges.isEmpty
-                        ? EmptyList(
-                      title:
-                      SubstitutionPlanLocalizations.noSubstitutions,
-                          )
-                        : Column(
-                      children: getSubstitutionList(myChanges),
-                    );
+                        ? [
+                      EmptyList(
+                        title:
+                        SubstitutionPlanLocalizations.noSubstitutions,
+                      )
+                    ]
+                        : getSubstitutionList(myChanges);
                     final notMyChangesWidget = notMyChanges.isEmpty
-                        ? EmptyList(
-                      title:
-                      SubstitutionPlanLocalizations.noSubstitutions,
-                    )
-                        : Column(
-                      children: getSubstitutionList(notMyChanges),
-                    );
+                        ? [
+                      EmptyList(
+                        title:
+                        SubstitutionPlanLocalizations.noSubstitutions,
+                      )
+                    ]
+                        : getSubstitutionList(notMyChanges);
                     final undefinedChangesWidget = undefinedChanges.isEmpty
                         ? null
-                        : Column(
-                      children: getSubstitutionList(undefinedChanges),
-                    );
+                        : getSubstitutionList(undefinedChanges);
                     items = [
                       if (getScreenSize(MediaQuery
                           .of(context)
@@ -222,14 +217,12 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                           margin: EdgeInsets.only(
                             right: 10,
                           ),
-                          child: myChangesWidget,
+                          child: Column(children: myChangesWidget),
                         )
                       else
                         ListGroup(
                           title: SubstitutionPlanLocalizations.mySubstitutions,
-                          children: [
-                            myChangesWidget,
-                          ],
+                          children: myChangesWidget,
                         ),
                       if (undefinedChangesWidget != null &&
                           getScreenSize(MediaQuery
@@ -241,16 +234,14 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                           margin: EdgeInsets.only(
                             right: 10,
                           ),
-                          child: undefinedChangesWidget,
+                          child: Column(children: undefinedChangesWidget),
                         )
                       else
                         if (undefinedChangesWidget != null)
                           ListGroup(
                             title: SubstitutionPlanLocalizations
                                 .undefinedSubstitutions,
-                            children: [
-                              undefinedChangesWidget,
-                            ],
+                            children: undefinedChangesWidget,
                           ),
                       if (getScreenSize(MediaQuery
                           .of(context)
@@ -261,15 +252,13 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                           margin: EdgeInsets.only(
                             right: 10,
                           ),
-                          child: notMyChangesWidget,
+                          child: Column(children: notMyChangesWidget),
                         )
                       else
                         ListGroup(
                           title:
-                              SubstitutionPlanLocalizations.otherSubstitutions,
-                          children: [
-                            notMyChangesWidget,
-                          ],
+                          SubstitutionPlanLocalizations.otherSubstitutions,
+                          children: notMyChangesWidget,
                         ),
                     ];
                   } else {
@@ -278,29 +267,28 @@ class _SubstitutionPlanPageState extends Interactor<SubstitutionPlanPage> {
                       changes = loader.data.days[index].data[widget.group];
                     }
                     final changesWidget = changes.isEmpty
-                        ? EmptyList(
-                            title:
-                                SubstitutionPlanLocalizations.noSubstitutions,
-                          )
-                        : Column(
-                            children: getSubstitutionList(changes),
-                          );
+                        ? [
+                      EmptyList(
+                        title:
+                        SubstitutionPlanLocalizations.noSubstitutions,
+                      )
+                    ]
+                        : getSubstitutionList(changes);
                     items = [
-                      if (getScreenSize(MediaQuery.of(context).size.width) !=
+                      if (getScreenSize(MediaQuery
+                          .of(context)
+                          .size
+                          .width) !=
                           ScreenSize.small)
-                        changesWidget
+                        Column(children: changesWidget)
                       else
+                      //TODO: EdgeInsets.only(
+                      //    left: 10,
+                      //    right: 10,
+                      //)
                         ListGroup(
                           title: SubstitutionPlanLocalizations.substitutions,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(
-                                left: 10,
-                                right: 10,
-                              ),
-                              child: changesWidget,
-                            ),
-                          ],
+                          children: changesWidget,
                         ),
                     ];
                   }

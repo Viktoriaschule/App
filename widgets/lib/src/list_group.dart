@@ -16,6 +16,7 @@ class ListGroup extends StatefulWidget {
   const ListGroup({
     @required this.title,
     @required this.children,
+    this.unsizedChildren,
     this.loadingKeys = const [],
     this.actions,
     this.heroId,
@@ -27,10 +28,16 @@ class ListGroup extends StatefulWidget {
     this.doRowsHandleClick = false,
     this.maxHeight,
     Key key,
-  }) : super(key: key);
+  })  : assert(children != null, 'The sized children must always be set'),
+        assert(maxHeight == null || unsizedChildren == null,
+            'If there is a max height, there cannot be unsized children'),
+        super(key: key);
 
   // ignore: public_member_api_docs
-  final List<Widget> children;
+  final List<PreferredSize> children;
+
+  /// If the maxHeight is not set, and there are widgets with unknown height
+  final List<Widget> unsizedChildren;
 
   // ignore: public_member_api_docs
   final List<NavigationAction> actions;
@@ -98,7 +105,27 @@ class _ListGroupState extends Interactor<ListGroup>
     final allHeight = widget.maxHeight != null
         ? widget.maxHeight - (actions != null && actions.isNotEmpty ? 64.5 : 0)
         : null;
-    final contentHeight = widget.maxHeight != null ? allHeight - 39.5 : null;
+    final contentHeight =
+    widget.maxHeight != null ? allHeight - 39.5 - 5 : null;
+
+    final children = [];
+    if (widget.maxHeight != null && widget.children.isNotEmpty) {
+      double currentHeight = 0;
+      for (int i = 0; i < widget.children.length; i++) {
+        final newHeight = widget.children[i].preferredSize.height;
+        if (currentHeight + newHeight <= contentHeight) {
+          children.add(widget.children[i]);
+          currentHeight += newHeight;
+        } else {
+          break;
+        }
+      }
+    } else if (widget.maxHeight == null) {
+      children.addAll([
+        ...widget.children,
+        if (widget.unsizedChildren != null) ...widget.unsizedChildren,
+      ]);
+    }
     final content = Container(
       height: allHeight,
       child: Column(
@@ -108,7 +135,7 @@ class _ListGroupState extends Interactor<ListGroup>
             child: InkWell(
               onTap: widget.doRowsHandleClick
                   ? widget.onTap ??
-                      (actions.isNotEmpty ? actions[0].onTap : null)
+                  (actions.isNotEmpty ? actions[0].onTap : null)
                   : null,
               child: Container(
                 padding: EdgeInsets.only(left: 10, right: 10),
@@ -174,19 +201,7 @@ class _ListGroupState extends Interactor<ListGroup>
               ),
             ),
           ),
-          if (widget.maxHeight != null)
-            Column(
-              children: [
-                for (int i = 0; i < contentHeight ~/ 60; i++)
-                  if (i < widget.children.length)
-                    Container(
-                      height: 60,
-                      child: widget.children[i],
-                    )
-              ],
-            )
-          else
-            ...widget.children,
+          ...children
         ],
       ),
     );

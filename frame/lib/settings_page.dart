@@ -37,7 +37,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
             if (notificationFeatures.isNotEmpty)
               ListGroup(
                 title: SettingsLocalizations.notifications,
-                children: notificationFeatures
+                unsizedChildren: notificationFeatures
                     .map(
                       (feature) => SwitchListTile(
                         title: Text(
@@ -57,16 +57,19 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                           });
                           await Static.tags.syncDevice(
                             context,
-                            FeaturesWidget.of(context).features,
+                            FeaturesWidget
+                                .of(context)
+                                .features,
                           );
                         },
                       ),
-                    )
+                )
                     .toList(),
+                children: const [],
               ),
             ListGroup(
               title: SettingsLocalizations.design,
-              children: [
+              unsizedChildren: [
                 Container(
                   padding: EdgeInsets.only(left: 15, right: 15),
                   child: DropdownButton<int>(
@@ -95,6 +98,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                   ),
                 ),
               ],
+              children: const [],
             ),
             Container(
               margin: EdgeInsets.only(top: 5, left: 10, right: 10),

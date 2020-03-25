@@ -87,7 +87,7 @@ class _CalendarInfoCardState extends InfoCardState<CalendarInfoCard> {
                     showAddButton: false,
                   ))
               .toList()
-              .cast<Widget>(),
+              .cast<PreferredSize>(),
       ],
     );
   }

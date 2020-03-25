@@ -7,19 +7,21 @@ import 'aixformation_model.dart';
 import 'aixformation_post.dart';
 
 // ignore: public_member_api_docs
-class AiXformationRow extends StatelessWidget {
+class AiXformationRow extends PreferredSize {
   // ignore: public_member_api_docs
   const AiXformationRow({
     @required this.post,
     @required this.posts,
-    Key key,
-  }) : super(key: key);
+  });
 
   // ignore: public_member_api_docs
   final Post post;
 
   // ignore: public_member_api_docs
   final List<Post> posts;
+
+  @override
+  Size get preferredSize => Size.fromHeight(customRowHeight);
 
   @override
   Widget build(BuildContext context) => InkWell(

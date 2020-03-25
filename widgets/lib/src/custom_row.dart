@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+/// The fix height of a custom row
+///
+/// Included with the [customRowVerticalMargin]
+const double customRowHeight = 60;
+
+/// The fix custom rom vertical margin
+const double customRowVerticalMargin = 20;
+
 // ignore: public_member_api_docs
-class CustomRow extends StatelessWidget {
+class CustomRow extends PreferredSize {
   // ignore: public_member_api_docs
   const CustomRow({
     @required this.leading,
@@ -16,8 +24,8 @@ class CustomRow extends StatelessWidget {
     this.splitColor,
     this.showSplit,
     this.heroTag,
-    Key key,
-  }) : super(key: key);
+    this.hasMargin = true,
+  });
 
   // ignore: public_member_api_docs
   final Widget leading;
@@ -52,10 +60,16 @@ class CustomRow extends StatelessWidget {
   // ignore: public_member_api_docs
   final dynamic heroTag;
 
+  /// The margin of this row, default all 10
+  final bool hasMargin;
+
+  @override
+  Size get preferredSize => Size.fromHeight(customRowHeight);
+
   @override
   Widget build(BuildContext context) => Container(
-        height: 40,
-        margin: EdgeInsets.all(10),
+        height: customRowHeight - 20,
+        margin: hasMargin ? EdgeInsets.all(customRowVerticalMargin / 2) : null,
         child: Row(
           children: [
             if (leading != null)
@@ -67,7 +81,7 @@ class CustomRow extends StatelessWidget {
               ),
             if (showSplit ?? true)
               Container(
-                height: 34,
+                height: customRowHeight - 6,
                 width: 2.5,
                 margin: EdgeInsets.only(
                   right: 5,

@@ -5,16 +5,14 @@ import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 // ignore: public_member_api_docs
-class TimetableRow extends StatelessWidget {
+class TimetableRow extends PreferredSize {
   // ignore: public_member_api_docs
   const TimetableRow({
     @required this.subject,
     this.showUnit = true,
     this.showSplit = true,
     this.keepUnitPadding = false,
-    Key key,
-  })  : assert(subject != null, 'subject must not be null'),
-        super(key: key);
+  }) : assert(subject != null, 'subject must not be null');
 
   // ignore: public_member_api_docs
   final TimetableSubject subject;
@@ -33,6 +31,9 @@ class TimetableRow extends StatelessWidget {
           !isSeniorGrade(raw)
       ? raw
       : raw.toUpperCase();
+
+  @override
+  Size get preferredSize => Size.fromHeight(customRowHeight);
 
   @override
   Widget build(BuildContext context) {
