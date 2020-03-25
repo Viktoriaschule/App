@@ -20,7 +20,7 @@ List<PreferredSize> getSubstitutionList(
           showUnit: lastUnit != s.unit && showUnit,
           keepUnitPadding: keepUnitPadding,
           keepBottomPadding:
-              nextSubstitution != null && nextSubstitution.unit != s.unit,
+              nextSubstitution == null || nextSubstitution.unit != s.unit,
         );
         nextIndex++;
         lastUnit = s.unit;

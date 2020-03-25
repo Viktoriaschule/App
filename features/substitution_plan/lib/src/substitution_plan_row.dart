@@ -36,7 +36,7 @@ class SubstitutionPlanRow extends PreferredSize {
 
   @override
   Size get preferredSize => Size.fromHeight(
-      customRowHeight - (showUnit ? 0 : 5) - (keepBottomPadding ? 0 : 10));
+      customRowHeight - (showUnit ? 3 : 5) - (keepBottomPadding ? 3 : 10));
 
   @override
   Widget build(BuildContext context) {
@@ -82,8 +82,8 @@ class SubstitutionPlanRow extends PreferredSize {
       margin: EdgeInsets.only(
         left: 10,
         right: 10,
-        top: showUnit ? 10 : 5,
-        bottom: keepBottomPadding ? 10 : 0,
+        top: showUnit ? 7 : 5,
+        bottom: keepBottomPadding ? 7 : 0,
       ),
       child: CustomRow(
         heroTag: substitution,

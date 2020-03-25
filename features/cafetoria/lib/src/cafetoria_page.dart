@@ -98,7 +98,7 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
                                     ),
                                   )
                                   .toList()
-                                  .cast<Widget>()
+                                  .cast<PreferredSize>()
                               : [
                                   EmptyList(
                                       title: CafetoriaLocalizations.noMenus)
