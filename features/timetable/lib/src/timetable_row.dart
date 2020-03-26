@@ -56,6 +56,7 @@ class TimetableRow extends PreferredSize {
     final useOpacity = Static.user.isTeacher() &&
         subject.subjectID == TimetableLocalizations.freeLesson;
     final opacity = theme.brightness == Brightness.dark ? 0.65 : 0.7;
+    final participants = subject.participantID?.split('\n') ?? [];
     return CustomRow(
       splitColor: Colors.transparent,
       showSplit: !showCenterInfo && showSplit,
@@ -99,7 +100,6 @@ class TimetableRow extends PreferredSize {
       last: subject.subjectID != 'none'
           ? !showCenterInfo
           ? Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: 35,
@@ -107,9 +107,9 @@ class TimetableRow extends PreferredSize {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (subject.participantID != null)
+                if (participants.isNotEmpty)
                   Text(
-                    '${_getWithCase(subject.participantID)}\n',
+                    _getWithCase(participants[0]),
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w300,
@@ -117,6 +117,16 @@ class TimetableRow extends PreferredSize {
                       fontFamily: 'RobotoMono',
                     ),
                   ),
+                Text(
+                  participants.length > 1 ? _getWithCase(participants[1]) : '',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w300,
+                    color: theme.textColor,
+                    decoration: TextDecoration.lineThrough,
+                    fontFamily: 'RobotoMono',
+                  ),
+                ),
               ],
             ),
           ),
@@ -125,16 +135,16 @@ class TimetableRow extends PreferredSize {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (subject.roomID != null)
-                  Text(
-                    '${subject.roomID.toUpperCase()}\n',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w300,
-                      color: theme.textColor,
-                      fontFamily: 'RobotoMono',
-                    ),
+                Text(
+                  subject.roomID,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w300,
+                    color: theme.textColor,
+                    fontFamily: 'RobotoMono',
                   ),
+                ),
+                Text(''),
               ],
             ),
           ),

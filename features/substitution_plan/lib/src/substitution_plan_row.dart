@@ -89,9 +89,7 @@ class SubstitutionPlanRow extends PreferredSize {
         heroTag: substitution,
         hasMargin: false,
         splitColor: substitution.type == 1
-            ? Theme
-            .of(context)
-            .accentColor
+            ? Theme.of(context).accentColor
             : (substitution.type == 2 ? Colors.red : Colors.orange),
         leading: showUnit
             ? Text(

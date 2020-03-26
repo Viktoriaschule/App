@@ -81,7 +81,7 @@ class CustomRow extends PreferredSize {
               ),
             if (showSplit ?? true)
               Container(
-                height: customRowHeight - 6,
+                height: customRowHeight - 26,
                 width: 2.5,
                 margin: EdgeInsets.only(
                   right: 5,
