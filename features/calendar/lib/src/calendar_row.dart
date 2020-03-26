@@ -38,7 +38,7 @@ class CalendarRow extends PreferredSize {
           color: ThemeWidget.of(context).textColorLight,
         ),
         title: '${event.name}',
-        titleOverflow: TextOverflow.visible,
+        titleOverflow: TextOverflow.ellipsis,
         subtitle: Text(
           event.dateString,
           style: TextStyle(

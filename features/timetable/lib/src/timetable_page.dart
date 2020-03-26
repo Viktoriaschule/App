@@ -23,6 +23,31 @@ class _TimetablePageState extends Interactor<TimetablePage> {
       .respond<SubstitutionPlanUpdateEvent>((event) => setState(() => null))
       .respond<TimetableUpdateEvent>((event) => setState(() => null));
 
+  int getCafetoriaCount(DateTime day) {
+    // Check cafetoria
+    int cafetoriaCount = 0;
+    final cafetoria = CafetoriaWidget.of(context)?.feature?.loader;
+    if (cafetoria != null && cafetoria.hasLoadedData) {
+      final days = cafetoria.data.days.where((d) => d.date == day);
+      if (days.isNotEmpty && days.first.menus.isNotEmpty) {
+        cafetoriaCount++;
+      }
+    }
+    return cafetoriaCount;
+  }
+
+  int getCalendarCount(DateTime day) {
+    // Check calendar
+    int calendarCount = 0;
+    final calendar = CalendarWidget.of(context)?.feature?.loader;
+    if (calendar != null &&
+        calendar.hasLoadedData &&
+        calendar.data.getEventsForDate(day).isNotEmpty) {
+      calendarCount++;
+    }
+    return calendarCount;
+  }
+
   @override
   Widget build(BuildContext context) {
     final loader = TimetableWidget.of(context).feature.loader;
@@ -118,38 +143,26 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                 }),
                 extraInfoCounts: List.generate(5, (weekday) {
                   final day = _monday.add(Duration(days: weekday));
-                  int count = 0;
-
-                  // Check cafetoria
-                  final cafetoria =
-                      CafetoriaWidget.of(context)?.feature?.loader;
-                  if (cafetoria != null && cafetoria.hasLoadedData) {
-                    final days =
-                        cafetoria.data.days.where((d) => d.date == day);
-                    if (days.isNotEmpty && days.first.menus.isNotEmpty) {
-                      count++;
-                    }
-                  }
-
-                  // Check calendar
-                  final calendar = CalendarWidget.of(context)?.feature?.loader;
-                  if (calendar != null &&
-                      calendar.hasLoadedData &&
-                      calendar.data.getEventsForDate(day).isNotEmpty) {
-                    count++;
-                  }
-                  return count;
+                  return getCafetoriaCount(day) + getCalendarCount(day);
                 }),
                 extraInfoChildren: List.generate(5, (weekday) {
                   final day = _monday.add(Duration(days: weekday));
+                  final isSmall =
+                      getScreenSize(MediaQuery
+                          .of(context)
+                          .size
+                          .width) ==
+                          ScreenSize.small;
                   return [
-                    if (CafetoriaWidget.of(context) != null)
+                    if (CafetoriaWidget.of(context) != null &&
+                        (isSmall || getCafetoriaCount(day) > 0))
                       CafetoriaInfoCard(
                         date: day,
                         showNavigation: false,
                         isSingleDay: true,
                       ),
-                    if (CalendarWidget.of(context) != null)
+                    if (CalendarWidget.of(context) != null &&
+                        (isSmall || getCalendarCount(day) > 0))
                       CalendarInfoCard(
                         date: day,
                         showNavigation: false,
