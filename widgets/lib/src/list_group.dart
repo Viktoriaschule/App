@@ -102,20 +102,25 @@ class _ListGroupState extends Interactor<ListGroup>
   @override
   Widget build(BuildContext context) {
     final actions = widget.actions ?? [];
-    final allHeight = widget.maxHeight != null
+    double allHeight = widget.maxHeight != null
         ? widget.maxHeight - (actions != null && actions.isNotEmpty ? 64.5 : 0)
         : null;
     final contentHeight =
-    widget.maxHeight != null ? allHeight - 39.5 - 5 : null;
+        widget.maxHeight != null ? allHeight - 39.5 - 5 : null;
 
     final children = [];
     if (widget.maxHeight != null && widget.children.isNotEmpty) {
       double currentHeight = 0;
       for (int i = 0; i < widget.children.length; i++) {
         final newHeight = widget.children[i].preferredSize.height;
+        // Add if the child is small enough, but at least two children
         if (currentHeight + newHeight <= contentHeight) {
           children.add(widget.children[i]);
           currentHeight += newHeight;
+        } else if (i < 2) {
+          children.add(widget.children[i]);
+          currentHeight += newHeight;
+          allHeight = null;
         } else {
           break;
         }

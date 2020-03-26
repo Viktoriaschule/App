@@ -121,7 +121,6 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
               numberRows,
                   (rowIndex) =>
                   Container(
-                    height: height,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: List.generate(numberColumns, (columnIndex) {
