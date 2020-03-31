@@ -28,7 +28,9 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
   static MethodChannel methodChannel = MethodChannel('frame');
 
   NotificationsHandler _getNotificationHandler(
-      BuildContext context, String type) {
+    BuildContext context,
+    String type,
+  ) {
     final features = FeaturesWidget.of(context)
         .features
         .where((f) => f.featureKey == type)
@@ -44,11 +46,11 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
   Future _registerNotifications(BuildContext context) async {
     if (Platform().isMobile || Platform().isWeb) {
       Static.firebaseMessaging.configure(
-        onLaunch: handleOnLaunchResumeNotification,
-        onResume: handleOnLaunchResumeNotification,
-        onMessage: handleOnMessageNotification,
+        onLaunch: _handleOnLaunchResumeNotification,
+        onResume: _handleOnLaunchResumeNotification,
+        onMessage: _handleOnMessageNotification,
         onBackgroundMessage:
-            _NotificationsWidgetState.handleOnBackgroundMessageNotification,
+            _NotificationsWidgetState._handleOnBackgroundMessageNotification,
       );
     }
     final channels = FeaturesWidget.of(context)
@@ -59,13 +61,15 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
             .toMap())
         .toList();
     if (Platform().isAndroid) {
-      await methodChannel.invokeMethod('init', channels);
+      await methodChannel.invokeMethod('init');
+      await methodChannel.invokeMethod(
+        'registerNotificationChannels',
+        channels,
+      );
     }
   }
 
-  Future handleOnLaunchResumeNotification(
-    Map<String, dynamic> data,
-  ) async {
+  Future _handleOnLaunchResumeNotification(Map<String, dynamic> data) async {
     EventBus.of(context).publish(FetchAppDataEvent());
 
     // Delete all notifications of the same type
@@ -88,9 +92,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
     }
   }
 
-  Future<dynamic> handleOnMessageNotification(
-    Map<String, dynamic> d,
-  ) async {
+  Future<dynamic> _handleOnMessageNotification(Map<String, dynamic> d) async {
     try {
       final Map<String, dynamic> data = Map<String, dynamic>.from(d['data']);
       if (data['action'] != 'update') {
@@ -117,7 +119,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
   }
 
   // This needs to be a static function otherwise it can't be called
-  static Future<dynamic> handleOnBackgroundMessageNotification(
+  static Future<dynamic> _handleOnBackgroundMessageNotification(
     Map<String, dynamic> d,
   ) async {
     final Map<String, dynamic> data = d['data'].cast<String, dynamic>();
@@ -127,7 +129,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
       }
 
       if (Platform().isAndroid) {
-        await methodChannel.invokeMethod('notification', data);
+        await methodChannel.invokeMethod('showNotification', data);
       }
       // ignore: avoid_catches_without_on_clauses
     } catch (e, stacktrace) {

@@ -1,5 +1,4 @@
 import 'package:cafetoria/cafetoria.dart';
-import 'package:cafetoria/src/cafetoria_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
@@ -7,10 +6,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:url_launcher/url_launcher.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'cafetoria_events.dart';
-import 'cafetoria_login.dart' as dialog;
-import 'cafetoria_row.dart';
 
 // ignore: public_member_api_docs
 class CafetoriaPage extends StatefulWidget {
@@ -30,7 +25,7 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
 
   @override
   Widget build(BuildContext context) {
-    final name = CafetoriaWidget.of(context).feature.name;
+    final name = CafetoriaLocalizations.name;
     final loader = CafetoriaWidget.of(context).feature.loader;
     final days = (loader.data.days..sort((a, b) => a.date.compareTo(b.date)));
     return Scaffold(
@@ -58,7 +53,7 @@ class CafetoriaPageState extends Interactor<CafetoriaPage> {
                 onPressed: () {
                   showDialog(
                     context: context,
-                    child: dialog.CafetoriaLogin(
+                    child: CafetoriaLoginDialog(
                       onFinished: () => setState(() => null),
                     ),
                   );

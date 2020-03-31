@@ -7,9 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
-import 'aixformation_model.dart';
-import 'aixformation_utils.dart';
-
 // ignore: public_member_api_docs
 class AiXformationPost extends StatefulWidget {
   // ignore: public_member_api_docs
@@ -94,7 +91,7 @@ class _AiXformationPostState extends State<AiXformationPost>
           ),
         ),
         appBar: CustomAppBar(
-          title: AiXFormationWidget.of(context).feature.name,
+          title: AiXformationLocalizations.name,
           loadingKeys: const [],
           actions: [
             IconButton(

@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
 
-import 'cafetoria_events.dart';
-
 /// The cafetoria tags synchronization
 class CafetoriaTagsHandler extends TagsHandler {
   @override
@@ -96,11 +94,10 @@ class CafetoriaTags {
   CafetoriaTags({this.id, this.password, this.timestamp});
 
   /// Creates cafetoria tags from json map
-  factory CafetoriaTags.fromJson(Map<String, dynamic> json) =>
-      CafetoriaTags(
-          id: json['id'],
-          password: json['password'],
-          timestamp: DateTime.parse(json['timestamp']));
+  factory CafetoriaTags.fromJson(Map<String, dynamic> json) => CafetoriaTags(
+      id: json['id'],
+      password: json['password'],
+      timestamp: DateTime.parse(json['timestamp']));
 
   // ignore: public_member_api_docs
   final String id;
@@ -112,8 +109,7 @@ class CafetoriaTags {
   final DateTime timestamp;
 
   /// Converts cafetoria tags to json map
-  Map<String, dynamic> toMap() =>
-      {
+  Map<String, dynamic> toMap() => {
         'id': id,
         'password': password,
         'timestamp': timestamp.toIso8601String()

@@ -1,15 +1,8 @@
 import 'package:aixformation/aixformation.dart';
-import 'package:aixformation/src/aixformation_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'aixformation_events.dart';
-import 'aixformation_keys.dart';
-import 'aixformation_model.dart';
-import 'aixformation_page.dart';
-import 'aixformation_row.dart';
 
 // ignore: public_member_api_docs
 class AiXformationInfoCard extends InfoCard {
@@ -27,7 +20,7 @@ class _AiXformationInfoCardState extends InfoCardState<AiXformationInfoCard> {
 
   @override
   ListGroup getListGroup(BuildContext context, InfoCardUtils utils) {
-    final loader = AiXFormationWidget.of(context).feature.loader;
+    final loader = AiXformationWidget.of(context).feature.loader;
     final List<Post> posts = loader.hasLoadedData
         ? loader.data.posts.length > utils.cut
             ? loader.data.posts.sublist(0, utils.cut)

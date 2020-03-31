@@ -1,12 +1,11 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:after_layout/after_layout.dart';
+import 'package:calendar/calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'calendar_model.dart';
 
 // ignore: public_member_api_docs
 class CalendarRow extends StatefulWidget {
@@ -63,7 +62,7 @@ class _CalendarRowState extends State<CalendarRow>
                 color: ThemeWidget.of(context).textColor,
                 fontWeight: FontWeight.w100),
           ),
-    last: Platform().isMobile && widget.showAddButton
+          last: Platform().isMobile && widget.showAddButton
               ? IconButton(
                   onPressed: () {
                     final startDate = widget.event.start.subtract(Duration(

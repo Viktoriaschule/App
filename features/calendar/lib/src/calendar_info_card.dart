@@ -1,15 +1,8 @@
 import 'package:calendar/calendar.dart';
-import 'package:calendar/src/calendar_keys.dart';
-import 'package:calendar/src/calendar_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'calendar_list.dart';
-import 'calendar_model.dart';
-import 'calendar_page.dart';
-import 'calendar_row.dart';
 
 // ignore: public_member_api_docs
 class CalendarInfoCard extends InfoCard {
@@ -50,7 +43,7 @@ class _CalendarInfoCardState extends InfoCardState<CalendarInfoCard> {
       heroId: CalendarKeys.calendar,
       title: widget.isSingleDay
           ? '${CalendarLocalizations.events} - ${weekdays[widget.date.weekday - 1]}'
-          : CalendarWidget.of(context).feature.name,
+          : CalendarLocalizations.name,
       counter: widget.isSingleDay ? 0 : _events.length - utils.cut,
       actions: [
         NavigationAction(

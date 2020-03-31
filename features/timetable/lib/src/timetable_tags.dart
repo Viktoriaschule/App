@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:substitution_plan/substitution_plan.dart';
-import 'package:timetable/src/timetable_keys.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
-
-import 'timetable_events.dart';
 
 /// The timetable tags synchronization
 class TimetableTagsHandler extends TagsHandler {
@@ -61,13 +58,9 @@ class TimetableTagsHandler extends TagsHandler {
     // Update the substitution plan filter and views if any tag has changed
     if (changed) {
       // Update the substitution plan filter
-      final ttLoader = TimetableWidget
-          .of(context)
-          .feature
-          .loader;
+      final ttLoader = TimetableWidget.of(context).feature.loader;
       if (ttLoader.hasLoadedData) {
-        SubstitutionPlanWidget
-            .of(context)
+        SubstitutionPlanWidget.of(context)
             .feature
             .loader
             .data
@@ -86,7 +79,7 @@ class TimetableTagsHandler extends TagsHandler {
         .map<SelectionValue>((json) => SelectionValue.fromJson(json))
         .toList();
     final currentExams =
-    tags.data['exams'].map<Exam>((json) => Exam.fromJson(json)).toList();
+        tags.data['exams'].map<Exam>((json) => Exam.fromJson(json)).toList();
 
     final Map<String, dynamic> tagsToUpdate = {};
     // Sync selections and exams
@@ -106,7 +99,7 @@ class TimetableTagsHandler extends TagsHandler {
         );
         // Check if the local selection is newer than the server selection
         final serverSelection =
-        currentSelection.where((s) => s.block == selection.block).toList();
+            currentSelection.where((s) => s.block == selection.block).toList();
         // If the server does not have this selection,
         // or the selection changed and the local version is newer, sync the selection
         if (serverSelection.isEmpty ||
@@ -124,7 +117,7 @@ class TimetableTagsHandler extends TagsHandler {
                 Static.storage.getString('timestamp-$key') ?? '20000101'));
         // Check if the local exam is newer than the server exam
         final serverExam =
-        currentExams.where((e) => e.subject == exam.subject).toList();
+            currentExams.where((e) => e.subject == exam.subject).toList();
         // If the server does not have this exam,
         // or the exam changed and the local version is newer, sync the exam
         if (serverExam.isEmpty ||
@@ -148,8 +141,7 @@ class SelectionValue {
   const SelectionValue({this.block, this.courseID, this.timestamp});
 
   // ignore: public_member_api_docs
-  factory SelectionValue.fromJson(Map<String, dynamic> json) =>
-      SelectionValue(
+  factory SelectionValue.fromJson(Map<String, dynamic> json) => SelectionValue(
         block: json['block'],
         courseID: json['courseID'],
         timestamp: DateTime.parse(json['timestamp']),
@@ -165,8 +157,7 @@ class SelectionValue {
   final DateTime timestamp;
 
   /// Converts the device settings to a json map
-  Map<String, dynamic> toMap() =>
-      {
+  Map<String, dynamic> toMap() => {
         'block': block,
         'courseID': courseID,
         'timestamp': timestamp.toIso8601String(),
@@ -179,8 +170,7 @@ class Exam {
   const Exam({this.subject, this.writing, this.timestamp});
 
   // ignore: public_member_api_docs
-  factory Exam.fromJson(Map<String, dynamic> json) =>
-      Exam(
+  factory Exam.fromJson(Map<String, dynamic> json) => Exam(
         subject: json['subject'],
         writing: json['writing'],
         timestamp: DateTime.parse(json['timestamp']),
@@ -196,8 +186,7 @@ class Exam {
   final DateTime timestamp;
 
   /// Converts the device settings to a json map
-  Map<String, dynamic> toMap() =>
-      {
+  Map<String, dynamic> toMap() => {
         'subject': subject,
         'writing': writing,
         'timestamp': timestamp.toIso8601String(),

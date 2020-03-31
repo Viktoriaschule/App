@@ -78,6 +78,8 @@ public class FramePlugin implements FlutterPlugin, MethodCallHandler {
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         if (call.method.equals("init")) {
             onLaunchCallback.onLaunch();
+            result.success("");
+        } else if (call.method.equals("registerNotificationChannels")) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 List<Map<String, String>> rawChannels = (List<Map<String, String>>) call.arguments;
 
@@ -101,7 +103,7 @@ public class FramePlugin implements FlutterPlugin, MethodCallHandler {
                 }
             }
             result.success("");
-        } else if (call.method.equals("notification")) {
+        } else if (call.method.equals("showNotification")) {
             try {
                 Map<String, Object> data = (Map<String, Object>) call.arguments;
 

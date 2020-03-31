@@ -1,16 +1,15 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 // ignore: public_member_api_docs
-class _LoginPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<_LoginPage> {
+class _LoginPageState extends State<LoginPage> {
   final FocusNode _passwordFieldFocus = FocusNode();
   final FocusNode _submitButtonFocus = FocusNode();
   final TextEditingController _usernameFieldController =
@@ -21,58 +20,38 @@ class _LoginPageState extends State<_LoginPage> {
   bool _checkingLogin = false;
 
   Future _submitLogin() async {
-    try {
-      if (_usernameFieldController.text.isEmpty ||
-          _passwordFieldController.text.isEmpty) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(AppLocalizations.usernamePasswordRequired),
-        ));
-        return;
-      }
-      setState(() {
-        _checkingLogin = true;
-      });
-      final result = await Static.updates.loadOnline(
-        context,
-        force: true,
-        autoLogin: false,
-        username: _usernameFieldController.text,
-        password: _passwordFieldController.text,
-      );
-      setState(() {
-        _checkingLogin = false;
-      });
-      if (result == StatusCode.success) {
-        Static.user.username = _usernameFieldController.text;
-        Static.user.password = _passwordFieldController.text;
-        await Navigator.of(context).pushReplacementNamed('/');
-        return;
-      } else {
-        String msg;
-        switch (result) {
-          case StatusCode.unauthorized:
-            msg = AppLocalizations.credentialsWrong;
-            _passwordFieldController.clear();
-            FocusScope.of(context).requestFocus(_passwordFieldFocus);
-            break;
-          case StatusCode.offline:
-            msg = AppLocalizations.needsToBeOnline;
-            break;
-          default:
-            msg = AppLocalizations.errorWhileLoggingIn;
-        }
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(msg),
-        ));
-      }
-    } on DioError {
-      setState(() {
-        _checkingLogin = false;
-      });
+    if (_usernameFieldController.text.isEmpty ||
+        _passwordFieldController.text.isEmpty) {
       Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text(AppLocalizations.errorWhileLoggingIn),
+        content: Text(AppLocalizations.usernamePasswordRequired),
       ));
+      return;
     }
+    setState(() {
+      _checkingLogin = true;
+    });
+    final result = await Static.updates.loadOnline(
+      context,
+      force: true,
+      showLoginOnWrongCredentials: false,
+      username: _usernameFieldController.text,
+      password: _passwordFieldController.text,
+    );
+    setState(() {
+      _checkingLogin = false;
+    });
+    if (result == StatusCode.success) {
+      Static.user.username = _usernameFieldController.text;
+      Static.user.password = _passwordFieldController.text;
+      await Navigator.of(context).pushReplacementNamed('/');
+      return;
+    } else if (result == StatusCode.unauthorized) {
+      _passwordFieldController.clear();
+      FocusScope.of(context).requestFocus(_passwordFieldFocus);
+    }
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(getStatusCodeMsg(result)),
+    ));
   }
 
   @override
@@ -174,12 +153,4 @@ class _LoginPageState extends State<_LoginPage> {
       ),
     );
   }
-}
-
-// ignore: public_member_api_docs
-class LoginPageWrapper extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        body: _LoginPage(),
-      );
 }

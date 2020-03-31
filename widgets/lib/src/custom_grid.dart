@@ -128,12 +128,12 @@ class _CustomGridState extends State<CustomGrid>
         .toList()[0];
     final appendCount = widget.extraInfoChildren != null
         ? (widget.children
-        .map((c) =>
-    widget.extraInfoChildren[widget.children.indexOf(c)].length)
-        .toList()
-      ..sort())
-        .reversed
-        .toList()[0]
+                .map((c) =>
+                    widget.extraInfoChildren[widget.children.indexOf(c)].length)
+                .toList()
+                  ..sort())
+            .reversed
+            .toList()[0]
         : 0;
     return Container(
       color: Theme.of(context).backgroundColor,

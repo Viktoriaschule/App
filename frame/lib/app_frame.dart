@@ -1,22 +1,22 @@
 import 'package:after_layout/after_layout.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:frame/home/home_page.dart';
-import 'package:frame/settings/settings_page.dart';
-import 'package:frame/utils/features.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'features.dart';
+import 'home_page.dart';
+import 'settings_page.dart';
+
 // ignore: public_member_api_docs
-class AppPage extends StatefulWidget {
+class AppFrame extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _AppPageState();
+  State<StatefulWidget> createState() => _AppFrameState();
 }
 
-class _AppPageState extends Interactor<AppPage>
-    with SingleTickerProviderStateMixin, AfterLayoutMixin<AppPage> {
+class _AppFrameState extends Interactor<AppFrame>
+    with SingleTickerProviderStateMixin, AfterLayoutMixin<AppFrame> {
   bool _permissionsGranted = true;
   bool _permissionsChecking = false;
   bool _canInstall = false;
@@ -55,54 +55,49 @@ class _AppPageState extends Interactor<AppPage>
   Future<StatusCode> _fetchData({
     bool force = false,
   }) async {
-    try {
-      final result =
-          await Static.tags.loadOnline(context, force: true, autoLogin: false);
-      if (result == StatusCode.unauthorized) {
-        await _launchLogin();
-        // Do not inform the user about an unauthorized error,
-        // because the login screen already tells enough
-        return StatusCode.success;
-      } else if (result == StatusCode.success) {
-        // First sync the tags
-        await Static.tags.syncDevice(
-          context,
-          FeaturesWidget.of(context).features,
-        );
-        await Static.tags.syncToServer(
-          context,
-          FeaturesWidget.of(context).features,
-        );
+    final result = await Static.tags
+        .loadOnline(context, force: true, showLoginOnWrongCredentials: false);
+    if (result == StatusCode.unauthorized) {
+      await _launchLogin();
+      // Do not inform the user about an unauthorized error,
+      // because the login screen already tells enough
+      return StatusCode.success;
+    } else if (result == StatusCode.success) {
+      // First sync the tags
+      await Static.tags.syncDevice(
+        context,
+        FeaturesWidget.of(context).features,
+      );
+      await Static.tags.syncToServer(
+        context,
+        FeaturesWidget.of(context).features,
+      );
 
-        // Then check all updates (If there is something new to update)
-        final response = await Static.updates.fetch(context);
-        if (response.statusCode != StatusCode.success) {
-          return response.statusCode;
-        }
-        final fetchedUpdates = response.data;
-        if (fetchedUpdates == null) {
-          return StatusCode.failed;
-        }
-
-        // Sync the local grade with the server
-        Static.user.grade = fetchedUpdates.getUpdate(Keys.grade);
-
-        //TODO: Move to feature without gui
-        await Static.subjects.update(context, fetchedUpdates, force: force);
-
-        //TODO: Add old app dialog
-
-        return _loadData(
-          online: true,
-          force: force,
-          newUpdates: fetchedUpdates,
-        );
+      // Then check all updates (If there is something new to update)
+      final response = await Static.updates.fetch(context);
+      if (response.statusCode != StatusCode.success) {
+        return response.statusCode;
       }
-      return result;
-    } on DioError {
-      print('Failed to fetch data');
-      return StatusCode.failed;
+      final fetchedUpdates = response.data;
+      if (fetchedUpdates == null) {
+        return StatusCode.failed;
+      }
+
+      // Sync the local grade with the server
+      Static.user.group = fetchedUpdates.getUpdate(Keys.group);
+
+      //TODO: Move to feature without gui
+      await Static.subjects.update(context, fetchedUpdates, force: force);
+
+      //TODO: Add old app dialog
+
+      return _loadData(
+        online: true,
+        force: force,
+        newUpdates: fetchedUpdates,
+      );
     }
+    return result;
   }
 
   Future<StatusCode> _loadData({
@@ -199,12 +194,10 @@ class _AppPageState extends Interactor<AppPage>
               _permissionsChecking = true;
             });
             _permissionsGranted =
-            await Static.firebaseMessaging.requestNotificationPermissions();
+                await Static.firebaseMessaging.requestNotificationPermissions();
             await Static.tags.syncDevice(
               context,
-              FeaturesWidget
-                  .of(context)
-                  .features,
+              FeaturesWidget.of(context).features,
             );
             setState(() {
               _permissionsChecking = false;
@@ -238,13 +231,12 @@ class _AppPageState extends Interactor<AppPage>
           ),
         ),
     ];
-    final pages = Pages.of(context).pages;
     return Scaffold(
       extendBody: true,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxScrolled) => [
           CustomAppBar(
-            title: pages[Keys.home].title,
+            title: AppLocalizations.homepage,
             actions: [
               ...webActions,
               IconButton(
@@ -257,15 +249,13 @@ class _AppPageState extends Interactor<AppPage>
                 },
                 icon: Icon(
                   Icons.settings,
-                  color: ThemeWidget
-                      .of(context)
-                      .textColor,
+                  color: ThemeWidget.of(context).textColor,
                 ),
               ),
             ],
             sliver: true,
             isLeading: false,
-            loadingKeys: [Keys.tags, Keys.subjects, Keys.updates],
+            loadingKeys: const [Keys.tags, Keys.subjects, Keys.updates],
           ),
         ],
         body: CustomRefreshIndicator(
