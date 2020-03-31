@@ -49,7 +49,6 @@ class _SubstitutionPlanInfoCardState
       getScreenSize(MediaQuery.of(context).size.width),
       substitutions.length,
     );
-    print(cut);
     return ListGroup(
       loadingKeys: const [SubstitutionPlanKeys.substitutionPlan],
       heroId: getScreenSize(MediaQuery.of(context).size.width) ==
