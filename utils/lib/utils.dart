@@ -175,6 +175,9 @@ DateTime monday(DateTime date) {
   if (newDate.hour == 23) {
     newDate = newDate.add(Duration(hours: 1));
   }
+  if (newDate.hour == 1) {
+    newDate = newDate.subtract(Duration(hours: 1));
+  }
   return newDate;
 }
 
