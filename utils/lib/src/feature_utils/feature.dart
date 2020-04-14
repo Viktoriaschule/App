@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/src/feature_utils/feature_widget.dart';
 import 'package:utils/src/feature_utils/notifications.dart';
 import 'package:utils/src/feature_utils/tags.dart';
 import 'package:utils/src/loader.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
+
+export 'package:flutter_event_bus/flutter_event_bus.dart';
 
 export 'feature_widget.dart';
 export 'keys.dart';
@@ -49,6 +52,10 @@ abstract class Feature {
   /// If the feature wants to control the date for the home page,
   /// it have to return a date, otherwise, return null
   DateTime getHomePageDate();
+
+  /// Subscribes to all data updates of this feature
+  Subscription subscribeToDataUpdates(
+      EventBus eventBus, Function(ChangedEvent) callback);
 
   /// Returns the duration between the current moment and the next `getHomePageDate()` update
   Duration durationToHomePageDateUpdate();

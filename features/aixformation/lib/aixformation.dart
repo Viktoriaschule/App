@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'src/aixformation_events.dart';
 import 'src/aixformation_info_card.dart';
 import 'src/aixformation_keys.dart';
 import 'src/aixformation_loader.dart';
@@ -43,7 +44,10 @@ class AiXformationFeature implements Feature {
   final TagsHandler tagsHandler = null;
 
   @override
-  InfoCard getInfoCard(DateTime date,double maxHeight) => AiXformationInfoCard(date: date,maxHeight:maxHeight,);
+  InfoCard getInfoCard(DateTime date, double maxHeight) => AiXformationInfoCard(
+        date: date,
+        maxHeight: maxHeight,
+      );
 
   @override
   Widget getPage() => AiXformationPage(key: ValueKey(featureKey));
@@ -51,15 +55,20 @@ class AiXformationFeature implements Feature {
   @override
   AiXformationWidget getFeatureWidget(Widget child) => AiXformationWidget(
         feature: this,
-        key: ValueKey(featureKey),
-        child: child,
-      );
+    key: ValueKey(featureKey),
+    child: child,
+  );
 
   @override
   DateTime getHomePageDate() =>
       loader.hasLoadedData && loader.data.posts.isNotEmpty
           ? loader.data.posts.first.date
           : null;
+
+  @override
+  Subscription subscribeToDataUpdates(EventBus eventBus,
+      Function(ChangedEvent) callback) =>
+      eventBus.respond<AiXformationUpdateEvent>(callback);
 
   @override
   Duration durationToHomePageDateUpdate() => null;

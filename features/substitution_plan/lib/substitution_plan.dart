@@ -1,6 +1,7 @@
 library substitution_plan;
 
 import 'package:flutter/material.dart';
+import 'package:substitution_plan/src/substitution_plan_events.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
@@ -68,6 +69,11 @@ class SubstitutionPlanFeature implements Feature {
       loader.hasLoadedData && loader.data.days.isNotEmpty
           ? loader.data.days.first.date
           : null;
+
+  @override
+  Subscription subscribeToDataUpdates(
+          EventBus eventBus, Function(ChangedEvent) callback) =>
+      eventBus.respond<SubstitutionPlanUpdateEvent>(callback);
 
   @override
   Duration durationToHomePageDateUpdate() {

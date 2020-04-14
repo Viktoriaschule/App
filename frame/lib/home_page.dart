@@ -4,6 +4,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
 
 import 'features.dart';
@@ -18,12 +19,24 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
   DateTime _day;
   Future<void> _timeUpdates = Future.delayed(Duration(seconds: 0));
   List<Feature> _features;
+  Subscription _subscription;
+  EventBus _eventBus;
 
-  DateTime _getDay(List<Feature> features) {
+  DateTime _getDay(List<Feature> features, EventBus eventBus) {
+    if (_subscription != null) {
+      _subscription.dispose();
+    }
     // Get the first feature that wants to set the home page day
     for (final feature in features) {
       final date = feature.getHomePageDate();
       if (date != null) {
+        // Subscribe to data updates of the time relevant feature
+        _subscription = feature.subscribeToDataUpdates(eventBus, (event) {
+          _day = _getDay(features, eventBus);
+          setState(() => null);
+          _timeUpdate();
+        });
+
         return DateTime(date.year, date.month, date.day);
       }
     }
@@ -69,7 +82,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
       _timeUpdates = Future.delayed(duration).then((_) {
         if (mounted) {
           setState(() {
-            _day = _getDay(_features);
+            _day = _getDay(_features, _eventBus);
           });
           _timeUpdate();
         }
@@ -80,6 +93,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
   @override
   void dispose() {
     _cancelTimeUpdate();
+    _subscription.dispose();
     super.dispose();
   }
 
@@ -92,7 +106,8 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
     // Get the date for the home page
 
     _features ??= FeaturesWidget.of(context).features;
-    _day ??= _getDay(_features);
+    _eventBus ??= EventBus.of(context);
+    _day ??= _getDay(_features, _eventBus);
 
     final numberFeatures = FeaturesWidget.of(context).features.length;
     final size = getScreenSize(MediaQuery.of(context).size.width);

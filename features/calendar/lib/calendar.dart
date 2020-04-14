@@ -1,5 +1,6 @@
 library calendar;
 
+import 'package:calendar/src/calendar_events.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
@@ -67,6 +68,11 @@ class CalendarFeature implements Feature {
     }
     return null;
   }
+
+  @override
+  Subscription subscribeToDataUpdates(
+          EventBus eventBus, Function(ChangedEvent) callback) =>
+      eventBus.respond<CalendarUpdateEvent>(callback);
 
   @override
   Duration durationToHomePageDateUpdate() {

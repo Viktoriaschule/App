@@ -1,6 +1,7 @@
 library timetable;
 
 import 'package:flutter/material.dart';
+import 'package:timetable/src/timetable_events.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
@@ -68,6 +69,11 @@ class TimetableFeature implements Feature {
             days: (DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday) - 1,
           ),
         );
+
+  @override
+  Subscription subscribeToDataUpdates(
+          EventBus eventBus, Function(ChangedEvent) callback) =>
+      eventBus.respond<TimetableUpdateEvent>(callback);
 
   @override
   Duration durationToHomePageDateUpdate() {
