@@ -22,6 +22,7 @@ class _AppFrameState extends Interactor<AppFrame>
   bool _canInstall = false;
   bool _installing = false;
   PWA _pwa;
+  DateTime _day;
 
   @override
   Subscription subscribeEvents(EventBus eventBus) => eventBus
@@ -33,6 +34,10 @@ class _AppFrameState extends Interactor<AppFrame>
           ),
           (r) => r.settings.name == '/',
         );
+      }).respond<DateUpdateEvent>((event) {
+        setState(() {
+          _day = event.date;
+        });
       });
 
   Future _fetchDataWithStatusMsg(
@@ -234,7 +239,9 @@ class _AppFrameState extends Interactor<AppFrame>
     final isSmallScreen =
         getScreenSize(MediaQuery.of(context).size.width) == ScreenSize.small;
     final appBar = CustomAppBar(
-      title: AppLocalizations.homepage,
+      title: _day != null
+          ? '${AppLocalizations.homepage} - ${_day.day}. ${months[_day.month - 1]}'
+          : AppLocalizations.homepage,
       actions: [
         ...webActions,
         IconButton(
@@ -265,7 +272,8 @@ class _AppFrameState extends Interactor<AppFrame>
       body: isSmallScreen
           ? NestedScrollView(
               headerSliverBuilder: (context, innerBoxScrolled) => [appBar],
-              body: body)
+              body: body,
+            )
           : body,
     );
   }

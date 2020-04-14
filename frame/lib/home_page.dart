@@ -37,7 +37,11 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
           _timeUpdate();
         });
 
-        return DateTime(date.year, date.month, date.day);
+        final newDay = DateTime(date.year, date.month, date.day);
+        if (newDay != _day) {
+          eventBus.publish(DateUpdateEvent(newDay));
+        }
+        return newDay;
       }
     }
     // If there is no feature to set the day, set the home page to today
@@ -134,26 +138,24 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
             padding: EdgeInsets.only(top: 0),
             children: List.generate(
               numberRows,
-                  (rowIndex) =>
-                  Container(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(numberColumns, (columnIndex) {
-                        final index = rowIndex * numberColumns + columnIndex;
-                        if (index >= numberFeatures) {
-                          return Expanded(
-                            child: Container(),
-                          );
-                        }
-                        return Expanded(
-                          child: FeaturesWidget
-                              .of(context)
-                              .features[index]
-                              .getInfoCard(_day, height),
-                        );
-                      }),
-                    ),
-                  ),
+              (rowIndex) => Container(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: List.generate(numberColumns, (columnIndex) {
+                    final index = rowIndex * numberColumns + columnIndex;
+                    if (index >= numberFeatures) {
+                      return Expanded(
+                        child: Container(),
+                      );
+                    }
+                    return Expanded(
+                      child: FeaturesWidget.of(context)
+                          .features[index]
+                          .getInfoCard(_day, height),
+                    );
+                  }),
+                ),
+              ),
             ),
           ),
         );
