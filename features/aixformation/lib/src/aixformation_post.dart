@@ -63,7 +63,8 @@ class _AiXformationPostState extends State<AiXformationPost>
             'footer * {border: 0 !important}',
             'button {background-color: #${_colorToHexString(Theme.of(context).primaryColor)} !important}'
           ],
-          'header, .p-menu, .mh-subheader, .mh-header, .mh-header-nav-mobile, .mh-footer-nav-mobile, .search-form {display: none !important}',
+          '.body.single-post { padding-bottom: 0 !important}',
+          'header, .p-menu, .mh-subheader, .mh-header, .mh-header-nav-mobile, .mh-footer-nav-mobile, .search-form, .s_stk {display: none !important}',
         ]));
       }
     });
