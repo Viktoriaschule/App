@@ -36,3 +36,12 @@ class LoadingStatusChangedEvent extends ChangedEvent {
 
 // ignore: public_member_api_docs
 class ThemeChangedEvent extends ChangedEvent {}
+
+// ignore: public_member_api_docs
+class DateUpdateEvent extends ChangedEvent {
+  // ignore: public_member_api_docs
+  DateUpdateEvent(this.date);
+
+  // ignore: public_member_api_docs
+  final DateTime date;
+}

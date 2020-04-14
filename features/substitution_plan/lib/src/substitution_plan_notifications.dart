@@ -1,6 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:substitution_plan/src/substitution_plan_localizations.dart';
 import 'package:substitution_plan/substitution_plan.dart';
 import 'package:utils/utils.dart';
 
@@ -23,9 +22,7 @@ class SubstitutionPlanNotificationsHandler extends NotificationsHandler {
   @override
   AndroidNotificationChannel getAndroidNotificationHandler(
       BuildContext context) {
-    final feature = SubstitutionPlanWidget
-        .of(context)
-        .feature;
+    final feature = SubstitutionPlanWidget.of(context).feature;
     return AndroidNotificationChannel(feature.featureKey, feature.name,
         SubstitutionPlanLocalizations.newSubstitutionPlans);
   }

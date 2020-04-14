@@ -1,26 +1,32 @@
 library cafetoria;
 
-import 'package:cafetoria/src/cafetoria_info_card.dart';
-import 'package:cafetoria/src/cafetoria_keys.dart';
-import 'package:cafetoria/src/cafetoria_loader.dart';
-import 'package:cafetoria/src/cafetoria_notifications.dart';
-import 'package:cafetoria/src/cafetoria_page.dart';
-import 'package:cafetoria/src/cafetoria_tags.dart';
+import 'package:cafetoria/src/cafetoria_events.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
+
+import 'src/cafetoria_info_card.dart';
+import 'src/cafetoria_keys.dart';
+import 'src/cafetoria_loader.dart';
+import 'src/cafetoria_localizations.dart';
+import 'src/cafetoria_notifications.dart';
+import 'src/cafetoria_page.dart';
+import 'src/cafetoria_tags.dart';
 
 export 'src/cafetoria_events.dart';
 export 'src/cafetoria_info_card.dart';
 export 'src/cafetoria_keys.dart';
 export 'src/cafetoria_loader.dart';
 export 'src/cafetoria_localizations.dart';
+export 'src/cafetoria_login_dialog.dart';
+export 'src/cafetoria_model.dart';
 export 'src/cafetoria_page.dart';
+export 'src/cafetoria_row.dart';
 
 /// The cafetoria feature
 class CafetoriaFeature implements Feature {
   @override
-  final String name = 'Cafétoria';
+  final String name = CafetoriaLocalizations.name;
 
   @override
   final String featureKey = CafetoriaKeys.cafetoria;
@@ -39,7 +45,10 @@ class CafetoriaFeature implements Feature {
   final CafetoriaTagsHandler tagsHandler = CafetoriaTagsHandler();
 
   @override
-  InfoCard getInfoCard(DateTime date) => CafetoriaInfoCard(date: date);
+  InfoCard getInfoCard(DateTime date, double maxHeight) => CafetoriaInfoCard(
+        date: date,
+        maxHeight: maxHeight,
+      );
 
   @override
   Widget getPage() => CafetoriaPage(key: ValueKey(featureKey));
@@ -62,6 +71,11 @@ class CafetoriaFeature implements Feature {
     }
     return null;
   }
+
+  @override
+  Subscription subscribeToDataUpdates(
+          EventBus eventBus, Function(ChangedEvent) callback) =>
+      eventBus.respond<CafetoriaUpdateEvent>(callback);
 
   @override
   Duration durationToHomePageDateUpdate() =>

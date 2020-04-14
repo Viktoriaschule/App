@@ -2,8 +2,6 @@ import 'package:calendar/calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 
-import 'calendar_event_dialog.dart';
-
 // ignore: public_member_api_docs
 class CalendarGridItem extends StatefulWidget {
   // ignore: public_member_api_docs

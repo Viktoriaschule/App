@@ -1,25 +1,32 @@
 library timetable;
 
 import 'package:flutter/material.dart';
-import 'package:timetable/src/timetable_info_card.dart';
-import 'package:timetable/src/timetable_keys.dart';
-import 'package:timetable/src/timetable_loader.dart';
-import 'package:timetable/src/timetable_notifications.dart';
-import 'package:timetable/src/timetable_page.dart';
-import 'package:timetable/src/timetable_tags.dart';
+import 'package:timetable/src/timetable_events.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'src/timetable_info_card.dart';
+import 'src/timetable_keys.dart';
+import 'src/timetable_loader.dart';
+import 'src/timetable_localizations.dart';
+import 'src/timetable_notifications.dart';
+import 'src/timetable_page.dart';
+import 'src/timetable_tags.dart';
+
 export 'src/timetable_events.dart';
 export 'src/timetable_info_card.dart';
+export 'src/timetable_keys.dart';
 export 'src/timetable_loader.dart';
+export 'src/timetable_localizations.dart';
 export 'src/timetable_model.dart';
 export 'src/timetable_page.dart';
+export 'src/timetable_row.dart';
+export 'src/timetable_select_dialog.dart';
 
 /// The timetable feature
 class TimetableFeature implements Feature {
   @override
-  final String name = 'Stundenplan';
+  final String name = TimetableLocalizations.name;
 
   @override
   final String featureKey = TimetableKeys.timetable;
@@ -38,7 +45,10 @@ class TimetableFeature implements Feature {
   final TimetableTagsHandler tagsHandler = TimetableTagsHandler();
 
   @override
-  InfoCard getInfoCard(DateTime date) => TimetableInfoCard(date: date);
+  InfoCard getInfoCard(DateTime date, double maxHeight) => TimetableInfoCard(
+        date: date,
+        maxHeight: maxHeight,
+      );
 
   @override
   Widget getPage() => TimetablePage(key: ValueKey(featureKey));
@@ -51,13 +61,19 @@ class TimetableFeature implements Feature {
       );
 
   @override
-  DateTime getHomePageDate() =>
-      loader.hasLoadedData && loader.data.selection.isSet()
-          ? loader.data.initialDay(DateTime.now())
-          : monday(DateTime.now()).add(Duration(
-              days:
-                  (DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday) - 1,
-            ));
+  DateTime getHomePageDate() => loader.hasLoadedData &&
+          loader.data.selection.isSet(Static.user.group)
+      ? loader.data.initialDay(DateTime.now())
+      : monday(DateTime.now()).add(
+          Duration(
+            days: (DateTime.now().weekday > 5 ? 1 : DateTime.now().weekday) - 1,
+          ),
+        );
+
+  @override
+  Subscription subscribeToDataUpdates(
+          EventBus eventBus, Function(ChangedEvent) callback) =>
+      eventBus.respond<TimetableUpdateEvent>(callback);
 
   @override
   Duration durationToHomePageDateUpdate() {

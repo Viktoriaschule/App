@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'timetable_model.dart';
-import 'timetable_row.dart';
 
 // ignore: public_member_api_docs
 class TimetableSelectDialog extends StatelessWidget {
@@ -35,16 +33,10 @@ class TimetableSelectDialog extends StatelessWidget {
                       onTap: () {
                         Navigator.of(context).pop(subject);
                       },
-                      child: Container(
-                        margin: EdgeInsets.only(
-                          top: 10,
-                          bottom: 10,
-                        ),
-                        child: TimetableRow(
-                          showUnit: false,
-                          showSplit: false,
-                          subject: subject,
-                        ),
+                      child: TimetableRow(
+                        showUnit: false,
+                        showSplit: false,
+                        subject: subject,
                       ),
                     ))
                 .toList()

@@ -1,14 +1,8 @@
 import 'package:calendar/calendar.dart';
-import 'package:calendar/src/calendar_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
-
-import 'calendar_grid_event.dart';
-import 'calendar_grid_item.dart';
-import 'calendar_list.dart';
-import 'calendar_model.dart';
 
 extension on DateTime {
   int differenceInMonths(DateTime date) =>
@@ -201,7 +195,7 @@ class _CalendarPageState extends Interactor<CalendarPage>
     update(loader);
     return Scaffold(
       appBar: CustomAppBar(
-        title: CalendarWidget.of(context).feature.name,
+        title: CalendarLocalizations.name,
         loadingKeys: const [CalendarKeys.calendar],
         actions: [
           IconButton(

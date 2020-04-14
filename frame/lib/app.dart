@@ -2,10 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:frame/app/app_page.dart';
-import 'package:frame/login/login_page.dart';
-import 'package:frame/utils/notifications.dart';
 import 'package:utils/utils.dart';
+
+import 'app_frame.dart';
+import 'login_page.dart';
+import 'notifications.dart';
 
 // ignore: public_member_api_docs
 class App extends StatefulWidget {
@@ -39,8 +40,8 @@ class _AppState extends Interactor<App> {
           title: widget.appName,
           theme: ThemeWidget.of(context).theme,
           routes: <String, WidgetBuilder>{
-            '/': (context) => AppPage(),
-            '/${Keys.login}': (context) => LoginPageWrapper(),
+            '/': (context) => AppFrame(),
+            '/${Keys.login}': (context) => LoginPage(),
           },
           builder: (context, child) => Scaffold(
             body: ThemeUpdateWidget(

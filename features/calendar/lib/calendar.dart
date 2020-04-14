@@ -1,23 +1,33 @@
 library calendar;
 
-import 'package:calendar/src/calendar_info_card.dart';
-import 'package:calendar/src/calendar_keys.dart';
-import 'package:calendar/src/calendar_loader.dart';
-import 'package:calendar/src/calendar_page.dart';
+import 'package:calendar/src/calendar_events.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'src/calendar_info_card.dart';
+import 'src/calendar_keys.dart';
+import 'src/calendar_loader.dart';
+import 'src/calendar_localizations.dart';
+import 'src/calendar_page.dart';
+
+export 'src/calendar_event_dialog.dart';
 export 'src/calendar_events.dart';
+export 'src/calendar_grid_event.dart';
+export 'src/calendar_grid_item.dart';
 export 'src/calendar_info_card.dart';
+export 'src/calendar_keys.dart';
+export 'src/calendar_list.dart';
 export 'src/calendar_loader.dart';
 export 'src/calendar_localizations.dart';
+export 'src/calendar_model.dart';
 export 'src/calendar_page.dart';
+export 'src/calendar_row.dart';
 
 /// The calendar feature
 class CalendarFeature implements Feature {
   @override
-  final String name = 'Kalender';
+  final String name = CalendarLocalizations.name;
 
   @override
   final String featureKey = CalendarKeys.calendar;
@@ -35,7 +45,10 @@ class CalendarFeature implements Feature {
   final TagsHandler tagsHandler = null;
 
   @override
-  InfoCard getInfoCard(DateTime date) => CalendarInfoCard(date: date);
+  InfoCard getInfoCard(DateTime date, double maxHeight) => CalendarInfoCard(
+        date: date,
+        maxHeight: maxHeight,
+      );
 
   @override
   Widget getPage() => CalendarPage(key: ValueKey(featureKey));
@@ -55,6 +68,11 @@ class CalendarFeature implements Feature {
     }
     return null;
   }
+
+  @override
+  Subscription subscribeToDataUpdates(
+          EventBus eventBus, Function(ChangedEvent) callback) =>
+      eventBus.respond<CalendarUpdateEvent>(callback);
 
   @override
   Duration durationToHomePageDateUpdate() {

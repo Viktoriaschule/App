@@ -8,7 +8,6 @@ import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 import 'aixformation_model.dart';
-import 'aixformation_utils.dart';
 
 // ignore: public_member_api_docs
 class AiXformationPost extends StatefulWidget {
@@ -64,7 +63,8 @@ class _AiXformationPostState extends State<AiXformationPost>
             'footer * {border: 0 !important}',
             'button {background-color: #${_colorToHexString(Theme.of(context).primaryColor)} !important}'
           ],
-          'header, .p-menu, .mh-subheader, .mh-header, .mh-header-nav-mobile, .mh-footer-nav-mobile, .search-form {display: none !important}',
+          '.body.single-post { padding-bottom: 0 !important}',
+          'header, .p-menu, .mh-subheader, .mh-header, .mh-header-nav-mobile, .mh-footer-nav-mobile, .search-form, .s_stk {display: none !important}',
         ]));
       }
     });
@@ -90,11 +90,11 @@ class _AiXformationPostState extends State<AiXformationPost>
           height: double.infinity,
           width: double.infinity,
           child: Center(
-            child: getLoadingPlaceholder(context),
+            child: CustomCircularProgressIndicator(),
           ),
         ),
         appBar: CustomAppBar(
-          title: AiXFormationWidget.of(context).feature.name,
+          title: AiXformationLocalizations.name,
           loadingKeys: const [],
           actions: [
             IconButton(
