@@ -57,13 +57,11 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                           });
                           await Static.tags.syncDevice(
                             context,
-                            FeaturesWidget
-                                .of(context)
-                                .features,
+                            FeaturesWidget.of(context).features,
                           );
                         },
                       ),
-                )
+                    )
                     .toList(),
                 children: const [],
               ),
@@ -72,29 +70,31 @@ class _SettingsPageState extends Interactor<SettingsPage> {
               unsizedChildren: [
                 Container(
                   padding: EdgeInsets.only(left: 15, right: 15),
-                  child: DropdownButton<int>(
-                    isExpanded: true,
-                    value: Static.storage.getInt(Keys.design) ?? 0,
-                    onChanged: (value) {
-                      setState(() {
-                        Static.storage.setInt(Keys.design, value);
-                      });
-                      EventBus.of(context).publish(ThemeChangedEvent());
-                    },
-                    items: const [
-                      DropdownMenuItem<int>(
-                        value: 0,
-                        child: Text(SettingsLocalizations.automatic),
-                      ),
-                      DropdownMenuItem<int>(
-                        value: 1,
-                        child: Text(SettingsLocalizations.light),
-                      ),
-                      DropdownMenuItem<int>(
-                        value: 2,
-                        child: Text(SettingsLocalizations.dark),
-                      ),
-                    ],
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<int>(
+                      isExpanded: true,
+                      value: Static.storage.getInt(Keys.design) ?? 0,
+                      onChanged: (value) {
+                        setState(() {
+                          Static.storage.setInt(Keys.design, value);
+                        });
+                        EventBus.of(context).publish(ThemeChangedEvent());
+                      },
+                      items: const [
+                        DropdownMenuItem<int>(
+                          value: 0,
+                          child: Text(SettingsLocalizations.automatic),
+                        ),
+                        DropdownMenuItem<int>(
+                          value: 1,
+                          child: Text(SettingsLocalizations.light),
+                        ),
+                        DropdownMenuItem<int>(
+                          value: 2,
+                          child: Text(SettingsLocalizations.dark),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -110,8 +110,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                     Static.tags.clear();
                     Static.updates.clear();
                     Static.subjects.clear();
-                    FeaturesWidget
-                        .of(context)
+                    FeaturesWidget.of(context)
                         .features
                         .forEach((f) => f.loader?.clear());
                     Static.storage.getKeys().forEach(Static.storage.remove);
