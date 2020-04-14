@@ -14,32 +14,37 @@ class CalendarGridEvent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => InkWell(
-    onTap: () {
-      showDialog(
-        context: context,
-        builder: (context) => CalendarEventDialog(
-          events: [event],
-        ),
-      );
-    },
-    child: Material(
-      elevation: 1,
-      child: Container(
-        padding: EdgeInsets.all(2.5),
-        decoration: BoxDecoration(
-          color: Colors.green.shade100,
-          border: Border.all(color: Colors.green.shade500),
-        ),
-        child: Text(
-          event.name,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-          style: TextStyle(
-            fontSize: 12,
-            color: darkColor,
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (context) => CalendarEventDialog(
+              events: [event],
+            ),
+          );
+        },
+        child: Material(
+          elevation: 1,
+          child: Card(
+            margin: EdgeInsets.all(0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(1.5),
+              ),
+            ),
+            color: Theme.of(context).accentColor,
+            child: Padding(
+              padding: const EdgeInsets.all(3),
+              child: Text(
+                event.name,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: darkColor,
+                ),
+              ),
+            ),
           ),
         ),
-      ),
-    ),
-  );
+      );
 }

@@ -7,7 +7,7 @@ class Calendar {
   // ignore: public_member_api_docs
   Calendar({@required this.years, @required this.events});
 
-  /// Cerates the calendar from json map
+  /// Creates the calendar from json map
   factory Calendar.fromJson(Map<String, dynamic> json) => Calendar(
       years: json['years'].cast<int>().toList(),
       events: json['data']
@@ -69,21 +69,28 @@ class CalendarEvent {
     final _dateFormat = DateFormat.yMMMMd('de');
     final _dateTimeFormat = DateFormat.yMMMMd('de').add_Hm();
     var dateStr = '';
+    // Show start time if the time is not 00:00
     if (start.hour != 0 || start.minute != 0) {
       dateStr = _dateTimeFormat.format(start);
     } else {
       dateStr = _dateFormat.format(start);
     }
-    if (DateTime(
-          start.year,
-          start.month,
-          start.day,
-        ).add(Duration(days: 1)).subtract(Duration(hours: 1)) !=
-        end) {
-      dateStr += ' - ';
+
+    // Show the end date if it is not 00:00 on the same day
+    if (end.hour != 0 || end.minute != 0 || end.day != start.day) {
+      // Show a time if it is not 00:000
       if (end.hour != 0 || end.minute != 0) {
+        dateStr += ' - ';
         dateStr += _dateTimeFormat.format(end);
-      } else {
+      }
+      // Show a day span without double month and year
+      else if (start.month == end.month && start.year == end.year) {
+        final dString = dateStr.split(' ')..insert(1, ' - ${end.day}.');
+        dateStr = dString.join(' ');
+      }
+      // Show the whole end date
+      else {
+        dateStr += ' - ';
         dateStr += _dateFormat.format(end);
       }
     }
