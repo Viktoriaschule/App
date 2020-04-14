@@ -91,21 +91,12 @@ class _CalendarGridItemState extends State<CalendarGridItem> {
             widget.date.day.toString(),
             style: TextStyle(
               color: _isWeekend()
-                  ? ThemeWidget
-                  .of(context)
-                  .brightness == Brightness.light
                   ? Colors.red
-                  : Colors.red.withOpacity(0.5)
                   : !widget.main
-                  ? ThemeWidget
-                  .of(context)
-                  .textColor
-                  .withOpacity(0.5)
-                  : _isToday()
-                  ? Colors.blue
-                  : ThemeWidget
-                  .of(context)
-                  .textColor,
+                      ? ThemeWidget.of(context).textColor.withOpacity(0.5)
+                      : _isToday()
+                          ? Colors.blue
+                          : ThemeWidget.of(context).textColor,
               fontWeight: widget.main ? null : FontWeight.w100,
             ),
           ),
