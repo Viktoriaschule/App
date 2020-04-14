@@ -74,7 +74,7 @@ class _CustomGridState extends State<CustomGrid>
 
   @override
   void dispose() {
-    if (widget.type == CustomGridType.tabs) {
+    if (widget.type == CustomGridType.tabs && _tabController != null) {
       _tabController.dispose();
     }
     super.dispose();
