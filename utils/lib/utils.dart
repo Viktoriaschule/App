@@ -131,7 +131,7 @@ Map<int, String> months = {
   1: 'Februar',
   2: 'März',
   3: 'April',
-  4: 'Main',
+  4: 'Mai',
   5: 'Juni',
   6: 'Juli',
   7: 'August',
