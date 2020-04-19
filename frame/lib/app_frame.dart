@@ -60,14 +60,16 @@ class _AppFrameState extends Interactor<AppFrame>
   Future<StatusCode> _fetchData({
     bool force = false,
   }) async {
-    final result = await Static.tags
-        .loadOnline(context, force: true, showLoginOnWrongCredentials: false);
-    if (result == StatusCode.unauthorized) {
+    // Check all updates (If there is something new to update)
+    final response =
+        await Static.updates.fetch(context, showLoginOnWrongCredentials: false);
+
+    if (response.statusCode == StatusCode.unauthorized) {
       await _launchLogin();
       // Do not inform the user about an unauthorized error,
       // because the login screen already tells enough
       return StatusCode.success;
-    } else if (result == StatusCode.success) {
+    } else if (response.statusCode == StatusCode.success) {
       // First sync the tags
       await Static.tags.syncDevice(
         context,
@@ -78,11 +80,7 @@ class _AppFrameState extends Interactor<AppFrame>
         FeaturesWidget.of(context).features,
       );
 
-      // Then check all updates (If there is something new to update)
-      final response = await Static.updates.fetch(context);
-      if (response.statusCode != StatusCode.success) {
-        return response.statusCode;
-      }
+      // Get the updates data
       final fetchedUpdates = response.data;
       if (fetchedUpdates == null) {
         return StatusCode.failed;
@@ -102,7 +100,7 @@ class _AppFrameState extends Interactor<AppFrame>
         newUpdates: fetchedUpdates,
       );
     }
-    return result;
+    return response.statusCode;
   }
 
   Future<StatusCode> _loadData({
