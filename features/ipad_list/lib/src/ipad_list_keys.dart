@@ -12,4 +12,7 @@ class IPadListKeys extends FeatureKeys {
   ///
   /// If the index is negative, the sort direction is inversed
   static const iPadSortMethod = 'ipad_sort_method';
+
+  // ignore: public_member_api_docs
+  static const chartType = 'ipad_list_chart_type';
 }

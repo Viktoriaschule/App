@@ -4,6 +4,9 @@ class IPadListLocalizations {
   static const name = 'iPad Liste';
 
   // ignore: public_member_api_docs
+  static const all = 'Alle';
+
+  // ignore: public_member_api_docs
   static const noIPads = 'Keine iPads';
 
   // ignore: public_member_api_docs
@@ -26,4 +29,13 @@ class IPadListLocalizations {
 
   // ignore: public_member_api_docs
   static const teacher = 'Lehrer';
+
+  // ignore: public_member_api_docs
+  static const stats = 'Statistik';
+
+  // ignore: public_member_api_docs
+  static const statsBattery = 'Akkuverlauf';
+
+  // ignore: public_member_api_docs
+  static const statsUpdateTime = 'Aktualisierungszeiten';
 }

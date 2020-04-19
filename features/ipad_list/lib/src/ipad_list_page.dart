@@ -5,11 +5,13 @@ import 'package:ipad_list/src/ipad_list_group.dart';
 import 'package:ipad_list/src/ipad_list_keys.dart';
 import 'package:ipad_list/src/ipad_list_localizations.dart';
 import 'package:ipad_list/src/ipad_list_model.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 import 'ipad_list_events.dart';
 import 'ipad_list_row.dart';
+import 'ipad_list_stats_page.dart';
 
 // ignore: public_member_api_docs
 class IPadListPage extends StatefulWidget {
@@ -71,6 +73,24 @@ class _IPadListPageState extends Interactor<IPadListPage>
         CustomAppBar(
           title: widget.groupName ?? IPadListLocalizations.name,
           sliver: true,
+          actions: [
+            if (devices.isNotEmpty)
+              IconButton(
+                icon: Icon(MdiIcons.chartLine),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => IPadListStatsPage(
+                        groupName: widget.groupName != null
+                            ? widget.groupName.split(' ')[1]
+                            : IPadListLocalizations.all,
+                        iPads: devices,
+                      ),
+                    ),
+                  );
+                },
+              )
+          ],
           loadingKeys: const [
             IPadListKeys.iPadList,
             IPadListKeys.iPadBatteryEntries
