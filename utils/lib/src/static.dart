@@ -1,8 +1,8 @@
+import 'loading/subjects_loader.dart';
+import 'loading/tags_loader.dart';
+import 'loading/updates.dart';
 import 'plugins/firebase/firebase.dart';
 import 'plugins/storage/storage.dart';
-import 'subjects_loader.dart';
-import 'tags_loader.dart';
-import 'updates.dart';
 import 'user_model.dart';
 
 /// Static class

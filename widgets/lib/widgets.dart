@@ -1,5 +1,6 @@
 library widgets;
 
+export 'src/battery_indicator.dart';
 export 'src/custom_app_bar.dart';
 export 'src/custom_bottom_navigation.dart';
 export 'src/custom_button.dart';

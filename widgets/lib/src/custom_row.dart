@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -22,21 +23,22 @@ class CustomRow extends PreferredSize {
     this.titleAlignment,
     this.titleOverflow,
     this.splitColor,
-    this.showSplit,
+    this.showSplit = true,
     this.heroTag,
     this.hasMargin = true,
   });
 
-  // ignore: public_member_api_docs
+  /// The widget left of the split
   final Widget leading;
 
-  // ignore: public_member_api_docs
+  /// The row title in the [titleColor]
+  /// and with [titleFontWeight], [titleOverflow] and [titleAlignment]
   final String title;
 
-  // ignore: public_member_api_docs
+  /// The widget directly below the title
   final Widget subtitle;
 
-  // ignore: public_member_api_docs
+  /// The widget on the right end of the row
   final Widget last;
 
   // ignore: public_member_api_docs
@@ -54,7 +56,7 @@ class CustomRow extends PreferredSize {
   // ignore: public_member_api_docs
   final Color splitColor;
 
-  // ignore: public_member_api_docs
+  /// Whether the vertical split between leading and the rest should be shown
   final bool showSplit;
 
   // ignore: public_member_api_docs
@@ -68,9 +70,10 @@ class CustomRow extends PreferredSize {
 
   @override
   Widget build(BuildContext context) => Container(
-        height: customRowHeight - 20,
-        margin: hasMargin ? EdgeInsets.all(customRowVerticalMargin / 2) : null,
-        child: Row(
+    height: customRowHeight - 20,
+    margin: hasMargin ? EdgeInsets.all(customRowVerticalMargin / 2) : null,
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (leading != null)
               Container(
@@ -82,34 +85,34 @@ class CustomRow extends PreferredSize {
             if (showSplit ?? true)
               Container(
                 height: customRowHeight - 26,
-                width: 2.5,
-                margin: EdgeInsets.only(
-                  right: 5,
-                ),
-                color: splitColor ?? Colors.transparent,
-              ),
-            Expanded(
-              flex: 1,
-              child: Column(
-                crossAxisAlignment: titleAlignment ?? CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (title != null)
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: titleFontWeight,
-                        color: titleColor ?? Theme.of(context).accentColor,
-                      ),
-                      overflow: titleOverflow ?? TextOverflow.ellipsis,
-                    ),
-                  if (subtitle != null) subtitle,
-                ],
-              ),
+            width: 2.5,
+            margin: EdgeInsets.only(
+              right: 5,
             ),
-            if (last != null) last,
-          ],
+            color: splitColor ?? Colors.transparent,
+          ),
+        Expanded(
+          flex: 1,
+          child: Column(
+            crossAxisAlignment: titleAlignment ?? CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (title != null)
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: titleFontWeight,
+                    color: titleColor ?? Theme.of(context).accentColor,
+                  ),
+                  overflow: titleOverflow ?? TextOverflow.ellipsis,
+                ),
+              if (subtitle != null) subtitle,
+            ],
+          ),
         ),
-      );
+        if (last != null) last,
+      ],
+    ),
+  );
 }

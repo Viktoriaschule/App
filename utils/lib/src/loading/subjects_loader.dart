@@ -1,7 +1,7 @@
-import 'events.dart';
-import 'keys.dart';
+import '../events.dart';
+import '../keys.dart';
+import '../subjects_model.dart';
 import 'loader.dart';
-import 'subjects_model.dart';
 
 /// SubjectsLoader class
 class SubjectsLoader extends Loader<Subjects> {
