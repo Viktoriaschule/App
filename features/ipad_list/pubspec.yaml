@@ -1,4 +1,4 @@
-name: widgets
+name: ipad_list
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -7,10 +7,8 @@ dependencies:
   flutter:
     sdk: flutter
   material_design_icons_flutter:
-  flutter_event_bus:
-  after_layout:
-  cached_network_image:
-  dio:
-  path_provider:
+  charts_flutter:
   utils:
-    path: ../utils
+    path: ../../utils
+  widgets:
+    path: ../../widgets

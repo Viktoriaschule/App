@@ -36,7 +36,10 @@ class Storage extends StorageBase {
       _sharedPreferences.setBool(key, value);
 
   @override
-  dynamic getJSON(String key) => json.decode(getString(key));
+  dynamic getJSON(String key) {
+    final raw = getString(key);
+    return raw != null ? json.decode(raw) : null;
+  }
 
   @override
   // ignore: type_annotate_public_apis

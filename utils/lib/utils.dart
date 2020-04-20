@@ -9,8 +9,12 @@ export 'src/events.dart';
 export 'src/feature_utils/feature.dart';
 export 'src/info_card_utils.dart';
 export 'src/keys.dart';
-export 'src/loader.dart';
-export 'src/loading_state.dart';
+export 'src/loading/loader.dart';
+export 'src/loading/loading_state.dart';
+export 'src/loading/tags_loader.dart';
+export 'src/loading/tags_model.dart';
+export 'src/loading/updates.dart';
+export 'src/loading/updates_model.dart';
 export 'src/localizations.dart';
 export 'src/plugins/firebase/firebase.dart';
 export 'src/plugins/platform/platform.dart';
@@ -18,16 +22,28 @@ export 'src/plugins/pwa/pwa.dart';
 export 'src/plugins/storage/storage.dart';
 export 'src/screen_sizes.dart';
 export 'src/static.dart';
-export 'src/tags_loader.dart';
-export 'src/tags_model.dart';
 export 'src/theme.dart';
 export 'src/times.dart';
-export 'src/updates.dart';
-export 'src/updates_model.dart';
 export 'src/user_model.dart';
 
 // ignore: public_member_api_docs
-const String viktoriaAppBaseURL = 'https://api.app.vs-ac.de';
+enum BaseUrl {
+  // ignore: public_member_api_docs
+  viktoriaApp,
+  // ignore: public_member_api_docs
+  viktoriaManagement,
+}
+
+const _baseUrls = [
+  'https://api.app.vs-ac.de',
+  'https://api.management.vs-ac.de',
+];
+
+// ignore: public_member_api_docs
+extension BaseUrlExtension on BaseUrl {
+  /// Returns the url to the base
+  String get url => _baseUrls[index];
+}
 
 /// Http status codes
 enum StatusCode {

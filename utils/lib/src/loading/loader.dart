@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:utils/utils.dart';
 
-import 'static.dart';
+import '../static.dart';
 import 'updates_model.dart';
 
 // ignore: public_member_api_docs
@@ -39,6 +39,9 @@ abstract class Loader<LoaderType> {
 
   /// If the loader must be updated
   bool get forceUpdate => false;
+
+  /// The base url for all request
+  BaseUrl get baseUrl => BaseUrl.viktoriaApp;
 
   /// The raw downloaded json string
   String _rawData;
@@ -158,6 +161,8 @@ abstract class Loader<LoaderType> {
       return LoaderResponse(statusCode: StatusCode.success);
     }
 
+    final start = DateTime.now();
+
     final loadingStates = context != null ? LoadingState.of(context) : null;
     final eventBus = context != null ? EventBus.of(context) : null;
 
@@ -189,12 +194,12 @@ abstract class Loader<LoaderType> {
       Response response;
       if (alwaysPost || post) {
         response = await dio.post(
-          '$viktoriaAppBaseURL/$key',
+          '${baseUrl.url}/$key',
           data: body ?? postBody,
         );
       } else {
         response = await dio.get(
-          '$viktoriaAppBaseURL/$key',
+          '${baseUrl.url}/$key',
         );
       }
       final successfully = response.statusCode == 200;
@@ -236,13 +241,16 @@ abstract class Loader<LoaderType> {
       final status = reduceStatusCodes(statusCodes);
       if (status != StatusCode.success) {
         print(
-            'Did not successfully updated $key: $status (http: ${response
-                .statusCode})');
+            'Did not successfully updated $key: $status (http: ${response.statusCode})');
       }
+      print(
+          'Loaded $key: ${DateTime.now().difference(start).inMilliseconds}ms');
       return LoaderResponse<LoaderType>(data: data, statusCode: status);
     } on DioError catch (e) {
       afterLoad();
       _sendLoadedEvent(loadingStates, eventBus);
+      print(
+          'Failed loading $key: ${DateTime.now().difference(start).inMilliseconds}ms');
       switch (e.type) {
         case DioErrorType.RESPONSE:
           if (e.response.statusCode == 401) {
@@ -270,8 +278,8 @@ abstract class Loader<LoaderType> {
   }
 
   /// Sets the page loading state
-  void _setLoading(LoadingState loadingStates, EventBus eventBus,
-      bool isLoading) {
+  void _setLoading(
+      LoadingState loadingStates, EventBus eventBus, bool isLoading) {
     loadingStates?.setLoading(key, isLoading);
     eventBus?.publish(LoadingStatusChangedEvent(key));
   }

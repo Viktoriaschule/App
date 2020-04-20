@@ -2,12 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 
-import '../utils.dart';
-import 'events.dart';
-import 'keys.dart';
+import '../../utils.dart';
+import '../events.dart';
+import '../keys.dart';
+import '../plugins/platform/platform.dart';
+import '../static.dart';
 import 'loader.dart';
-import 'plugins/platform/platform.dart';
-import 'static.dart';
 import 'tags_model.dart';
 
 /// SubjectsLoader class

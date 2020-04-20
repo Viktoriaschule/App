@@ -134,8 +134,12 @@ class TimetableTagsHandler extends TagsHandler {
       }
     }
 
-    tagsToUpdate['selected'] = selections.map((s) => s.toMap()).toList();
-    tagsToUpdate['exams'] = exams.map((e) => e.toMap()).toList();
+    if (selections.isNotEmpty) {
+      tagsToUpdate['selected'] = selections.map((s) => s.toMap()).toList();
+    }
+    if (exams.isNotEmpty) {
+      tagsToUpdate['exams'] = exams.map((e) => e.toMap()).toList();
+    }
 
     return tagsToUpdate;
   }

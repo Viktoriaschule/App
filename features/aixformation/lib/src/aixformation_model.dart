@@ -84,5 +84,5 @@ class Post {
   final List<String> tags;
 
   // ignore: public_member_api_docs
-  String get imageUrl => '$viktoriaAppBaseURL/aixformation/images/$id';
+  String get imageUrl => '${BaseUrl.viktoriaApp}/aixformation/images/$id';
 }

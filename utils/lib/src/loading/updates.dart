@@ -1,5 +1,5 @@
-import 'events.dart';
-import 'keys.dart';
+import '../events.dart';
+import '../keys.dart';
 import 'loader.dart';
 import 'updates_model.dart';
 
