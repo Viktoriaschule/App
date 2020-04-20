@@ -38,4 +38,13 @@ class IPadListLocalizations {
 
   // ignore: public_member_api_docs
   static const statsUpdateTime = 'Aktualisierungszeiten';
+
+  // ignore: public_member_api_docs
+  static const day = 'Tag';
+
+  // ignore: public_member_api_docs
+  static const week = 'Woche';
+
+  // ignore: public_member_api_docs
+  static const month = 'Monat';
 }

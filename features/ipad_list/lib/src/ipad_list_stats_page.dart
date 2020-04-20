@@ -10,23 +10,6 @@ import 'package:widgets/widgets.dart';
 import 'ipad_list_keys.dart';
 import 'ipad_list_model.dart';
 
-enum _ChartType {
-  /// A chart for the battery history
-  batteryHistory,
-
-  /// A chart to analyse the battery update times
-  updateTime,
-}
-
-const _displayNames = [
-  IPadListLocalizations.statsBattery,
-  IPadListLocalizations.statsUpdateTime
-];
-
-extension on _ChartType {
-  String get displayName => _displayNames[index];
-}
-
 /// A page for ipad statistics like battery history
 class IPadListStatsPage extends StatefulWidget {
   // ignore: public_member_api_docs
@@ -48,26 +31,45 @@ class IPadListStatsPage extends StatefulWidget {
 
 class _IPadListStatsPageState extends State<IPadListStatsPage> {
   BatteryHistory data;
+  _Timespan loadedTimespan;
+  DateTime loadedDate;
 
-  Future loadData(BuildContext context, IPadListLoader loader) async {
+  Future loadData(BuildContext context, IPadListLoader loader, DateTime date,
+      {bool offline = false}) async {
+    if (data == null && !offline) {
+      await loadData(context, loader, date, offline: true);
+    }
     final _data = await loader.batteryHistoryLoader
-        .getBatteryHistory(context, widget.iPads);
+        .getBatteryHistory(context, widget.iPads, date, loadOffline: offline);
+    loadedDate = date;
     if (mounted) {
       setState(() => data = _data);
     }
   }
 
   Widget getBatteryHistoryChart() {
-    final chartData = data.entries.keys.map((id) {
-      final iPad = widget.iPads.where((e) => e.id == id).single;
-      return Series<BatteryEntry, DateTime>(
-        id: iPad.name,
-        displayName: iPad.name,
-        domainFn: (entry, _) => entry.timestamp,
-        measureFn: (entry, _) => entry.level / 100,
-        data: data.entries[id],
-      );
-    }).toList();
+    final chartData = widget.iPads
+        .map((iPad) => Series<BatteryEntry, DateTime>(
+              id: iPad.name,
+              displayName: iPad.name,
+              domainFn: (entry, _) => entry.timestamp,
+              measureFn: (entry, _) => entry.level / 100,
+              data: data.entries[iPad.id].isNotEmpty
+                  ? data.entries[iPad.id]
+                  : [
+                      BatteryEntry(
+                        id: iPad.id,
+                        level: iPad.batteryLevel,
+                        timestamp: loadedDate,
+                      ),
+                      BatteryEntry(
+                        id: iPad.id,
+                        level: iPad.batteryLevel,
+                        timestamp: DateTime.now(),
+                      ),
+                    ],
+            ))
+        .toList();
     return TimeSeriesChart(
       chartData,
       animate: true,
@@ -126,7 +128,9 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
       domainAxis: AxisSpec<num>(
         renderSpec: SmallTickRendererSpec(
           labelStyle: TextStyleSpec(
-            color: ThemeWidget.of(context).brightness == Brightness.dark
+            color: ThemeWidget
+                .of(context)
+                .brightness == Brightness.dark
                 ? MaterialPalette.white
                 : MaterialPalette.black,
           ),
@@ -135,15 +139,39 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
     );
   }
 
+  DateTime getOldestDate(_Timespan timespan) {
+    Duration duration;
+
+    switch (timespan) {
+      case _Timespan.day:
+        duration = Duration(hours: 24);
+        break;
+      case _Timespan.week:
+        duration = Duration(days: 7);
+        break;
+      case _Timespan.month:
+        duration = Duration(days: 30);
+        break;
+    }
+
+    return DateTime.now().subtract(duration);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
     final chartType =
-        _ChartType.values[Static.storage.getInt(IPadListKeys.chartType) ?? 0];
-    final loader = IPadListWidget.of(context).feature.loader;
+    _ChartType.values[Static.storage.getInt(IPadListKeys.chartType) ?? 0];
+    final loader = IPadListWidget
+        .of(context)
+        .feature
+        .loader;
+    final timespan = _Timespan
+        .values[Static.storage.getInt(IPadListKeys.chartTimespan) ?? 1];
+    final oldestDate = getOldestDate(timespan);
 
-    if (data == null) {
-      loadData(context, loader);
+    if (data == null || timespan != loadedTimespan) {
+      loadedTimespan = timespan;
+      loadData(context, loader, oldestDate);
     }
 
     Widget chart = Container();
@@ -171,25 +199,57 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
         loadOnline: () => loader.loadOnline(context, force: true),
         child: Column(
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(left: 15, right: 15),
-              child: DropdownButton<_ChartType>(
-                  isExpanded: true,
-                  value: chartType,
-                  onChanged: (chartType) {
-                    setState(() {
-                      Static.storage.setInt(
-                        IPadListKeys.chartType,
-                        chartType.index,
-                      );
-                    });
-                  },
-                  items: _ChartType.values
-                      .map((charType) => DropdownMenuItem<_ChartType>(
-                            value: charType,
-                            child: Text(charType.displayName),
-                          ))
-                      .toList()),
+            Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 70,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: DropdownButton<_ChartType>(
+                          isExpanded: true,
+                          value: chartType,
+                          onChanged: (chartType) {
+                            setState(() {
+                              Static.storage.setInt(
+                                IPadListKeys.chartType,
+                                chartType.index,
+                              );
+                            });
+                          },
+                          items: _ChartType.values
+                              .map((charType) =>
+                              DropdownMenuItem<_ChartType>(
+                                value: charType,
+                                child: Text(charType.displayName),
+                              ))
+                              .toList()),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 30,
+                    child: DropdownButton<_Timespan>(
+                        isExpanded: true,
+                        value: timespan,
+                        onChanged: (timespan) {
+                          setState(() {
+                            Static.storage.setInt(
+                              IPadListKeys.chartTimespan,
+                              timespan.index,
+                            );
+                          });
+                        },
+                        items: _Timespan.values
+                            .map((timespan) =>
+                            DropdownMenuItem<_Timespan>(
+                              value: timespan,
+                              child: Text(timespan.displayName),
+                            ))
+                            .toList()),
+                  ),
+                ],
+              ),
             ),
             Container(
               height: 500,
@@ -201,4 +261,33 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
       ),
     );
   }
+}
+
+enum _ChartType {
+  /// A chart for the battery history
+  batteryHistory,
+
+  /// A chart to analyse the battery update times
+  updateTime,
+}
+
+const _displayNames = [
+  IPadListLocalizations.statsBattery,
+  IPadListLocalizations.statsUpdateTime
+];
+
+extension on _ChartType {
+  String get displayName => _displayNames[index];
+}
+
+enum _Timespan { day, week, month }
+
+const _displayNamesTimespan = [
+  IPadListLocalizations.day,
+  IPadListLocalizations.week,
+  IPadListLocalizations.month
+];
+
+extension on _Timespan {
+  String get displayName => _displayNamesTimespan[index];
 }

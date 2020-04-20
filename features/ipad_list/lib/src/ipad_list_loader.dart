@@ -79,26 +79,27 @@ class _BatteryHistoryLoader extends Loader<BatteryHistory> {
 
   /// Returns the battery history for the given devices
   Future<BatteryHistory> getBatteryHistory(
-      BuildContext context, List<IPad> devices,
-      {bool forceReload = false}) async {
-    List<String> ids = devices.map((d) => d.id).toList();
+      BuildContext context, List<IPad> devices, DateTime date,
+      {bool loadOffline = false}) async {
+    final ids = devices.map((d) => d.id).toList();
 
-    if (!forceReload) {
-      ids =
-          ids.where((id) => !_batteryHistory.entries.containsKey(id)).toList();
-    }
-
-    if (ids.isNotEmpty) {
+    if (ids.isNotEmpty && !loadOffline) {
       await loadOnline(
         context,
         force: true,
-        body: {'ids': ids},
+        body: {
+          'ids': ids,
+          'date': date.toUtc().toIso8601String(),
+        },
       );
     }
 
     final history = BatteryHistory(entries: {});
     for (final device in devices) {
-      history.entries[device.id] = _batteryHistory.entries[device.id] ?? [];
+      history.entries[device.id] = _batteryHistory.entries[device.id]
+          ?.where((d) => !d.timestamp.isBefore(date))
+          ?.toList() ??
+          [];
     }
     return history;
   }

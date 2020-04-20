@@ -15,4 +15,7 @@ class IPadListKeys extends FeatureKeys {
 
   // ignore: public_member_api_docs
   static const chartType = 'ipad_list_chart_type';
+
+  // ignore: public_member_api_docs
+  static const chartTimespan = 'ipad_list_timespan';
 }
