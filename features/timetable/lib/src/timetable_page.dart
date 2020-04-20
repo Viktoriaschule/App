@@ -67,7 +67,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
       body: CustomHero(
         tag: TimetableKeys.timetable,
         child: loader.hasLoadedData &&
-            substitutionPlanFeature.loader.hasLoadedData
+                substitutionPlanFeature.loader.hasLoadedData
             ? CustomGrid(
                 onRefresh: () async {
                   final results = [
@@ -148,10 +148,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                 extraInfoChildren: List.generate(5, (weekday) {
                   final day = _monday.add(Duration(days: weekday));
                   final isSmall =
-                      getScreenSize(MediaQuery
-                          .of(context)
-                          .size
-                          .width) ==
+                      getScreenSize(MediaQuery.of(context).size.width) ==
                           ScreenSize.small;
                   return [
                     if (CafetoriaWidget.of(context) != null &&
@@ -245,7 +242,11 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                                                     .size
                                                     .width) !=
                                             ScreenSize.big,
-                                        keepUnitPadding: false,
+                                        keepUnitPadding: getScreenSize(
+                                                MediaQuery.of(context)
+                                                    .size
+                                                    .width) !=
+                                            ScreenSize.big,
                                       ),
                                     if (substitutions.isEmpty || showNormal)
                                       TimetableRow(
@@ -270,13 +271,17 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                                       ),
                                     if (undefinedSubstitutions.isNotEmpty)
                                       ...getSubstitutionList(
-                                        substitutions
+                                        undefinedSubstitutions
                                             .where((substitution) =>
                                                 substitution.unit ==
                                                 subject.unit)
                                             .toList(),
                                         showUnit: false,
-                                        keepUnitPadding: false,
+                                        keepUnitPadding: getScreenSize(
+                                                MediaQuery.of(context)
+                                                    .size
+                                                    .width) !=
+                                            ScreenSize.big,
                                       ),
                                   ]
                                       .map((x) => Container(
