@@ -31,6 +31,9 @@ class IPadListLocalizations {
   static const teacher = 'Lehrer';
 
   // ignore: public_member_api_docs
+  static const student = 'Schüler';
+
+  // ignore: public_member_api_docs
   static const stats = 'Statistik';
 
   // ignore: public_member_api_docs
@@ -47,4 +50,10 @@ class IPadListLocalizations {
 
   // ignore: public_member_api_docs
   static const month = 'Monat';
+
+  // ignore: public_member_api_docs
+  static const isCharging = 'Wird geladen';
+
+  // ignore: public_member_api_docs
+  static const isNotCharging = 'Wird nicht geladen';
 }

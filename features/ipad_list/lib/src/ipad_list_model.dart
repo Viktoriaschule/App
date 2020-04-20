@@ -23,23 +23,30 @@ enum SortMethod {
   isCharging,
   // ignore: public_member_api_docs
   groupID,
-  // ignore: public_member_api_docs
-  groupIndex
 }
 
-List<String> get _displayNames => [
-      IPadListLocalizations.iPadName,
-      IPadListLocalizations.iPadType,
-      IPadListLocalizations.iPadBatteryLevel,
-      IPadListLocalizations.iPadIsCharging,
-      IPadListLocalizations.iPadGroup,
-      IPadListLocalizations.iPadGroupIndex,
-    ];
+const _displayNames = [
+  IPadListLocalizations.iPadName,
+  IPadListLocalizations.iPadType,
+  IPadListLocalizations.iPadBatteryLevel,
+  IPadListLocalizations.iPadIsCharging,
+  IPadListLocalizations.iPadGroup,
+  IPadListLocalizations.iPadGroupIndex,
+];
+
+const _groupedMethods = [
+  SortMethod.groupID,
+  SortMethod.isCharging,
+  SortMethod.deviceType,
+];
 
 /// Adds a to string method
 extension SortMethodExtension on SortMethod {
   /// Returns the display name of one of the sort method values
   String get displayName => _displayNames[index];
+
+  /// Whether the sort method is grouped or not
+  bool get isGrouped => _groupedMethods.contains(this);
 }
 
 /// All loaded data for the ipad list
@@ -71,14 +78,16 @@ class Devices {
       iPads..sort((d1, d2) => d1.compareTo(sortMethod, d2));
 
   /// Returns the devices grouped by the groupId
-  List<List<IPad>> getGroupedList() {
-    final sorted = getSortedList(SortMethod.groupID);
-    final grouped = <int, List<IPad>>{};
+  List<List<IPad>> getGroupedList(SortMethod sortMethod) {
+    final sorted = getSortedList(sortMethod);
+    final grouped = <String, List<IPad>>{};
+
     for (final iPad in sorted) {
-      if (!grouped.containsKey(iPad.groupID)) {
-        grouped[iPad.groupID] = [];
+      final key = iPad.getGroupIndex(sortMethod);
+      if (!grouped.containsKey(key)) {
+        grouped[key] = [];
       }
-      grouped[iPad.groupID].add(iPad);
+      grouped[key].add(iPad);
     }
 
     return grouped.keys.map((key) => grouped[key]).toList();
@@ -131,9 +140,6 @@ class IPad {
       case SortMethod.groupID:
         result = groupID.compareTo(device.groupID);
         break;
-      case SortMethod.groupIndex:
-        result = groupIndex.compareTo(device.groupIndex);
-        break;
     }
 
     // In the case of equals levels, compare with another method
@@ -150,10 +156,7 @@ class IPad {
           newMethod = SortMethod.groupID;
           break;
         case SortMethod.groupID:
-          newMethod = SortMethod.groupIndex;
-          break;
-        case SortMethod.groupIndex:
-          newMethod = SortMethod.batteryLevel;
+          newMethod = SortMethod.name;
           break;
         case SortMethod.deviceType:
           newMethod = SortMethod.batteryLevel;
@@ -169,6 +172,20 @@ class IPad {
       }
     }
     return result;
+  }
+
+  /// Returns the value to index the groups
+  String getGroupIndex(SortMethod sortMethod) {
+    switch (sortMethod) {
+      case SortMethod.groupID:
+        return groupID.toString();
+      case SortMethod.isCharging:
+        return isCharging.toString();
+      case SortMethod.deviceType:
+        return deviceType.index.toString();
+      default:
+        return null;
+    }
   }
 
   /// The device identifier

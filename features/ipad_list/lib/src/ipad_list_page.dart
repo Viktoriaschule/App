@@ -17,7 +17,7 @@ import 'ipad_list_stats_page.dart';
 class IPadListPage extends StatefulWidget {
   // ignore: public_member_api_docs
   const IPadListPage(
-      {this.devices, this.groupName, this.enableGroups = true, Key key})
+      {this.devices, this.groupName, this.disabledSortMethods, Key key})
       : super(key: key);
 
   /// An optional selection of devices
@@ -29,7 +29,7 @@ class IPadListPage extends StatefulWidget {
   final String groupName;
 
   /// If the sorted by groups method is enabled
-  final bool enableGroups;
+  final List<SortMethod> disabledSortMethods;
 
   @override
   _IPadListPageState createState() => _IPadListPageState();
@@ -43,26 +43,33 @@ class _IPadListPageState extends Interactor<IPadListPage>
 
   @override
   Widget build(BuildContext context) {
-    final keyPrefix = widget.groupName != null ? '${widget.groupName}-' : '';
+    // Store the sort method for each page int the correct context
+    final keyPrefix = widget.groupName != null
+        ? '${widget.disabledSortMethods?.join('-') ?? ''}-${widget.groupName}-'
+        : '';
     final sortIndex =
-        Static.storage.getInt(keyPrefix + IPadListKeys.iPadSortMethod) ?? 1;
+        Static.storage.getInt(keyPrefix + IPadListKeys.iPadSortMethod) ??
+            (widget.groupName == null ? 5 : 1);
     final sortDirection = sortIndex > 0;
     final sortMethod = SortMethod.values[sortIndex.abs() - 1];
     final loader = IPadListWidget.of(context).feature.loader;
 
     List<List<IPad>> groups = [];
     List<IPad> devices = [];
+    Devices _devices;
     if (widget.devices == null || widget.devices.iPads.isEmpty) {
-      if (loader.hasLoadedData && sortMethod == SortMethod.groupID) {
-        groups = loader.data.getGroupedList();
-      } else if (loader.hasLoadedData) {
-        devices = loader.data.getSortedList(sortMethod);
-      }
+      _devices = loader.data;
     } else {
-      devices = widget.devices.getSortedList(sortMethod);
+      _devices = widget.devices ?? Devices(iPads: []);
     }
 
-    final count = (sortMethod != SortMethod.groupID ? devices : groups).length;
+    if (sortMethod.isGrouped) {
+      groups = _devices.getGroupedList(sortMethod);
+    } else {
+      devices = _devices.getSortedList(sortMethod);
+    }
+
+    final count = (sortMethod.isGrouped ? groups : devices).length;
 
     if (!sortDirection) {
       groups = groups.reversed.toList();
@@ -125,8 +132,10 @@ class _IPadListPageState extends Interactor<IPadListPage>
                                     },
                                     items: SortMethod.values
                                         .where((element) =>
-                                            widget.enableGroups ||
-                                            element != SortMethod.groupID)
+                                    widget.disabledSortMethods ==
+                                        null ||
+                                        !widget.disabledSortMethods
+                                            .contains(element))
                                         .map((method) => DropdownMenuItem<int>(
                                               value: method.index,
                                               child: Text(method.displayName),
@@ -158,13 +167,16 @@ class _IPadListPageState extends Interactor<IPadListPage>
                           ],
                         );
                       }
+                      if (sortMethod.isGrouped) {}
                       return SizeLimit(
-                        child: sortMethod != SortMethod.groupID
+                        child: !sortMethod.isGrouped
                             ? IPadRow(iPad: devices[index - 1])
                             : IPadGroupRow(
-                                groupID: groups[index - 1][0].groupID,
-                                iPads: groups[index - 1],
-                              ),
+                          sortMethod: sortMethod,
+                          iPads: groups[index - 1],
+                          disabledSortMethods:
+                          widget.disabledSortMethods ?? [],
+                        ),
                       );
                     }),
               )
