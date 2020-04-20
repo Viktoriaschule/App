@@ -21,7 +21,7 @@ Future checkDir(String path) async {
           'flutter',
           [
             'pub',
-            'get',
+            'upgrade',
           ],
           workingDirectory: dir.path,
           verbose: true,
