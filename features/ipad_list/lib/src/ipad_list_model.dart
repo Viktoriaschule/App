@@ -52,13 +52,13 @@ extension SortMethodExtension on SortMethod {
 /// All loaded data for the ipad list
 class IPadList {
   // ignore: public_member_api_docs
-  IPadList({this.devices, this.batteryEntries});
+  IPadList({this.devices, this.historyEntries});
 
   /// The devices overview
   Devices devices;
 
   /// The loading history
-  Map<String, List<BatteryEntry>> batteryEntries;
+  Map<String, List<HistoryEntry>> historyEntries;
 }
 
 /// All school devices in the management system
@@ -97,16 +97,18 @@ class Devices {
 /// One school device
 class IPad {
   // ignore: public_member_api_docs
-  IPad({
-    this.id,
-    this.name,
-    this.loggedInUser,
-    this.deviceType,
-    this.batteryLevel,
-    this.isCharging,
-    this.groupID,
-    this.groupIndex,
-  });
+  IPad(
+      {this.id,
+      this.name,
+      this.loggedInUser,
+      this.deviceType,
+      this.batteryLevel,
+      this.isCharging,
+      this.groupID,
+      this.groupIndex,
+      this.lastModified,
+      this.lastConnection,
+      this.status});
 
   /// Creates calendar event from json map
   factory IPad.fromJson(Map<String, dynamic> json) => IPad(
@@ -118,6 +120,9 @@ class IPad {
         isCharging: json['is_charging'],
         groupID: json['device_group'],
         groupIndex: json['device_group_index'],
+        lastModified: DateTime.parse(json['last_modified']),
+        lastConnection: DateTime.parse(json['last_connection']),
+        status: json['status'],
       );
 
   /// Compares the device with the given method to another device
@@ -215,60 +220,102 @@ class IPad {
 
   /// The group index
   final String groupIndex;
+
+  /// When the device was last modified in the relution system
+  final DateTime lastModified;
+
+  /// The last user connection on the device
+  final DateTime lastConnection;
+
+  /// The current device status
+  final String status;
 }
 
 /// The loaded battery history
-class BatteryHistory {
+class DeviceHistory {
   // ignore: public_member_api_docs
-  BatteryHistory({this.entries});
+  DeviceHistory({this.entries});
 
   // ignore: public_member_api_docs
-  factory BatteryHistory.fromJson(Map<String, dynamic> json) => BatteryHistory(
-        entries: json['devices'].map<String, List<BatteryEntry>>(
-          (key, entries) => MapEntry<String, List<BatteryEntry>>(
-            key,
-            entries
-                .map<BatteryEntry>((json) => BatteryEntry.fromJson(json))
-                .toList(),
-          ),
+  factory DeviceHistory.fromJson(Map<String, dynamic> json) =>
+      DeviceHistory(
+        entries: json['devices'].map<String, List<HistoryEntry>>(
+              (key, entries) =>
+              MapEntry<String, List<HistoryEntry>>(
+                key,
+                entries
+                    .map<HistoryEntry>((json) => HistoryEntry.fromJson(json))
+                    .toList(),
+              ),
         ),
       );
 
   /// The loading history
-  Map<String, List<BatteryEntry>> entries;
+  Map<String, List<HistoryEntry>> entries;
 
   /// Returns the json parsable map
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toMap() =>
+      {
         'devices': entries.map((key, value) =>
             MapEntry(key, value.map((e) => e.toMap()).toList())),
       };
 }
 
-/// A battery entry of one device to a specif time
-class BatteryEntry {
+/// A history entry of one device to a specif time
+class HistoryEntry {
   // ignore: public_member_api_docs
-  BatteryEntry({this.id, this.level, this.timestamp});
+  HistoryEntry({
+    this.id,
+    this.level,
+    this.lastModified,
+    this.lastConnection,
+    this.loggedInUser,
+    this.status,
+    this.timestamp,
+  });
 
   // ignore: public_member_api_docs
-  factory BatteryEntry.fromJson(Map<String, dynamic> json) => BatteryEntry(
+  factory HistoryEntry.fromJson(Map<String, dynamic> json) =>
+      HistoryEntry(
         id: json['id'],
         level: json['level'],
+        loggedInUser: json['loggedin_user'],
+        status: json['status'],
+        lastConnection: DateTime.parse(json['last_connection']),
+        lastModified: DateTime.parse(json['modified']),
         timestamp: DateTime.parse(json['timestamp']),
       );
 
   /// The device id
-  String id;
+  final String id;
 
   /// The battery level in percent (0 to 100)
-  int level;
+  final int level;
+
+  /// The last device modification of this history entry
+  final DateTime lastModified;
+
+  /// The last user connection on this device
+  final DateTime lastConnection;
+
+  /// The logged in user to this entry time
+  final String loggedInUser;
+
+  /// The current status to the time of the entry
+  final String status;
 
   /// The timestamp of synchronizing the battery level to the server
-  DateTime timestamp;
+  final DateTime timestamp;
 
   /// Returns the json parsable map
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toMap() =>
+      {
         'id': id,
         'level': level,
+        'loggedin_user': loggedInUser,
+        'status': status,
+        'last_connection': lastConnection.toIso8601String(),
+        'modified': lastModified.toIso8601String(),
         'timestamp': timestamp.toIso8601String(),
       };
 }
