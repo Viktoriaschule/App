@@ -293,7 +293,7 @@ Future main(List<String> arguments) async {
             [
               '    if (\'serviceWorker\' in navigator) {',
               '      window.addEventListener(\'load\', function () {',
-              '        navigator.serviceWorker.register(\'/flutter_service_worker.js\');',
+              '        navigator.serviceWorker.register(\'flutter_service_worker.js\');',
               '      });',
               '    }',
             ].join('\n'),
@@ -304,7 +304,7 @@ Future main(List<String> arguments) async {
               '    }',
               '    if (\'serviceWorker\' in navigator) {',
               '      window.addEventListener(\'load\', function () {',
-              '        navigator.serviceWorker.register(\'/flutter_service_worker.js\');',
+              '        navigator.serviceWorker.register(\'flutter_service_worker.js\');',
               '        const firebaseConfig = {',
               ...firebaseWeb.keys
                   .map((e) => '          $e: \'${firebaseWeb[e]}\','),
