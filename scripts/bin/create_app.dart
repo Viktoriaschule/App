@@ -57,6 +57,8 @@ Future main(List<String> arguments) async {
       'name': name,
       'fullName': fullName,
       'version': version,
+      'description': 'An app for the Viktoriaschule Aachen',
+      'author': 'vsa-dev',
       'package': package,
       'features': features.map((e) => e.toMap).toList(),
     };
@@ -124,6 +126,17 @@ Future main(List<String> arguments) async {
         ['init'],
         workingDirectory: appDir.path,
       );
+      final hoverConfigFile = File('${appDir.path}/go/hover.yaml');
+      String hoverConfig = hoverConfigFile.readAsStringSync();
+      hoverConfig = hoverConfig.replaceAll(
+        '#application-name: "$name"',
+        'application-name: "$fullName"',
+      );
+      hoverConfig = hoverConfig.replaceAll(
+        'license: ""',
+        'license: "GPL-3.0-or-later"',
+      );
+      hoverConfigFile.writeAsStringSync(hoverConfig);
       final plugins = [
         'shared_preferences',
         'package_info',
@@ -140,6 +153,7 @@ Future main(List<String> arguments) async {
         'linux-deb',
         'linux-pkg',
         'linux-rpm',
+        'linux-appimage',
         'windows-msi',
         'darwin-dmg',
         'darwin-pkg',
