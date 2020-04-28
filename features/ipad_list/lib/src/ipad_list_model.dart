@@ -120,8 +120,8 @@ class IPad {
         isCharging: json['is_charging'],
         groupID: json['device_group'],
         groupIndex: json['device_group_index'],
-        lastModified: DateTime.parse(json['last_modified']),
-        lastConnection: DateTime.parse(json['last_connection']),
+        lastModified: DateTime.parse(json['last_modified']).toLocal(),
+        lastConnection: DateTime.parse(json['last_connection']).toLocal(),
         status: json['status'],
       );
 
@@ -268,7 +268,6 @@ class HistoryEntry {
     this.id,
     this.level,
     this.lastModified,
-    this.lastConnection,
     this.loggedInUser,
     this.status,
     this.timestamp,
@@ -281,9 +280,8 @@ class HistoryEntry {
         level: json['level'],
         loggedInUser: json['loggedin_user'],
         status: json['status'],
-        lastConnection: DateTime.parse(json['last_connection']),
-        lastModified: DateTime.parse(json['modified']),
-        timestamp: DateTime.parse(json['timestamp']),
+        lastModified: DateTime.parse(json['modified']).toLocal(),
+        timestamp: DateTime.parse(json['timestamp']).toLocal(),
       );
 
   /// The device id
@@ -294,9 +292,6 @@ class HistoryEntry {
 
   /// The last device modification of this history entry
   final DateTime lastModified;
-
-  /// The last user connection on this device
-  final DateTime lastConnection;
 
   /// The logged in user to this entry time
   final String loggedInUser;
@@ -314,7 +309,6 @@ class HistoryEntry {
         'level': level,
         'loggedin_user': loggedInUser,
         'status': status,
-        'last_connection': lastConnection.toIso8601String(),
         'modified': lastModified.toIso8601String(),
         'timestamp': timestamp.toIso8601String(),
       };

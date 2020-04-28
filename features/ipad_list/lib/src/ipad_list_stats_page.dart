@@ -52,7 +52,7 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
         .map((iPad) => Series<HistoryEntry, DateTime>(
               id: iPad.name,
               displayName: iPad.name,
-              domainFn: (entry, _) => entry.timestamp,
+              domainFn: (entry, _) => entry.lastModified,
               measureFn: (entry, _) => entry.level / 100,
               data: [
                 if (data.entries[iPad.id].isNotEmpty)
@@ -61,12 +61,12 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
                   HistoryEntry(
                     id: iPad.id,
                     level: iPad.batteryLevel,
-                    timestamp: loadedDate,
+                    lastModified: loadedDate,
                   ),
                 HistoryEntry(
                   id: iPad.id,
                   level: iPad.batteryLevel,
-                  timestamp: DateTime.now(),
+                  lastModified: DateTime.now(),
                 ),
               ],
             ))
@@ -108,31 +108,38 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
     // Count all updates per hour
     data.entries.forEach((id, entries) {
       for (final entry in entries) {
-        hours[entry.timestamp.hour]++;
+        hours[entry.lastModified.hour]++;
       }
     });
 
     final chartData = [
-      Series<int, int>(
+      Series<int, String>(
         id: IPadListLocalizations.statsUpdateTime,
         displayName: IPadListLocalizations.statsUpdateTime,
         measureFn: (count, _) => count,
-        domainFn: (_, index) => index + 1,
+        domainFn: (_, index) => index.toString(),
         data: hours,
       )
     ];
 
-    return LineChart(
+    return BarChart(
       chartData,
       animate: true,
       primaryMeasureAxis: AxisSpec<num>(
-          renderSpec: SmallTickRendererSpec(
-              labelStyle: TextStyleSpec(
-        color: ThemeWidget.of(context).brightness == Brightness.dark
-            ? MaterialPalette.white
-            : MaterialPalette.black,
-      ))),
-      domainAxis: AxisSpec<num>(
+        renderSpec: SmallTickRendererSpec(
+          labelStyle: TextStyleSpec(
+            color: ThemeWidget
+                .of(context)
+                .brightness == Brightness.dark
+                ? MaterialPalette.white
+                : MaterialPalette.black,
+          ),
+        ),
+      ),
+      domainAxis: AxisSpec<String>(
+        tickProviderSpec: BasicOrdinalTickProviderSpec(
+
+        ),
         renderSpec: SmallTickRendererSpec(
           labelStyle: TextStyleSpec(
             color: ThemeWidget

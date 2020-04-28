@@ -17,6 +17,9 @@ class IPadListLoader extends Loader<Devices> {
   BaseUrl get baseUrl => BaseUrl.viktoriaManagement;
 
   @override
+  bool get forceUpdate => true;
+
+  @override
   StatusCode loadOffline(BuildContext context) => reduceStatusCodes([
         deviceHistoryLoader.loadOffline(context),
         super.loadOffline(context),
@@ -97,9 +100,11 @@ class _HistoryLoader extends Loader<DeviceHistory> {
     final history = DeviceHistory(entries: {});
     for (final device in devices) {
       history.entries[device.id] = _history.entries[device.id]
-          ?.where((d) => !d.timestamp.isBefore(date))
+          ?.where((d) => !d.lastModified.isBefore(date))
           ?.toList() ??
           [];
+      history.entries[device.id]
+          .sort((d1, d2) => d1.lastModified.compareTo(d2.lastModified));
     }
     return history;
   }
