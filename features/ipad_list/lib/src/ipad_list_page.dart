@@ -100,7 +100,7 @@ class _IPadListPageState extends Interactor<IPadListPage>
           ],
           loadingKeys: const [
             IPadListKeys.iPadList,
-            IPadListKeys.iPadBatteryEntries
+            IPadListKeys.iPadHistoryEntries
           ],
         ),
       ],

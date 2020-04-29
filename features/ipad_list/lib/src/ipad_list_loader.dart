@@ -17,24 +17,27 @@ class IPadListLoader extends Loader<Devices> {
   BaseUrl get baseUrl => BaseUrl.viktoriaManagement;
 
   @override
+  bool get forceUpdate => true;
+
+  @override
   StatusCode loadOffline(BuildContext context) => reduceStatusCodes([
-        batteryHistoryLoader.loadOffline(context),
+        deviceHistoryLoader.loadOffline(context),
         super.loadOffline(context),
       ]);
 
   /// The loader to manage the battery history data
-  final _BatteryHistoryLoader batteryHistoryLoader = _BatteryHistoryLoader();
+  final _HistoryLoader deviceHistoryLoader = _HistoryLoader();
 }
 
-/// The battery history loader
+/// The history loader
 ///
 /// This loads always the data for the given ids, but caches all requests, so
-/// each loaded id have to be only loaded once and also can be used offline
-class _BatteryHistoryLoader extends Loader<BatteryHistory> {
+/// each loaded id can be used offline and as preview for the next time
+class _HistoryLoader extends Loader<DeviceHistory> {
   // ignore: public_member_api_docs
-  _BatteryHistoryLoader()
+  _HistoryLoader()
       : super(
-          IPadListKeys.iPadBatteryEntries,
+          IPadListKeys.iPadHistoryEntries,
           IPadListUpdateEvent(),
         );
 
@@ -45,20 +48,20 @@ class _BatteryHistoryLoader extends Loader<BatteryHistory> {
   BaseUrl get baseUrl => BaseUrl.viktoriaManagement;
 
   @override
-  BatteryHistory get data => _batteryHistory;
+  DeviceHistory get data => _history;
 
-  final BatteryHistory _batteryHistory = BatteryHistory();
+  final DeviceHistory _history = DeviceHistory();
 
   @override
   // ignore: type_annotate_public_apis, always_declare_return_types
-  fromJSON(json) => BatteryHistory.fromJson(json);
+  fromJSON(json) => DeviceHistory.fromJson(json);
 
   @override
   StatusCode loadOffline(BuildContext context) {
     final status = super.loadOffline(context);
     // Save the parsed data in an extra attribute, because after each load online call,
     // the parsed data will be override by the new data
-    _batteryHistory.entries = parsedData?.entries ?? {};
+    _history.entries = parsedData?.entries ?? {};
     return status;
   }
 
@@ -70,16 +73,16 @@ class _BatteryHistoryLoader extends Loader<BatteryHistory> {
     // Add the loaded entries to the old entries
     if (oldData != null) {
       parsedData.entries.forEach((key, value) {
-        _batteryHistory.entries[key] = value;
+        _history.entries[key] = value;
       });
     }
 
-    Static.storage.setJSON(key, _batteryHistory.toMap());
+    Static.storage.setJSON(key, _history.toMap());
   }
 
   /// Returns the battery history for the given devices
-  Future<BatteryHistory> getBatteryHistory(
-      BuildContext context, List<IPad> devices, DateTime date,
+  Future<DeviceHistory> getDeviceHistory(BuildContext context,
+      List<IPad> devices, DateTime date,
       {bool loadOffline = false}) async {
     final ids = devices.map((d) => d.id).toList();
 
@@ -94,12 +97,14 @@ class _BatteryHistoryLoader extends Loader<BatteryHistory> {
       );
     }
 
-    final history = BatteryHistory(entries: {});
+    final history = DeviceHistory(entries: {});
     for (final device in devices) {
-      history.entries[device.id] = _batteryHistory.entries[device.id]
-          ?.where((d) => !d.timestamp.isBefore(date))
+      history.entries[device.id] = _history.entries[device.id]
+          ?.where((d) => !d.lastModified.isBefore(date))
           ?.toList() ??
           [];
+      history.entries[device.id]
+          .sort((d1, d2) => d1.lastModified.compareTo(d2.lastModified));
     }
     return history;
   }

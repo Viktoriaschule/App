@@ -6,7 +6,7 @@ class IPadListKeys extends FeatureKeys {
   static const iPadList = 'ipad_list';
 
   // ignore: public_member_api_docs
-  static const iPadBatteryEntries = 'batteries';
+  static const iPadHistoryEntries = 'history';
 
   /// The sort method is an index starting by one
   ///

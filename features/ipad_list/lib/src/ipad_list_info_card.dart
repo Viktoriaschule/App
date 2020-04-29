@@ -64,7 +64,7 @@ class _IPadListInfoCardState extends InfoCardState<IPadListInfoCard> {
     return ListGroup(
       loadingKeys: const [
         IPadListKeys.iPadList,
-        IPadListKeys.iPadBatteryEntries
+        IPadListKeys.iPadHistoryEntries
       ],
       heroId: IPadListKeys.iPadList,
       title: IPadListLocalizations.name,

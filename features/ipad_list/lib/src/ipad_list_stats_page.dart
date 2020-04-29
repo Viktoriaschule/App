@@ -30,7 +30,7 @@ class IPadListStatsPage extends StatefulWidget {
 }
 
 class _IPadListStatsPageState extends State<IPadListStatsPage> {
-  BatteryHistory data;
+  DeviceHistory data;
   _Timespan loadedTimespan;
   DateTime loadedDate;
 
@@ -39,51 +39,58 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
     if (data == null && !offline) {
       await loadData(context, loader, date, offline: true);
     }
-    final _data = await loader.batteryHistoryLoader
-        .getBatteryHistory(context, widget.iPads, date, loadOffline: offline);
+    final _data = await loader.deviceHistoryLoader
+        .getDeviceHistory(context, widget.iPads, date, loadOffline: offline);
     loadedDate = date;
     if (mounted) {
       setState(() => data = _data);
     }
   }
 
-  Widget getBatteryHistoryChart() {
+  BaseChart getBatteryHistoryChart() {
     final chartData = widget.iPads
-        .map((iPad) => Series<BatteryEntry, DateTime>(
+        .map((iPad) => Series<HistoryEntry, DateTime>(
               id: iPad.name,
               displayName: iPad.name,
-              domainFn: (entry, _) => entry.timestamp,
+              domainFn: (entry, _) => entry.lastModified,
               measureFn: (entry, _) => entry.level / 100,
-              data: data.entries[iPad.id].isNotEmpty
-                  ? data.entries[iPad.id]
-                  : [
-                      BatteryEntry(
-                        id: iPad.id,
-                        level: iPad.batteryLevel,
-                        timestamp: loadedDate,
-                      ),
-                      BatteryEntry(
-                        id: iPad.id,
-                        level: iPad.batteryLevel,
-                        timestamp: DateTime.now(),
-                      ),
-                    ],
+              data: [
+                if (data.entries[iPad.id].isNotEmpty)
+                  ...data.entries[iPad.id]
+                else
+                  HistoryEntry(
+                    id: iPad.id,
+                    level: iPad.batteryLevel,
+                    lastModified: loadedDate,
+                  ),
+                HistoryEntry(
+                  id: iPad.id,
+                  level: iPad.batteryLevel,
+                  lastModified: DateTime.now(),
+                ),
+              ],
             ))
         .toList();
     return TimeSeriesChart(
       chartData,
       animate: true,
       primaryMeasureAxis: PercentAxisSpec(
-          renderSpec: SmallTickRendererSpec(
-              labelStyle: TextStyleSpec(
-        color: ThemeWidget.of(context).brightness == Brightness.dark
-            ? MaterialPalette.white
-            : MaterialPalette.black,
-      ))),
+        renderSpec: SmallTickRendererSpec(
+          labelStyle: TextStyleSpec(
+            color: ThemeWidget
+                .of(context)
+                .brightness == Brightness.dark
+                ? MaterialPalette.white
+                : MaterialPalette.black,
+          ),
+        ),
+      ),
       domainAxis: DateTimeAxisSpec(
         renderSpec: SmallTickRendererSpec(
           labelStyle: TextStyleSpec(
-            color: ThemeWidget.of(context).brightness == Brightness.dark
+            color: ThemeWidget
+                .of(context)
+                .brightness == Brightness.dark
                 ? MaterialPalette.white
                 : MaterialPalette.black,
           ),
@@ -92,7 +99,7 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
     );
   }
 
-  Widget getUpdateTimeChart() {
+  BaseChart getUpdateTimeChart() {
     final hours = <int>[];
     for (int i = 0; i < 24; i++) {
       hours.add(0);
@@ -101,31 +108,38 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
     // Count all updates per hour
     data.entries.forEach((id, entries) {
       for (final entry in entries) {
-        hours[entry.timestamp.hour]++;
+        hours[entry.lastModified.hour]++;
       }
     });
 
     final chartData = [
-      Series<int, int>(
+      Series<int, String>(
         id: IPadListLocalizations.statsUpdateTime,
         displayName: IPadListLocalizations.statsUpdateTime,
         measureFn: (count, _) => count,
-        domainFn: (_, index) => index + 1,
+        domainFn: (_, index) => index.toString(),
         data: hours,
       )
     ];
 
-    return LineChart(
+    return BarChart(
       chartData,
       animate: true,
       primaryMeasureAxis: AxisSpec<num>(
-          renderSpec: SmallTickRendererSpec(
-              labelStyle: TextStyleSpec(
-        color: ThemeWidget.of(context).brightness == Brightness.dark
-            ? MaterialPalette.white
-            : MaterialPalette.black,
-      ))),
-      domainAxis: AxisSpec<num>(
+        renderSpec: SmallTickRendererSpec(
+          labelStyle: TextStyleSpec(
+            color: ThemeWidget
+                .of(context)
+                .brightness == Brightness.dark
+                ? MaterialPalette.white
+                : MaterialPalette.black,
+          ),
+        ),
+      ),
+      domainAxis: AxisSpec<String>(
+        tickProviderSpec: BasicOrdinalTickProviderSpec(
+
+        ),
         renderSpec: SmallTickRendererSpec(
           labelStyle: TextStyleSpec(
             color: ThemeWidget
@@ -192,7 +206,7 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
         sliver: false,
         loadingKeys: const [
           IPadListKeys.iPadList,
-          IPadListKeys.iPadBatteryEntries
+          IPadListKeys.iPadHistoryEntries
         ],
       ),
       body: CustomRefreshIndicator(
