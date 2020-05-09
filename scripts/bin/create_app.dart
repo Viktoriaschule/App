@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:mustache_template/mustache.dart';
 import 'package:process_run/process_run.dart';
 import 'package:process_run/which.dart';
+import 'package:scripts/assert_replace.dart';
 import 'package:scripts/base_dir.dart';
 import 'package:yaml/yaml.dart';
 
@@ -94,12 +95,12 @@ Future main(List<String> arguments) async {
       File('${appDir.path}/$path').deleteSync(recursive: true);
     }
     log('Copying template files');
-    File('${appDir.path}/android/app/src/main/java/${package.replaceAll('.', '/')}/Application.java')
+    File('${appDir.path}/android/app/src/main/java/${package.assertReplaceAll('.', '/')}/Application.java')
         .writeAsStringSync(Template(
                 File('$baseDir/scripts/templates/Application.java.tmpl')
                     .readAsStringSync())
             .renderString(templateData));
-    File('${appDir.path}/android/app/src/main/java/${package.replaceAll('.', '/')}/MainActivity.java')
+    File('${appDir.path}/android/app/src/main/java/${package.assertReplaceAll('.', '/')}/MainActivity.java')
         .writeAsStringSync(Template(
                 File('$baseDir/scripts/templates/MainActivity.java.tmpl')
                     .readAsStringSync())
@@ -128,14 +129,15 @@ Future main(List<String> arguments) async {
       );
       final hoverConfigFile = File('${appDir.path}/go/hover.yaml');
       String hoverConfig = hoverConfigFile.readAsStringSync();
-      hoverConfig = hoverConfig.replaceAll(
+      hoverConfig = hoverConfig.assertReplaceAll(
         '#application-name: "$name"',
         'application-name: "$fullName"',
       );
-      hoverConfig = hoverConfig.replaceAll(
+      hoverConfig = hoverConfig.assertReplaceAll(
         'license: ""',
         'license: "GPL-3.0-or-later"',
       );
+      hoverConfig = hoverConfig.assertReplaceAll('_desktop', '');
       hoverConfigFile.writeAsStringSync(hoverConfig);
       final plugins = [
         'shared_preferences',
@@ -168,6 +170,16 @@ Future main(List<String> arguments) async {
           workingDirectory: appDir.path,
         );
       }
+      await run(
+        'go',
+        [
+          'get',
+          '-u',
+          '-d',
+          './...',
+        ],
+        workingDirectory: '${appDir.path}/go',
+      );
     }
 
     log('Modifying Android sources');
@@ -175,15 +187,15 @@ Future main(List<String> arguments) async {
         '${appDir.path}/android/app/src/main/AndroidManifest.xml';
     File(androidManifestPath).writeAsStringSync((File(androidManifestPath)
             .readAsStringSync()
-            .replaceAll(
+            .assertReplaceAll(
               'android:name="io.flutter.app.FlutterApplication"',
               'android:name=".Application"',
             )
-            .replaceAll(
+            .assertReplaceAll(
               'android:label="${package.split('.').last}"',
               'android:label="$fullName"',
             )
-            .replaceAll(
+            .assertReplaceAll(
               [
                 '            <intent-filter>',
                 '                <action android:name="android.intent.action.MAIN"/>',
@@ -227,7 +239,7 @@ Future main(List<String> arguments) async {
     final appBuildGradlePath = '${appDir.path}/android/app/build.gradle';
     final appBuildGradleContent = File(appBuildGradlePath)
         .readAsStringSync()
-        .replaceAll(
+        .assertReplaceAll(
           'android {',
           [
             'def keystoreProperties = new Properties()',
@@ -239,11 +251,11 @@ Future main(List<String> arguments) async {
             'android {',
           ].join('\n'),
         )
-        .replaceAll(
+        .assertReplaceAll(
           '        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).\n',
           '',
         )
-        .replaceAll(
+        .assertReplaceAll(
           [
             '    buildTypes {',
             '        release {',
@@ -289,7 +301,7 @@ Future main(List<String> arguments) async {
     File(indexHtmlPath).writeAsStringSync(
       File(indexHtmlPath)
           .readAsStringSync()
-          .replaceAll(
+          .assertReplaceAll(
             '</head>',
             [
               '  <meta name="theme-color" content="#64A441"/>',
@@ -298,12 +310,13 @@ Future main(List<String> arguments) async {
               '</head>',
             ].join('\n'),
           )
-          .replaceAll('<title>${package.split('.').last}</title>',
+          .assertReplaceAll('<title>${package.split('.').last}</title>',
               '<title>$fullName</title>')
-          .replaceAll(
+          .assertReplaceAll(
               'content="${package.split('.').last}"', 'content="$fullName"')
-          .replaceAll('content="A new Flutter project."', 'content="$fullName"')
-          .replaceAll(
+          .assertReplaceAll(
+              'content="A new Flutter project."', 'content="$fullName"')
+          .assertReplaceAll(
             [
               '    if (\'serviceWorker\' in navigator) {',
               '      window.addEventListener(\'load\', function () {',
@@ -339,13 +352,6 @@ Future main(List<String> arguments) async {
             ].join('\n'),
           ),
     );
-
-    if (whichSync('hover') != null) {
-      log('Modifying go-flutter sources');
-      final hoverYamlPath = '${appDir.path}/go/hover.yaml';
-      File(hoverYamlPath).writeAsStringSync(
-          File(hoverYamlPath).readAsStringSync().replaceAll('_desktop', ''));
-    }
 
     log('Copying icons');
     File('${appDir.path}/icons_green.yaml').writeAsStringSync([

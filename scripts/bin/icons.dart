@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:process_run/cmd_run.dart';
 import 'package:process_run/which.dart';
+import 'package:scripts/assert_replace.dart';
 import 'package:scripts/base_dir.dart';
 
 Future main(List<String> arguments) async {
@@ -16,31 +17,31 @@ Future main(List<String> arguments) async {
   final logoManagementGreenPath = '$baseDir/images/logo_management_green.svg';
 
   final logoWhite = await File(logoWhitePath).readAsString();
-  final logoGreen = logoWhite.replaceAll('ffffff', '5bc638');
+  final logoGreen = logoWhite.assertReplaceAll('ffffff', '5bc638');
   await File(logoGreenPath).writeAsString(logoGreen);
 
   final iPadPath = RegExp('<path.*\/>')
       .firstMatch((await Dio().get(
               'https://raw.githubusercontent.com/Templarian/MaterialDesign/master/svg/tablet-ipad.svg'))
           .toString()
-          .replaceAll(
+          .assertReplaceAll(
             '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">',
             '',
           )
-          .replaceAll(
+          .assertReplaceAll(
             ' id="mdi-tablet-ipad"',
             '',
           )
-          .replaceAll(
+          .assertReplaceAll(
             ' xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"',
             '',
           ))
       .group(0);
   final logoGreenContent = RegExp('<g.*<\/g>')
-      .firstMatch(logoGreen.replaceAll(RegExp('\n|\r'), ''))
+      .firstMatch(logoGreen.assertReplaceAll(RegExp('\n|\r'), ''))
       .group(0);
   final logoWhiteContent = RegExp('<g.*<\/g>')
-      .firstMatch(logoWhite.replaceAll(RegExp('\n|\r'), ''))
+      .firstMatch(logoWhite.assertReplaceAll(RegExp('\n|\r'), ''))
       .group(0);
 
   final managementLogoGreen = [
