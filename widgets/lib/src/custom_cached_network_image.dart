@@ -116,6 +116,7 @@ class _CustomCachedNetworkImageState extends State<CustomCachedNetworkImage>
                 return Image.memory(snapshot.data);
               }
             } else if (snapshot.hasError) {
+              print(snapshot.error);
               return error;
             } else {
               return loading;
