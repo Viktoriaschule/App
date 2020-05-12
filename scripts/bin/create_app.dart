@@ -185,78 +185,84 @@ Future main(List<String> arguments) async {
     log('Modifying Android sources');
     final androidManifestPath =
         '${appDir.path}/android/app/src/main/AndroidManifest.xml';
-    File(androidManifestPath).writeAsStringSync((File(androidManifestPath)
-            .readAsStringSync()
-            .assertReplaceAll(
-              'android:name="io.flutter.app.FlutterApplication"',
-              'android:name=".Application"',
-            )
-            .assertReplaceAll(
-              'android:label="${package.split('.').last}"',
-              'android:label="$fullName"',
-            )
-            .assertReplaceAll(
-              [
-                '            <intent-filter>',
-                '                <action android:name="android.intent.action.MAIN"/>',
-                '                <category android:name="android.intent.category.LAUNCHER"/>',
-                '            </intent-filter>',
-              ].join('\n'),
-              [
-                '            <intent-filter>',
-                '                <action android:name="android.intent.action.MAIN"/>',
-                '                <action android:name="android.intent.action.VIEW"/>',
-                '                <category android:name="android.intent.category.LAUNCHER"/>',
-                '            </intent-filter>',
-                '            <intent-filter>',
-                '                <action android:name="FLUTTER_NOTIFICATION_CLICK"/>',
-                '                <category android:name="android.intent.category.DEFAULT"/>',
-                '            </intent-filter>',
-              ].join('\n'),
-            )
-            .split('\n')
-              ..insert(
-                  2,
-                  [
-                    '    <uses-permission android:name="android.permission.INTERNET"/>',
-                    '    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>',
-                    '    <uses-permission android:name="android.permission.WAKE_LOCK"/>',
-                    '    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>',
-                  ].join('\n')))
-        .join('\n'));
+    final androidManifestFile = File(androidManifestPath);
+    final content = androidManifestFile.readAsStringSync();
+    final lineEnding = !content.contains('\r')
+        ? '\n'
+        : content.contains('\r\n') ? '\r\n' : '\n';
+    androidManifestFile.writeAsStringSync((content
+        .assertReplaceAll(
+      'android:name="io.flutter.app.FlutterApplication"',
+      'android:name=".Application"',
+    )
+        .assertReplaceAll(
+      'android:label="${package
+          .split('.')
+          .last}"',
+      'android:label="$fullName"',
+    )
+        .assertReplaceAll(
+      [
+        '            <intent-filter>',
+        '                <action android:name="android.intent.action.MAIN"/>',
+        '                <category android:name="android.intent.category.LAUNCHER"/>',
+        '            </intent-filter>',
+      ].join(lineEnding),
+      [
+        '            <intent-filter>',
+        '                <action android:name="android.intent.action.MAIN"/>',
+        '                <action android:name="android.intent.action.VIEW"/>',
+        '                <category android:name="android.intent.category.LAUNCHER"/>',
+        '            </intent-filter>',
+        '            <intent-filter>',
+        '                <action android:name="FLUTTER_NOTIFICATION_CLICK"/>',
+        '                <category android:name="android.intent.category.DEFAULT"/>',
+        '            </intent-filter>',
+      ].join(lineEnding),
+    )
+        .split(lineEnding)
+      ..insert(
+          2,
+          [
+            '    <uses-permission android:name="android.permission.INTERNET"/>',
+            '    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>',
+            '    <uses-permission android:name="android.permission.WAKE_LOCK"/>',
+            '    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>',
+          ].join(lineEnding)))
+        .join(lineEnding));
 
     File('$baseDir/frame/android/gradle/wrapper/gradle-wrapper.properties')
         .copySync(
-            '${appDir.path}/android/gradle/wrapper/gradle-wrapper.properties');
+        '${appDir.path}/android/gradle/wrapper/gradle-wrapper.properties');
 
     final androidBuildGradlePath = '${appDir.path}/android/build.gradle';
     File(androidBuildGradlePath).writeAsStringSync(
-        (File(androidBuildGradlePath).readAsStringSync().split('\n')
-              ..insert(8,
-                  '        classpath \'com.google.gms:google-services:4.3.3\''))
-            .join('\n'));
+        (File(androidBuildGradlePath).readAsStringSync().split(lineEnding)
+          ..insert(8,
+              '        classpath \'com.google.gms:google-services:4.3.3\''))
+            .join(lineEnding));
 
     final appBuildGradlePath = '${appDir.path}/android/app/build.gradle';
     final appBuildGradleContent = File(appBuildGradlePath)
         .readAsStringSync()
         .assertReplaceAll(
-          'android {',
-          [
-            'def keystoreProperties = new Properties()',
-            'def keystorePropertiesFile = rootProject.file(\'key.properties\')',
-            'if (keystorePropertiesFile.exists()) {',
-            '  keystoreProperties.load(new FileInputStream(keystorePropertiesFile))',
-            '}',
-            '',
-            'android {',
-          ].join('\n'),
+      'android {',
+      [
+        'def keystoreProperties = new Properties()',
+        'def keystorePropertiesFile = rootProject.file(\'key.properties\')',
+        'if (keystorePropertiesFile.exists()) {',
+        '  keystoreProperties.load(new FileInputStream(keystorePropertiesFile))',
+        '}',
+        '',
+        'android {',
+      ].join(lineEnding),
         )
         .assertReplaceAll(
-          '        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).\n',
-          '',
+      '        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).$lineEnding',
+      '',
         )
         .assertReplaceAll(
-          [
+      [
             '    buildTypes {',
             '        release {',
             '            // TODO: Add your own signing config for the release build.',
@@ -264,7 +270,7 @@ Future main(List<String> arguments) async {
             '            signingConfig signingConfigs.debug',
             '        }',
             '    }',
-          ].join('\n'),
+          ].join(lineEnding),
           [
             '    signingConfigs {',
             '        release {',
@@ -283,18 +289,18 @@ Future main(List<String> arguments) async {
             '                    \'proguard-rules.pro\'',
             '        }',
             '    }',
-          ].join('\n'),
+          ].join(lineEnding),
         );
     File(appBuildGradlePath)
-        .writeAsStringSync((appBuildGradleContent.split('\n')
-              ..addAll([
-                'dependencies {',
-                '    implementation \'com.google.firebase:firebase-messaging:20.1.1\'',
-                '}',
-                '',
-                'apply plugin: \'com.google.gms.google-services\''
-              ]))
-            .join('\n'));
+        .writeAsStringSync((appBuildGradleContent.split(lineEnding)
+      ..addAll([
+        'dependencies {',
+        '    implementation \'com.google.firebase:firebase-messaging:20.1.1\'',
+        '}',
+        '',
+        'apply plugin: \'com.google.gms.google-services\''
+      ]))
+        .join(lineEnding));
 
     log('Modifying web sources');
     final indexHtmlPath = '${appDir.path}/web/index.html';
@@ -302,13 +308,13 @@ Future main(List<String> arguments) async {
       File(indexHtmlPath)
           .readAsStringSync()
           .assertReplaceAll(
-            '</head>',
-            [
-              '  <meta name="theme-color" content="#64A441"/>',
-              '  <script src="https://www.gstatic.com/firebasejs/6.6.2/firebase-app.js"></script>',
-              '  <script src="https://www.gstatic.com/firebasejs/6.6.2/firebase-messaging.js"></script>',
-              '</head>',
-            ].join('\n'),
+        '</head>',
+        [
+          '  <meta name="theme-color" content="#64A441"/>',
+          '  <script src="https://www.gstatic.com/firebasejs/6.6.2/firebase-app.js"></script>',
+          '  <script src="https://www.gstatic.com/firebasejs/6.6.2/firebase-messaging.js"></script>',
+          '</head>',
+        ].join(lineEnding),
           )
           .assertReplaceAll('<title>${package.split('.').last}</title>',
               '<title>$fullName</title>')
@@ -317,40 +323,40 @@ Future main(List<String> arguments) async {
           .assertReplaceAll(
               'content="A new Flutter project."', 'content="$fullName"')
           .assertReplaceAll(
-            [
-              '    if (\'serviceWorker\' in navigator) {',
-              '      window.addEventListener(\'load\', function () {',
-              '        navigator.serviceWorker.register(\'flutter_service_worker.js\');',
-              '      });',
-              '    }',
-            ].join('\n'),
-            [
-              '    if (window.location.hash.length > 2) {',
-              '      window.location.hash = \'#/\';',
-              '      window.location.reload();',
-              '    }',
-              '    if (\'serviceWorker\' in navigator) {',
-              '      window.addEventListener(\'load\', function () {',
-              '        navigator.serviceWorker.register(\'flutter_service_worker.js\');',
-              '        const firebaseConfig = {',
-              ...firebaseWeb.keys
+        [
+          '    if (\'serviceWorker\' in navigator) {',
+          '      window.addEventListener(\'load\', function () {',
+          '        navigator.serviceWorker.register(\'flutter_service_worker.js\');',
+          '      });',
+          '    }',
+        ].join(lineEnding),
+        [
+          '    if (window.location.hash.length > 2) {',
+          '      window.location.hash = \'#/\';',
+          '      window.location.reload();',
+          '    }',
+          '    if (\'serviceWorker\' in navigator) {',
+          '      window.addEventListener(\'load\', function () {',
+          '        navigator.serviceWorker.register(\'flutter_service_worker.js\');',
+          '        const firebaseConfig = {',
+          ...firebaseWeb.keys
                   .map((e) => '          $e: \'${firebaseWeb[e]}\','),
               '        };',
               '        firebase.initializeApp(firebaseConfig);',
               '        navigator.serviceWorker.register(\'sw.js\')',
               '          .then((registration) => {',
-              '            if (firebase.messaging() != null) {',
-              '              firebase.messaging().useServiceWorker(registration);',
-              '            }',
-              '          });',
-              '      });',
-              '      window.addEventListener(\'beforeinstallprompt\', (e) => {',
-              '        e.preventDefault();',
-              '        window.deferredPrompt = e;',
-              '      });',
-              '    }',
-            ].join('\n'),
-          ),
+          '            if (firebase.messaging() != null) {',
+          '              firebase.messaging().useServiceWorker(registration);',
+          '            }',
+          '          });',
+          '      });',
+          '      window.addEventListener(\'beforeinstallprompt\', (e) => {',
+          '        e.preventDefault();',
+          '        window.deferredPrompt = e;',
+          '      });',
+          '    }',
+        ].join(lineEnding),
+      ),
     );
 
     log('Copying icons');
@@ -359,13 +365,13 @@ Future main(List<String> arguments) async {
       '  android: true',
       '  ios: false',
       '  image_path: "../${greenIcons[1024]}"'
-    ].join('\n'));
+    ].join(lineEnding));
     File('${appDir.path}/icons_white.yaml').writeAsStringSync([
       'flutter_icons:',
       '  android: "logo_white"',
       '  ios: false',
       '  image_path: "../$whiteIcon"'
-    ].join('\n'));
+    ].join(lineEnding));
 
     await File('$baseDir/apps/${greenIcons[512]}')
         .copy('${appDir.path}/web/icons/Icon-512.png');
