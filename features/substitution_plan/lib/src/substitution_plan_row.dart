@@ -93,29 +93,32 @@ class SubstitutionPlanRow extends PreferredSize {
             : (substitution.type == 2 ? Colors.red : Colors.orange),
         leading: showUnit
             ? Text(
-          (substitution.unit + 1).toString(),
-          style: TextStyle(
-            fontSize: 25,
-            color: ThemeWidget
-                .of(context)
-                .textColorLight,
-            fontWeight: FontWeight.w100,
-          ),
-        )
+                (substitution.unit + 1).toString(),
+                style: TextStyle(
+                  fontSize: 25,
+                  color: ThemeWidget.of(context).textColorLight,
+                  fontWeight: FontWeight.w100,
+                ),
+              )
             : keepUnitPadding ? Container() : null,
-        title: Static.subjects.hasLoadedData
-            ? (infoText.isNotEmpty
-            ? infoText.join(' ')
-            : Static.subjects.data
-            .getSubject(substitution.original.subjectID))
-            : null,
+        title: Text(
+          Static.subjects.hasLoadedData
+              ? (infoText.isNotEmpty
+                  ? infoText.join(' ')
+                  : Static.subjects.data
+                      .getSubject(substitution.original.subjectID))
+              : '',
+          style: TextStyle(
+            fontSize: 17,
+            color: Theme.of(context).accentColor,
+          ),
+          overflow: TextOverflow.ellipsis,
+        ),
         subtitle: Text(
           subtitle,
           style: TextStyle(
             decoration: lineThrough ? TextDecoration.lineThrough : null,
-            color: ThemeWidget
-                .of(context)
-                .textColorLight,
+            color: ThemeWidget.of(context).textColorLight,
             fontWeight: FontWeight.w100,
           ),
         ),
@@ -131,30 +134,26 @@ class SubstitutionPlanRow extends PreferredSize {
                     substitution.changed.participantID != null
                         ? _getWithCase(substitution.changed.participantID)
                         : substitution.original.participantID != null
-                        ? _getWithCase(substitution.original.participantID)
-                        : '',
+                            ? _getWithCase(substitution.original.participantID)
+                            : '',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w300,
-                      color: ThemeWidget
-                          .of(context)
-                          .textColor,
+                      color: ThemeWidget.of(context).textColor,
                       fontFamily: 'RobotoMono',
                     ),
                   ),
                   Text(
                     substitution.original.participantID != null &&
-                        substitution.changed.participantID != null &&
-                        substitution.original.participantID !=
-                            substitution.changed.participantID
+                            substitution.changed.participantID != null &&
+                            substitution.original.participantID !=
+                                substitution.changed.participantID
                         ? substitution.original.participantID.toUpperCase()
                         : '',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w300,
-                      color: ThemeWidget
-                          .of(context)
-                          .textColor,
+                      color: ThemeWidget.of(context).textColor,
                       decoration: TextDecoration.lineThrough,
                       fontFamily: 'RobotoMono',
                     ),
@@ -171,30 +170,26 @@ class SubstitutionPlanRow extends PreferredSize {
                     substitution.changed.roomID != null
                         ? substitution.changed.roomID.toUpperCase()
                         : substitution.original.roomID != null
-                        ? substitution.original.roomID.toUpperCase()
-                        : '',
+                            ? substitution.original.roomID.toUpperCase()
+                            : '',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w300,
-                      color: ThemeWidget
-                          .of(context)
-                          .textColor,
+                      color: ThemeWidget.of(context).textColor,
                       fontFamily: 'RobotoMono',
                     ),
                   ),
                   Text(
                     substitution.type != 1 &&
-                        substitution.original.roomID != null &&
-                        substitution.changed.roomID != null &&
-                        substitution.original.roomID !=
-                            substitution.changed.roomID
+                            substitution.original.roomID != null &&
+                            substitution.changed.roomID != null &&
+                            substitution.original.roomID !=
+                                substitution.changed.roomID
                         ? substitution.original.roomID.toUpperCase()
                         : '',
                     style: TextStyle(
                       fontSize: 14,
-                      color: ThemeWidget
-                          .of(context)
-                          .textColor,
+                      color: ThemeWidget.of(context).textColor,
                       decoration: TextDecoration.lineThrough,
                       fontWeight: FontWeight.w300,
                       fontFamily: 'RobotoMono',

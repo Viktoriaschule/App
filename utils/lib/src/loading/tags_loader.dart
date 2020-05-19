@@ -56,7 +56,7 @@ class TagsLoader extends Loader<Tags> {
   ) async {
     if (tags == null) {
       await loadOnline(context, force: true);
-      tags = parsedData;
+      tags = data;
     }
     if (tags != null) {
       // Sync grade
@@ -95,7 +95,7 @@ class TagsLoader extends Loader<Tags> {
       {bool checkSync = true}) async {
     // Get all server tags...
     final status = await loadOnline(context, force: true);
-    final Tags allTags = parsedData;
+    final Tags allTags = data;
     if (allTags == null) {
       print('Failed to load tags: $status');
       return reduceStatusCodes([status, StatusCode.failed]);

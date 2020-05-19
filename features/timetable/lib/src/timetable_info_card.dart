@@ -48,18 +48,18 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
       subjects.length,
     );
     return ListGroup(
-      loadingKeys: [TimetableKeys.timetable],
+      loadingKeys: const [TimetableKeys.timetable],
       title: 'Nächste Stunden - ${weekdays[widget.date.weekday - 1]}',
       counter: subjects.length > cut ? subjects.length - cut : 0,
       heroId:
-      getScreenSize(MediaQuery.of(context).size.width) == ScreenSize.small
-          ? TimetableKeys.timetable
-          : '${TimetableKeys.timetable}-${widget.date.weekday - 1}',
+          getScreenSize(MediaQuery.of(context).size.width) == ScreenSize.small
+              ? TimetableKeys.timetable
+              : '${TimetableKeys.timetable}-${widget.date.weekday - 1}',
       heroIdNavigation: TimetableKeys.timetable,
       actions: [
         NavigationAction(
           Icons.expand_more,
-              () {
+          () {
             Navigator.of(context).push(
               MaterialPageRoute<void>(builder: (context) => TimetablePage()),
             );
@@ -74,14 +74,14 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
           EmptyList(
               title: loader.data?.selection?.isSet(group) ?? true
                   ? loader.hasLoadedData && subjects.isEmpty
-                  ? TimetableLocalizations.noSubjects
-                  : TimetableLocalizations.noTimetable
+                      ? TimetableLocalizations.noSubjects
+                      : TimetableLocalizations.noTimetable
                   : TimetableLocalizations.notSelected)
         else
           ...(subjects.length > cut ? subjects.sublist(0, cut) : subjects)
               .map((subject) {
-            final substitutions = spLoader.hasLoadedData
-                ? subject.getSubstitutions(widget.date, spLoader.data)
+                final substitutions = spLoader.hasLoadedData
+                    ? subject.getSubstitutions(widget.date, spLoader.data)
                     : <Substitution>[];
                 // Show the normal lessen if it is an exam, but not of the same subjects, as this unit
                 final showNormal = substitutions.length == 1 &&

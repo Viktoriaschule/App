@@ -401,6 +401,7 @@ Future main(List<String> arguments) async {
       'flutter',
       [
         'pub',
+        'global',
         'run',
         'flutter_launcher_icons:main',
         '-f',
@@ -412,6 +413,7 @@ Future main(List<String> arguments) async {
       'flutter',
       [
         'pub',
+        'global',
         'run',
         'flutter_launcher_icons:main',
         '-f',

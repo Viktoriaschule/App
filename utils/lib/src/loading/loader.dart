@@ -29,13 +29,10 @@ abstract class Loader<LoaderType> {
   dynamic get postBody => null;
 
   // ignore: public_member_api_docs
-  LoaderType parsedData;
+  LoaderType data;
 
   // ignore: public_member_api_docs, type_annotate_public_apis, always_declare_return_types
   LoaderType fromJSON(json);
-
-  // ignore: public_member_api_docs
-  LoaderType get data => parsedData;
 
   /// If the loader must be updated
   bool get forceUpdate => false;
@@ -43,27 +40,36 @@ abstract class Loader<LoaderType> {
   /// The base url for all request
   BaseUrl get baseUrl => BaseUrl.viktoriaApp;
 
-  /// The raw downloaded json string
-  String _rawData;
+  // ignore: public_member_api_docs
+  String rawData;
 
-  bool _loadedFromOnline = false;
+  // ignore: public_member_api_docs
+  bool loadedFromOnline = false;
 
-  LoaderResponse<LoaderType> _fromJSON(String rawJson) {
+  // ignore: public_member_api_docs
+  LoaderResponse<LoaderType> loadFromJSON(String rawJson) {
     try {
       final data = fromJSON(json.decode(rawJson));
       return LoaderResponse<LoaderType>(
-          data: data, statusCode: StatusCode.success);
+        data: data,
+        statusCode: StatusCode.success,
+      );
       // ignore: avoid_catches_without_on_clauses
     } catch (e, stacktrace) {
       print('Failed to parse $key: $e\n$stacktrace');
       return LoaderResponse<LoaderType>(
-          data: null, statusCode: StatusCode.wrongFormat);
+        data: null,
+        statusCode: StatusCode.wrongFormat,
+      );
     }
   }
 
   /// Update the loader if the update hash has changed
-  Future<StatusCode> update(BuildContext context, Updates newUpdates,
-      {bool force = false}) async {
+  Future<StatusCode> update(
+    BuildContext context,
+    Updates newUpdates, {
+    bool force = false,
+  }) async {
     final hash = newUpdates.getUpdate(key);
     if (force ||
         forceUpdate ||
@@ -82,14 +88,14 @@ abstract class Loader<LoaderType> {
   StatusCode loadOffline(BuildContext context) {
     if (hasStoredData) {
       preLoad(context);
-      _rawData = Static.storage.getString(key);
-      final parsed = _fromJSON(_rawData);
-      parsedData = parsed.data;
+      rawData = Static.storage.getString(key);
+      final parsed = loadFromJSON(rawData);
+      data = parsed.data;
       if (parsed.statusCode != StatusCode.success) {
         Static.storage.remove(key);
       }
       afterLoad();
-      _sendLoadedEvent(LoadingState.of(context), EventBus.of(context));
+      sendLoadedEvent(LoadingState.of(context), EventBus.of(context));
       return parsed.statusCode;
     }
     return StatusCode.success;
@@ -106,7 +112,7 @@ abstract class Loader<LoaderType> {
     bool store = true,
     bool showLoginOnWrongCredentials = true,
   }) async =>
-      (await _load(
+      (await load(
         context,
         username: username,
         password: password,
@@ -127,7 +133,7 @@ abstract class Loader<LoaderType> {
     Map<String, dynamic> body,
     bool showLoginOnWrongCredentials = true,
   }) =>
-      _load(
+      load(
         context,
         username: username,
         password: password,
@@ -147,7 +153,7 @@ abstract class Loader<LoaderType> {
   void afterLoad() => {};
 
   /// Download the data from the api and returns the status code
-  Future<LoaderResponse<LoaderType>> _load(
+  Future<LoaderResponse<LoaderType>> load(
     BuildContext context, {
     String username,
     String password,
@@ -157,7 +163,7 @@ abstract class Loader<LoaderType> {
     bool store = true,
     bool showLoginOnWrongCredentials = true,
   }) async {
-    if (_loadedFromOnline && !force) {
+    if (loadedFromOnline && !force) {
       return LoaderResponse(statusCode: StatusCode.success);
     }
 
@@ -167,7 +173,7 @@ abstract class Loader<LoaderType> {
     final eventBus = context != null ? EventBus.of(context) : null;
 
     // Inform the gui about this loading process
-    _sendLoadingEvent(loadingStates, eventBus);
+    sendLoadingEvent(loadingStates, eventBus);
 
     // Run the pre load for custom loader operations
     preLoad(context);
@@ -204,28 +210,27 @@ abstract class Loader<LoaderType> {
       }
       final successfully = response.statusCode == 200;
       final statusCodes = [getStatusCode(response.statusCode)];
+      LoaderType _data;
       if (store) {
         if (successfully) {
-          _rawData = response.toString();
-          final parsed = _fromJSON(_rawData);
-          parsedData = parsed.data ?? parsedData;
+          rawData = response.toString();
+          final parsed = loadFromJSON(rawData);
+          data ??= parsed.data;
           statusCodes.add(parsed.statusCode);
           if (parsed.statusCode == StatusCode.success) {
             save();
           }
-          _loadedFromOnline = true;
+          loadedFromOnline = true;
         } else {
           print('$key failed to load');
         }
+      } else {
+        _data = loadFromJSON(response.toString())?.data;
       }
       if (response.statusCode == 401 &&
           showLoginOnWrongCredentials &&
           context != null) {
         await Navigator.of(context).pushReplacementNamed('/${Keys.login}');
-      }
-      LoaderType data;
-      if (!store) {
-        data = _fromJSON(response.toString())?.data;
       }
 
       try {
@@ -236,8 +241,7 @@ abstract class Loader<LoaderType> {
         statusCodes.add(StatusCode.wrongFormat);
       }
 
-      afterLoad();
-      _sendLoadedEvent(loadingStates, eventBus);
+      sendLoadedEvent(loadingStates, eventBus);
       final status = reduceStatusCodes(statusCodes);
       if (status != StatusCode.success) {
         print(
@@ -245,10 +249,13 @@ abstract class Loader<LoaderType> {
       }
       print(
           'Loaded $key: ${DateTime.now().difference(start).inMilliseconds}ms');
-      return LoaderResponse<LoaderType>(data: data, statusCode: status);
+      return LoaderResponse<LoaderType>(
+        data: _data ?? data,
+        statusCode: status,
+      );
     } on DioError catch (e) {
       afterLoad();
-      _sendLoadedEvent(loadingStates, eventBus);
+      sendLoadedEvent(loadingStates, eventBus);
       print(
           'Failed loading $key: ${DateTime.now().difference(start).inMilliseconds}ms');
       switch (e.type) {
@@ -278,33 +285,33 @@ abstract class Loader<LoaderType> {
   }
 
   /// Sets the page loading state
-  void _setLoading(
+  void setLoading(
       LoadingState loadingStates, EventBus eventBus, bool isLoading) {
     loadingStates?.setLoading(key, isLoading);
     eventBus?.publish(LoadingStatusChangedEvent(key));
   }
 
   // ignore: public_member_api_docs
-  void _sendLoadingEvent(LoadingState loadingStates, EventBus eventBus) {
-    _setLoading(loadingStates, eventBus, true);
+  void sendLoadingEvent(LoadingState loadingStates, EventBus eventBus) {
+    setLoading(loadingStates, eventBus, true);
   }
 
   // ignore: public_member_api_docs
-  void _sendLoadedEvent(LoadingState loadingStates, EventBus eventBus) {
+  void sendLoadedEvent(LoadingState loadingStates, EventBus eventBus) {
     eventBus?.publish(event);
-    _setLoading(loadingStates, eventBus, false);
+    setLoading(loadingStates, eventBus, false);
   }
 
   // ignore: public_member_api_docs
   void save() {
-    Static.storage.setString(key, _rawData);
+    Static.storage.setString(key, rawData);
   }
 
   // ignore: public_member_api_docs
   void clear() {
-    _rawData = null;
-    parsedData = null;
-    _loadedFromOnline = false;
+    rawData = null;
+    data = null;
+    loadedFromOnline = false;
     save();
   }
 

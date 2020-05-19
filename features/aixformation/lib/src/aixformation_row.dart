@@ -41,13 +41,20 @@ class AiXformationRow extends PreferredSize {
         },
         child: CustomRow(
           leading: CustomCachedNetworkImage(
-            imageUrl: post.imageUrl,
-            height: 60,
-            width: 60,
+            provider: CustomCachedNetworkImageUrlProvider(
+              imageUrl: post.imageUrl,
+            ),
+            height: customRowHeight - 26,
+            width: customRowHeight - 26,
           ),
-          title: post.title,
-          titleColor: ThemeWidget.of(context).textColor,
-          titleFontWeight: FontWeight.normal,
+          title: Text(
+            post.title,
+            style: TextStyle(
+              fontSize: 17,
+              color: ThemeWidget.of(context).textColor,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
           subtitle: IconsTexts(
             icons: [
               Icons.event,

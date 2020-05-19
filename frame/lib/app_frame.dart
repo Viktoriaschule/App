@@ -40,8 +40,10 @@ class _AppFrameState extends Interactor<AppFrame>
         });
       });
 
-  Future _fetchDataWithStatusMsg(
-      {bool force = false, ScaffoldState scaffoldState}) async {
+  Future _fetchDataWithStatusMsg({
+    bool force = false,
+    ScaffoldState scaffoldState,
+  }) async {
     final scaffold = scaffoldState ?? Scaffold.of(context);
     final status = await _fetchData(force: force);
     if (status != StatusCode.success) {
@@ -57,9 +59,7 @@ class _AppFrameState extends Interactor<AppFrame>
     }
   }
 
-  Future<StatusCode> _fetchData({
-    bool force = false,
-  }) async {
+  Future<StatusCode> _fetchData({bool force = false}) async {
     // Check all updates (If there is something new to update)
     final response =
         await Static.updates.fetch(context, showLoginOnWrongCredentials: false);
@@ -166,9 +166,7 @@ class _AppFrameState extends Interactor<AppFrame>
   Future afterFirstLayout(BuildContext context) async {
     final scaffold = Scaffold.of(context);
     Static.updates.loadOffline(context);
-    if (Static.updates.data == null) {
-      Static.updates.parsedData = Updates.fromJson({});
-    }
+    Static.updates.data ??= Updates.fromJson({});
     Static.subjects.loadOffline(context);
     await _loadData(online: false);
 

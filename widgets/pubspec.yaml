@@ -9,7 +9,6 @@ dependencies:
   material_design_icons_flutter:
   flutter_event_bus:
   after_layout:
-  cached_network_image:
   dio:
   path_provider:
   utils:

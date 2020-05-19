@@ -1,0 +1,17 @@
+name: nextcloud_talk
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  nextcloud:
+  dio:
+  url_launcher:
+  after_layout:
+  timeago:
+  utils:
+    path: ../../utils
+  widgets:
+    path: ../../widgets

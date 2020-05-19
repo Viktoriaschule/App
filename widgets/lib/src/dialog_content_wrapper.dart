@@ -31,9 +31,9 @@ class DialogContentWrapper extends StatelessWidget {
                   : null,
               child: Container(
                 padding: EdgeInsets.only(
-                  left: 12.5,
-                  right: 12.5,
-                  bottom: 7.5,
+                  left: 15,
+                  right: 15,
+                  bottom: 20,
                 ),
                 child: Column(
                   mainAxisAlignment: spread

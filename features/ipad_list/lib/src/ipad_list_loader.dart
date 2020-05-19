@@ -61,7 +61,7 @@ class _HistoryLoader extends Loader<DeviceHistory> {
     final status = super.loadOffline(context);
     // Save the parsed data in an extra attribute, because after each load online call,
     // the parsed data will be override by the new data
-    _history.entries = parsedData?.entries ?? {};
+    _history.entries = data?.entries ?? {};
     return status;
   }
 
@@ -72,7 +72,7 @@ class _HistoryLoader extends Loader<DeviceHistory> {
 
     // Add the loaded entries to the old entries
     if (oldData != null) {
-      parsedData.entries.forEach((key, value) {
+      data.entries.forEach((key, value) {
         _history.entries[key] = value;
       });
     }
@@ -81,8 +81,8 @@ class _HistoryLoader extends Loader<DeviceHistory> {
   }
 
   /// Returns the battery history for the given devices
-  Future<DeviceHistory> getDeviceHistory(BuildContext context,
-      List<IPad> devices, DateTime date,
+  Future<DeviceHistory> getDeviceHistory(
+      BuildContext context, List<IPad> devices, DateTime date,
       {bool loadOffline = false}) async {
     final ids = devices.map((d) => d.id).toList();
 
@@ -100,8 +100,8 @@ class _HistoryLoader extends Loader<DeviceHistory> {
     final history = DeviceHistory(entries: {});
     for (final device in devices) {
       history.entries[device.id] = _history.entries[device.id]
-          ?.where((d) => !d.lastModified.isBefore(date))
-          ?.toList() ??
+              ?.where((d) => !d.lastModified.isBefore(date))
+              ?.toList() ??
           [];
       history.entries[device.id]
           .sort((d1, d2) => d1.lastModified.compareTo(d2.lastModified));

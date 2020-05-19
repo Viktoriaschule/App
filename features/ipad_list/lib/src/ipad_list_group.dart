@@ -108,8 +108,14 @@ class IPadGroupRow extends PreferredSize {
             ),
           ],
         ),
-        title: '${IPadListLocalizations.iPadGroup}: $groupName',
-        titleOverflow: TextOverflow.ellipsis,
+        title: Text(
+          '${IPadListLocalizations.iPadGroup}: $groupName',
+          style: TextStyle(
+            fontSize: 17,
+            color: Theme.of(context).accentColor,
+          ),
+          overflow: TextOverflow.ellipsis,
+        ),
         subtitle: Row(
           children: <Widget>[
             Text(
