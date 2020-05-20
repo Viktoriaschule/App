@@ -122,7 +122,7 @@ class SubstitutionPlanDay {
     data.forEach((group, substitutions) {
       substitutions.sort((a, b) {
         var r = a.unit.compareTo(b.unit);
-        if (r == 0) {
+        if (r == 0 && a.courseID != null && b.courseID != null) {
           r = a.courseID.compareTo(b.courseID);
         }
         if (r == 0) {
