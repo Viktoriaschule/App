@@ -10,7 +10,7 @@ import '../static.dart';
 import 'loader.dart';
 import 'tags_model.dart';
 
-/// SubjectsLoader class
+/// TagsLoader class
 class TagsLoader extends Loader<Tags> {
   // ignore: public_member_api_docs
   TagsLoader() : super(Keys.tags, TagsUpdateEvent());

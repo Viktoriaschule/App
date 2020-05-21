@@ -82,6 +82,9 @@ class CafetoriaFeature implements Feature {
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
           .add(Duration(days: 1))
           .difference(DateTime.now());
+
+  @override
+  bool hasGUI = true;
 }
 
 // ignore: public_member_api_docs

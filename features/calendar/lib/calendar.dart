@@ -84,6 +84,9 @@ class CalendarFeature implements Feature {
     }
     return null;
   }
+
+  @override
+  bool hasGUI = true;
 }
 
 // ignore: public_member_api_docs

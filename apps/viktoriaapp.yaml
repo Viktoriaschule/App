@@ -15,6 +15,8 @@ features:
     full_name: Cafetoria
   - name: aixformation
     full_name: AiXformation
+  - name: subjects
+    full_name: Subjects
 firebase_web:
   apiKey: "AIzaSyAZeIMxiWdjQG9ldfDA7cIHjgtYKFU8XU4"
   authDomain: "viktoriaschule-e8094.firebaseapp.com"

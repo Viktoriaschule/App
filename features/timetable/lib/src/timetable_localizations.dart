@@ -25,5 +25,8 @@ class TimetableLocalizations {
   static const noTimetable = 'Kein Stundenplan';
 
   // ignore: public_member_api_docs
-  static const noSubjects = 'Kein Unterricht';
+  static const noClasses = 'Kein Unterricht';
+
+  // ignore: public_member_api_docs
+  static const nextClasses = 'Nächste Stunden';
 }

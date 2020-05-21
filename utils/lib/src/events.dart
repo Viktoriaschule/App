@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 abstract class ChangedEvent {}
 
 // ignore: public_member_api_docs
-class SubjectsUpdateEvent extends ChangedEvent {}
-
-// ignore: public_member_api_docs
 class TagsUpdateEvent extends ChangedEvent {}
 
 // ignore: public_member_api_docs

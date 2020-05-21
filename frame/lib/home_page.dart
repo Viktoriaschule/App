@@ -109,11 +109,10 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
     //final size = getScreenSize(MediaQuery.of(context).size.width);
     // Get the date for the home page
 
-    _features ??= FeaturesWidget.of(context).features;
+    _features ??= FeaturesWidget.of(context).guiFeatures;
     _eventBus ??= EventBus.of(context);
     _day ??= _getDay(_features, _eventBus);
 
-    final numberFeatures = FeaturesWidget.of(context).features.length;
     final size = getScreenSize(MediaQuery.of(context).size.width);
     int numberColumns;
     switch (size) {
@@ -130,7 +129,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final numberRows = (numberFeatures / numberColumns).ceil();
+        final numberRows = (_features.length / numberColumns).ceil();
         final height =
             numberColumns > 1 ? constraints.maxHeight / numberRows : null;
         return Scrollbar(
@@ -143,15 +142,13 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: List.generate(numberColumns, (columnIndex) {
                     final index = rowIndex * numberColumns + columnIndex;
-                    if (index >= numberFeatures) {
+                    if (index >= _features.length) {
                       return Expanded(
                         child: Container(),
                       );
                     }
                     return Expanded(
-                      child: FeaturesWidget.of(context)
-                          .features[index]
-                          .getInfoCard(_day, height),
+                      child: _features[index].getInfoCard(_day, height),
                     );
                   }),
                 ),

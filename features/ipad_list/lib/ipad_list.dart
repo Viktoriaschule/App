@@ -57,6 +57,9 @@ class IPadListFeature implements Feature {
 
   @override
   Duration durationToHomePageDateUpdate() => null;
+
+  @override
+  bool hasGUI = true;
 }
 
 // ignore: public_member_api_docs

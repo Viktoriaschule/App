@@ -89,9 +89,6 @@ class _AppFrameState extends Interactor<AppFrame>
       // Sync the local grade with the server
       Static.user.group = fetchedUpdates.getUpdate(Keys.group);
 
-      //TODO: Move to feature without gui
-      await Static.subjects.update(context, fetchedUpdates, force: force);
-
       //TODO: Add old app dialog
 
       return _loadData(
@@ -167,7 +164,6 @@ class _AppFrameState extends Interactor<AppFrame>
     final scaffold = Scaffold.of(context);
     Static.updates.loadOffline(context);
     Static.updates.data ??= Updates.fromJson({});
-    Static.subjects.loadOffline(context);
     await _loadData(online: false);
 
     _pwa = PWA();
@@ -256,7 +252,7 @@ class _AppFrameState extends Interactor<AppFrame>
       ],
       sliver: isSmallScreen,
       isLeading: false,
-      loadingKeys: const [Keys.tags, Keys.subjects, Keys.updates],
+      loadingKeys: const [Keys.tags, Keys.updates],
     );
     final body = CustomRefreshIndicator(
       loadOnline: () => _fetchData(force: true),

@@ -9,6 +9,7 @@ dependencies:
   material_design_icons_flutter:
   after_layout:
   flutter_event_bus:
+  timeago:
   utils:
     path: ../utils
   widgets:

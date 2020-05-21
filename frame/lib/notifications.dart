@@ -50,7 +50,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
         onResume: _handleOnLaunchResumeNotification,
         onMessage: _handleOnMessageNotification,
         onBackgroundMessage:
-        _NotificationsWidgetState._handleOnBackgroundMessageNotification,
+            _NotificationsWidgetState._handleOnBackgroundMessageNotification,
       );
     }
     final channels = FeaturesWidget.of(context)
@@ -93,6 +93,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
   }
 
   Future<dynamic> _handleOnMessageNotification(Map<String, dynamic> d) async {
+    print(d);
     try {
       final Map<String, dynamic> data = Map<String, dynamic>.from(d['data']);
       if (data['action'] != 'update') {
@@ -120,7 +121,9 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
 
   // This needs to be a static function otherwise it can't be called
   static Future<dynamic> _handleOnBackgroundMessageNotification(
-      Map<String, dynamic> d,) async {
+    Map<String, dynamic> d,
+  ) async {
+    print(d);
     final Map<String, dynamic> data = d['data'].cast<String, dynamic>();
     try {
       if (data['action'] == 'update') {

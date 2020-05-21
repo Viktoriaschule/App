@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:subjects/subjects.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
@@ -42,24 +43,38 @@ class SubstitutionPlanRow extends PreferredSize {
   Widget build(BuildContext context) {
     final infoText = [];
     bool lineThrough = true;
-    String subtitle =
-        Static.subjects.data.getSubject(substitution.original.subjectID);
+    String subtitle = SubjectsWidget.of(context).feature.loader.hasLoadedData
+        ? SubjectsWidget.of(context)
+            .feature
+            .loader
+            .data
+            .getSubject(substitution.original.subjectID)
+        : '';
 
     if ((substitution.original.subjectID != substitution.changed.subjectID ||
             (substitution.type == 0 && substitution.description.isEmpty)) &&
-        substitution.changed.subjectID.isNotEmpty) {
-      infoText
-          .add(Static.subjects.data.getSubject(substitution.changed.subjectID));
+        substitution.changed.subjectID.isNotEmpty &&
+        SubjectsWidget.of(context).feature.loader.hasLoadedData) {
+      infoText.add(SubjectsWidget.of(context)
+          .feature
+          .loader
+          .data
+          .getSubject(substitution.changed.subjectID));
     }
 
     switch (substitution.type) {
       case 2:
-        infoText.add(
-            Static.subjects.data.getSubject(substitution.changed.subjectID));
-        subtitle = Static.user.isTeacher()
-            ? SubstitutionPlanLocalizations.examSupervision
-            : SubstitutionPlanLocalizations.exam;
-        lineThrough = false;
+        if (SubjectsWidget.of(context).feature.loader.hasLoadedData) {
+          infoText.add(SubjectsWidget.of(context)
+              .feature
+              .loader
+              .data
+              .getSubject(substitution.changed.subjectID));
+          subtitle = Static.user.isTeacher()
+              ? SubstitutionPlanLocalizations.examSupervision
+              : SubstitutionPlanLocalizations.exam;
+          lineThrough = false;
+        }
         break;
       case 1:
         infoText.add(SubstitutionPlanLocalizations.freeLesson);
@@ -102,10 +117,13 @@ class SubstitutionPlanRow extends PreferredSize {
               )
             : keepUnitPadding ? Container() : null,
         title: Text(
-          Static.subjects.hasLoadedData
+          SubjectsWidget.of(context).feature.loader.hasLoadedData
               ? (infoText.isNotEmpty
                   ? infoText.join(' ')
-                  : Static.subjects.data
+                  : SubjectsWidget.of(context)
+                      .feature
+                      .loader
+                      .data
                       .getSubject(substitution.original.subjectID))
               : '',
           style: TextStyle(

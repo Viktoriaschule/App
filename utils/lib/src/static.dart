@@ -1,4 +1,3 @@
-import 'loading/subjects_loader.dart';
 import 'loading/tags_loader.dart';
 import 'loading/updates.dart';
 import 'plugins/firebase/firebase.dart';
@@ -19,9 +18,6 @@ class Static {
 
   // ignore: public_member_api_docs
   static UpdatesLoader updates = UpdatesLoader();
-
-  // ignore: public_member_api_docs
-  static SubjectsLoader subjects = SubjectsLoader();
 
   // ignore: public_member_api_docs
   static FirebaseMessaging firebaseMessaging = FirebaseMessaging();

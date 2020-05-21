@@ -14,10 +14,10 @@ import 'src/nextcloud_talk_page.dart';
 /// The Nextcloud Talk feature
 class NextcloudTalkFeature implements Feature {
   @override
-  String get name => NextcloudTalkLocalizations.name;
+  String name = NextcloudTalkLocalizations.name;
 
   @override
-  String get featureKey => NextcloudTalkKeys.nextcloudTalk;
+  String featureKey = NextcloudTalkKeys.nextcloudTalk;
 
   @override
   List<String> dependsOn(BuildContext context) => null;
@@ -26,10 +26,10 @@ class NextcloudTalkFeature implements Feature {
   NextcloudTalkLoader loader = NextcloudTalkLoader();
 
   @override
-  NotificationsHandler get notificationsHandler => null;
+  NotificationsHandler notificationsHandler;
 
   @override
-  TagsHandler get tagsHandler => null;
+  TagsHandler tagsHandler;
 
   @override
   InfoCard getInfoCard(DateTime date, double maxHeight) =>
@@ -58,6 +58,9 @@ class NextcloudTalkFeature implements Feature {
   Subscription subscribeToDataUpdates(
           EventBus eventBus, Function(ChangedEvent p1) callback) =>
       eventBus.respond<NextcloudTalkUpdateEvent>(callback);
+
+  @override
+  bool hasGUI = true;
 }
 
 // ignore: public_member_api_docs

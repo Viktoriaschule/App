@@ -7,6 +7,7 @@ dependencies:
   flutter:
     sdk: flutter
   nextcloud:
+    path: ../../../../nextcloud
   dio:
   url_launcher:
   after_layout:

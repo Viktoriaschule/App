@@ -23,6 +23,7 @@ abstract class Feature {
     @required this.name,
     @required this.notificationsHandler,
     @required this.tagsHandler,
+    @required this.hasGUI,
   });
 
   /// The key that should be used for this feature
@@ -32,6 +33,11 @@ abstract class Feature {
   ///
   /// This will be the user readable title in the app bar and in any places in the app
   final String name;
+
+  /// If the feature has a GUI this should be set
+  ///
+  /// If no GUI is present the info card and page are never requested
+  final bool hasGUI;
 
   /// A list of all features that must be included and loaded first to use this feature
   List<String> dependsOn(BuildContext context);

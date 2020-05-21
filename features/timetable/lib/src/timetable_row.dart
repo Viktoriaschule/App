@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:subjects/subjects.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
@@ -74,9 +75,15 @@ class TimetableRow extends PreferredSize {
             )
           : null,
       title: Text(
-        Static.subjects.hasLoadedData && subject.subjectID != 'none'
-            ? Static.subjects.data.getSubject(subject.subjectID)
-            : TimetableLocalizations.notSelected,
+        SubjectsWidget.of(context).feature.loader.hasLoadedData
+            ? subject.subjectID != 'none'
+                ? SubjectsWidget.of(context)
+                    .feature
+                    .loader
+                    .data
+                    .getSubject(subject.subjectID)
+                : TimetableLocalizations.notSelected
+            : '',
         style: TextStyle(
           fontSize: 17,
           color: showCenterInfo
