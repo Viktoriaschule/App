@@ -42,7 +42,7 @@ class _HistoryLoader extends Loader<DeviceHistory> {
         );
 
   @override
-  bool get alwaysPost => true;
+  HttpMethod get forceMethod => HttpMethod.POST;
 
   @override
   BaseUrl get baseUrl => BaseUrl.viktoriaManagement;

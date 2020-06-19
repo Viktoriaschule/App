@@ -81,7 +81,7 @@ class TagsLoader extends Loader<Tags> {
         context,
         force: true,
         body: tags,
-        post: true,
+        method: HttpMethod.POST,
         store: false,
       );
       // ignore: empty_catches

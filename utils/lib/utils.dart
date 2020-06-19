@@ -35,8 +35,8 @@ enum BaseUrl {
 }
 
 const _baseUrls = [
-  'https://api.app.vs-ac.de',
-  'https://api.management.vs-ac.de',
+  'http://192.168.178.39:8000',
+  'http://192.168.178.39:9000',
 ];
 
 // ignore: public_member_api_docs
@@ -173,6 +173,20 @@ Future setupDateFormats() => initializeDateFormatting('de');
 int weekNumber(DateTime date) {
   final dayOfYear = int.parse(DateFormat('D').format(date));
   return ((dayOfYear - date.weekday + 10) / 7).floor();
+}
+
+// ignore: public_member_api_docs
+extension DayComparison on DateTime {
+  /// Checks if the date is on the same day
+  bool isSameDay(DateTime date) {
+    // Both times must be in the same timezone
+    date = date.toUtc();
+    final cDate = toUtc();
+
+    return date.year == cDate.year &&
+        date.month == cDate.month &&
+        date.day == cDate.day;
+  }
 }
 
 /// Get the Monday of the week

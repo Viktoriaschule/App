@@ -1,0 +1,17 @@
+name: reservations
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  material_design_icons_flutter:
+  timetable:
+    path: ../../features/timetable
+  ipad_list:
+    path: ../../features/ipad_list
+  utils:
+    path: ../../utils
+  widgets:
+    path: ../../widgets

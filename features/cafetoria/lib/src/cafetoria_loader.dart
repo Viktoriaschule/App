@@ -8,7 +8,7 @@ class CafetoriaLoader extends Loader<Cafetoria> {
   CafetoriaLoader() : super(CafetoriaKeys.cafetoria, CafetoriaUpdateEvent());
 
   @override
-  bool get alwaysPost => true;
+  HttpMethod get forceMethod => HttpMethod.POST;
 
   @override
   bool get forceUpdate =>
@@ -17,7 +17,7 @@ class CafetoriaLoader extends Loader<Cafetoria> {
       Static.storage.getString(CafetoriaKeys.cafetoriaPassword) != null;
 
   @override
-  Map<String, String> get postBody => {
+  Map<String, String> get defaultBody => {
         'id': Static.storage.getString(CafetoriaKeys.cafetoriaId),
         'pin': Static.storage.getString(CafetoriaKeys.cafetoriaPassword)
       };

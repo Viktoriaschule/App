@@ -26,4 +26,7 @@ class TimetableLocalizations {
 
   // ignore: public_member_api_docs
   static const noSubjects = 'Kein Unterricht';
+
+  // ignore: public_member_api_docs
+  static const selectSubject = 'Stunde auswählen';
 }

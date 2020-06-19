@@ -7,6 +7,8 @@ features:
     full_name: Timetable
   - name: substitution_plan
     full_name: SubstitutionPlan
+  - name: reservations
+    full_name: Reservations
   - name: ipad_list
     full_name: IPadList
 firebase_web:

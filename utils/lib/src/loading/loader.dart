@@ -10,23 +10,35 @@ import '../static.dart';
 import 'updates_model.dart';
 
 // ignore: public_member_api_docs
+enum HttpMethod {
+  // ignore: constant_identifier_names, public_member_api_docs
+  GET,
+  // ignore: constant_identifier_names, public_member_api_docs
+  POST,
+  // ignore: public_member_api_docs, constant_identifier_names
+  PUT,
+  // ignore: public_member_api_docs, constant_identifier_names
+  DELETE,
+}
+
+// ignore: public_member_api_docs
 abstract class Loader<LoaderType> {
   // ignore: public_member_api_docs
   Loader(this.key, this.event);
 
   // ignore: public_member_api_docs
-  final String key;
+  String key;
 
   /// The download event
   final ChangedEvent event;
 
   /// Sets if all request should be posts
   ///
-  /// If this is activated, the [postBody] function must be overrode to set the post body
-  bool alwaysPost = false;
+  /// If this is activated, the [defaultBody] function must be overrode to set the post body
+  HttpMethod get forceMethod => null;
 
-  /// Defines the post body in case that [alwaysPost] is true
-  dynamic get postBody => null;
+  /// Defines the default request body in case the http method is not GET
+  dynamic get defaultBody => null;
 
   // ignore: public_member_api_docs
   LoaderType parsedData;
@@ -48,7 +60,8 @@ abstract class Loader<LoaderType> {
 
   bool _loadedFromOnline = false;
 
-  LoaderResponse<LoaderType> _fromJSON(String rawJson) {
+  /// Tries to parse the json into the model structure
+  LoaderResponse<LoaderType> tryParseJSON(String rawJson) {
     try {
       final data = fromJSON(json.decode(rawJson));
       return LoaderResponse<LoaderType>(
@@ -83,7 +96,7 @@ abstract class Loader<LoaderType> {
     if (hasStoredData) {
       preLoad(context);
       _rawData = Static.storage.getString(key);
-      final parsed = _fromJSON(_rawData);
+      final parsed = tryParseJSON(_rawData);
       parsedData = parsed.data;
       if (parsed.statusCode != StatusCode.success) {
         Static.storage.remove(key);
@@ -101,41 +114,49 @@ abstract class Loader<LoaderType> {
     String username,
     String password,
     bool force = false,
-    bool post = false,
+    HttpMethod method = HttpMethod.GET,
     Map<String, dynamic> body,
+    Map<String, dynamic> queryParameters,
     bool store = true,
     bool showLoginOnWrongCredentials = true,
+    String path,
   }) async =>
       (await _load(
         context,
         username: username,
         password: password,
         force: force,
-        post: post,
+        method: method,
         body: body,
+        queryParameters: queryParameters,
         store: store,
         showLoginOnWrongCredentials: showLoginOnWrongCredentials,
+        path: path,
       ))
           .statusCode;
 
   /// Fetches the data
   Future<LoaderResponse<LoaderType>> fetch(
     BuildContext context, {
-    String username,
-    String password,
-    bool post = false,
-    Map<String, dynamic> body,
-    bool showLoginOnWrongCredentials = true,
-  }) =>
+        String username,
+        String password,
+        HttpMethod method = HttpMethod.GET,
+        Map<String, dynamic> body,
+        Map<String, dynamic> queryParameters,
+        bool showLoginOnWrongCredentials = true,
+        String path,
+      }) =>
       _load(
         context,
         username: username,
         password: password,
         force: true,
-        post: post,
+        method: method,
         body: body,
+        queryParameters: queryParameters,
         store: false,
         showLoginOnWrongCredentials: showLoginOnWrongCredentials,
+        path: path,
       );
 
   /// A function that can be override to process some operations with a valid context before the load function starts
@@ -149,14 +170,16 @@ abstract class Loader<LoaderType> {
   /// Download the data from the api and returns the status code
   Future<LoaderResponse<LoaderType>> _load(
     BuildContext context, {
-    String username,
-    String password,
-    bool force = false,
-    bool post = false,
-    Map<String, dynamic> body,
-    bool store = true,
-    bool showLoginOnWrongCredentials = true,
-  }) async {
+        String username,
+        String password,
+        bool force = false,
+        HttpMethod method = HttpMethod.GET,
+        Map<String, dynamic> body,
+        Map<String, dynamic> queryParameters,
+        bool store = true,
+        bool showLoginOnWrongCredentials = true,
+        String path,
+      }) async {
     if (_loadedFromOnline && !force) {
       return LoaderResponse(statusCode: StatusCode.success);
     }
@@ -185,29 +208,49 @@ abstract class Loader<LoaderType> {
         ..options = BaseOptions(
           headers: {
             'authorization':
-                'Basic ${base64.encode(utf8.encode('$username:$password'))}',
+            'Basic ${base64.encode(utf8.encode('$username:$password'))}',
           },
           responseType: ResponseType.plain,
           connectTimeout: 3000,
           receiveTimeout: 3000,
         );
       Response response;
-      if (alwaysPost || post) {
-        response = await dio.post(
-          '${baseUrl.url}/$key',
-          data: body ?? postBody,
-        );
-      } else {
-        response = await dio.get(
-          '${baseUrl.url}/$key',
-        );
+      final url = '${baseUrl.url}/${path ?? key}';
+      switch (forceMethod ?? method) {
+        case HttpMethod.GET:
+          response = await dio.get(
+            url,
+            queryParameters: queryParameters,
+          );
+          break;
+        case HttpMethod.POST:
+          response = await dio.post(
+            url,
+            data: body ?? defaultBody,
+            queryParameters: queryParameters,
+          );
+          break;
+        case HttpMethod.PUT:
+          response = await dio.put(
+            url,
+            data: body ?? defaultBody,
+            queryParameters: queryParameters,
+          );
+          break;
+        case HttpMethod.DELETE:
+          response = await dio.delete(
+            url,
+            data: body ?? defaultBody,
+            queryParameters: queryParameters,
+          );
+          break;
       }
       final successfully = response.statusCode == 200;
       final statusCodes = [getStatusCode(response.statusCode)];
       if (store) {
         if (successfully) {
           _rawData = response.toString();
-          final parsed = _fromJSON(_rawData);
+          final parsed = tryParseJSON(_rawData);
           parsedData = parsed.data ?? parsedData;
           statusCodes.add(parsed.statusCode);
           if (parsed.statusCode == StatusCode.success) {
@@ -225,7 +268,7 @@ abstract class Loader<LoaderType> {
       }
       LoaderType data;
       if (!store) {
-        data = _fromJSON(response.toString())?.data;
+        data = tryParseJSON(response.toString())?.data;
       }
 
       try {
@@ -236,16 +279,20 @@ abstract class Loader<LoaderType> {
         statusCodes.add(StatusCode.wrongFormat);
       }
 
-      afterLoad();
       _sendLoadedEvent(loadingStates, eventBus);
       final status = reduceStatusCodes(statusCodes);
       if (status != StatusCode.success) {
         print(
-            'Did not successfully updated $key: $status (http: ${response.statusCode})');
+            'Did not successfully updated $key: $status (http: ${response
+                .statusCode})');
       }
       print(
-          'Loaded $key: ${DateTime.now().difference(start).inMilliseconds}ms');
-      return LoaderResponse<LoaderType>(data: data, statusCode: status);
+          'Loaded $key: ${DateTime
+              .now()
+              .difference(start)
+              .inMilliseconds}ms');
+      return LoaderResponse<LoaderType>(
+          data: data, statusCode: status, rawData: response.toString());
     } on DioError catch (e) {
       afterLoad();
       _sendLoadedEvent(loadingStates, eventBus);
@@ -319,11 +366,14 @@ abstract class Loader<LoaderType> {
 // ignore: public_member_api_docs
 class LoaderResponse<T> {
   // ignore: public_member_api_docs
-  LoaderResponse({this.data, this.statusCode});
+  LoaderResponse({this.data, this.statusCode, this.rawData});
 
-  // ignore: public_member_api_docs
+  /// The parsed data
   final T data;
 
-  // ignore: public_member_api_docs
+  /// The raw http response
+  final String rawData;
+
+  /// The request http status
   final StatusCode statusCode;
 }
