@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:widgets/src/list_group.dart';
+
+import 'list_group.dart';
 
 /// The info card for a feature
 abstract class InfoCard extends StatefulWidget {

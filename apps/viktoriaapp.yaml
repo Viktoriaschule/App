@@ -15,6 +15,7 @@ features:
     full_name: Cafetoria
   - name: aixformation
     full_name: AiXformation
+  # Features without GUI
   - name: subjects
     full_name: Subjects
 firebase_web:

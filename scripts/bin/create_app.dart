@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:mustache_template/mustache.dart';
 import 'package:process_run/process_run.dart';
 import 'package:process_run/which.dart';
@@ -28,7 +27,7 @@ Future main(List<String> arguments) async {
     final YamlMap greenIcons = config['logo_green'];
     final String whiteIcon = config['logo_white'];
     final List<Feature> features = config['features']
-        .map((e) => Feature(e['name'], e['full_name']))
+        .map((e) => Feature.fromMap(e))
         .toList()
         .cast<Feature>();
     final googleServicesPath = '$baseDir/apps/$name-google-services.json';
@@ -95,33 +94,211 @@ Future main(List<String> arguments) async {
       File('${appDir.path}/$path').deleteSync(recursive: true);
     }
     log('Copying template files');
-    File('${appDir.path}/android/app/src/main/java/${package.assertReplaceAll(
-        '.', '/')}/Application.java')
+    File('${appDir.path}/android/app/src/main/java/${package.assertReplaceAll('.', '/')}/Application.java')
         .writeAsStringSync(Template(
-        File('$baseDir/scripts/templates/Application.java.tmpl')
-            .readAsStringSync())
-        .renderString(templateData));
-    File('${appDir.path}/android/app/src/main/java/${package.assertReplaceAll(
-        '.', '/')}/MainActivity.java')
+                File('$baseDir/scripts/templates/Application.java.tmpl')
+                    .readAsStringSync())
+            .renderString(templateData));
+    File('${appDir.path}/android/app/src/main/java/${package.assertReplaceAll('.', '/')}/MainActivity.java')
         .writeAsStringSync(Template(
-        File('$baseDir/scripts/templates/MainActivity.java.tmpl')
-            .readAsStringSync())
-        .renderString(templateData));
+                File('$baseDir/scripts/templates/MainActivity.java.tmpl')
+                    .readAsStringSync())
+            .renderString(templateData));
     File('${appDir.path}/lib/main.dart').writeAsStringSync(Template(
-        File('$baseDir/scripts/templates/main.dart.tmpl')
-            .readAsStringSync())
+            File('$baseDir/scripts/templates/main.dart.tmpl')
+                .readAsStringSync())
         .renderString(templateData));
     File('${appDir.path}/pubspec.yaml').writeAsStringSync(Template(
-        File('$baseDir/scripts/templates/pubspec.yaml.tmpl')
-            .readAsStringSync())
+            File('$baseDir/scripts/templates/pubspec.yaml.tmpl')
+                .readAsStringSync())
         .renderString(templateData));
     File('${appDir.path}/web/manifest.json').writeAsStringSync(Template(
-        File('$baseDir/scripts/templates/manifest.json.tmpl')
-            .readAsStringSync())
+            File('$baseDir/scripts/templates/manifest.json.tmpl')
+                .readAsStringSync())
         .renderString(templateData));
     File('${appDir.path}/web/sw.js').writeAsStringSync(
         File('$baseDir/scripts/templates/sw.js.tmpl').readAsStringSync());
 
+    log('Modifying Android sources');
+    final androidManifestPath =
+        '${appDir.path}/android/app/src/main/AndroidManifest.xml';
+    final androidManifestFile = File(androidManifestPath);
+    final content = androidManifestFile.readAsStringSync();
+    final lineEnding = !content.contains('\r')
+        ? '\n'
+        : content.contains('\r\n') ? '\r\n' : '\n';
+    androidManifestFile.writeAsStringSync((content
+            .assertReplaceAll(
+              'android:name="io.flutter.app.FlutterApplication"',
+              'android:name=".Application"',
+            )
+            .assertReplaceAll(
+              'android:label="${package.split('.').last}"',
+              'android:label="$fullName"',
+            )
+            .assertReplaceAll(
+              [
+                '            <intent-filter>',
+                '                <action android:name="android.intent.action.MAIN"/>',
+                '                <category android:name="android.intent.category.LAUNCHER"/>',
+                '            </intent-filter>',
+              ].join(lineEnding),
+              [
+                '            <intent-filter>',
+                '                <action android:name="android.intent.action.MAIN"/>',
+                '                <action android:name="android.intent.action.VIEW"/>',
+                '                <category android:name="android.intent.category.LAUNCHER"/>',
+                '            </intent-filter>',
+                '            <intent-filter>',
+                '                <action android:name="FLUTTER_NOTIFICATION_CLICK"/>',
+                '                <category android:name="android.intent.category.DEFAULT"/>',
+                '            </intent-filter>',
+              ].join(lineEnding),
+            )
+            .split(lineEnding)
+              ..insert(
+                  2,
+                  [
+                    '    <uses-permission android:name="android.permission.INTERNET"/>',
+                    '    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>',
+                    '    <uses-permission android:name="android.permission.WAKE_LOCK"/>',
+                    '    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>',
+                  ].join(lineEnding)))
+        .join(lineEnding));
+
+    File('$baseDir/frame/android/gradle/wrapper/gradle-wrapper.properties')
+        .copySync(
+            '${appDir.path}/android/gradle/wrapper/gradle-wrapper.properties');
+
+    final androidBuildGradlePath = '${appDir.path}/android/build.gradle';
+    File(androidBuildGradlePath).writeAsStringSync(
+        (File(androidBuildGradlePath).readAsStringSync().split(lineEnding)
+              ..insert(8,
+                  '        classpath \'com.google.gms:google-services:4.3.3\''))
+            .join(lineEnding));
+
+    final appBuildGradlePath = '${appDir.path}/android/app/build.gradle';
+    final appBuildGradleContent = File(appBuildGradlePath)
+        .readAsStringSync()
+        .assertReplaceAll(
+          'android {',
+          [
+            'def keystoreProperties = new Properties()',
+            'def keystorePropertiesFile = rootProject.file(\'key.properties\')',
+            'if (keystorePropertiesFile.exists()) {',
+            '  keystoreProperties.load(new FileInputStream(keystorePropertiesFile))',
+            '}',
+            '',
+            'android {',
+          ].join(lineEnding),
+        )
+        .assertReplaceAll(
+          '        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).$lineEnding',
+          '',
+        )
+        .assertReplaceAll(
+          [
+            '    buildTypes {',
+            '        release {',
+            '            // TODO: Add your own signing config for the release build.',
+            '            // Signing with the debug keys for now, so `flutter run --release` works.',
+            '            signingConfig signingConfigs.debug',
+            '        }',
+            '    }',
+          ].join(lineEnding),
+          [
+            '    signingConfigs {',
+            '        release {',
+            '            keyAlias keystoreProperties[\'keyAlias\']',
+            '            keyPassword keystoreProperties[\'keyPassword\']',
+            '            storeFile file(keystoreProperties[\'storeFile\'])',
+            '            storePassword keystoreProperties[\'storePassword\']',
+            '        }',
+            '    }',
+            '    buildTypes {',
+            '        release {',
+            '            signingConfig signingConfigs.release',
+            '            shrinkResources true',
+            '            minifyEnabled true',
+            '            proguardFiles getDefaultProguardFile(\'proguard-android.txt\'),',
+            '                    \'proguard-rules.pro\'',
+            '        }',
+            '    }',
+          ].join(lineEnding),
+        );
+    File(appBuildGradlePath)
+        .writeAsStringSync((appBuildGradleContent.split(lineEnding)
+              ..addAll([
+                'dependencies {',
+                '    implementation \'com.google.firebase:firebase-messaging:20.1.1\'',
+                '}',
+                '',
+                'apply plugin: \'com.google.gms.google-services\''
+              ]))
+            .join(lineEnding));
+
+    log('Modifying web sources');
+    final indexHtmlPath = '${appDir.path}/web/index.html';
+    File(indexHtmlPath).writeAsStringSync(
+      File(indexHtmlPath)
+          .readAsStringSync()
+          .assertReplaceAll(
+            '</head>',
+            [
+              '  <meta name="theme-color" content="#64A441"/>',
+              '  <script src="https://www.gstatic.com/firebasejs/6.6.2/firebase-app.js"></script>',
+              '  <script src="https://www.gstatic.com/firebasejs/6.6.2/firebase-messaging.js"></script>',
+              '</head>',
+            ].join(lineEnding),
+          )
+          .assertReplaceAll('<title>${package.split('.').last}</title>',
+              '<title>$fullName</title>')
+          .assertReplaceAll(
+              'content="${package.split('.').last}"', 'content="$fullName"')
+          .assertReplaceAll(
+              'content="A new Flutter project."', 'content="$fullName"')
+          .assertReplaceAll(
+            [
+              '    if (\'serviceWorker\' in navigator) {',
+              '      window.addEventListener(\'load\', function () {',
+              '        navigator.serviceWorker.register(\'flutter_service_worker.js\');',
+              '      });',
+              '    }',
+            ].join(lineEnding),
+            [
+              '    if (window.location.hash.length > 2) {',
+              '      window.location.hash = \'#/\';',
+              '      window.location.reload();',
+              '    }',
+              '    if (\'serviceWorker\' in navigator) {',
+              '      window.addEventListener(\'load\', function () {',
+              '        navigator.serviceWorker.register(\'flutter_service_worker.js\');',
+              '        const firebaseConfig = {',
+              ...firebaseWeb.keys
+                  .map((e) => '          $e: \'${firebaseWeb[e]}\','),
+              '        };',
+              '        firebase.initializeApp(firebaseConfig);',
+              '        navigator.serviceWorker.register(\'sw.js\')',
+              '          .then((registration) => {',
+              '            if (firebase.messaging() != null) {',
+              '              firebase.messaging().useServiceWorker(registration);',
+              '            }',
+              '          });',
+              '      });',
+              '      window.addEventListener(\'beforeinstallprompt\', (e) => {',
+              '        e.preventDefault();',
+              '        window.deferredPrompt = e;',
+              '      });',
+              '    }',
+            ].join(lineEnding),
+          ),
+    );
+
+    await run(
+      'flutter',
+      ['pub', 'upgrade'],
+      workingDirectory: appDir.path,
+    );
     if (whichSync('hover') != null) {
       log('Creating go-flutter config');
       await run(
@@ -141,18 +318,14 @@ Future main(List<String> arguments) async {
       );
       hoverConfig = hoverConfig.assertReplaceAll('_desktop', '');
       hoverConfigFile.writeAsStringSync(hoverConfig);
-      final plugins = [
-        'shared_preferences',
-        'package_info',
-        'url_launcher',
-        'path_provider'
-      ];
-      for (final plugin in plugins) {
-        File('${appDir.path}/go/cmd/import-$plugin-plugin.go')
-            .writeAsStringSync((await Dio().get(
-            'https://raw.githubusercontent.com/go-flutter-desktop/plugins/master/$plugin/import.go.tmpl'))
-            .toString());
-      }
+      await run(
+        'hover',
+        [
+          'plugins',
+          'get',
+        ],
+        workingDirectory: appDir.path,
+      );
       final formats = [
         'linux-deb',
         'linux-pkg',
@@ -184,187 +357,6 @@ Future main(List<String> arguments) async {
       );
     }
 
-    log('Modifying Android sources');
-    final androidManifestPath =
-        '${appDir.path}/android/app/src/main/AndroidManifest.xml';
-    final androidManifestFile = File(androidManifestPath);
-    final content = androidManifestFile.readAsStringSync();
-    final lineEnding = !content.contains('\r')
-        ? '\n'
-        : content.contains('\r\n') ? '\r\n' : '\n';
-    androidManifestFile.writeAsStringSync((content
-        .assertReplaceAll(
-      'android:name="io.flutter.app.FlutterApplication"',
-      'android:name=".Application"',
-    )
-        .assertReplaceAll(
-      'android:label="${package
-          .split('.')
-          .last}"',
-      'android:label="$fullName"',
-    )
-        .assertReplaceAll(
-      [
-        '            <intent-filter>',
-        '                <action android:name="android.intent.action.MAIN"/>',
-        '                <category android:name="android.intent.category.LAUNCHER"/>',
-        '            </intent-filter>',
-      ].join(lineEnding),
-      [
-        '            <intent-filter>',
-        '                <action android:name="android.intent.action.MAIN"/>',
-        '                <action android:name="android.intent.action.VIEW"/>',
-        '                <category android:name="android.intent.category.LAUNCHER"/>',
-        '            </intent-filter>',
-        '            <intent-filter>',
-        '                <action android:name="FLUTTER_NOTIFICATION_CLICK"/>',
-        '                <category android:name="android.intent.category.DEFAULT"/>',
-        '            </intent-filter>',
-      ].join(lineEnding),
-    )
-        .split(lineEnding)
-      ..insert(
-          2,
-          [
-            '    <uses-permission android:name="android.permission.INTERNET"/>',
-            '    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>',
-            '    <uses-permission android:name="android.permission.WAKE_LOCK"/>',
-            '    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>',
-          ].join(lineEnding)))
-        .join(lineEnding));
-
-    File('$baseDir/frame/android/gradle/wrapper/gradle-wrapper.properties')
-        .copySync(
-        '${appDir.path}/android/gradle/wrapper/gradle-wrapper.properties');
-
-    final androidBuildGradlePath = '${appDir.path}/android/build.gradle';
-    File(androidBuildGradlePath).writeAsStringSync(
-        (File(androidBuildGradlePath).readAsStringSync().split(lineEnding)
-          ..insert(8,
-              '        classpath \'com.google.gms:google-services:4.3.3\''))
-            .join(lineEnding));
-
-    final appBuildGradlePath = '${appDir.path}/android/app/build.gradle';
-    final appBuildGradleContent = File(appBuildGradlePath)
-        .readAsStringSync()
-        .assertReplaceAll(
-      'android {',
-      [
-        'def keystoreProperties = new Properties()',
-        'def keystorePropertiesFile = rootProject.file(\'key.properties\')',
-        'if (keystorePropertiesFile.exists()) {',
-        '  keystoreProperties.load(new FileInputStream(keystorePropertiesFile))',
-        '}',
-        '',
-        'android {',
-      ].join(lineEnding),
-    )
-        .assertReplaceAll(
-      '        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).$lineEnding',
-      '',
-    )
-        .assertReplaceAll(
-      [
-        '    buildTypes {',
-        '        release {',
-        '            // TODO: Add your own signing config for the release build.',
-        '            // Signing with the debug keys for now, so `flutter run --release` works.',
-        '            signingConfig signingConfigs.debug',
-        '        }',
-        '    }',
-      ].join(lineEnding),
-      [
-        '    signingConfigs {',
-        '        release {',
-        '            keyAlias keystoreProperties[\'keyAlias\']',
-        '            keyPassword keystoreProperties[\'keyPassword\']',
-        '            storeFile file(keystoreProperties[\'storeFile\'])',
-        '            storePassword keystoreProperties[\'storePassword\']',
-        '        }',
-        '    }',
-        '    buildTypes {',
-        '        release {',
-        '            signingConfig signingConfigs.release',
-        '            shrinkResources true',
-        '            minifyEnabled true',
-        '            proguardFiles getDefaultProguardFile(\'proguard-android.txt\'),',
-        '                    \'proguard-rules.pro\'',
-        '        }',
-        '    }',
-      ].join(lineEnding),
-    );
-    File(appBuildGradlePath)
-        .writeAsStringSync((appBuildGradleContent.split(lineEnding)
-      ..addAll([
-        'dependencies {',
-        '    implementation \'com.google.firebase:firebase-messaging:20.1.1\'',
-        '}',
-        '',
-        'apply plugin: \'com.google.gms.google-services\''
-      ]))
-        .join(lineEnding));
-
-    log('Modifying web sources');
-    final indexHtmlPath = '${appDir.path}/web/index.html';
-    File(indexHtmlPath).writeAsStringSync(
-      File(indexHtmlPath)
-          .readAsStringSync()
-          .assertReplaceAll(
-        '</head>',
-        [
-          '  <meta name="theme-color" content="#64A441"/>',
-          '  <script src="https://www.gstatic.com/firebasejs/6.6.2/firebase-app.js"></script>',
-          '  <script src="https://www.gstatic.com/firebasejs/6.6.2/firebase-messaging.js"></script>',
-          '</head>',
-        ].join(lineEnding),
-      )
-          .assertReplaceAll('<title>${package
-          .split('.')
-          .last}</title>',
-          '<title>$fullName</title>')
-          .assertReplaceAll(
-          'content="${package
-              .split('.')
-              .last}"', 'content="$fullName"')
-          .assertReplaceAll(
-          'content="A new Flutter project."', 'content="$fullName"')
-          .assertReplaceAll(
-        [
-          '    if (\'serviceWorker\' in navigator) {',
-          '      window.addEventListener(\'load\', function () {',
-          '        navigator.serviceWorker.register(\'flutter_service_worker.js\');',
-          '      });',
-          '    }',
-        ].join(lineEnding),
-        [
-          '    if (window.location.hash.length > 2) {',
-          '      window.location.hash = \'#/\';',
-          '      window.location.reload();',
-          '    }',
-          '    if (\'serviceWorker\' in navigator) {',
-          '      window.addEventListener(\'load\', function () {',
-          '        navigator.serviceWorker.register(\'flutter_service_worker.js\');',
-          '        const firebaseConfig = {',
-          ...firebaseWeb.keys
-              .map((e) => '          $e: \'${firebaseWeb[e]}\','),
-          '        };',
-          '        firebase.initializeApp(firebaseConfig);',
-          '        navigator.serviceWorker.register(\'sw.js\')',
-          '          .then((registration) => {',
-          '            if (firebase.messaging() != null) {',
-          '              firebase.messaging().useServiceWorker(registration);',
-          '            }',
-          '          });',
-          '      });',
-          '      window.addEventListener(\'beforeinstallprompt\', (e) => {',
-          '        e.preventDefault();',
-          '        window.deferredPrompt = e;',
-          '      });',
-          '    }',
-        ].join(lineEnding),
-      ),
-    );
-
     log('Copying icons');
     File('${appDir.path}/icons_green.yaml').writeAsStringSync([
       'flutter_icons:',
@@ -394,8 +386,12 @@ Future main(List<String> arguments) async {
     // Create app icons
     await run(
       'flutter',
-      ['pub', 'get'],
-      workingDirectory: appDir.path,
+      [
+        'pub',
+        'global',
+        'activate',
+        'flutter_launcher_icons',
+      ],
     );
     await run(
       'flutter',
@@ -430,19 +426,19 @@ Future main(List<String> arguments) async {
     log('Creating run configurations');
     File('$baseDir/.idea/runConfigurations/${fullName}_Debug.xml')
         .writeAsStringSync(Template(File(
-        '$baseDir/scripts/templates/RunConfigurationDebug.xml.tmpl')
-        .readAsStringSync())
-        .renderString(templateData));
+                    '$baseDir/scripts/templates/RunConfigurationDebug.xml.tmpl')
+                .readAsStringSync())
+            .renderString(templateData));
     File('$baseDir/.idea/runConfigurations/${fullName}_Release.xml')
         .writeAsStringSync(Template(File(
-        '$baseDir/scripts/templates/RunConfigurationRelease.xml.tmpl')
-        .readAsStringSync())
-        .renderString(templateData));
+                    '$baseDir/scripts/templates/RunConfigurationRelease.xml.tmpl')
+                .readAsStringSync())
+            .renderString(templateData));
     File('$baseDir/.idea/runConfigurations/${fullName}_Profile.xml')
         .writeAsStringSync(Template(File(
-        '$baseDir/scripts/templates/RunConfigurationProfile.xml.tmpl')
-        .readAsStringSync())
-        .renderString(templateData));
+                    '$baseDir/scripts/templates/RunConfigurationProfile.xml.tmpl')
+                .readAsStringSync())
+            .renderString(templateData));
 
     await run(
       'git',
@@ -459,14 +455,15 @@ Future main(List<String> arguments) async {
 }
 
 class Feature {
-  Feature(this.name,
-      this.fullName,);
+  Feature(
+    this.name,
+    this.fullName,
+  );
 
   factory Feature.fromMap(YamlMap map) =>
       Feature(map['name'], map['full_name']);
 
-  Map<String, String> get toMap =>
-      {
+  Map<String, dynamic> get toMap => {
         'name': name,
         'fullName': fullName,
       };

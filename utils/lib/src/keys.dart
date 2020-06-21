@@ -51,4 +51,7 @@ class Keys {
 
   // ignore: public_member_api_docs
   static const String design = 'design';
+
+  // ignore: public_member_api_docs
+  static const rsaPrivateKey = 'rsaPrivateKey';
 }

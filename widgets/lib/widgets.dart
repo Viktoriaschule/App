@@ -1,5 +1,7 @@
 library widgets;
 
+export 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
 export 'src/battery_indicator.dart';
 export 'src/custom_app_bar.dart';
 export 'src/custom_bottom_navigation.dart';

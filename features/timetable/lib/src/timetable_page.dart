@@ -2,6 +2,7 @@ import 'package:cafetoria/cafetoria.dart';
 import 'package:calendar/calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'package:subjects/subjects.dart';
 import 'package:substitution_plan/substitution_plan.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
@@ -60,7 +61,8 @@ class _TimetablePageState extends Interactor<TimetablePage> {
         loadingKeys: [
           TimetableKeys.timetable,
           SubstitutionPlanKeys.substitutionPlan,
-          Keys.tags
+          SubjectsKeys.subjects,
+          Keys.tags,
         ],
       ),
       body: CustomHero(

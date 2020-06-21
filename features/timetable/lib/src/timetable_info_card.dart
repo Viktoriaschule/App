@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'package:subjects/subjects.dart';
 import 'package:substitution_plan/substitution_plan.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
@@ -53,6 +54,7 @@ class _TimetableInfoCardState extends InfoCardState<TimetableInfoCard> {
     return ListGroup(
       loadingKeys: const [
         TimetableKeys.timetable,
+        SubjectsKeys.subjects,
       ],
       title:
           '${TimetableLocalizations.nextClasses} - ${weekdays[widget.date.weekday - 1]}',

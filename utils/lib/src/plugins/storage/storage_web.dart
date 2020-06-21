@@ -51,4 +51,8 @@ class Storage extends StorageBase {
 
   @override
   bool has(String key) => window.localStorage[key] != null;
+
+  @override
+  // ignore: missing_return
+  Future reload() {}
 }

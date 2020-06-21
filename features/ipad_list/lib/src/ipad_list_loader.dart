@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ipad_list/src/ipad_list_events.dart';
-import 'package:ipad_list/src/ipad_list_keys.dart';
-import 'package:ipad_list/src/ipad_list_model.dart';
 import 'package:utils/utils.dart';
+
+import 'ipad_list_events.dart';
+import 'ipad_list_keys.dart';
+import 'ipad_list_model.dart';
 
 /// IPad list loader class
 class IPadListLoader extends Loader<Devices> {

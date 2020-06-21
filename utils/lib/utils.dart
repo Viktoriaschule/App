@@ -2,7 +2,10 @@ library utils;
 
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:utils/src/localizations.dart';
+
+import 'src/localizations.dart';
+
+export 'package:flutter_event_bus/flutter_event_bus.dart';
 
 export 'src/crypt.dart';
 export 'src/events.dart';
@@ -32,11 +35,14 @@ enum BaseUrl {
   viktoriaApp,
   // ignore: public_member_api_docs
   viktoriaManagement,
+  // ignore: public_member_api_docs
+  nextcloud,
 }
 
 const _baseUrls = [
   'https://api.app.vs-ac.de',
   'https://api.management.vs-ac.de',
+  'https://nc.vs-ac.de',
 ];
 
 // ignore: public_member_api_docs

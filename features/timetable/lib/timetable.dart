@@ -45,6 +45,9 @@ class TimetableFeature implements Feature {
   final TimetableTagsHandler tagsHandler = TimetableTagsHandler();
 
   @override
+  List<Option> extraSettings;
+
+  @override
   InfoCard getInfoCard(DateTime date, double maxHeight) => TimetableInfoCard(
         date: date,
         maxHeight: maxHeight,

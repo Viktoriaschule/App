@@ -77,8 +77,8 @@ class _CustomGridTabsListState extends State<CustomGridTabsList> {
                     );
                   },
                   child: Stack(
-                    children: <Widget>[
-                      Container(
+                    children: [
+Container(
                         padding: EdgeInsets.all(15),
                         child: Icon(
                           Icons.info_outline,

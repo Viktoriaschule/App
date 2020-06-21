@@ -4,12 +4,12 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:nextcloud/nextcloud.dart';
-import 'package:nextcloud_talk/src/nextcloud_talk_keys.dart';
-import 'package:nextcloud_talk/src/nextcloud_talk_loader.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 import '../nextcloud_talk.dart';
+import 'nextcloud_talk_keys.dart';
+import 'nextcloud_talk_loader.dart';
 import 'nextcloud_talk_localizations.dart';
 import 'nextcloud_talk_message_widget.dart';
 import 'nextcloud_talk_model.dart';
@@ -223,59 +223,52 @@ class _NextcloudTalkChatPageState extends State<NextcloudTalkChatPage>
     );
   }
 
-  void _loadOnlineMessages({bool sendEvent = true}) {
+  Future _loadOnlineMessages({bool sendEvent = true}) async {
     final eventBus = EventBus.of(context);
     final loadingState = LoadingState.of(context);
     if (sendEvent) {
       _loader.sendLoadingEvent(loadingState, eventBus);
     }
-    widget.chat
-        .loadOnlineMessages(_loader.client.talk.messageManagement)
-        .then((messages) async {
+    try {
+      final messages = await widget.chat
+          .loadOnlineMessages(_loader.client.talk.messageManagement);
       if (mounted) {
         setState(() => _messages = messages);
-        try {
-          await _loader.client.talk.messageManagement.markAsRead(
-            widget.chat.token,
-            widget.chat.lastMessage.id,
-          );
-          await _loader.loadOnline(
-            context,
-            force: true,
-          );
-        } on RequestException catch (e, stacktrace) {
-          print(e);
-          print(stacktrace);
-        }
+        await _loader.client.talk.messageManagement.markAsRead(
+          widget.chat.token,
+          widget.chat.lastMessage.id,
+        );
+        await _loader.loadOnline(
+          context,
+          force: true,
+        );
       }
-      if (sendEvent) {
-        _loader.sendLoadedEvent(loadingState, eventBus);
-      }
-    });
+      // ignore: avoid_catches_without_on_clauses
+    } catch (e, stacktrace) {
+      print(e);
+      print(stacktrace);
+    }
+    if (sendEvent) {
+      _loader.sendLoadedEvent(loadingState, eventBus);
+    }
   }
 
-  void _handleSubmitted(String text) {
+  Future _handleSubmitted(String text) async {
     _textController.clear();
     setState(() {
       _isComposing = false;
     });
     _focusNode.requestFocus();
-    _scrollController.animateTo(
-      0,
-      curve: Curves.easeOut,
-      duration: const Duration(milliseconds: 300),
-    );
+    _scrollController.jumpTo(0);
     final loader = NextcloudTalkWidget.of(context).feature.loader
       ..sendLoadingEvent(LoadingState.of(context), EventBus.of(context));
-    loader.client.talk.messageManagement
-        .sendMessage(widget.chat.token, text)
-        .then((messages) {
-      if (mounted) {
-        _loadOnlineMessages();
-        _loader.loadOnline(context, force: true);
-      } else {
-        _loader.sendLoadedEvent(LoadingState.of(context), EventBus.of(context));
-      }
-    });
+    await loader.client.talk.messageManagement
+        .sendMessage(widget.chat.token, text);
+    if (mounted) {
+      await _loadOnlineMessages();
+      await _loader.loadOnline(context, force: true);
+    } else {
+      _loader.sendLoadedEvent(LoadingState.of(context), EventBus.of(context));
+    }
   }
 }

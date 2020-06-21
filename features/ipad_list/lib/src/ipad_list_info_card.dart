@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:ipad_list/ipad_list.dart';
-import 'package:ipad_list/src/ipad_list_events.dart';
-import 'package:ipad_list/src/ipad_list_localizations.dart';
-import 'package:ipad_list/src/ipad_list_page.dart';
-import 'package:ipad_list/src/ipad_list_row.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'ipad_list_events.dart';
 import 'ipad_list_group.dart';
 import 'ipad_list_keys.dart';
+import 'ipad_list_localizations.dart';
 import 'ipad_list_model.dart';
+import 'ipad_list_page.dart';
+import 'ipad_list_row.dart';
 
 // ignore: public_member_api_docs
 class IPadListInfoCard extends InfoCard {
@@ -55,10 +55,7 @@ class _IPadListInfoCardState extends InfoCardState<IPadListInfoCard> {
     }
 
     final cut = InfoCardUtils.cut(
-      getScreenSize(MediaQuery
-          .of(context)
-          .size
-          .width),
+      getScreenSize(MediaQuery.of(context).size.width),
       (sortMethod.isGrouped ? groups : devices).length,
     );
     return ListGroup(
@@ -73,7 +70,7 @@ class _IPadListInfoCardState extends InfoCardState<IPadListInfoCard> {
       actions: [
         NavigationAction(
           Icons.expand_more,
-              () {
+          () {
             Navigator.of(context).push(
               MaterialPageRoute<void>(builder: (context) => IPadListPage()),
             );
@@ -84,21 +81,17 @@ class _IPadListInfoCardState extends InfoCardState<IPadListInfoCard> {
         if (!loader.hasLoadedData ||
             (sortMethod.isGrouped ? groups.isEmpty : devices.isEmpty))
           EmptyList(title: IPadListLocalizations.noIPads)
+        else if (!sortMethod.isGrouped)
+          ...(devices.length > cut ? devices.sublist(0, cut) : devices)
+              .map((iPad) => IPadRow(iPad: iPad))
+              .toList()
+              .cast<PreferredSize>()
         else
-          if (!sortMethod.isGrouped)
-            ...(devices.length > cut ? devices.sublist(0, cut) : devices)
-                .map((iPad) => IPadRow(iPad: iPad))
-                .toList()
-                .cast<PreferredSize>()
-          else
-            ...(groups.length > cut ? groups.sublist(0, cut) : groups)
-                .map((group) =>
-                IPadGroupRow(
-                  sortMethod: sortMethod,
-                  iPads: group,
-                  backgroundColor: Theme
-                      .of(context)
-                      .primaryColor,
+          ...(groups.length > cut ? groups.sublist(0, cut) : groups)
+              .map((group) => IPadGroupRow(
+                    sortMethod: sortMethod,
+                    iPads: group,
+                    backgroundColor: Theme.of(context).primaryColor,
                   ))
               .toList()
               .cast<PreferredSize>(),

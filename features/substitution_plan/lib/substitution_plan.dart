@@ -44,7 +44,10 @@ class SubstitutionPlanFeature implements Feature {
       SubstitutionPlanNotificationsHandler();
 
   @override
-  final TagsHandler tagsHandler = null;
+  TagsHandler tagsHandler;
+
+  @override
+  List<Option> extraSettings;
 
   @override
   InfoCard getInfoCard(DateTime date, double maxHeight) =>

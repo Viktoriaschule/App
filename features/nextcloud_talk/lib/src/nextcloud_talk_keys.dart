@@ -4,4 +4,8 @@ import 'package:utils/utils.dart';
 class NextcloudTalkKeys extends FeatureKeys {
   // ignore: public_member_api_docs
   static const nextcloudTalk = 'nextcloudTalk';
+
+  // ignore: public_member_api_docs
+  static const automaticallyChangeNotificationLevel =
+      'automaticallyChangeNotificationLevel';
 }

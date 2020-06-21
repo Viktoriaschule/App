@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -31,7 +32,7 @@ class CustomCachedNetworkImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
         child: FutureBuilder<Uint8List>(
-          future: _loadImage(),
+          future: _loadImageWrapper(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return SizedBox(
@@ -45,6 +46,7 @@ class CustomCachedNetworkImage extends StatelessWidget {
               return Icon(
                 Icons.error,
                 color: ThemeWidget.of(context).textColor,
+                size: 16,
               );
             } else {
               return Container(
@@ -62,33 +64,56 @@ class CustomCachedNetworkImage extends StatelessWidget {
         ),
       );
 
-  Future<Uint8List> _loadImage() async {
+  Future<Uint8List> _loadImageWrapper() async {
     if (_CustomCachedNetworkImageCache._cache[provider.identifier] != null) {
       return _CustomCachedNetworkImageCache._cache[provider.identifier];
     } else {
-      final cacheDir = await getTemporaryDirectory();
-      final platform = Platform();
-      final path = '${cacheDir.path}/${provider.identifier}';
-      Uint8List data;
-      if (!platform.isWeb && File(path).existsSync()) {
-        data = await File(path).readAsBytes();
-      } else {
-        data = await provider.loadImage();
-        if (!platform.isWeb) {
-          if (!cacheDir.existsSync()) {
-            cacheDir.createSync(recursive: true);
+      final completer = Completer<Uint8List>();
+      if (_CustomCachedNetworkImageCache._callbacks[provider.identifier] ==
+          null) {
+        _CustomCachedNetworkImageCache._callbacks[provider.identifier] = [];
+        // Don't await this future, because it would block the other code
+        // ignore: unawaited_futures
+        _loadImage().then((data) {
+          for (final callback in _CustomCachedNetworkImageCache
+              ._callbacks[provider.identifier]) {
+            callback(data);
           }
-          File(path).writeAsBytesSync(data);
-        }
+          _CustomCachedNetworkImageCache._callbacks[provider.identifier] = null;
+        });
       }
-      _CustomCachedNetworkImageCache._cache[provider.identifier] = data;
-      return data;
+      _CustomCachedNetworkImageCache._callbacks[provider.identifier]
+          .add(completer.complete);
+      return completer.future;
     }
+  }
+
+  Future<Uint8List> _loadImage() async {
+    // This code is a bit messy, but making it cleaner would mean
+    // duplicate code for the path resolving
+    final cacheDir = await getTemporaryDirectory();
+    final platform = Platform();
+    final path = '${cacheDir.path}/${provider.identifier}';
+    Uint8List data;
+    if (!platform.isWeb && File(path).existsSync()) {
+      data = await File(path).readAsBytes();
+    } else {
+      data = await provider.loadImage();
+      if (!platform.isWeb) {
+        if (!cacheDir.existsSync()) {
+          cacheDir.createSync(recursive: true);
+        }
+        File(path).writeAsBytesSync(data);
+      }
+    }
+    _CustomCachedNetworkImageCache._cache[provider.identifier] = data;
+    return data;
   }
 }
 
 class _CustomCachedNetworkImageCache {
   static final Map<String, Uint8List> _cache = {};
+  static final Map<String, List<void Function(Uint8List)>> _callbacks = {};
 }
 
 // ignore: public_member_api_docs, one_member_abstracts

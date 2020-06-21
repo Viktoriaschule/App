@@ -1,10 +1,10 @@
 library calendar;
 
-import 'package:calendar/src/calendar_events.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'src/calendar_events.dart';
 import 'src/calendar_info_card.dart';
 import 'src/calendar_keys.dart';
 import 'src/calendar_loader.dart';
@@ -39,10 +39,13 @@ class CalendarFeature implements Feature {
   final CalendarLoader loader = CalendarLoader();
 
   @override
-  final NotificationsHandler notificationsHandler = null;
+  NotificationsHandler notificationsHandler;
 
   @override
-  final TagsHandler tagsHandler = null;
+  TagsHandler tagsHandler;
+
+  @override
+  List<Option> extraSettings;
 
   @override
   InfoCard getInfoCard(DateTime date, double maxHeight) => CalendarInfoCard(

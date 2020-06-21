@@ -23,7 +23,10 @@ class SubstitutionPlanNotificationsHandler extends NotificationsHandler {
   AndroidNotificationChannel getAndroidNotificationHandler(
       BuildContext context) {
     final feature = SubstitutionPlanWidget.of(context).feature;
-    return AndroidNotificationChannel(feature.featureKey, feature.name,
-        SubstitutionPlanLocalizations.newSubstitutionPlans);
+    return AndroidNotificationChannel(
+      feature.featureKey,
+      feature.name,
+      SubstitutionPlanLocalizations.newSubstitutionPlans,
+    );
   }
 }

@@ -26,10 +26,13 @@ class IPadListFeature implements Feature {
   final IPadListLoader loader = IPadListLoader();
 
   @override
-  final NotificationsHandler notificationsHandler = null;
+  NotificationsHandler notificationsHandler;
 
   @override
-  final TagsHandler tagsHandler = null;
+  TagsHandler tagsHandler;
+
+  @override
+  List<Option> extraSettings;
 
   @override
   InfoCard getInfoCard(DateTime date, double maxHeight) => IPadListInfoCard(

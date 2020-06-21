@@ -254,8 +254,8 @@ class _CalendarPageState extends Interactor<CalendarPage>
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Container(
+              children: [
+Container(
                   height: monthHeight,
                   width: constraints.maxWidth,
                   padding: EdgeInsets.all(10),
@@ -295,8 +295,8 @@ class _CalendarPageState extends Interactor<CalendarPage>
                   child: Column(
                     children: rows
                         .map((row) => Stack(
-                      children: <Widget>[
-                        Row(
+                      children: [
+Row(
                           children: row
                               .map((item) => SizedBox(
                             width: width / 7,

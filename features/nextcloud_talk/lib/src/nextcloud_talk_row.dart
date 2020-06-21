@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:nextcloud/nextcloud.dart';
 import 'package:nextcloud_talk/nextcloud_talk.dart';
-import 'package:nextcloud_talk/src/nextcloud_talk_utils.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 import 'nextcloud_talk_message_widget.dart';
 import 'nextcloud_talk_model.dart';
+import 'nextcloud_talk_utils.dart';
 
 // ignore: public_member_api_docs
 class NextcloudTalkRow extends PreferredSize {

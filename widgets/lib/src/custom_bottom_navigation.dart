@@ -46,8 +46,8 @@ class CustomBottomNavigation extends StatelessWidget {
             : null,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ...actions.map((action) {
+          children: [
+...actions.map((action) {
               final borderRight = actions.indexOf(action) < actions.length - 1;
               return Expanded(
                 child: InkWell(

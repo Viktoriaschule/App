@@ -6,10 +6,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  material_design_icons_flutter:
   after_layout:
-  flutter_event_bus:
   timeago:
+  crypton:
+  pointycastle:
+  asn1lib:
   utils:
     path: ../utils
   widgets:

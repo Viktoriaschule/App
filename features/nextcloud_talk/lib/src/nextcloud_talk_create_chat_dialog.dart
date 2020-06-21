@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nextcloud/nextcloud.dart' as nextcloud;
 import 'package:nextcloud_talk/nextcloud_talk.dart';
-import 'package:nextcloud_talk/src/nextcloud_talk_localizations.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'nextcloud_talk_localizations.dart';
 import 'nextcloud_talk_utils.dart';
 
 // ignore: public_member_api_docs

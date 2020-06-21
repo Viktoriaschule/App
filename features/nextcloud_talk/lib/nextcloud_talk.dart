@@ -1,14 +1,16 @@
 library nextcloud_talk;
 
 import 'package:flutter/material.dart';
-import 'package:nextcloud_talk/src/nextcloud_talk_events.dart';
-import 'package:nextcloud_talk/src/nextcloud_talk_keys.dart';
-import 'package:nextcloud_talk/src/nextcloud_talk_loader.dart';
+import 'package:nextcloud/nextcloud.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'src/nextcloud_talk_events.dart';
 import 'src/nextcloud_talk_info_card.dart';
+import 'src/nextcloud_talk_keys.dart';
+import 'src/nextcloud_talk_loader.dart';
 import 'src/nextcloud_talk_localizations.dart';
+import 'src/nextcloud_talk_notifications.dart';
 import 'src/nextcloud_talk_page.dart';
 
 /// The Nextcloud Talk feature
@@ -26,10 +28,22 @@ class NextcloudTalkFeature implements Feature {
   NextcloudTalkLoader loader = NextcloudTalkLoader();
 
   @override
-  NotificationsHandler notificationsHandler;
+  NotificationsHandler notificationsHandler =
+      NextcloudTalkNotificationsHandler();
 
   @override
   TagsHandler tagsHandler;
+
+  @override
+  List<Option> extraSettings = [
+    if (Platform().isMobile)
+      Option(
+        key: NextcloudTalkKeys.automaticallyChangeNotificationLevel,
+        name:
+            NextcloudTalkLocalizations.automaticallyChangeNotificationLevelInfo,
+        defaultValue: true,
+      ),
+  ];
 
   @override
   InfoCard getInfoCard(DateTime date, double maxHeight) =>
@@ -80,3 +94,8 @@ class NextcloudTalkWidget extends FeatureWidget<NextcloudTalkFeature> {
   static NextcloudTalkWidget of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<NextcloudTalkWidget>();
 }
+
+// ignore: public_member_api_docs
+const AppType appType = AppType.talk;
+// ignore: public_member_api_docs
+const String language = 'de';

@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
 import 'package:nextcloud/nextcloud.dart';
 import 'package:nextcloud_talk/nextcloud_talk.dart';
-import 'package:nextcloud_talk/src/nextcloud_talk_create_chat_dialog.dart';
-import 'package:nextcloud_talk/src/nextcloud_talk_row.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 import 'nextcloud_talk_chat_page.dart';
+import 'nextcloud_talk_create_chat_dialog.dart';
 import 'nextcloud_talk_events.dart';
 import 'nextcloud_talk_keys.dart';
 import 'nextcloud_talk_localizations.dart';
 import 'nextcloud_talk_model.dart';
+import 'nextcloud_talk_row.dart';
 
 // ignore: public_member_api_docs
 class NextcloudTalkPage extends StatefulWidget {
@@ -24,8 +24,6 @@ class NextcloudTalkPage extends StatefulWidget {
 
 class _NextcloudTalkPageState extends Interactor<NextcloudTalkPage>
     with TickerProviderStateMixin {
-  List<NextcloudTalkChat> chats;
-
   @override
   Subscription subscribeEvents(EventBus eventBus) => eventBus
       .respond<NextcloudTalkUpdateEvent>((event) => setState(() => null));

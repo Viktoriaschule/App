@@ -58,6 +58,9 @@ class SubjectsFeature implements Feature {
   TagsHandler tagsHandler;
 
   @override
+  List<Option> extraSettings;
+
+  @override
   bool hasGUI = false;
 }
 

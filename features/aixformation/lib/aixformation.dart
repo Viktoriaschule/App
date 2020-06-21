@@ -41,7 +41,10 @@ class AiXformationFeature implements Feature {
       AiXformationNotificationsHandler();
 
   @override
-  final TagsHandler tagsHandler = null;
+  TagsHandler tagsHandler;
+
+  @override
+  List<Option> extraSettings;
 
   @override
   InfoCard getInfoCard(DateTime date, double maxHeight) => AiXformationInfoCard(

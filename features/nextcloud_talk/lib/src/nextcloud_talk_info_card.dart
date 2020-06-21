@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nextcloud_talk/nextcloud_talk.dart';
-import 'package:nextcloud_talk/src/nextcloud_talk_localizations.dart';
-import 'package:nextcloud_talk/src/nextcloud_talk_model.dart';
-import 'package:nextcloud_talk/src/nextcloud_talk_page.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 import 'nextcloud_talk_events.dart';
 import 'nextcloud_talk_keys.dart';
+import 'nextcloud_talk_localizations.dart';
+import 'nextcloud_talk_model.dart';
+import 'nextcloud_talk_page.dart';
 import 'nextcloud_talk_row.dart';
 
 // ignore: public_member_api_docs

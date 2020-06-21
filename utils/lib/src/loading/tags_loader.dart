@@ -25,9 +25,16 @@ class TagsLoader extends Loader<Tags> {
     if (!Platform().isDesktop) {
       id = await Static.firebaseMessaging.getToken();
     }
-    final packageInfo = await PackageInfo.fromPlatform();
-    final String appVersion =
-        '${packageInfo.version}+${packageInfo.buildNumber}';
+    String appVersion;
+    String packageName;
+    if (Platform().isWeb) {
+      appVersion = '';
+      packageName = '';
+    } else {
+      final packageInfo = await PackageInfo.fromPlatform();
+      appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
+      packageName = packageInfo.packageName;
+    }
     final String os = Platform().platformName;
     final Map<String, bool> notifications = {};
     for (final f in features) {
@@ -42,7 +49,7 @@ class TagsLoader extends Loader<Tags> {
         appVersion: appVersion.isEmpty ? null : appVersion,
         os: os,
         deviceSettings: notifications,
-        package: packageInfo.packageName,
+        package: packageName,
       );
       await _sendTags({'device': device.toMap()}, context);
     }

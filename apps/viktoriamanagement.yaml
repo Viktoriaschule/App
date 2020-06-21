@@ -11,6 +11,7 @@ features:
     full_name: NextcloudTalk
   - name: ipad_list
     full_name: IPadList
+  # Features without GUI
   - name: subjects
     full_name: Subjects
 firebase_web:

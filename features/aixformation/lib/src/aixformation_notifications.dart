@@ -22,10 +22,11 @@ class AiXformationNotificationsHandler extends NotificationsHandler {
   @override
   AndroidNotificationChannel getAndroidNotificationHandler(
       BuildContext context) {
-    final feature = AiXformationWidget
-        .of(context)
-        .feature;
-    return AndroidNotificationChannel(feature.featureKey, feature.name,
-        AiXformationLocalizations.newAiXformationArticles);
+    final feature = AiXformationWidget.of(context).feature;
+    return AndroidNotificationChannel(
+      feature.featureKey,
+      feature.name,
+      AiXformationLocalizations.newAiXformationArticles,
+    );
   }
 }

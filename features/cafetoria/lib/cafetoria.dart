@@ -1,10 +1,10 @@
 library cafetoria;
 
-import 'package:cafetoria/src/cafetoria_events.dart';
 import 'package:flutter/material.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'src/cafetoria_events.dart';
 import 'src/cafetoria_info_card.dart';
 import 'src/cafetoria_keys.dart';
 import 'src/cafetoria_loader.dart';
@@ -43,6 +43,9 @@ class CafetoriaFeature implements Feature {
 
   @override
   final CafetoriaTagsHandler tagsHandler = CafetoriaTagsHandler();
+
+  @override
+  List<Option> extraSettings;
 
   @override
   InfoCard getInfoCard(DateTime date, double maxHeight) => CafetoriaInfoCard(

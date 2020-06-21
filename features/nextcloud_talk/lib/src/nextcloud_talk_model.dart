@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nextcloud/nextcloud.dart';
-import 'package:nextcloud_talk/src/nextcloud_talk_keys.dart';
 import 'package:utils/utils.dart';
+
+import 'nextcloud_talk_keys.dart';
 
 // ignore: public_member_api_docs
 class NextcloudTalk {
@@ -49,6 +50,7 @@ class NextcloudTalkChat {
     @required this.lastPing,
     @required this.lastMessage,
     @required this.token,
+    @required this.notificationLevel,
   });
 
   // ignore: public_member_api_docs
@@ -62,6 +64,7 @@ class NextcloudTalkChat {
         lastPing: DateTime.parse(json['lastPing']).toLocal(),
         lastMessage: NextcloudTalkMessage.fromJson(json['lastMessage']),
         token: json['token'],
+        notificationLevel: NotificationLevel.values[json['notificationLevel']],
       );
 
   // ignore: public_member_api_docs
@@ -74,6 +77,7 @@ class NextcloudTalkChat {
         'lastPing': lastPing.toIso8601String(),
         'lastMessage': lastMessage.toJson(),
         'token': token,
+        'notificationLevel': notificationLevel.index,
       };
 
   /// Load the message from cache
@@ -128,6 +132,9 @@ class NextcloudTalkChat {
 
   // ignore: public_member_api_docs
   final String token;
+
+  // ignore: public_member_api_docs
+  final NotificationLevel notificationLevel;
 }
 
 // ignore: public_member_api_docs

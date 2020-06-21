@@ -2,12 +2,12 @@ import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ipad_list/ipad_list.dart';
-import 'package:ipad_list/src/ipad_list_loader.dart';
-import 'package:ipad_list/src/ipad_list_localizations.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
 import 'ipad_list_keys.dart';
+import 'ipad_list_loader.dart';
+import 'ipad_list_localizations.dart';
 import 'ipad_list_model.dart';
 
 /// A page for ipad statistics like battery history
@@ -77,9 +77,7 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
       primaryMeasureAxis: PercentAxisSpec(
         renderSpec: SmallTickRendererSpec(
           labelStyle: TextStyleSpec(
-            color: ThemeWidget
-                .of(context)
-                .brightness == Brightness.dark
+            color: ThemeWidget.of(context).brightness == Brightness.dark
                 ? MaterialPalette.white
                 : MaterialPalette.black,
           ),
@@ -88,9 +86,7 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
       domainAxis: DateTimeAxisSpec(
         renderSpec: SmallTickRendererSpec(
           labelStyle: TextStyleSpec(
-            color: ThemeWidget
-                .of(context)
-                .brightness == Brightness.dark
+            color: ThemeWidget.of(context).brightness == Brightness.dark
                 ? MaterialPalette.white
                 : MaterialPalette.black,
           ),
@@ -128,23 +124,17 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
       primaryMeasureAxis: AxisSpec<num>(
         renderSpec: SmallTickRendererSpec(
           labelStyle: TextStyleSpec(
-            color: ThemeWidget
-                .of(context)
-                .brightness == Brightness.dark
+            color: ThemeWidget.of(context).brightness == Brightness.dark
                 ? MaterialPalette.white
                 : MaterialPalette.black,
           ),
         ),
       ),
       domainAxis: AxisSpec<String>(
-        tickProviderSpec: BasicOrdinalTickProviderSpec(
-
-        ),
+        tickProviderSpec: BasicOrdinalTickProviderSpec(),
         renderSpec: SmallTickRendererSpec(
           labelStyle: TextStyleSpec(
-            color: ThemeWidget
-                .of(context)
-                .brightness == Brightness.dark
+            color: ThemeWidget.of(context).brightness == Brightness.dark
                 ? MaterialPalette.white
                 : MaterialPalette.black,
           ),
@@ -174,11 +164,8 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
   @override
   Widget build(BuildContext context) {
     final chartType =
-    _ChartType.values[Static.storage.getInt(IPadListKeys.chartType) ?? 0];
-    final loader = IPadListWidget
-        .of(context)
-        .feature
-        .loader;
+        _ChartType.values[Static.storage.getInt(IPadListKeys.chartType) ?? 0];
+    final loader = IPadListWidget.of(context).feature.loader;
     final timespan = _Timespan
         .values[Static.storage.getInt(IPadListKeys.chartTimespan) ?? 1];
     final oldestDate = getOldestDate(timespan);
@@ -212,11 +199,11 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
       body: CustomRefreshIndicator(
         loadOnline: () => loader.loadOnline(context, force: true),
         child: Column(
-          children: <Widget>[
+          children: [
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: Row(
-                children: <Widget>[
+                children: [
                   Expanded(
                     flex: 70,
                     child: Padding(
@@ -233,11 +220,10 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
                             });
                           },
                           items: _ChartType.values
-                              .map((charType) =>
-                              DropdownMenuItem<_ChartType>(
-                                value: charType,
-                                child: Text(charType.displayName),
-                              ))
+                              .map((charType) => DropdownMenuItem<_ChartType>(
+                                    value: charType,
+                                    child: Text(charType.displayName),
+                                  ))
                               .toList()),
                     ),
                   ),
@@ -255,11 +241,10 @@ class _IPadListStatsPageState extends State<IPadListStatsPage> {
                           });
                         },
                         items: _Timespan.values
-                            .map((timespan) =>
-                            DropdownMenuItem<_Timespan>(
-                              value: timespan,
-                              child: Text(timespan.displayName),
-                            ))
+                            .map((timespan) => DropdownMenuItem<_Timespan>(
+                                  value: timespan,
+                                  child: Text(timespan.displayName),
+                                ))
                             .toList()),
                   ),
                 ],
