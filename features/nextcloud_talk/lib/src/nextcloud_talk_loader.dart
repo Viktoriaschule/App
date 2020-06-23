@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:isolate';
 
 import 'package:crypton/crypton.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +43,7 @@ class NextcloudTalkLoader extends Loader<NextcloudTalk> {
     Map<String, dynamic> body,
     bool store = true,
     bool showLoginOnWrongCredentials = true,
+    bool sendEvent = true,
   }) async {
     if (loadedFromOnline && !force) {
       return LoaderResponse(statusCode: StatusCode.success);
@@ -50,8 +52,10 @@ class NextcloudTalkLoader extends Loader<NextcloudTalk> {
     final loadingStates = context != null ? LoadingState.of(context) : null;
     final eventBus = context != null ? EventBus.of(context) : null;
 
-    // Inform the gui about this loading process
-    sendLoadingEvent(loadingStates, eventBus);
+    if (sendEvent) {
+      // Inform the gui about this loading process
+      sendLoadingEvent(loadingStates, eventBus);
+    }
 
     LoaderResponse<NextcloudTalk> response;
     try {
@@ -106,39 +110,48 @@ class NextcloudTalkLoader extends Loader<NextcloudTalk> {
     }
     if (Platform().isMobile) {
       if (Static.storage.getString(Keys.rsaPrivateKey) == null) {
-        try {
-          var client = NextCloudClient.withoutLogin(
-            BaseUrl.nextcloud.url,
-            appType: appType,
-            language: language,
-          );
-          final init = await client.login.initLoginFlow();
-          final result = await showDialog<LoginFlowResult>(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => NextcloudTalkLoginDialog(
-              init: init,
-            ),
-          );
-          if (result != null) {
-            client = NextCloudClient.withAppPassword(
-              BaseUrl.nextcloud.url,
-              result.appPassword,
-              appType: appType,
-              language: language,
-            );
-            final token = await Static.firebaseMessaging.getToken();
-            final keypair = RSAKeypair.fromRandom(keySize: 2048);
+        final token = await Static.firebaseMessaging.getToken();
+        if (token != null) {
+          final receivePort = ReceivePort();
+          await Isolate.spawn(_generateRSAKeypair, receivePort.sendPort);
+          receivePort.listen((message) async {
+            receivePort.close();
+            final RSAKeypair keypair = message;
             try {
-              await client.notifications.registerDeviceAtServer(
-                token,
-                keypair,
-                proxyServerUrl: 'https://push.2bad2c0.de',
+              var client = NextCloudClient.withoutLogin(
+                BaseUrl.nextcloud.url,
+                appType: appType,
+                language: language,
               );
-              Static.storage.setString(
-                Keys.rsaPrivateKey,
-                keypair.privateKey.toFormattedPEM(),
+              final init = await client.login.initLoginFlow();
+              final result = await showDialog<LoginFlowResult>(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => NextcloudTalkLoginDialog(
+                  init: init,
+                ),
               );
+              if (result != null) {
+                client = NextCloudClient.withAppPassword(
+                  BaseUrl.nextcloud.url,
+                  result.appPassword,
+                  appType: appType,
+                  language: language,
+                );
+                await client.notifications.registerDeviceAtServer(
+                  token,
+                  keypair,
+                  proxyServerUrl: 'https://push.2bad2c0.de',
+                );
+                Static.storage.setString(
+                  Keys.rsaPrivateKey,
+                  keypair.privateKey.toFormattedPEM(),
+                );
+                await load(
+                  context,
+                  force: true,
+                );
+              }
               // ignore: avoid_catches_without_on_clauses
             } catch (e, stacktrace) {
               print(e);
@@ -148,63 +161,63 @@ class NextcloudTalkLoader extends Loader<NextcloudTalk> {
               }
               print(stacktrace);
             }
-          }
-          // ignore: avoid_catches_without_on_clauses
-        } catch (e, stacktrace) {
-          print(e);
-          if (e is RequestException) {
-            print(e.statusCode);
-            print(e.body);
-          }
-          print(stacktrace);
+          });
         }
       }
       if (Static.storage.getString(Keys.rsaPrivateKey) != null) {
-        try {
-          final loader = NextcloudTalkWidget.of(context).feature.loader;
-          final _chats = loader.hasLoadedData
-              ? loader.data.chats.toList()
-              : <NextcloudTalkChat>[];
-          final guiltyChats = _chats
-              .where(
-                  (chat) => chat.notificationLevel != NotificationLevel.always)
-              .toList();
-          if (guiltyChats.isNotEmpty) {
-            if (!Static.storage.has(
-              NextcloudTalkKeys.automaticallyChangeNotificationLevel,
-            )) {
-              await showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) => NextcloudTalkNotificationLevelDialog(
-                  chats: guiltyChats,
-                ),
-              );
-            } else if (Static.storage.getBool(
-              NextcloudTalkKeys.automaticallyChangeNotificationLevel,
-            )) {
-              final conversationManagement =
-                  loader.client.talk.conversationManagement;
-              for (final chat in guiltyChats) {
-                await conversationManagement.setNotificationLevel(
-                  chat.token,
-                  NotificationLevel.always,
+        if (context != null) {
+          try {
+            final loader = NextcloudTalkWidget.of(context).feature.loader;
+            final _chats = loader.hasLoadedData
+                ? loader.data.chats.toList()
+                : <NextcloudTalkChat>[];
+            final guiltyChats = _chats
+                .where((chat) =>
+                    chat.notificationLevel != NotificationLevel.always)
+                .toList();
+            if (guiltyChats.isNotEmpty) {
+              if (!Static.storage.has(
+                NextcloudTalkKeys.automaticallyChangeNotificationLevel,
+              )) {
+                await showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => NextcloudTalkNotificationLevelDialog(
+                    chats: guiltyChats,
+                  ),
                 );
+              } else if (Static.storage.getBool(
+                NextcloudTalkKeys.automaticallyChangeNotificationLevel,
+              )) {
+                final conversationManagement =
+                    loader.client.talk.conversationManagement;
+                for (final chat in guiltyChats) {
+                  await conversationManagement.setNotificationLevel(
+                    chat.token,
+                    NotificationLevel.always,
+                  );
+                }
               }
             }
+            // ignore: avoid_catches_without_on_clauses
+          } catch (e, stacktrace) {
+            print(e);
+            if (e is RequestException) {
+              print(e.statusCode);
+              print(e.body);
+            }
+            print(stacktrace);
           }
-          // ignore: avoid_catches_without_on_clauses
-        } catch (e, stacktrace) {
-          print(e);
-          if (e is RequestException) {
-            print(e.statusCode);
-            print(e.body);
-          }
-          print(stacktrace);
         }
       }
     }
-    sendLoadedEvent(loadingStates, eventBus);
+    if (sendEvent) {
+      sendLoadedEvent(loadingStates, eventBus);
+    }
     return response;
+  }
+
+  static void _generateRSAKeypair(SendPort sendPort) {
+    sendPort.send(RSAKeypair.fromRandom(keySize: 2048));
   }
 }

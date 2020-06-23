@@ -114,18 +114,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
     _day ??= _getDay(_features, _eventBus);
 
     final size = getScreenSize(MediaQuery.of(context).size.width);
-    int numberColumns;
-    switch (size) {
-      case ScreenSize.small:
-        numberColumns = 1;
-        break;
-      case ScreenSize.middle:
-        numberColumns = 2;
-        break;
-      case ScreenSize.big:
-        numberColumns = 3;
-        break;
-    }
+    final numberColumns = size.index + 1;
 
     return LayoutBuilder(
       builder: (context, constraints) {

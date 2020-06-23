@@ -29,8 +29,8 @@ class NextcloudTalkRow extends PreferredSize {
           children: [
             if (chat.type == ConversationType.oneToOne)
               SizedBox(
-                height: customRowHeight - 30,
-                width: customRowHeight - 30,
+                height: customRowHeight / 2,
+                width: customRowHeight / 2,
                 child: CustomCachedNetworkImage(
                   provider: CustomCachedNetworkImageAvatarProvider(
                     avatarClient: NextcloudTalkWidget.of(context)
@@ -39,10 +39,10 @@ class NextcloudTalkRow extends PreferredSize {
                         .client
                         .avatar,
                     username: chat.name,
-                    size: customRowHeight.toInt() - 30,
+                    size: customRowHeight.toInt() * 2,
                   ),
-                  height: customRowHeight - 30,
-                  width: customRowHeight - 30,
+                  height: customRowHeight / 2,
+                  width: customRowHeight / 2,
                 ),
               )
             else

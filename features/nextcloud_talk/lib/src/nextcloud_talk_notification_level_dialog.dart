@@ -89,8 +89,8 @@ class _NextcloudTalkNotificationLevelDialogState
                                   NotificationLevel.always,
                                 );
                               }
-                              Navigator.of(context).pop();
                               await loader.loadOnline(context, force: true);
+                              Navigator.of(context).pop();
                             },
                       child: _loading
                           ? CustomCircularProgressIndicator(

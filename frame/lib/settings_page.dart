@@ -38,7 +38,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
           shrinkWrap: false,
           padding: EdgeInsets.all(5),
           children: [
-            if (notificationFeatures.isNotEmpty)
+            if (!Platform().isDesktop && notificationFeatures.isNotEmpty)
               ListGroup(
                 title: SettingsLocalizations.notifications,
                 unsizedChildren: notificationFeatures
@@ -71,7 +71,8 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                     .toList(),
                 children: const [],
               ),
-            for (final feature in regularFeatures)
+            for (final feature in regularFeatures
+                .where((feature) => feature.extraSettings.isNotEmpty))
               ListGroup(
                 title: feature.name,
                 unsizedChildren: feature.extraSettings

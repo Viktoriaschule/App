@@ -76,6 +76,7 @@ class _NextcloudTalkChatPageState extends State<NextcloudTalkChatPage>
       appBar: CustomAppBar(
         title: widget.chat.displayName,
         loadingKeys: const [NextcloudTalkKeys.nextcloudTalk],
+        elevation: 3,
       ),
       body: (_messages == null || _messages.isEmpty)
           ? Center(
@@ -85,91 +86,165 @@ class _NextcloudTalkChatPageState extends State<NextcloudTalkChatPage>
               direction: Axis.vertical,
               children: [
                 Expanded(
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    padding: EdgeInsets.all(10),
-                    itemCount: _messages.length,
-                    shrinkWrap: true,
-                    reverse: true,
-                    itemBuilder: (context, index) => Center(
-                      child: SizeLimit(
-                        maxWidth: 900,
-                        child: Row(
-                          children: [
-                            if (_messages[_messages.length - index - 1]
-                                    .actorId ==
-                                Static.user.username)
-                              Expanded(
-                                flex: 10,
-                                child: Container(),
-                              ),
-                            Expanded(
-                              flex: 90,
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                    top: index == _messages.length - 1
-                                        ? 0
-                                        : _messages[_messages.length -
-                                                        index -
-                                                        1]
-                                                    .actorId !=
-                                                _messages[_messages.length -
-                                                        index -
-                                                        2]
-                                                    .actorId
-                                            ? 20
-                                            : 5),
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  color: Color.lerp(
-                                    ThemeWidget.of(context).textColor,
-                                    Theme.of(context).backgroundColor,
-                                    0.9,
+                  child: Scrollbar(
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      padding: EdgeInsets.all(10),
+                      itemCount: _messages.length,
+                      shrinkWrap: true,
+                      reverse: true,
+                      itemBuilder: (context, index) => Center(
+                        child: SizeLimit(
+                          maxWidth: 900,
+                          child: Column(
+                            children: [
+                              if (index == _messages.length - 1 ||
+                                  midnight(_messages[
+                                              _messages.length - index - 1]
+                                          .timestamp) !=
+                                      midnight(_messages[
+                                              _messages.length - index - 2]
+                                          .timestamp))
+                                Center(
+                                  child: Container(
+                                    margin: EdgeInsets.only(top: 5),
+                                    child: Text(outputDateFormat.format(
+                                        _messages[_messages.length - index - 1]
+                                            .timestamp)),
                                   ),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5)),
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (widget.chat.type !=
-                                            ConversationType.oneToOne &&
-                                        _messages[_messages.length - index - 1]
-                                                .actorId !=
-                                            Static.user.username &&
-                                        (index == _messages.length - 1 ||
-                                            _messages[_messages.length -
-                                                        index -
-                                                        1]
-                                                    .actorId !=
-                                                _messages[_messages.length -
-                                                        index -
-                                                        2]
-                                                    .actorId))
-                                      Text(
-                                        _messages[_messages.length - index - 1]
-                                            .actorDisplayName,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Theme.of(context).accentColor,
+                              Row(
+                                children: [
+                                  if (_messages[_messages.length - index - 1]
+                                          .actorId ==
+                                      Static.user.username)
+                                    Expanded(
+                                      flex: 10,
+                                      child: Container(),
+                                    ),
+                                  Expanded(
+                                    flex: 90,
+                                    child: Material(
+                                      elevation: 1,
+                                      child: Container(
+                                        margin: EdgeInsets.only(
+                                            top: index !=
+                                                        _messages.length - 1 &&
+                                                    _messages[_messages.length -
+                                                                index -
+                                                                1]
+                                                            .actorId !=
+                                                        _messages[_messages
+                                                                    .length -
+                                                                index -
+                                                                2]
+                                                            .actorId
+                                                ? 20
+                                                : 5),
+                                        padding: EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          color: Color.lerp(
+                                            ThemeWidget.of(context).textColor,
+                                            Theme.of(context).backgroundColor,
+                                            0.9,
+                                          ),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5)),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Expanded(
+                                              child: Container(
+                                                margin: EdgeInsets.only(
+                                                  bottom: 5,
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    if (widget
+                                                                .chat.type !=
+                                                            ConversationType
+                                                                .oneToOne &&
+                                                        _messages[_messages
+                                                                        .length -
+                                                                    index -
+                                                                    1]
+                                                                .actorId !=
+                                                            Static.user
+                                                                .username &&
+                                                        (index ==
+                                                                _messages
+                                                                        .length -
+                                                                    1 ||
+                                                            _messages[_messages
+                                                                            .length -
+                                                                        index -
+                                                                        1]
+                                                                    .actorId !=
+                                                                _messages[_messages
+                                                                            .length -
+                                                                        index -
+                                                                        2]
+                                                                    .actorId))
+                                                      Text(
+                                                        _messages[_messages
+                                                                    .length -
+                                                                index -
+                                                                1]
+                                                            .actorDisplayName,
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .accentColor,
+                                                        ),
+                                                      ),
+                                                    NextcloudTalkMessageWidget(
+                                                      message: _messages[
+                                                          _messages.length -
+                                                              index -
+                                                              1],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: Text(
+                                                outputTimeFormat.format(
+                                                    _messages[_messages.length -
+                                                            index -
+                                                            1]
+                                                        .timestamp),
+                                                style: TextStyle(
+                                                  color: ThemeWidget.of(context)
+                                                      .textColorLight,
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    NextcloudTalkMessageWidget(
-                                      message: _messages[
-                                          _messages.length - index - 1],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  if (_messages[_messages.length - index - 1]
+                                          .actorId !=
+                                      Static.user.username)
+                                    Expanded(
+                                      flex: 10,
+                                      child: Container(),
+                                    ),
+                                ],
                               ),
-                            ),
-                            if (_messages[_messages.length - index - 1]
-                                    .actorId !=
-                                Static.user.username)
-                              Expanded(
-                                flex: 10,
-                                child: Container(),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -241,6 +316,7 @@ class _NextcloudTalkChatPageState extends State<NextcloudTalkChatPage>
         await _loader.loadOnline(
           context,
           force: true,
+          sendEvent: sendEvent,
         );
       }
       // ignore: avoid_catches_without_on_clauses

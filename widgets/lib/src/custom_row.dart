@@ -5,7 +5,7 @@ import 'package:flutter/rendering.dart';
 /// The fix height of a custom row
 ///
 /// Included with the [customRowVerticalMargin]
-const double customRowHeight = 60;
+const double customRowHeight = 58;
 
 /// The fix custom rom vertical margin
 const double customRowVerticalMargin = 20;

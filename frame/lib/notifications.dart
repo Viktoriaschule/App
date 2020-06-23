@@ -72,7 +72,9 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
   }
 
   Future _handleOnLaunchResumeNotification(Map<String, dynamic> data) async {
-    EventBus.of(context).publish(FetchAppDataEvent());
+    EventBus.of(context).publish(FetchAppDataEvent(
+      feature: data['type'],
+    ));
 
     // Delete all notifications of the same type
     if (Platform().isAndroid) {
@@ -106,9 +108,12 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
       }
       final handler = _getNotificationHandler(context, data['type']);
       if (handler != null) {
-        EventBus.of(context).publish(FetchAppDataEvent());
+        EventBus.of(context).publish(FetchAppDataEvent(
+          feature: data['type'],
+        ));
         // Update the data, but don't show a snackbar
-        if (!Static.storage.getBool(Keys.notifications(data['type']))) {
+        if (!(Static.storage.getBool(Keys.notifications(data['type'])) ??
+            true)) {
           return;
         }
         Scaffold.of(context).showSnackBar(SnackBar(
@@ -142,7 +147,7 @@ class _NotificationsWidgetState extends State<NotificationsWidget>
       if (data['action'] == 'update') {
         return;
       }
-      if (!Static.storage.getBool(Keys.notifications(data['type']))) {
+      if (!(Static.storage.getBool(Keys.notifications(data['type'])) ?? true)) {
         return;
       }
 

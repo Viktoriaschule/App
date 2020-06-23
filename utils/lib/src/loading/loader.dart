@@ -111,6 +111,7 @@ abstract class Loader<LoaderType> {
     Map<String, dynamic> body,
     bool store = true,
     bool showLoginOnWrongCredentials = true,
+    bool sendEvent = true,
   }) async =>
       (await load(
         context,
@@ -121,6 +122,7 @@ abstract class Loader<LoaderType> {
         body: body,
         store: store,
         showLoginOnWrongCredentials: showLoginOnWrongCredentials,
+        sendEvent: sendEvent,
       ))
           .statusCode;
 
@@ -132,6 +134,7 @@ abstract class Loader<LoaderType> {
     bool post = false,
     Map<String, dynamic> body,
     bool showLoginOnWrongCredentials = true,
+    bool sendEvent = true,
   }) =>
       load(
         context,
@@ -142,6 +145,7 @@ abstract class Loader<LoaderType> {
         body: body,
         store: false,
         showLoginOnWrongCredentials: showLoginOnWrongCredentials,
+        sendEvent: sendEvent,
       );
 
   /// A function that can be override to process some operations with a valid context before the load function starts
@@ -162,6 +166,7 @@ abstract class Loader<LoaderType> {
     Map<String, dynamic> body,
     bool store = true,
     bool showLoginOnWrongCredentials = true,
+    bool sendEvent = true,
   }) async {
     if (loadedFromOnline && !force) {
       return LoaderResponse(statusCode: StatusCode.success);
@@ -172,8 +177,10 @@ abstract class Loader<LoaderType> {
     final loadingStates = context != null ? LoadingState.of(context) : null;
     final eventBus = context != null ? EventBus.of(context) : null;
 
-    // Inform the gui about this loading process
-    sendLoadingEvent(loadingStates, eventBus);
+    if (sendEvent) {
+      // Inform the gui about this loading process
+      sendLoadingEvent(loadingStates, eventBus);
+    }
 
     // Run the pre load for custom loader operations
     preLoad(context);
@@ -241,7 +248,9 @@ abstract class Loader<LoaderType> {
         statusCodes.add(StatusCode.wrongFormat);
       }
 
-      sendLoadedEvent(loadingStates, eventBus);
+      if (sendEvent) {
+        sendLoadedEvent(loadingStates, eventBus);
+      }
       final status = reduceStatusCodes(statusCodes);
       if (status != StatusCode.success) {
         print(
@@ -255,7 +264,9 @@ abstract class Loader<LoaderType> {
       );
     } on DioError catch (e) {
       afterLoad();
-      sendLoadedEvent(loadingStates, eventBus);
+      if (sendEvent) {
+        sendLoadedEvent(loadingStates, eventBus);
+      }
       print(
           'Failed loading $key: ${DateTime.now().difference(start).inMilliseconds}ms');
       switch (e.type) {

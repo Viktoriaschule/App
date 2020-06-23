@@ -11,7 +11,13 @@ class TagsUpdateEvent extends ChangedEvent {}
 class UpdatesUpdateEvent extends ChangedEvent {}
 
 // ignore: public_member_api_docs
-class FetchAppDataEvent extends ChangedEvent {}
+class FetchAppDataEvent extends ChangedEvent {
+  // ignore: public_member_api_docs
+  FetchAppDataEvent({this.feature});
+
+  // ignore: public_member_api_docs
+  final String feature;
+}
 
 // ignore: public_member_api_docs
 class PushMaterialPageRouteEvent extends ChangedEvent {

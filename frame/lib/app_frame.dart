@@ -26,7 +26,8 @@ class _AppFrameState extends Interactor<AppFrame>
 
   @override
   Subscription subscribeEvents(EventBus eventBus) => eventBus
-          .respond<FetchAppDataEvent>((event) => _fetchDataWithStatusMsg())
+          .respond<FetchAppDataEvent>((event) =>
+              _fetchDataWithStatusMsg(priorityFeature: event.feature))
           .respond<PushMaterialPageRouteEvent>((event) {
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute<void>(
@@ -43,9 +44,13 @@ class _AppFrameState extends Interactor<AppFrame>
   Future _fetchDataWithStatusMsg({
     bool force = false,
     ScaffoldState scaffoldState,
+    String priorityFeature,
   }) async {
     final scaffold = scaffoldState ?? Scaffold.of(context);
-    final status = await _fetchData(force: force);
+    final status = await _fetchData(
+      force: force,
+      priorityFeature: priorityFeature,
+    );
     if (status != StatusCode.success) {
       scaffold.showSnackBar(
         SnackBar(
@@ -59,10 +64,27 @@ class _AppFrameState extends Interactor<AppFrame>
     }
   }
 
-  Future<StatusCode> _fetchData({bool force = false}) async {
+  Future<StatusCode> _fetchData({
+    bool force = false,
+    String priorityFeature,
+  }) async {
+    var loadedPriorityFeature = false;
+    if (priorityFeature != null) {
+      try {
+        await FeaturesWidget.of(context)
+            .features
+            .singleWhere((feature) => feature.featureKey == priorityFeature)
+            .loader
+            .load(context, force: true);
+        loadedPriorityFeature = true;
+        // ignore: avoid_catching_errors, empty_catches
+      } on StateError {}
+    }
     // Check all updates (If there is something new to update)
-    final response =
-        await Static.updates.fetch(context, showLoginOnWrongCredentials: false);
+    final response = await Static.updates.fetch(
+      context,
+      showLoginOnWrongCredentials: false,
+    );
 
     if (response.statusCode == StatusCode.unauthorized) {
       await _launchLogin();
@@ -89,12 +111,23 @@ class _AppFrameState extends Interactor<AppFrame>
       // Sync the local grade with the server
       Static.user.group = fetchedUpdates.getUpdate(Keys.group);
 
+      if (loadedPriorityFeature) {
+        final key = FeaturesWidget.of(context)
+            .features
+            .singleWhere((feature) => feature.featureKey == priorityFeature)
+            .loader
+            .key;
+        final hash = fetchedUpdates.getUpdate(key);
+        Static.updates.data.setUpdate(key, hash);
+      }
+
       //TODO: Add old app dialog
 
       return _loadData(
         online: true,
         force: force,
         newUpdates: fetchedUpdates,
+        priorityFeature: priorityFeature,
       );
     }
     return response.statusCode;
@@ -104,6 +137,7 @@ class _AppFrameState extends Interactor<AppFrame>
     @required bool online,
     bool force = false,
     Updates newUpdates,
+    String priorityFeature,
   }) async {
     final features = FeaturesWidget.of(context).features;
     final List<String> loading = [];
@@ -120,7 +154,8 @@ class _AppFrameState extends Interactor<AppFrame>
                     ?.map(loaded.contains)
                     ?.reduce((v1, v2) => v1 || v2) ??
                 true)) {
-          if (loading.contains(feature.featureKey)) {
+          if (loading.contains(feature.featureKey) ||
+              feature.featureKey == priorityFeature) {
             continue;
           }
           loading.add(feature.featureKey);

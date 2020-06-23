@@ -118,6 +118,7 @@ class _NextcloudTalkLoginDialogState extends State<NextcloudTalkLoginDialog>
                                   appBar: CustomAppBar(
                                     title: NextcloudTalkLocalizations.nextcloud,
                                     loadingKeys: const [],
+                                    isLeading: false,
                                   ),
                                 ),
                               ));
