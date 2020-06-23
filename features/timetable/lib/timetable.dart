@@ -1,10 +1,10 @@
 library timetable;
 
 import 'package:flutter/material.dart';
-import 'package:timetable/src/timetable_events.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'src/timetable_events.dart';
 import 'src/timetable_info_card.dart';
 import 'src/timetable_keys.dart';
 import 'src/timetable_loader.dart';
@@ -43,6 +43,9 @@ class TimetableFeature implements Feature {
 
   @override
   final TimetableTagsHandler tagsHandler = TimetableTagsHandler();
+
+  @override
+  List<Option> extraSettings;
 
   @override
   InfoCard getInfoCard(DateTime date, double maxHeight) => TimetableInfoCard(
@@ -94,6 +97,9 @@ class TimetableFeature implements Feature {
     }
     return null;
   }
+
+  @override
+  bool hasGUI = true;
 }
 
 // ignore: public_member_api_docs

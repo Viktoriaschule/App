@@ -1,11 +1,11 @@
 library substitution_plan;
 
 import 'package:flutter/material.dart';
-import 'package:substitution_plan/src/substitution_plan_events.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'src/substitution_plan_events.dart';
 import 'src/substitution_plan_info_card.dart';
 import 'src/substitution_plan_keys.dart';
 import 'src/substitution_plan_loader.dart';
@@ -44,7 +44,10 @@ class SubstitutionPlanFeature implements Feature {
       SubstitutionPlanNotificationsHandler();
 
   @override
-  final TagsHandler tagsHandler = null;
+  TagsHandler tagsHandler;
+
+  @override
+  List<Option> extraSettings;
 
   @override
   InfoCard getInfoCard(DateTime date, double maxHeight) =>
@@ -80,6 +83,9 @@ class SubstitutionPlanFeature implements Feature {
     final now = DateTime.now();
     return DateTime(now.year, now.month, now.day + 1).difference(now);
   }
+
+  @override
+  bool hasGUI = true;
 }
 
 // ignore: public_member_api_docs

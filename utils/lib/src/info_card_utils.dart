@@ -1,4 +1,4 @@
-import 'package:utils/src/screen_sizes.dart';
+import '../utils.dart';
 
 // ignore: public_member_api_docs
 class InfoCardUtils {

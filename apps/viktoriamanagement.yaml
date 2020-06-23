@@ -7,8 +7,13 @@ features:
     full_name: Timetable
   - name: substitution_plan
     full_name: SubstitutionPlan
+  - name: nextcloud_talk
+    full_name: NextcloudTalk
   - name: ipad_list
     full_name: IPadList
+  # Features without GUI
+  - name: subjects
+    full_name: Subjects
 firebase_web:
   apiKey: "AIzaSyAZeIMxiWdjQG9ldfDA7cIHjgtYKFU8XU4"
   authDomain: "viktoriaschule-e8094.firebaseapp.com"

@@ -46,7 +46,9 @@ class FeaturesWidget extends InheritedWidget {
   /// All features in this app
   final List<Feature> features;
 
-  /// All features in a map
+  /// All features that have a GUI
+  List<Feature> get guiFeatures => features.where((f) => f.hasGUI).toList();
+
   final Map<String, Feature> _featuresMap = {};
 
   /// Returns a feature with the given feature key

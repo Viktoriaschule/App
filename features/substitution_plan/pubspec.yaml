@@ -9,6 +9,8 @@ dependencies:
   timeago:
   timetable:
     path: ../timetable
+  subjects:
+    path: ../subjects
   utils:
     path: ../../utils
   widgets:

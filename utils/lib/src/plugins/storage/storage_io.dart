@@ -53,4 +53,7 @@ class Storage extends StorageBase {
 
   @override
   bool has(String key) => _sharedPreferences.containsKey(key);
+
+  @override
+  Future reload() => _sharedPreferences.reload();
 }

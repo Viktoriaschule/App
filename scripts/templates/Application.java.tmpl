@@ -6,6 +6,7 @@ import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.PluginRegistrantCallback;
 import io.flutter.plugins.firebasemessaging.FirebaseMessagingPlugin;
 import io.flutter.plugins.firebasemessaging.FlutterFirebaseMessagingService;
+import io.flutter.plugins.sharedpreferences.SharedPreferencesPlugin;
 
 public class Application extends FlutterApplication implements PluginRegistrantCallback {
     @Override
@@ -17,6 +18,7 @@ public class Application extends FlutterApplication implements PluginRegistrantC
     @Override
     public void registerWith(PluginRegistry registry) {
         FirebaseCloudMessagingPluginRegistrant.registerWith(registry);
+        SharedPreferencesPluginRegistrant.registerWith(registry);
         FramePluginRegistrant.registerWith(registry);
     }
 }
@@ -39,12 +41,30 @@ class FirebaseCloudMessagingPluginRegistrant {
     }
 }
 
+class SharedPreferencesPluginRegistrant {
+    public static void registerWith(PluginRegistry registry) {
+        if (alreadyRegisteredWith(registry)) {
+            return;
+        }
+        SharedPreferencesPlugin.registerWith(registry.registrarFor("plugins.flutter.io/shared_preferences"));
+    }
+
+    private static boolean alreadyRegisteredWith(PluginRegistry registry) {
+        final String key = SharedPreferencesPluginRegistrant.class.getCanonicalName();
+        if (registry.hasPlugin(key)) {
+            return true;
+        }
+        registry.registrarFor(key);
+        return false;
+    }
+}
+
 class FramePluginRegistrant {
     public static void registerWith(PluginRegistry registry) {
         if (alreadyRegisteredWith(registry)) {
             return;
         }
-        FramePlugin.registerWith(registry.registrarFor("dexterous.com/flutter/local_notifications"));
+        FramePlugin.registerWith(registry.registrarFor("frame"));
     }
 
     private static boolean alreadyRegisteredWith(PluginRegistry registry) {

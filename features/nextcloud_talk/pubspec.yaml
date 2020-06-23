@@ -1,0 +1,22 @@
+name: nextcloud_talk
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  nextcloud:
+    git:
+      url: https://github.com/Viktoriaschule/dart-nextcloud
+      ref: feature/notifications
+  flutter_webview_plugin:
+  crypton:
+  dio:
+  url_launcher:
+  after_layout:
+  timeago:
+  utils:
+    path: ../../utils
+  widgets:
+    path: ../../widgets

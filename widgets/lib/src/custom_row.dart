@@ -5,7 +5,7 @@ import 'package:flutter/rendering.dart';
 /// The fix height of a custom row
 ///
 /// Included with the [customRowVerticalMargin]
-const double customRowHeight = 60;
+const double customRowHeight = 58;
 
 /// The fix custom rom vertical margin
 const double customRowVerticalMargin = 20;
@@ -18,10 +18,6 @@ class CustomRow extends PreferredSize {
     @required this.title,
     this.subtitle,
     this.last,
-    this.titleColor,
-    this.titleFontWeight,
-    this.titleAlignment,
-    this.titleOverflow,
     this.splitColor,
     this.showSplit = true,
     this.heroTag,
@@ -31,27 +27,14 @@ class CustomRow extends PreferredSize {
   /// The widget left of the split
   final Widget leading;
 
-  /// The row title in the [titleColor]
-  /// and with [titleFontWeight], [titleOverflow] and [titleAlignment]
-  final String title;
+  /// The row title
+  final Widget title;
 
   /// The widget directly below the title
   final Widget subtitle;
 
   /// The widget on the right end of the row
   final Widget last;
-
-  // ignore: public_member_api_docs
-  final Color titleColor;
-
-  // ignore: public_member_api_docs
-  final FontWeight titleFontWeight;
-
-  // ignore: public_member_api_docs
-  final CrossAxisAlignment titleAlignment;
-
-  // ignore: public_member_api_docs
-  final TextOverflow titleOverflow;
 
   // ignore: public_member_api_docs
   final Color splitColor;
@@ -70,10 +53,9 @@ class CustomRow extends PreferredSize {
 
   @override
   Widget build(BuildContext context) => Container(
-    height: customRowHeight - 20,
-    margin: hasMargin ? EdgeInsets.all(customRowVerticalMargin / 2) : null,
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+        margin: hasMargin ? EdgeInsets.all(customRowVerticalMargin / 2) : null,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (leading != null)
               Container(
@@ -85,34 +67,25 @@ class CustomRow extends PreferredSize {
             if (showSplit ?? true)
               Container(
                 height: customRowHeight - 26,
-            width: 2.5,
-            margin: EdgeInsets.only(
-              right: 5,
-            ),
-            color: splitColor ?? Colors.transparent,
-          ),
-        Expanded(
-          flex: 1,
-          child: Column(
-            crossAxisAlignment: titleAlignment ?? CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (title != null)
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: titleFontWeight,
-                    color: titleColor ?? Theme.of(context).accentColor,
-                  ),
-                  overflow: titleOverflow ?? TextOverflow.ellipsis,
+                width: 2.5,
+                margin: EdgeInsets.only(
+                  right: 5,
                 ),
-              if (subtitle != null) subtitle,
-            ],
-          ),
+                color: splitColor ?? Colors.transparent,
+              ),
+            Expanded(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (title != null) title,
+                  if (subtitle != null) subtitle,
+                ],
+              ),
+            ),
+            if (last != null) last,
+          ],
         ),
-        if (last != null) last,
-      ],
-    ),
-  );
+      );
 }

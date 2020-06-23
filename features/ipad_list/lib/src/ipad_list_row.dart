@@ -38,8 +38,14 @@ class IPadRow extends PreferredSize {
               color: ThemeWidget.of(context).textColorLight,
             ),
           ),
-          title: iPad.name,
-          titleOverflow: TextOverflow.ellipsis,
+          title: Text(
+            iPad.name,
+            style: TextStyle(
+              fontSize: 17,
+              color: Theme.of(context).accentColor,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
           subtitle: BatteryIndicator(
             level: iPad.batteryLevel,
             isCharging: iPad.isCharging,

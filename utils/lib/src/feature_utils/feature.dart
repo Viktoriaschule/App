@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
-import 'package:utils/src/feature_utils/feature_widget.dart';
-import 'package:utils/src/feature_utils/notifications.dart';
-import 'package:utils/src/feature_utils/tags.dart';
-import 'package:utils/src/loading/loader.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
-export 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'settings.dart';
 
 export 'feature_widget.dart';
 export 'keys.dart';
 export 'notifications.dart';
+export 'settings.dart';
 export 'tags.dart';
 
 /// All features have to be subclasses of a feature
@@ -23,6 +20,8 @@ abstract class Feature {
     @required this.name,
     @required this.notificationsHandler,
     @required this.tagsHandler,
+    @required this.extraSettings,
+    @required this.hasGUI,
   });
 
   /// The key that should be used for this feature
@@ -32,6 +31,11 @@ abstract class Feature {
   ///
   /// This will be the user readable title in the app bar and in any places in the app
   final String name;
+
+  /// If the feature has a GUI this should be set
+  ///
+  /// If no GUI is present the info card and page are never requested
+  final bool hasGUI;
 
   /// A list of all features that must be included and loaded first to use this feature
   List<String> dependsOn(BuildContext context);
@@ -48,6 +52,11 @@ abstract class Feature {
   ///
   /// If the feature does not handle any tags, the handler should be null
   final TagsHandler tagsHandler;
+
+  /// The extra settings (aside from notifications) for this feature
+  ///
+  /// If the feature does not have extra settings, the handler should be null
+  final List<Option> extraSettings;
 
   /// If the feature wants to control the date for the home page,
   /// it have to return a date, otherwise, return null

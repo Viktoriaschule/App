@@ -10,7 +10,7 @@ import '../static.dart';
 import 'loader.dart';
 import 'tags_model.dart';
 
-/// SubjectsLoader class
+/// TagsLoader class
 class TagsLoader extends Loader<Tags> {
   // ignore: public_member_api_docs
   TagsLoader() : super(Keys.tags, TagsUpdateEvent());
@@ -25,9 +25,16 @@ class TagsLoader extends Loader<Tags> {
     if (!Platform().isDesktop) {
       id = await Static.firebaseMessaging.getToken();
     }
-    final packageInfo = await PackageInfo.fromPlatform();
-    final String appVersion =
-        '${packageInfo.version}+${packageInfo.buildNumber}';
+    String appVersion;
+    String packageName;
+    if (Platform().isWeb) {
+      appVersion = '';
+      packageName = '';
+    } else {
+      final packageInfo = await PackageInfo.fromPlatform();
+      appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
+      packageName = packageInfo.packageName;
+    }
     final String os = Platform().platformName;
     final Map<String, bool> notifications = {};
     for (final f in features) {
@@ -42,7 +49,7 @@ class TagsLoader extends Loader<Tags> {
         appVersion: appVersion.isEmpty ? null : appVersion,
         os: os,
         deviceSettings: notifications,
-        package: packageInfo.packageName,
+        package: packageName,
       );
       await _sendTags({'device': device.toMap()}, context);
     }
@@ -56,7 +63,7 @@ class TagsLoader extends Loader<Tags> {
   ) async {
     if (tags == null) {
       await loadOnline(context, force: true);
-      tags = parsedData;
+      tags = data;
     }
     if (tags != null) {
       // Sync grade
@@ -95,7 +102,7 @@ class TagsLoader extends Loader<Tags> {
       {bool checkSync = true}) async {
     // Get all server tags...
     final status = await loadOnline(context, force: true);
-    final Tags allTags = parsedData;
+    final Tags allTags = data;
     if (allTags == null) {
       print('Failed to load tags: $status');
       return reduceStatusCodes([status, StatusCode.failed]);

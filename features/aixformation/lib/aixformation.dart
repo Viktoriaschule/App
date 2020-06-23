@@ -41,7 +41,10 @@ class AiXformationFeature implements Feature {
       AiXformationNotificationsHandler();
 
   @override
-  final TagsHandler tagsHandler = null;
+  TagsHandler tagsHandler;
+
+  @override
+  List<Option> extraSettings;
 
   @override
   InfoCard getInfoCard(DateTime date, double maxHeight) => AiXformationInfoCard(
@@ -55,9 +58,9 @@ class AiXformationFeature implements Feature {
   @override
   AiXformationWidget getFeatureWidget(Widget child) => AiXformationWidget(
         feature: this,
-    key: ValueKey(featureKey),
-    child: child,
-  );
+        key: ValueKey(featureKey),
+        child: child,
+      );
 
   @override
   DateTime getHomePageDate() =>
@@ -66,12 +69,15 @@ class AiXformationFeature implements Feature {
           : null;
 
   @override
-  Subscription subscribeToDataUpdates(EventBus eventBus,
-      Function(ChangedEvent) callback) =>
+  Subscription subscribeToDataUpdates(
+          EventBus eventBus, Function(ChangedEvent) callback) =>
       eventBus.respond<AiXformationUpdateEvent>(callback);
 
   @override
   Duration durationToHomePageDateUpdate() => null;
+
+  @override
+  bool hasGUI = true;
 }
 
 // ignore: public_member_api_docs

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-import 'package:utils/src/keys.dart';
-import 'package:utils/src/static.dart';
+import '../../utils.dart';
 
 /// Defines all updates
 class Updates {

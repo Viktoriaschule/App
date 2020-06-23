@@ -6,7 +6,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  material_design_icons_flutter:
   charts_flutter:
   utils:
     path: ../../utils

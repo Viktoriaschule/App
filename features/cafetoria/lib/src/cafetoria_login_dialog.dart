@@ -128,7 +128,7 @@ class CafetoriaLoginDialogState extends State<CafetoriaLoginDialog> {
           child: Form(
             key: _formKey,
             child: Column(
-              children: <Widget>[
+              children: [
                 TextFormField(
                   controller: idController,
                   validator: (value) {
@@ -141,7 +141,8 @@ class CafetoriaLoginDialogState extends State<CafetoriaLoginDialog> {
                     return null;
                   },
                   decoration: InputDecoration(
-                      hintText: CafetoriaLocalizations.keyfobId),
+                    hintText: CafetoriaLocalizations.keyfobId,
+                  ),
                   onFieldSubmitted: (value) {
                     FocusScope.of(context).requestFocus(_focus);
                   },
@@ -221,11 +222,11 @@ class CafetoriaLoginDialogState extends State<CafetoriaLoginDialog> {
                                     color: Theme.of(context).primaryColor,
                                   )
                                 : Text(
-                              AppLocalizations.logout,
-                              style: TextStyle(
-                                color: darkColor,
-                              ),
-                            ),
+                                    AppLocalizations.logout,
+                                    style: TextStyle(
+                                      color: darkColor,
+                                    ),
+                                  ),
                           ),
                         ),
                     ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:subjects/subjects.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
@@ -73,17 +74,28 @@ class TimetableRow extends PreferredSize {
               ),
             )
           : null,
-      titleAlignment:
-          showCenterInfo ? CrossAxisAlignment.center : CrossAxisAlignment.start,
-      title: Static.subjects.hasLoadedData && subject.subjectID != 'none'
-          ? Static.subjects.data.getSubject(subject.subjectID)
-          : TimetableLocalizations.notSelected,
-      titleFontWeight: showCenterInfo ? FontWeight.w100 : null,
-      titleColor: showCenterInfo
-          ? theme.textColor
-          : useOpacity
-              ? Theme.of(context).accentColor.withOpacity(opacity)
-              : Theme.of(context).accentColor,
+      title: Text(
+        SubjectsWidget.of(context).feature.loader.hasLoadedData
+            ? subject.subjectID != 'none'
+                ? SubjectsWidget.of(context)
+                    .feature
+                    .loader
+                    .data
+                    .getSubject(subject.subjectID)
+                : TimetableLocalizations.notSelected
+            : '',
+        style: TextStyle(
+          fontSize: 17,
+          color: showCenterInfo
+              ? theme.textColor
+              : useOpacity
+                  ? Theme.of(context).accentColor.withOpacity(opacity)
+                  : Theme.of(context).accentColor,
+          fontWeight: showCenterInfo ? FontWeight.w100 : null,
+        ),
+        textAlign: showCenterInfo ? TextAlign.center : TextAlign.start,
+        overflow: TextOverflow.ellipsis,
+      ),
       subtitle: !showCenterInfo
           ? Text(
               subject.subjectID != 'none'
@@ -99,62 +111,64 @@ class TimetableRow extends PreferredSize {
           : null,
       last: subject.subjectID != 'none'
           ? !showCenterInfo
-          ? Row(
-        children: [
-          Container(
-            width: 35,
-            margin: EdgeInsets.only(right: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (participants.isNotEmpty)
-                  Text(
-                    _getWithCase(participants[0]),
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w300,
-                      color: theme.textColor,
-                      fontFamily: 'RobotoMono',
+              ? Row(
+                  children: [
+                    Container(
+                      width: 35,
+                      margin: EdgeInsets.only(right: 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (participants.isNotEmpty)
+                            Text(
+                              _getWithCase(participants[0]),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w300,
+                                color: theme.textColor,
+                                fontFamily: 'RobotoMono',
+                              ),
+                            ),
+                          Text(
+                            participants.length > 1
+                                ? _getWithCase(participants[1])
+                                : '',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300,
+                              color: theme.textColor,
+                              decoration: TextDecoration.lineThrough,
+                              fontFamily: 'RobotoMono',
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                Text(
-                  participants.length > 1 ? _getWithCase(participants[1]) : '',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w300,
-                    color: theme.textColor,
-                    decoration: TextDecoration.lineThrough,
-                    fontFamily: 'RobotoMono',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: 30,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  subject.roomID,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w300,
-                    color: theme.textColor,
-                    fontFamily: 'RobotoMono',
-                  ),
-                ),
-                Text(''),
-              ],
-            ),
-          ),
-        ],
-      )
-          : Container()
+                    Container(
+                      width: 30,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            subject.roomID,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300,
+                              color: theme.textColor,
+                              fontFamily: 'RobotoMono',
+                            ),
+                          ),
+                          Text(''),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : Container()
           : Icon(
-        MdiIcons.exclamation,
-        color: theme.textColorLight,
-      ),
+              MdiIcons.exclamation,
+              color: theme.textColorLight,
+            ),
     );
   }
 }

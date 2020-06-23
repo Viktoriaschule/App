@@ -15,6 +15,7 @@ class CustomAppBar extends PreferredSize {
     this.actions = const [],
     this.sliver = false,
     this.isLeading = true,
+    this.elevation = 0,
   });
 
   // ignore: public_member_api_docs
@@ -31,6 +32,9 @@ class CustomAppBar extends PreferredSize {
 
   // ignore: public_member_api_docs
   final List<String> loadingKeys;
+
+  // ignore: public_member_api_docs
+  final double elevation;
 
   @override
   Size get preferredSize => AppBar().preferredSize;
@@ -75,14 +79,17 @@ class CustomAppBar extends PreferredSize {
         pinned: true,
         bottom: _bottom,
         titleSpacing: isLeading ? 0 : NavigationToolbar.kMiddleSpacing,
+        automaticallyImplyLeading: isLeading,
+        elevation: elevation,
       );
     }
     return AppBar(
       title: _title,
       actions: _actions,
-      elevation: 0,
+      elevation: elevation,
       bottom: _bottom,
       titleSpacing: isLeading ? 0 : NavigationToolbar.kMiddleSpacing,
+      automaticallyImplyLeading: isLeading,
     );
   }
 }

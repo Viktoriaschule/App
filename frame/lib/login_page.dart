@@ -72,6 +72,7 @@ class _LoginPageState extends State<LoginPage> {
     final usernameField = TextField(
       obscureText: false,
       enabled: !_checkingLogin,
+      autofocus: !Platform().isMobile,
       style: TextStyle(
         color: ThemeWidget.of(context).textColor,
       ),
@@ -136,10 +137,10 @@ class _LoginPageState extends State<LoginPage> {
                 color: Theme.of(context).primaryColor,
               )
             : Text(
-          AppLocalizations.login,
-          style: TextStyle(
-            color: darkColor,
-          ),
+                AppLocalizations.login,
+                style: TextStyle(
+                  color: darkColor,
+                ),
               ),
       ),
     );

@@ -37,8 +37,14 @@ class CalendarRow extends PreferredSize {
           Icons.calendar_today,
           color: ThemeWidget.of(context).textColorLight,
         ),
-        title: '${event.name}',
-        titleOverflow: TextOverflow.ellipsis,
+        title: Text(
+          event.name,
+          style: TextStyle(
+            fontSize: 17,
+            color: Theme.of(context).accentColor,
+          ),
+          overflow: TextOverflow.ellipsis,
+        ),
         subtitle: Text(
           event.dateString,
           style: TextStyle(

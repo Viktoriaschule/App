@@ -1,12 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:ipad_list/src/ipad_list_localizations.dart';
-import 'package:ipad_list/src/ipad_list_page.dart';
 import 'package:utils/utils.dart';
 import 'package:widgets/widgets.dart';
 
+import 'ipad_list_localizations.dart';
 import 'ipad_list_model.dart';
+import 'ipad_list_page.dart';
 
 // ignore: public_member_api_docs
 class IPadGroupRow extends PreferredSize {
@@ -77,7 +77,7 @@ class IPadGroupRow extends PreferredSize {
       },
       child: CustomRow(
         leading: Stack(
-          children: <Widget>[
+          children: [
             Positioned(
               left: 0,
               top: 0,
@@ -108,10 +108,16 @@ class IPadGroupRow extends PreferredSize {
             ),
           ],
         ),
-        title: '${IPadListLocalizations.iPadGroup}: $groupName',
-        titleOverflow: TextOverflow.ellipsis,
+        title: Text(
+          '${IPadListLocalizations.iPadGroup}: $groupName',
+          style: TextStyle(
+            fontSize: 17,
+            color: Theme.of(context).accentColor,
+          ),
+          overflow: TextOverflow.ellipsis,
+        ),
         subtitle: Row(
-          children: <Widget>[
+          children: [
             Text(
               '~$level%',
               style: TextStyle(

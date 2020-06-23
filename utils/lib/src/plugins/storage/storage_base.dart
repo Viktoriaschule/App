@@ -38,4 +38,7 @@ abstract class StorageBase {
 
   // ignore: public_member_api_docs
   bool has(String key);
+
+  // ignore: public_member_api_docs
+  Future reload();
 }

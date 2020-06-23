@@ -121,12 +121,12 @@ public class FramePlugin implements FlutterPlugin, MethodCallHandler {
                 String body = (String) data.get("body");
                 String bigBody = (String) data.get("bigBody");
                 int group = Integer.parseInt((String) data.get("group"));
-                SpannableString formattedBody = new SpannableString(
+                SpannableString formattedBody = body != null ? new SpannableString(
                         Build.VERSION.SDK_INT < Build.VERSION_CODES.N ? Html.fromHtml(body)
-                                : Html.fromHtml(body, Html.FROM_HTML_MODE_LEGACY));
-                SpannableString formattedBigBody = new SpannableString(
+                                : Html.fromHtml(body, Html.FROM_HTML_MODE_LEGACY)) : null;
+                SpannableString formattedBigBody = bigBody != null ? new SpannableString(
                         Build.VERSION.SDK_INT < Build.VERSION_CODES.N ? Html.fromHtml(bigBody)
-                                : Html.fromHtml(bigBody, Html.FROM_HTML_MODE_LEGACY));
+                                : Html.fromHtml(bigBody, Html.FROM_HTML_MODE_LEGACY)) : null;
                 PackageManager packageManager = applicationContext.getPackageManager();
                 Resources resources = packageManager.getResourcesForApplication(applicationContext.getPackageName());
                 int resId = resources.getIdentifier("logo_white", "mipmap", applicationContext.getPackageName());

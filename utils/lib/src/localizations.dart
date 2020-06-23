@@ -52,4 +52,13 @@ class AppLocalizations {
 
   // ignore: public_member_api_docs
   static const homepage = 'Startseite';
+
+  // ignore: public_member_api_docs
+  static const no = 'Nein';
+
+  // ignore: public_member_api_docs
+  static const yes = 'Ja';
+
+  // ignore: public_member_api_docs
+  static const cancel = 'Abbrechen';
 }

@@ -31,7 +31,14 @@ class CafetoriaRow extends PreferredSize {
           Icons.restaurant,
           color: ThemeWidget.of(context).textColorLight,
         ),
-        title: menu.name,
+        title: Text(
+          menu.name,
+          style: TextStyle(
+            fontSize: 17,
+            color: Theme.of(context).accentColor,
+          ),
+          overflow: TextOverflow.ellipsis,
+        ),
         subtitle: menu.price != 0 || menu.time.isNotEmpty
             ? IconsTexts(
                 icons: [

@@ -46,13 +46,13 @@ ThemeData get _darkTheme => ThemeData(
           color: _lightColor,
         ),
       ),
-  primaryIconTheme: IconThemeData(
-    color: Color(0xFFCCCCCC),
-  ),
-  cardTheme: _theme.cardTheme,
-  cardColor: darkColor,
-  backgroundColor: _darkBackgroundColor,
-  fontFamily: 'Ubuntu',
+      primaryIconTheme: IconThemeData(
+        color: Color(0xFFCCCCCC),
+      ),
+      cardTheme: _theme.cardTheme,
+      cardColor: darkColor,
+      backgroundColor: _darkBackgroundColor,
+      fontFamily: 'Ubuntu',
     );
 
 // ignore: public_member_api_docs

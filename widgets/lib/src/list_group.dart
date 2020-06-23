@@ -211,8 +211,8 @@ class _ListGroupState extends Interactor<ListGroup>
       ),
     );
     final stack = Stack(
-      children: <Widget>[
-        if (widget.heroId != null && widget.showNavigation)
+      children: [
+if (widget.heroId != null && widget.showNavigation)
           CustomHero(
             tag: widget.heroId,
             child: Material(
@@ -237,8 +237,8 @@ class _ListGroupState extends Interactor<ListGroup>
     return CustomCard(
       margin: EdgeInsets.all(10),
       child: Column(
-        children: <Widget>[
-          stack,
+        children: [
+stack,
           if (actions.isNotEmpty &&
               (widget.heroId != null || widget.heroIdNavigation != null) &&
               widget.showNavigation)

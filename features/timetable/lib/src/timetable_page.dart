@@ -2,6 +2,7 @@ import 'package:cafetoria/cafetoria.dart';
 import 'package:calendar/calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'package:subjects/subjects.dart';
 import 'package:substitution_plan/substitution_plan.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
@@ -51,7 +52,6 @@ class _TimetablePageState extends Interactor<TimetablePage> {
   @override
   Widget build(BuildContext context) {
     final loader = TimetableWidget.of(context).feature.loader;
-    final substitutionPlanFeature = SubstitutionPlanWidget.of(context).feature;
     final _monday = monday(loader.hasLoadedData
         ? loader.data.initialDay(DateTime.now())
         : DateTime.now());
@@ -60,14 +60,14 @@ class _TimetablePageState extends Interactor<TimetablePage> {
         title: TimetableLocalizations.name,
         loadingKeys: [
           TimetableKeys.timetable,
-          substitutionPlanFeature.featureKey,
-          Keys.tags
+          SubstitutionPlanKeys.substitutionPlan,
+          SubjectsKeys.subjects,
+          Keys.tags,
         ],
       ),
       body: CustomHero(
         tag: TimetableKeys.timetable,
-        child: loader.hasLoadedData &&
-                substitutionPlanFeature.loader.hasLoadedData
+        child: loader.hasLoadedData
             ? CustomGrid(
                 onRefresh: () async {
                   final results = [
@@ -76,8 +76,11 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                       [TimetableWidget.of(context).feature],
                     ),
                     await loader.loadOnline(context, force: true),
-                    await substitutionPlanFeature.loader
-                        .loadOnline(context, force: true),
+                    if (SubstitutionPlanWidget.of(context) != null)
+                      await SubstitutionPlanWidget.of(context)
+                          .feature
+                          .loader
+                          .loadOnline(context, force: true),
                   ];
                   return reduceStatusCodes(results);
                 },
@@ -174,7 +177,7 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                           Container(
                             padding: EdgeInsets.only(top: 20),
                             child: EmptyList(
-                              title: TimetableLocalizations.noSubjects,
+                              title: TimetableLocalizations.noClasses,
                             ),
                           )
                         ]
@@ -184,17 +187,29 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                               .getSelectedSubject(unit.subjects);
                           // ignore: omit_local_variable_types
                           final List<Substitution> substitutions =
-                              subject?.getSubstitutions(day,
-                                      substitutionPlanFeature.loader.data) ??
-                                  [];
+                              SubstitutionPlanWidget.of(context) != null
+                                  ? subject?.getSubstitutions(
+                                          day,
+                                          SubstitutionPlanWidget.of(context)
+                                              .feature
+                                              .loader
+                                              .data) ??
+                                      []
+                                  : [];
                           // Show the normal lessen if it is an exam, but not of the same subjects, as this unit
                           final showNormal = substitutions.length == 1 &&
                               substitutions.first.type == 2 &&
                               substitutions.first.courseID != subject.courseID;
                           final List<Substitution> undefinedSubstitutions =
-                              subject?.getUndefinedSubstitutions(day,
-                                      substitutionPlanFeature.loader.data) ??
-                                  [];
+                              SubstitutionPlanWidget.of(context) != null
+                                  ? subject?.getUndefinedSubstitutions(
+                                          day,
+                                          SubstitutionPlanWidget.of(context)
+                                              .feature
+                                              .loader
+                                              .data) ??
+                                      []
+                                  : [];
                           return SizeLimit(
                             child: Material(
                               child: InkWell(
@@ -217,7 +232,10 @@ class _TimetablePageState extends Interactor<TimetablePage> {
                                             .setSelectedSubject(
                                           selection,
                                           EventBus.of(context),
-                                          substitutionPlanFeature.loader.data,
+                                          SubstitutionPlanWidget.of(context)
+                                              ?.feature
+                                              ?.loader
+                                              ?.data,
                                           loader.data,
                                         );
                                         setState(() {});

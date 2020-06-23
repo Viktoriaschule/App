@@ -24,6 +24,10 @@ class _SettingsPageState extends Interactor<SettingsPage> {
         .features
         .where((f) => f.notificationsHandler != null)
         .toList();
+    final regularFeatures = FeaturesWidget.of(context)
+        .features
+        .where((f) => f.extraSettings != null)
+        .toList();
     return Scaffold(
       appBar: CustomAppBar(
         title: SettingsLocalizations.settings,
@@ -34,7 +38,7 @@ class _SettingsPageState extends Interactor<SettingsPage> {
           shrinkWrap: false,
           padding: EdgeInsets.all(5),
           children: [
-            if (notificationFeatures.isNotEmpty)
+            if (!Platform().isDesktop && notificationFeatures.isNotEmpty)
               ListGroup(
                 title: SettingsLocalizations.notifications,
                 unsizedChildren: notificationFeatures
@@ -53,7 +57,9 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                         onChanged: (value) async {
                           setState(() {
                             Static.storage.setBool(
-                                Keys.notifications(feature.featureKey), value);
+                              Keys.notifications(feature.featureKey),
+                              value,
+                            );
                           });
                           await Static.tags.syncDevice(
                             context,
@@ -62,6 +68,35 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                         },
                       ),
                     )
+                    .toList(),
+                children: const [],
+              ),
+            for (final feature in regularFeatures
+                .where((feature) => feature.extraSettings.isNotEmpty))
+              ListGroup(
+                title: feature.name,
+                unsizedChildren: feature.extraSettings
+                    .map((setting) => SwitchListTile(
+                          title: Text(
+                            setting.name,
+                            style: TextStyle(
+                              color: ThemeWidget.of(context).textColor,
+                            ),
+                          ),
+                          activeColor: Theme.of(context).accentColor,
+                          value: Static.storage.getBool(setting.key) ??
+                              setting.defaultValue,
+                          onChanged: (value) async {
+                            setState(() {
+                              Static.storage.setBool(
+                                setting.key,
+                                value,
+                              );
+                            });
+                          },
+                        ))
+                    .toList()
+                    .cast<Widget>()
                     .toList(),
                 children: const [],
               ),
@@ -109,7 +144,6 @@ class _SettingsPageState extends Interactor<SettingsPage> {
                     Static.user.clear();
                     Static.tags.clear();
                     Static.updates.clear();
-                    Static.subjects.clear();
                     FeaturesWidget.of(context)
                         .features
                         .forEach((f) => f.loader?.clear());

@@ -15,13 +15,5 @@ dependencies:
   intl:
   dio:
   package_info:
-  aixformation:
-    path: ../features/aixformation
-  cafetoria:
-    path: ../features/cafetoria
-  calendar:
-    path: ../features/calendar
-  substitution_plan:
-    path: ../features/substitution_plan
   widgets:
     path: ../widgets

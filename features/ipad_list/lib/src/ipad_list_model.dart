@@ -1,6 +1,7 @@
 // Describes a list of calendar events...
 import 'package:flutter/material.dart';
-import 'package:ipad_list/src/ipad_list_localizations.dart';
+
+import 'ipad_list_localizations.dart';
 
 /// All ipad device types
 enum DeviceType {

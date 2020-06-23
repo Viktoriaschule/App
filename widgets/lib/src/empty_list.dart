@@ -20,8 +20,8 @@ class EmptyList extends PreferredSize {
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
+            children: [
+Icon(
                 Icons.assignment_ind,
                 size: 30,
                 color: ThemeWidget.of(context).textColorLight,

@@ -19,6 +19,7 @@ Future startApp({
   WidgetsFlutterBinding.ensureInitialized();
 
   timeago.setLocaleMessages('de', timeago.DeMessages());
+  timeago.setLocaleMessages('de_short', timeago.DeShortMessages());
 
   Static.storage = Storage();
   await Static.storage.init();

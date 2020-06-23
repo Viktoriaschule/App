@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_event_bus/flutter_event_bus.dart';
+import 'package:subjects/subjects.dart';
 import 'package:substitution_plan/substitution_plan.dart';
 import 'package:timetable/timetable.dart';
 import 'package:utils/utils.dart';
@@ -50,7 +51,10 @@ class _SubstitutionPlanInfoCardState
       substitutions.length,
     );
     return ListGroup(
-      loadingKeys: const [SubstitutionPlanKeys.substitutionPlan],
+      loadingKeys: const [
+        SubstitutionPlanKeys.substitutionPlan,
+        SubjectsKeys.subjects,
+      ],
       heroId: getScreenSize(MediaQuery.of(context).size.width) ==
               ScreenSize.small
           ? SubstitutionPlanKeys.substitutionPlan

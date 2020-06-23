@@ -6,14 +6,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  material_design_icons_flutter:
-  flutter_event_bus:
   substitution_plan:
     path: ../substitution_plan
   calendar:
     path: ../calendar
   cafetoria:
     path: ../cafetoria
+  subjects:
+    path: ../subjects
   utils:
     path: ../../utils
   widgets:
